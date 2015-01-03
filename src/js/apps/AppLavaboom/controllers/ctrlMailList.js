@@ -7,12 +7,12 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($scop
 		$scope.selected = {};
 	};
 
-	user.singIn('let4be', 'ztest007');
+	user.singIn('let4be-1', 'ztest007');
 
 	$scope.$on('user-authenticated', () => {
-		//inbox.requestList();
-		//cryptoKeys.syncKeys();
-		inbox.send('let4be@lavaboom.io', 'test PGP subject', 'test PGP body');
+		inbox.requestList();
+		cryptoKeys.syncKeys();
+		//inbox.send('let4be@lavaboom.io', 'test PGP subject', 'test PGP body');
 	});
 
 	$scope.$on('inbox-emails', () => {

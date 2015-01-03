@@ -1,38 +1,35 @@
-angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $rootScope, $filter, $base64, crypto, user, LavaboomAPI) {
+angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $rootScope, $filter, $base64, co, apiProxy, crypto, user) {
 	var self = this;
 
 	this.syncKeys = () => {
-		LavaboomAPI.keys.list(user.name)
-			.then(res => {
-				console.log('LavaboomAPI.keys.list: ', res);
+		co(function *(){
+			var res = yield apiProxy('keys', 'list', user.name);
 
-				var keysByFingerprint = res.keys.reduce((a, k) => {
-					a[k.id] = k;
-					return a;
-				}, {});
+			var keysByFingerprint = res.keys ? res.keys.reduce((a, k) => {
+				a[k.id] = k;
+				return a;
+			}, {}) : {};
 
-				var publicKeys = crypto.getAvailablePublicKeysForSourceEmails();
+			var publicKeys = crypto.getAvailablePublicKeysForSourceEmails();
 
-				Object.keys(publicKeys).forEach(email => {
-					var keysForEmail = publicKeys[email];
-					keysForEmail.forEach(key => {
-						if (!keysByFingerprint[key.primaryKey.fingerprint]) {
-							console.log(`Importing key with fingerprint '${key.primaryKey.fingerprint}' to the server...`);
-							LavaboomAPI.keys.create(key.armor())
-								.then(res => {
-									console.log('LavaboomAPI.keys.create: ', res);
-								})
-								.catch(err => {
-									console.log('LavaboomAPI.keys.create error: ', err.message, err.stack);
-								});
-						} else
-							console.log(`Key with fingerprint '${key.primaryKey.fingerprint}' already imported...`);
-					});
+			Object.keys(publicKeys).forEach(email => {
+				var keysForEmail = publicKeys[email];
+				keysForEmail.forEach(key => {
+					if (!keysByFingerprint[key.primaryKey.fingerprint]) {
+						console.log(`Importing key with fingerprint '${key.primaryKey.fingerprint}' to the server...`);
+
+						apiProxy('keys', 'create', user.key.armor());
+					} else
+						console.log(`Key with fingerprint '${key.primaryKey.fingerprint}' already imported...`);
 				});
-			})
-			.catch(err => {
-				console.log('LavaboomAPI.keys.list error: ', err.message, err.stack);
 			});
+		});
+	};
+
+	this.importPublicKey = (publicKey) => {
+		var key = openpgp.key.readArmored(publicKey).keys[0];
+		console.log('Importing public key ', key);
+		crypto.keyring.publicKeys.importKey(key);
 	};
 
 	this.importKeys = (jsonBackup) => {

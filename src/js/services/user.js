@@ -1,7 +1,7 @@
 angular.module(primaryApplicationName).service('user', function($q, $rootScope, apiProxy, LavaboomAPI, co) {
 	var self = this;
 
-	this.name = 'let4be';
+	this.name = '';
 
 	var token = null;
 
@@ -11,6 +11,8 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 	};
 
 	this.singIn = function (username, password) {
+		self.name = username;
+
 		return co(function * (){
 			try {
 				var res = yield apiProxy('tokens', 'create', {
