@@ -174,7 +174,7 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 
 			openpgp.encryptMessage(publicKey, message)
 				.then(pgpMessage => {
-					deferred.resolve(pgpMessage);
+					deferred.resolve({message: pgpMessage, publicKeyFingerprint: publicKey.primaryKey.fingerprint});
 				})
 				.catch(error => {
 					deferred.reject(error);

@@ -6,6 +6,8 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.totalEmailsCount = 0;
 	this.isInboxLoading = false;
 
+	crypto.initialize();
+
 	this.requestList = () => {
 		self.isInboxLoading = true;
 
@@ -39,13 +41,12 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			var encryptedEmail = yield crypto.encode(to, body);
 			console.log('encryptedEmail', encryptedEmail);
 
-
-			/*apiProxy('emails', 'create', {
+			apiProxy('emails', 'create', {
 				to: to,
 				subject: subject,
-				is_encrypted: false,
-				body: body
-			});*/
+				body: encryptedEmail.message,
+				pgp_fingerprints: [encryptedEmail.publicKeyFingerprint]
+			});
 		});
 	};
 
