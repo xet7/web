@@ -13,14 +13,14 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			try {
 				var res = yield apiProxy('emails', 'list');
 
-				self.emails = res.emails.map(e => {
+				self.emails = res.emails ? res.emails.map(e => {
 					return {
 						id: e.id,
 						subject: e.name,
 						date: e.date_created,
 						desc: 'no desc'
 					};
-				});
+				}) : [];
 
 				console.log('self.emails', self.emails);
 
@@ -32,11 +32,17 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	};
 
 	this.send = (to, subject, body) => {
-		apiProxy('emails', 'create', {
-			to: to,
-			subject: subject,
-			is_encrypted: false,
-			body: body
+		return co(function * () {
+			var res = yield apiProxy('keys', 'get', to);
+			res.key.key
+
+
+			/*apiProxy('emails', 'create', {
+				to: to,
+				subject: subject,
+				is_encrypted: false,
+				body: body
+			});*/
 		});
 	};
 
