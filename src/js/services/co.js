@@ -1,15 +1,13 @@
 angular.module(primaryApplicationName).factory('co', function($q, $rootScope, $exceptionHandler) {
 	var createGeneratorProxy = (gen) => function *() {
 		try {
-			var r = yield gen;
-
-			$rootScope.$apply();
-
-			return r;
+			return (yield gen);
 		} catch (err) {
 			$exceptionHandler(err);
 
 			throw err;
+		} finally {
+			$rootScope.$apply();
 		}
 	};
 

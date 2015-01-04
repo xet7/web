@@ -163,6 +163,7 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		return true;
 	};
 
+    // obsolete
 	this.encode = (email, message) => {
 		var deferred = $q.defer();
 
@@ -186,6 +187,7 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		return deferred.promise;
 	};
 
+	// obsolete
 	this.decode = (email, message) => {
 		var deferred = $q.defer();
 
@@ -234,6 +236,26 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 				if (decryptCallChain < 0)
 					deferred.reject(new Error('Please decrypt at least one your private key!'));
 			}
+		} catch (catchedError) {
+			deferred.reject(catchedError);
+		}
+
+		return deferred.promise;
+	};
+
+	this.encodeWithKey = (email, message, publicKey) => {
+		var deferred = $q.defer();
+
+		try {
+			publicKey = openpgp.key.readArmored(publicKey).keys[0];
+
+			openpgp.encryptMessage(publicKey, message)
+				.then(pgpMessage => {
+					deferred.resolve(pgpMessage);
+				})
+				.catch(error => {
+					deferred.reject(error);
+				});
 		} catch (catchedError) {
 			deferred.reject(catchedError);
 		}

@@ -36,16 +36,14 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.send = (to, subject, body) => {
 		return co(function * () {
 			var res = yield apiProxy('keys', 'get', to);
-			cryptoKeys.importPublicKey(res.key.key);
-
-			var encryptedEmail = yield crypto.encode(to, body);
-			console.log('encryptedEmail', encryptedEmail);
+			var publicKey = res.key;
+			var encryptedMessage = yield crypto.encodeWithKey(to, body, publicKey.key);
 
 			apiProxy('emails', 'create', {
-				to: to,
+				to: [to],
 				subject: subject,
-				body: encryptedEmail.message,
-				pgp_fingerprints: [encryptedEmail.publicKeyFingerprint]
+				body: encryptedMessage,
+				pgp_fingerprints: [publicKey.id]
 			});
 		});
 	};
