@@ -10,18 +10,15 @@ form
 		span.icon-unread
 
 	div.form-group
-		input.form-control.input-lg(type='text', ng-model='invite.username', placeholder="your username", required)
+		input.form-control.input-lg(type='text', ng-model='form.username', placeholder="your username", required)
 	div.form-group
-		textarea.form-control.input-lg(type='text', ng-model='invite.token', placeholder="please paste invite code here")
+		textarea.form-control.input-lg(type='text', ng-model='form.token', placeholder="please paste invite code here", required)
 
-	p.text-center
-		a(href='#') Got an invite mail already?
-	
 	hr.spacer
 
 	p
 		label.switch
-			input(type='checkbox', checked='')
+			input(type='checkbox', ng-model='form.isNews')
 			i
 		span &nbsp; &nbsp; I want to be the first to hear about Lavaboom news, send me the latest from Lava HQ
 

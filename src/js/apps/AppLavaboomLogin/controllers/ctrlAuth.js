@@ -1,27 +1,22 @@
-angular.module('AppLavaboomLogin').controller('CtrlAuth', function($scope, $window, user) {
-    $scope.auth = {
+angular.module('AppLavaboomLogin').controller('CtrlAuth', function($scope, $rootScope, $window, $interval, user) {
+    $scope.form = {
 		username: '',
 		password: '',
 		isRemember: false
 	};
 	$scope.isProcessing = false;
-	$scope.errorMessage = '';
 
-    $scope.logIn = function() {
+    $scope.logIn = () => {
 		$scope.isProcessing = true;
-		user.singIn($scope.auth.username, $scope.auth.password)
+		user.singIn($scope.form.username, $scope.form.password)
 			.finally(() => {
 				$scope.isProcessing = false;
 			});
 	};
 
 	$scope.$on('user-authenticated', () => {
-		user.persistAuth($scope.auth.isRemember);
+		user.persistAuth($scope.form.isRemember);
 
 		$window.location = '/';
-	});
-
-	$scope.$on('user-authentication-error', (e, err) => {
-		$scope.errorMessage = err.body.message;
 	});
 });

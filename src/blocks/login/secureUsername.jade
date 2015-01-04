@@ -1,24 +1,25 @@
 form
 	p.lead Secure your own Lavaboom username
+	span.error(ng-bind="currentErrorMessage")
 	p.text-center
-		a(href='#') Got an invite mail already?
+		a(ui-sref="verifyInvite") Got an invite mail already?
 	div.form-group
 		div.input-group.suffix.clearfix
-			input.form-control.input-lg(type='text', ng-model='signUpSecure.username', placeholder="username")
+			input.form-control.input-lg(type='text', ng-model='form.username', placeholder="username", required)
 			span.input-group-addon @lavaboom.com
 
 	div.form-group.clearfix
-		input.form-control.input-lg(type='email', ng-model='signUpSecure.email', value='', placeholder="your current email address")
+		input.form-control.input-lg(type='email', ng-model='form.email', value='', placeholder="your current email address", required)
 
 	hr.spacer
 
 	p
 		label.switch
-			input(type='checkbox', checked='')
+			input(type='checkbox', ng-model="form.isNews")
 			i
 		span &nbsp; &nbsp; I want to be the first to hear about Lavaboom news, send me the latest from Lava HQ
 
 	p
-		button.btn.btn-block.btn-lg.btn-primary(ng-click='secure()') Secure your username
+		button.btn.btn-block.btn-lg.btn-primary(ng-click='secure()', ng-disabled="isProcessing") Secure your username
 		
 	

@@ -1,16 +1,16 @@
 form
 	img.login-logo(src="img/Lavaboom-logo.svg")
 	p.lead Log In
-	span.error(ng-bind="errorMessage")
+	span.error(ng-bind="currentErrorMessage")
 	div.form-group
-		input.form-control.input-lg(type='text', ng-model='auth.username', placeholder="username or email address", required)
+		input.form-control.input-lg(type='text', ng-model='form.username', placeholder="username or email address", required)
 
 	div.form-group
-		input.form-control.input-lg(type='password', ng-model='auth.password', placeholder="password", required)
+		input.form-control.input-lg(type='password', ng-model='form.password', placeholder="password", required)
 
 	p
 		label.switch
-			input(type='checkbox', ng-model="auth.isRemember")
+			input(type='checkbox', ng-model="form.isRemember")
 			i
 		span &nbsp; &nbsp; Keep me logged in	
 
