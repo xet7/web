@@ -2,6 +2,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	var self = this;
 
 	this.emails = [];
+	this.selected = null;
 	this.senders = {};
 	this.totalEmailsCount = 0;
 	this.isInboxLoading = false;
@@ -15,16 +16,15 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			try {
 				var res = yield apiProxy('emails', 'list');
 
-				self.emails = res.emails ? res.emails.map(e => {
+				self.emails = res.body.emails ? res.body.emails.map(e => {
 					return {
 						id: e.id,
 						subject: e.name,
 						date: e.date_created,
-						desc: 'no desc'
+						preview: e.preview.raw,
+						body: e.body.raw
 					};
 				}) : [];
-
-				console.log('self.emails', self.emails);
 
 				$rootScope.$broadcast('inbox-emails', self.emails);
 			} finally {
@@ -36,11 +36,11 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.send = (to, subject, body) => {
 		return co(function * () {
 			var res = yield apiProxy('keys', 'get', to);
-			var publicKey = res.key;
+			var publicKey = res.body.key;
 			var encryptedMessage = yield crypto.encodeWithKey(to, body, publicKey.key);
 
 			apiProxy('emails', 'create', {
-				to: [to],
+				to: to,
 				subject: subject,
 				body: encryptedMessage,
 				pgp_fingerprints: [publicKey.id]

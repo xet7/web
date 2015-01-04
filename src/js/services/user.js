@@ -7,7 +7,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 	var setToken = (_token) => {
 		token = _token;
-		LavaboomAPI.setAuthToken(token.id);
+		LavaboomAPI.setAuthToken(_token.id);
 	};
 
 	this.singIn = function (username, password) {
@@ -21,7 +21,8 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 					password: CryptoJS.SHA3(password, { outputLength: 256 }).toString()
 				});
 
-				setToken(res.token);
+				setToken(res.body.token);
+
 				$rootScope.$broadcast('user-authenticated');
 			}
 			catch (err) {
@@ -33,4 +34,5 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		});
 	};
 });
+
 

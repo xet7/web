@@ -5,7 +5,7 @@ angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $root
 		co(function *(){
 			var res = yield apiProxy('keys', 'list', user.name);
 
-			var keysByFingerprint = res.keys ? res.keys.reduce((a, k) => {
+			var keysByFingerprint = res.body.keys ? res.body.keys.reduce((a, k) => {
 				a[k.id] = k;
 				return a;
 			}, {}) : {};

@@ -173,9 +173,11 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 			if (!publicKey)
 				throw new Error(`Can't find public key for user with email '${email}'`);
 
+			console.log(publicKey.primaryKey.fingerprint);
+
 			openpgp.encryptMessage(publicKey, message)
 				.then(pgpMessage => {
-					deferred.resolve({message: pgpMessage, publicKeyFingerprint: publicKey.primaryKey.fingerprint});
+					deferred.resolve(pgpMessage);
 				})
 				.catch(error => {
 					deferred.reject(error);

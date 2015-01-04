@@ -16,6 +16,8 @@ window.coJS = (function() {
 	return module.exports;
 })();
 
+// = require "../bower_components/lodash/dist/lodash.underscore.js"
+
 // = require "../bower_components/angular/angular.js"
 // = require "../bower_components/angular-translate/angular-translate.js"
 // = require "../bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"
