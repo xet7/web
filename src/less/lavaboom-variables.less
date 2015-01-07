@@ -1,0 +1,209 @@
+// colors
+@lava: #4CBCDD;
+@lava-dark: darken(@lava, 30%);
+@lava-gray: #3A4045;
+@lava-gray-light: #BCBBC0;
+@lava-gray-lighter: #D9D9D9;
+@lava-gray-dark: #61666F;
+@lava-red: #E5332A;
+@lava-blue: #3388BF;
+@lava-text: #525964;
+@lava-heading: #525964;
+@lava-warning: #F4A68D;
+@lava-yellow: #FFE409;
+@lava-left-panel-icon-hover: #F6F6F7;
+@lava-mail-list-active-color: #F6F6F7;
+
+//login colors
+@lava-login-lava: #3BBADC;				//Blue #3BBADC	
+@lava-login-gray-lighter: #CCCBD0;		//very light grey (input text) #CCCBD0
+@lava-login-gray-light: #9D9FA3;		//light grey (Headline) #9D9FA3
+@lava-login-gray: #4C535C;				//medium grey (defaut text in fields) #4C535C
+@lava-login-gray-dark: #33373C;			//dark grey (Input field) #33373C
+@lava-login-gray-darker: #282B2F;		//very dark grey (background) #282B2F
+
+
+
+
+
+
+
+
+//bootstrap overrides
+@link-color: @lava;
+@text-muted: @lava-gray-light;
+
+//grid system - we're going 24 because we're THAT crazy
+@grid-columns:              24;
+@grid-gutter-width:         20px;
+
+
+//== Typography
+//
+//## Font, line-height, and color for body text, headings, and more.
+@font-family-sans-serif:  "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+//** Default monospace fonts for `<code>`, `<kbd>`, and `<pre>`.
+@font-family-monospace:   Menlo, Monaco, Consolas, "Courier New", monospace;
+@font-family-base:        @font-family-sans-serif;
+
+@light-font-weight: 200;
+@base-font-weight: 400;
+
+@border-radius-base:        3px;
+@border-radius-large:       5px;
+@border-radius-small:       0;
+
+//birds-eye-view
+.z1{
+	z-index: 100;
+}
+
+.z2{
+	z-index: 102;
+}
+
+.z3{
+	z-index: 103;
+}
+
+//left panel variables
+@left-panel-padding: .545em 2em;
+@left-panel-padding-sm: .585em 1.85em;
+
+//dimensions
+@left-panel-width: 210px;
+@left-panel-width-sm: 79px;
+
+@mail-list-width: 36%;
+@mail-list-width-sm: 38.7%;
+@mail-list-padding-left: 46px;
+@mail-list-padding-right: 85px;
+
+@mail-thread-width: 100% - @mail-list-width;
+@mail-thread-width-sm: 100% - @mail-list-width-sm;
+@mail-thread-padding: 15px 0 8px 39px;
+
+@filter-height: 39px;
+
+@mail-list-block-buttons-width: 9%;
+@mail-list-block-summary-width: 67%;
+
+@actions-search-width: 50%;
+@actions-buttons-width: 100% - @actions-search-width - @mail-list-block-buttons-width;
+
+//borders
+@border-site-wide: 1px solid @lava-gray-lighter;
+@border-site-wide: 1px solid @lava-gray-lighter;
+
+//animations!!!
+@lava-ease-out-in: cubic-bezier(0.500, -0.215, 0.380, 1.245);
+
+
+//content css
+body{
+	font-weight: @light-font-weight;
+}
+
+#content{
+	left: @left-panel-width;
+	transition: 0.3s left;
+	top: 0; bottom: 0; right: 0;
+	position: absolute;
+	@media (max-width: @screen-md-max) {
+		left: @left-panel-width-sm;
+	}
+}
+
+.no-underlines{
+	text-decoration: none;
+	&:hover{
+		text-decoration: none;
+	}
+}
+
+.ellipsis {
+  text-overflow: ellipsis;
+
+  /* Required for text-overflow to do anything */
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.pos-rel{
+	position: relative;
+}
+
+.pos-abs{
+	position: absolute;
+}
+
+.fill-abs{
+	top: 0; left: 0; right: 0; bottom: 0;
+}
+
+.clear{
+	clear: both;
+}
+
+.pack{
+	> * {
+		margin: 0;
+	}
+}
+
+.line-clamp(@lines){
+	display: -webkit-box;
+	-webkit-line-clamp: @lines;
+	-webkit-box-orient: vertical;
+	position: relative;
+	height: 0em + (@line-height-base * @lines);
+	overflow: hidden;
+
+	&:after {
+		content: "";
+		text-align: right;
+		position: absolute;
+		bottom: 0;
+		right: 0;
+		width: 70%;
+		height: @line-height-base;
+		background: linear-gradient(to right, rgba(255, 255, 255, 0), white 100%);
+		pointer-events: none;
+	}
+}
+
+.row.no-gutter {
+	margin: 0;
+	> [class*='col-'] {
+	  padding-right:0;
+	  padding-left:0;
+	}
+}
+
+.lava-icon-row{
+	padding-right: 22px;
+	.text-right();
+	[class^="icon-"],
+	[class*=" icon-"] {
+		display: inline-block;
+		font-size: 18px;
+		// line-height: @filter-height - 3;
+	}
+	> a:not(:first-child), .lava-icon-wrapper > a:not(:first-child){
+		display: inline-block;
+		// width: 1em;
+		padding: 0 0 0 18px;
+	}
+
+	.spacer{
+		display: inline-block;
+		width: 15px;
+	}
+}
+
+
+.select2 > .select2-choice.ui-select-match {
+  /* Because of the inclusion of Bootstrap */
+  height: 29px;
+}

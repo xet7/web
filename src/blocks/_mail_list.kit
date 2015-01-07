@@ -1,0 +1,45 @@
+<div id="mail-list" ng-controller="MailListItemController" class="list-pane">
+	<div class="filters row no-gutter lava-icon-row">
+		<label class="search-icon col-xs-3" for="top-search">
+			<span class="icon-search"></span>
+		</label>
+		<input id="top-search" class="search col-xs-13" placeholder="Search Emails"/>
+		<div class="lava-icon-wrapper col-xs-8">
+			<a href="#"><span class="icon-arrow-down"></span></a>
+			<a href="#"><span class="icon-star"></span></a>
+			<a href="#"><span class="icon-ban"></span></a>
+			<a href="#"><span class="icon-trash"></span></a>
+		</div>
+	</div>
+	<div class="mail-list-group">
+		<div class="" ng-repeat="item in items" class="list-group-item " ng-class="{active: selected==item}" ng-click="choose(item)">
+			<!-- ng-template -->
+			<div href="#" class="mail-list-item {{item.active}}">
+				<div class="row no-gutter">
+					<div class="col-xs-3 clear buttons">
+							<a href="#"><span class="icon-star"></span></a>
+							<a href="#"><span class="icon-reply"></span></a>
+							<a href="#"><span class="icon-arrow-right"></span></a>	
+					</div>
+					<div class="col-xs-16 pack">
+						<h5>{{item.sender}}</h5>
+						<p class="subject">{{item.subject}}</p>
+						<p class="summary">{{item.desc}}</p>
+					</div>
+					<div class="col-xs-5 when">
+						<span class="date lava-icon-row">Yesterday</span><br/><br/>
+						<div class="lava-icon-row">
+							<a class="">
+								<span class="icon-paper-clip"></span>
+							</a>
+							<a href="#">
+								<span class="icon-lock"></span>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- //eng-template -->
+		</div>
+	</div>
+</div>

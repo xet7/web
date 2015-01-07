@@ -1,0 +1,135 @@
+#left-panel {
+	.z2();
+	position: fixed;
+	left: 0; top: 0; bottom: 0;
+	
+	background-color: @lava-gray;
+	box-shadow:  5px 0px 14px 0 rgba(0, 0, 0, 0.19);
+
+	width: @left-panel-width;
+
+	transition: .5s width;
+
+	#brand{
+		// padding: @left-panel-padding;
+		// .h3();
+		// color: #fff;
+		img{
+			width: 165px;
+		}
+	}
+
+	#navigation {
+		position: absolute;
+		top: 0; left: 0; right: 0; bottom: 0;
+		ul li {
+			margin: 0; padding: 0;
+			a{
+				display: block;
+				padding: @left-panel-padding;
+				color: @lava-gray-light;
+				position: relative;
+				line-height: 20px;
+				.no-underlines();
+				white-space: nowrap;
+				font-size: 1.2em;
+				cursor: pointer;
+
+				> span:first-child{
+					display: inline-block;
+					width: 30px;
+					position: relative;
+					top: -1px;
+					color: @lava-gray-dark;
+				}
+				> span.action{
+					transition: .4s all;
+					white-space: nowrap;
+					overflow-x: hidden;
+					font-size: .8em;
+					.opacity(1);
+				}
+
+				.badge {
+					background-color: @lava-red;
+					margin-left: 5px;
+					font-weight: normal;
+				}
+				&:hover{
+					color: @lava-left-panel-icon-hover;
+					> span:first-child{
+						color: @lava-left-panel-icon-hover;
+						transition: .2s color;
+					}
+				}
+
+				outline: 0 none !important;
+			}
+
+			&.compose{
+				a{
+					background: @lava-red;
+					color: @lava-left-panel-icon-hover;
+					padding-top: .58em; padding-bottom: .75em;
+					> span:first-child{
+						color: @lava-left-panel-icon-hover;
+					}
+				}
+			}
+			&.separator{
+				border-bottom: 1px solid @lava-gray-dark;
+			}
+			&.logout{
+				position: absolute;
+				bottom: 0; left: 0; right: 0;
+				small{
+					.text-center();
+					display: block;
+					color: @lava-gray-dark;
+					margin-bottom: .5em;
+				}
+				a{
+					background-color: @lava-gray-dark;
+					color: @lava-gray;
+					> span:first-child{
+						color: @lava-gray;
+					}
+				}
+			}
+			&.active a, &:active a{
+				background: @lava-gray-dark !important;
+			}
+		}
+	}
+
+	@media (max-width: @screen-md-max) {
+		width: @left-panel-width-sm;
+
+		#brand{
+			width: 64px;
+			overflow: hidden;
+			img{
+				width: 165px;
+			}
+		}
+
+		#navigation ul li > a{
+			padding: @left-panel-padding-sm;
+		}
+		
+		.action, small {
+			max-width: 0;
+			overflow: hidden;
+			display: none;
+			.opacity(0);
+		}
+
+		.badge{
+			position: absolute;
+			top: 22px;
+			font-size: .7em;
+			padding: 2px 3px;
+			right: 10px;
+		}
+	}
+}

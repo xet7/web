@@ -1,0 +1,56 @@
+	// padding-top: @filter-height + 2;
+	.filters, .actions{
+		background-color: @lava-gray;
+		// padding-left: @mail-list-padding-left;
+		// padding-right: 215px;
+		// position: fixed;
+		// top: 0;
+		// .z1();
+		// 
+		position: absolute;
+		right: 0;
+		left: 0;
+		
+		.search-icon {
+			width: @mail-list-block-buttons-width;
+			.icon-search{
+				padding-left: 12px;
+				float: left;
+				font-size: 14px;
+				padding-top: 3px;
+			}
+		}
+		height: @filter-height;
+		> *{
+			display: block;
+		}
+
+		color: @lava-gray-light;
+
+		[class^="icon-"],
+		[class*=" icon-"] {
+			// font-size: 1em;
+			line-height: @filter-height - 3;
+			// color: @lava-gray-light;
+		}
+		a{
+			color: @lava-gray-light;
+			&:hover{
+				color: @lava-gray-lighter;
+			}
+		}
+		input{
+			background-color: transparent;
+			border: 0 none;
+			line-height: @filter-height;
+			color: @lava-gray-light;
+			// position: relative;
+			outline: none;
+			// padding: 0 5px;
+			&:active{
+				box-shadow: none;
+				outline: none;
+			}
+			width: @actions-search-width;
+		}
+	}

@@ -1,0 +1,134 @@
+.list-pane{
+	width: @mail-list-width;
+	position: absolute;
+	height: 100%;
+	overflow-y: hidden;
+    overflow-x: hidden;
+    .z1();
+	.scrollbars();
+
+	@media (max-width: @screen-md-max) {
+		width: @mail-list-width-sm;
+	}
+}
+.details-pane{
+	width: @mail-thread-width;
+	margin-left: @mail-list-width;
+	.z3();
+	box-shadow:  -3px 0px 14px 0 rgba(0, 0, 0, 0.19);
+	position: absolute;
+	top:0;
+	bottom: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	@media (max-width: @screen-md-max) {
+		width: @mail-thread-width-sm;
+		margin-left: @mail-list-width-sm;
+	}
+	
+	.actions{
+		top: 0;
+	}
+	.main-settings-view{
+		padding-top: @filter-height;
+		.pos-rel();
+		height: 100%;
+		> .settings-panel{
+			height: 100%;
+		}
+	}
+}
+
+.list-group-icons{
+	padding-top: @filter-height;
+	.list-group-item {
+		&:first-child{
+			border-top: 0;
+		}
+		border-left: 0; border-right: 0;
+		border-radius: 0;
+		> a{
+			// line-height: 3em;
+			// font-size: 1.5em;
+			display: block;
+			color: @lava-text;
+			text-decoration: none !important;
+			> i.icon{
+				display: inline-block;
+				font-size: 2em;
+				padding: .5em 0;
+				width: 2em;
+				text-align: center;
+			}
+			span{
+				position: relative;
+				top: -3px;
+			}
+		}
+		&.active, &:active, &:focus {
+			background-color: @lava;
+			border-color: #4CBCDD;
+			a{
+				color: #FFF;
+			}
+		}
+	} 
+}
+
+#guide{
+	.pos-abs();
+	content: ' ';
+	width: 2em; height: 2em;
+	background: @lava;
+	bottom: 0; right: 0;
+	z-index: 10000;
+	&:before{
+		position: fixed; .fill-abs();
+		background: url("../img/lb.png") no-repeat;
+		// background-size: cover;
+		content: ' ';
+		z-index: 1000;
+		.opacity(0);
+		visibility: hidden;
+		transition: .5s all;
+	}
+	&:hover{
+		&:before{
+			visibility: visible;
+			.opacity(.7);
+			@media(min-width: 1270px){
+				background: url("../img/lb-lg.png") no-repeat !important;
+			}
+		}
+	}
+}
+
+.scrollbars{
+	&.thin::-webkit-scrollbar {
+	    width: 2px;
+	}
+
+	&::-webkit-scrollbar-track {
+	    border-radius: 10px;
+	    background: #eee;
+	}
+
+	&::-webkit-scrollbar-thumb {
+	    border-radius: 10px;
+	    background: #888;
+	}
+	&::-webkit-scrollbar-thumb:window-inactive {
+	    background: rgba(100,100,100,0.4); 
+	}
+}
+
+
+.invert{
+	transform: rotate(180deg);
+	display: inline-block;
+	width: auto;
+}
+
+.serif{
+	font-family: @font-family-serif;
+}

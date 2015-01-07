@@ -1,0 +1,92 @@
+#mail-list{
+	
+	.mail-list-group{
+		position: absolute;
+		.fill-abs();
+		top: @filter-height;
+		overflow-y: auto;
+		.mail-list-item{
+			display: block;
+			padding: .6em 0 0.54em;
+			border-bottom: @border-site-wide;
+			color: @lava-text;
+			.no-underlines();
+			position: relative;
+
+			
+			cursor: pointer;
+			font-size: 86%;
+			// line-height: 15px;
+			&:not(:last-child){
+				// border-bottom: 0;
+			}
+			&:hover:not(.active){
+				background-color: @lava-gray-lighter;
+			}
+			>*{
+				margin: 0;
+			}
+
+			h5{
+				color: @lava-heading;
+			}
+			.subject{
+				color: @lava-heading;
+				.ellipsis();
+			}
+
+			.summary{
+				.line-clamp(2);
+				font-size: .95em;
+			}
+
+			.when{
+				.text-right();
+				width: 100% - @mail-list-block-buttons-width - @mail-list-block-summary-width;
+			}
+			
+		}
+		.active .mail-list-item{
+			background-color: @lava;
+			p, [class^="icon-"],
+			[class*=" icon-"] {
+				color: @lava-mail-list-active-color !important;
+			}
+			h5{
+				color: @lava-mail-list-active-color;
+				font-weight: normal;
+			}
+
+			&:hover{
+				background-color: @lava;
+			}
+			
+		}
+
+		.buttons{
+			// position: absolute;
+			// left: 0;
+			// width: @mail-list-padding-left;
+			// bottom: 0;
+			// top: 0;
+			a{
+				display: block;
+				text-align: center;
+				&:not(:last-child){
+					padding: 0 0 1px;
+					font-size: 14px;
+				}
+			}
+			width: @mail-list-block-buttons-width;
+		}
+
+		.pack{
+			width: @mail-list-block-summary-width;
+		}
+
+	}
+	.lava-icon-wrapper{
+		width: @actions-buttons-width;
+	}
+
+}
