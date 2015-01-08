@@ -10,37 +10,13 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 		console.log('crypto svc initialized, keyring is:', keyring);
 	};
 
-	this.verifyKeys = () => {
-		var invalidKeys = [];
-		var validKeys = [];
-
-		keyring.getAllKeys().forEach(key => {
-			var status = key.verifyPrimaryKey();
-			if (status != openpgp.enums.keyStatus.valid)
-				invalidKeys.push({
-					key: key,
-					status: status
-				});
-			else
-				validKeys.push({
-					key: key,
-					status: status
-				});
-		});
-
-		return {
-			invalidKeys: invalidKeys,
-			validKeys: validKeys
-		};
-	};
-
 	this.getKeyPairs = (email = null) => {
 		var keys = keyring.getAllKeys();
 
 		if (email)
 			keys = keys.filter(key => key.users[0].userId.userid == email);
 
-		return keys.reduce((keyPairs, key) => {
+		var keyPairs = keys.reduce((keyPairs, key) => {
 				if (!keyPairs[key.primaryKey.fingerprint])
 					keyPairs[key.primaryKey.fingerprint] = {primaryKey: key.primaryKey};
 
@@ -50,6 +26,14 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 					keyPairs[key.primaryKey.fingerprint].prv = key;
 				return keyPairs;
 			}, {});
+
+		Object.keys(keyPairs).forEach(fingerprint => {
+			var status = keyPairs[fingerprint].prv.verifyPrimaryKey();
+			var statusText = Object.keys(openpgp.enums.keyStatus).filter(k => openpgp.enums.keyStatus[k] == status);
+			keyPairs[fingerprint].verificationStatus = statusText.length > 0 ? statusText[0] : 'undefined';
+		});
+
+		return keyPairs;
 	};
 
 	this.getActiveKeyPairForUser = (email) => {

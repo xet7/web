@@ -8,11 +8,12 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 	$scope.selectedKeyPair = {};
 	$scope.password = '';
 
-	$scope.text = "Hi! I'm super secret message about cats! Did you know that's cats are going to conquer the world?... No seriously!";
+	$scope.text = "Hi! I'm super secret message about cats! Did you know that cats are going to conquer the world?... No seriously!";
 	$scope.error = '';
 
 	crypto.initialize();
-	var verificationStatus = crypto.verifyKeys();
+
+	console.log('key pairs', $scope.keyPairs);
 
 	$scope.generateKeys = () => {
 		$scope.isGenerating = true;

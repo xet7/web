@@ -14,7 +14,7 @@ html(lang="en", ng-app="AppLavaboomLogin")
 					button.btn-success(ng-click="generateKeys()", ng-disabled="isGenerating") generate
 			div.row
 				div.col-md-6
-					select(ng-model="selectedKeyPair", ng-options="fingerprint as (keyPair.prv.users[0].userId.userid + ' - ' + fingerprint + ' - ' + keyPair.primaryKey.created) for (fingerprint, keyPair) in keyPairs")
+					select(ng-model="selectedKeyPair", ng-options="fingerprint as (keyPair.prv.users[0].userId.userid + ' - ' + keyPair.primaryKey.created+ ' - ' + keyPair.verificationStatus) for (fingerprint, keyPair) in keyPairs")
 						option(value="") Select key pair
 			div.row
 				div.col-md-3
