@@ -18,15 +18,28 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 		self.options = opt;
 
 		openpgp.initWorker('/vendor/openpgp.worker.js');
-		self.keyPairs = getKeyPairs(keyring);
-		self.sessionKeyPairs = getKeyPairs(sessionKeyring);
-
-		console.log('self.sessionKeyPairs', self.sessionKeyPairs);
+		self.keyPairs = getKeyPairsFromKeyring(keyring);
+		self.sessionKeyPairs = getKeyPairsFromKeyring(sessionKeyring);
 
 		return self.keyPairs;
 	};
 
-	var getKeyPairs = (keyring, email = null) => {
+	var applyPasswordToKeyPair = (primaryKeyFingerprint, password) => {
+		var privateKey = null;
+
+		try {
+			if (!self.keyPairs[primaryKeyFingerprint])
+				throw new Error(`Can't find key with fingerprint '${primaryKeyFingerprint}'`);
+
+			privateKey = self.keyPairs[primaryKeyFingerprint].prv;
+			return privateKey.decrypt(password);
+		} catch (catchedError) {
+			console.error(catchedError);
+			return false;
+		}
+	};
+
+	var getKeyPairsFromKeyring = (keyring, email = null) => {
 		var keys = keyring.getAllKeys();
 
 		if (email)
@@ -53,7 +66,7 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 	};
 
 	this.getActiveKeyPairForUser = (email) => {
-		var keyPairs = getKeyPairs(keyring, email);
+		var keyPairs = getKeyPairsFromKeyring(keyring, email);
 
 		return Object.keys(keyPairs).reduce((a, keyFingerprint) => {
 			var key = keyPairs[keyFingerprint];
@@ -82,7 +95,7 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 				keyring.privateKeys.importKey(freshKeys.privateKeyArmored);
 				keyring.store();
 
-				self.keyPairs = getKeyPairs(keyring);
+				self.keyPairs = getKeyPairsFromKeyring(keyring);
 
 				var pub = openpgp.key.readArmored(freshKeys.publicKeyArmored).keys[0],
 					prv = openpgp.key.readArmored(freshKeys.privateKeyArmored).keys[0];
@@ -98,21 +111,6 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 			});
 
 		return deferred.promise;
-	};
-
-	var applyPassword = (primaryKeyFingerprint, password) => {
-		var privateKey = null;
-
-		try {
-			if (!self.keyPairs[primaryKeyFingerprint])
-				throw new Error(`Can't find key with fingerprint '${primaryKeyFingerprint}'`);
-
-			privateKey = self.keyPairs[primaryKeyFingerprint].prv;
-			return privateKey.decrypt(password);
-		} catch (catchedError) {
-			console.error(catchedError);
-			return false;
-		}
 	};
 
 	this.changePassword = (primaryKeyFingerprint, oldPassword, newPassword, persist = 'local') => {
@@ -149,7 +147,7 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 		console.log(self.options.isRememberPasswords);
 		return (self.options.isRememberPasswords ?
 			self.changePassword(primaryKeyFingerprint, password, '', 'session')
-			: applyPassword(primaryKeyFingerprint, password));
+			: applyPasswordToKeyPair(primaryKeyFingerprint, password));
 	};
 
 	this.encode = (primaryKeyFingerprint, message) => {
