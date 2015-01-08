@@ -30,11 +30,35 @@ html(lang="en", ng-app="AppLavaboomLogin")
 			div.row
 				div.col-md-6
 					textarea(ng-model="text")
+				div.col-md-16
+					div(ng-repeat="privateKey in privateKeys.keys")
+							div.row
+								div.col-md-6(ng-bind="privateKey.users[0].userId.userid")
+								div.col-md-9(ng-bind="privateKey.primaryKey.fingerprint")
+								div.col-md-9(ng-bind="privateKey.primaryKey.created")
+							div.row(ng-if="privateDecryptedKeys.findByFingerprint(privateKey.primaryKey.fingerprint)")
+								div.col-md-6 decrypted key
+							div.row(ng-if="!privateDecryptedKeys.findByFingerprint(privateKey.primaryKey.fingerprint)")
+								div.col-md-6
+									input(type="text", placeholder="password", ng-model="passwords[privateKey.primaryKey.fingerprint]")
+								div.col-md-3
+									button.btn-success(ng-click="authenticate(privateKey, passwords[privateKey.primaryKey.fingerprint])") decode key!
+								div.col-md-6(ng-bind="statuses[privateKey.primaryKey.fingerprint]")
+
 			div.row
-				div.col-md-3
-					button.btn-success.pull-left(ng-click="encode()") encode!
-				div.col-md-3
-					button.btn-success.pull-right(ng-click="decode()") decode!
+				div.col-md-12
+					select(ng-model="encodeToEmail", ng-options="email for email in dstEmails")
+						option(value="") Select destination email
+			div.row
+				div.col-md-2
+					button.btn-success(ng-click="encode()") encode!
+			div.row
+				div.col-md-12
+					select(ng-model="decodeForEmail", ng-options="email for email in srcEmails")
+						option(value="") Select source email
+			div.row
+				div.col-md-2
+					button.btn-success(ng-click="decode()") decode!
 			div.row
 				div.col-md-6(ng-bind="error")
 		script(src="js/lavaboom-login.js")

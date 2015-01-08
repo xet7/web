@@ -1,15 +1,43 @@
 angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 	var self = this;
 
+	var wrapOpenpgpKeyring = (keyring) => {
+		var findByFingerprint = (keys, fingerprint) => {
+			for(var i = 0; i < keys.length; i++)
+				if (keys[i].primaryKey.fingerprint == fingerprint)
+					return keys[i];
+			return null;
+		};
+
+		keyring.publicKeys.findByFingerprint = (fingerprint) => findByFingerprint(keyring.publicKeys.keys, fingerprint);
+		keyring.privateKeys.findByFingerprint = (fingerprint) => findByFingerprint(keyring.privateKeys.keys, fingerprint);
+
+		return keyring;
+	};
+
 	var sessionStore = new openpgp.Keyring.localstore();
 	sessionStore.storage = window.sessionStorage;
 
-	var keyring = new openpgp.Keyring();
-	var sessionKeyring = new openpgp.Keyring(sessionStore);
+	var keyring = window.keyring = wrapOpenpgpKeyring(new openpgp.Keyring());
+	var sessionKeyring = window.sessionKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(sessionStore));
 
 	this.keyPairs = null;
 	this.sessionKeyPairs = null;
 	this.options = {};
+
+	var getAvailableEmails = (keys) => Object.keys(keys.keys.reduce((a, k) => {
+		var email = k.users[0].userId.userid.match(/<([^>]+)>/)[1];
+		a[email] = true;
+		return a;
+	}, {}));
+
+	this.getAvailablePrivateKeys = () => keyring.privateKeys;
+	this.getAvailablePrivateDecryptedKeys = () => sessionKeyring.privateKeys;
+
+	this.getAvailableDestinationEmails = () => getAvailableEmails(keyring.publicKeys);
+
+	this.getAvailableSourceEmails = () => getAvailableEmails(keyring.privateKeys);
+
 
 	this.initialize = (opt = {}) => {
 		if (!opt.isRememberPasswords)
@@ -24,14 +52,8 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 		return self.keyPairs;
 	};
 
-	var applyPasswordToKeyPair = (primaryKeyFingerprint, password) => {
-		var privateKey = null;
-
+	var applyPasswordToKeyPair = (privateKey, password) => {
 		try {
-			if (!self.keyPairs[primaryKeyFingerprint])
-				throw new Error(`Can't find key with fingerprint '${primaryKeyFingerprint}'`);
-
-			privateKey = self.keyPairs[primaryKeyFingerprint].prv;
 			return privateKey.decrypt(password);
 		} catch (catchedError) {
 			console.error(catchedError);
@@ -56,22 +78,19 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 				return keyPairs;
 			}, {});
 
-		Object.keys(keyPairs).forEach(fingerprint => {
+		/*Object.keys(keyPairs).forEach(fingerprint => {
 			var status = keyPairs[fingerprint].prv.verifyPrimaryKey();
 			var statusText = Object.keys(openpgp.enums.keyStatus).filter(k => openpgp.enums.keyStatus[k] == status);
 			keyPairs[fingerprint].verificationStatus = statusText.length > 0 ? statusText[0] : 'undefined';
-		});
+		});*/
 
 		return keyPairs;
 	};
 
-	this.getActiveKeyPairForUser = (email) => {
-		var keyPairs = getKeyPairsFromKeyring(keyring, email);
-
-		return Object.keys(keyPairs).reduce((a, keyFingerprint) => {
-			var key = keyPairs[keyFingerprint];
-			if (!a || key.primaryKey.created > a.primaryKey.created)
-				a = key;
+	var getTheLatestPublicKeyForUser = (email) => {
+		return keyring.publicKeys.getForAddress(email).reduce((a, k) => {
+			if (!a || k.primaryKey.created > a.primaryKey.created)
+				a = k;
 			return a;
 		}, null);
 	};
@@ -113,14 +132,8 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 		return deferred.promise;
 	};
 
-	this.changePassword = (primaryKeyFingerprint, oldPassword, newPassword, persist = 'local') => {
-		var privateKey = null;
-
+	this.changePassword = (privateKey, oldPassword, newPassword, persist = 'local') => {
 		try {
-			if (!self.keyPairs[primaryKeyFingerprint])
-				throw new Error(`Can't find key with fingerprint '${primaryKeyFingerprint}'`);
-
-			privateKey = self.keyPairs[primaryKeyFingerprint].prv;
 			if (!privateKey.decrypt(oldPassword))
 				return false;
 
@@ -143,21 +156,23 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 		}
 	};
 
-	this.authenticate = (primaryKeyFingerprint, password) => {
+
+	this.authenticate = (privateKey, password) => {
 		console.log(self.options.isRememberPasswords);
 		return (self.options.isRememberPasswords ?
-			self.changePassword(primaryKeyFingerprint, password, '', 'session')
-			: applyPasswordToKeyPair(primaryKeyFingerprint, password));
+			self.changePassword(privateKey, password, '', 'session')
+			: applyPasswordToKeyPair(privateKey, password));
 	};
 
-	this.encode = (primaryKeyFingerprint, message) => {
+	this.encode = (email, message) => {
 		var deferred = $q.defer();
 
 		try {
-			if (!self.keyPairs[primaryKeyFingerprint])
-				throw new Error(`Can't find key with fingerprint '${primaryKeyFingerprint}'`);
+			var publicKey = getTheLatestPublicKeyForUser(email);
 
-			var publicKey = self.keyPairs[primaryKeyFingerprint].pub;
+			if (!publicKey)
+				throw new Error(`Can't find public key for user with email '${email}'`);
+
 			openpgp.encryptMessage(publicKey, message)
 				.then(pgpMessage => {
 					deferred.resolve(pgpMessage);
@@ -172,23 +187,35 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 		return deferred.promise;
 	};
 
-	this.decode = (primaryKeyFingerprint, message) => {
+	this.decode = (email, message) => {
 		var deferred = $q.defer();
 
 		try {
-			if (!self.keyPairs[primaryKeyFingerprint])
-				throw new Error(`Can't find key with fingerprint '${primaryKeyFingerprint}'`);
-
-			var privateKey = self.sessionKeyPairs[primaryKeyFingerprint] ? self.sessionKeyPairs[primaryKeyFingerprint].prv : self.keyPairs[primaryKeyFingerprint].prv;
-
+			var isDecrypted = true;
+			var lastError = null;
 			var pgpMessage = openpgp.message.readArmored(message);
-			openpgp.decryptMessage(privateKey, pgpMessage)
-				.then(plainText => {
-					deferred.resolve(plainText);
-				})
-				.catch(error => {
-					deferred.reject(error);
-				});
+
+			var decryptedPrivateKeys = sessionKeyring.privateKeys.getForAddress(email);
+			var t = decryptedPrivateKeys.length;
+			if (t < 1)
+				deferred.reject(new Error('Cannot find private key to decrypt email!'));
+			else {
+				for (var i = 0; i < decryptedPrivateKeys.length; i++) {
+					var privateKey = decryptedPrivateKeys[i];
+
+					openpgp.decryptMessage(privateKey, pgpMessage)
+						.then(plainText => {
+							isDecrypted = true;
+							deferred.resolve(plainText);
+						})
+						.catch(error => {
+							t--;
+							lastError = error;
+							if (!isDecrypted && t < 1)
+								deferred.reject(new Error('Cannot find private key to decrypt email!'));
+						});
+				}
+			}
 		} catch (catchedError) {
 			deferred.reject(catchedError);
 		}

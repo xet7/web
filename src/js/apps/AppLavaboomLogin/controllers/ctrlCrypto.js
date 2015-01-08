@@ -1,5 +1,5 @@
 angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, crypto) {
-	$scope.genEmail = 'test@test.ru';
+	$scope.genEmail = 'Tester <test@test.ru>';
 	$scope.genPassword = 'testit!';
 	$scope.genBits = 1024;
 	$scope.genStatus = 'Enter credentials!';
@@ -13,10 +13,20 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 	$scope.keyPairs = crypto.initialize({
 		isRememberPasswords: $scope.isRemember
 	});
+	$scope.dstEmails = crypto.getAvailableDestinationEmails();
+	$scope.srcEmails = crypto.getAvailableSourceEmails();
+	$scope.privateKeys = crypto.getAvailablePrivateKeys();
+	$scope.privateDecryptedKeys = crypto.getAvailablePrivateDecryptedKeys();
+
 	$scope.selectedKeyPair = {};
 
 	$scope.text = "Hi! I'm super secret message about cats! Did you know that cats are going to conquer the world?... No seriously!";
 	$scope.error = '';
+
+	$scope.passwords = {};
+	$scope.statuses = {};
+	$scope.encodeToEmail = '';
+	$scope.decodeForEmail = '';
 
 	console.log('key pairs', $scope.keyPairs);
 
@@ -42,15 +52,16 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 			});
 	};
 
-	$scope.authenticate = () => {
-		if (crypto.authenticate($scope.selectedKeyPair, $scope.password))
-			$scope.decryptStatus = 'decoded!';
+	$scope.authenticate = (privateKey, password) => {
+		if (crypto.authenticate(privateKey, password))
+			$scope.statuses[privateKey.primaryKey.fingerprint] = 'decoded!';
 		else
-			$scope.decryptStatus = 'Cannot decode, check your password!';
+			$scope.statuses[privateKey.primaryKey.fingerprint] = 'Cannot decode, check your password!';
 	};
 
 	$scope.encode = () => {
-		crypto.encode($scope.selectedKeyPair, $scope.text)
+		console.log(`trying to encode for email ${$scope.encodeToEmail}...`);
+		crypto.encode($scope.encodeToEmail, $scope.text)
 			.then(message => {
 				$scope.text = message;
 			})
@@ -60,7 +71,8 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 	};
 
 	$scope.decode = () => {
-		crypto.decode($scope.selectedKeyPair, $scope.text)
+		console.log(`trying to decode for email ${$scope.decodeForEmail}...`);
+		crypto.decode($scope.decodeForEmail, $scope.text)
 			.then(message => {
 				$scope.text = message;
 			})
