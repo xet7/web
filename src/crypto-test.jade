@@ -25,6 +25,10 @@ html(lang="en", ng-app="AppLavaboomLogin")
 				div.col-md-6(ng-bind="decryptStatus")
 			div.row
 				div.col-md-6
+					input(type="checkbox", ng-model="isRemember", ng-change="onIsRememberChanged()")
+					| remember decoded private keys?
+			div.row
+				div.col-md-6
 					textarea(ng-model="text")
 			div.row
 				div.col-md-3

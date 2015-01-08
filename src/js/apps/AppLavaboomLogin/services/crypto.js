@@ -1,17 +1,32 @@
 angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 	var self = this;
 
-	var keyring = new openpgp.Keyring();
-	this.keyPairs = null;
+	var sessionStore = new openpgp.Keyring.localstore();
+	sessionStore.storage = window.sessionStorage;
 
-	this.initialize = () => {
+	var keyring = new openpgp.Keyring();
+	var sessionKeyring = new openpgp.Keyring(sessionStore);
+
+	this.keyPairs = null;
+	this.sessionKeyPairs = null;
+	this.options = {};
+
+	this.initialize = (opt = {}) => {
+		if (!opt.isRememberPasswords)
+			opt.isRememberPasswords = false;
+
+		self.options = opt;
+
 		openpgp.initWorker('/vendor/openpgp.worker.js');
-		self.keyPairs = self.getKeyPairs();
+		self.keyPairs = getKeyPairs(keyring);
+		self.sessionKeyPairs = getKeyPairs(sessionKeyring);
+
+		console.log('self.sessionKeyPairs', self.sessionKeyPairs);
 
 		return self.keyPairs;
 	};
 
-	this.getKeyPairs = (email = null) => {
+	var getKeyPairs = (keyring, email = null) => {
 		var keys = keyring.getAllKeys();
 
 		if (email)
@@ -38,7 +53,7 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 	};
 
 	this.getActiveKeyPairForUser = (email) => {
-		var keyPairs = self.getKeyPairs(email);
+		var keyPairs = getKeyPairs(keyring, email);
 
 		return Object.keys(keyPairs).reduce((a, keyFingerprint) => {
 			var key = keyPairs[keyFingerprint];
@@ -67,7 +82,7 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 				keyring.privateKeys.importKey(freshKeys.privateKeyArmored);
 				keyring.store();
 
-				self.keyPairs = self.getKeyPairs();
+				self.keyPairs = getKeyPairs(keyring);
 
 				var pub = openpgp.key.readArmored(freshKeys.publicKeyArmored).keys[0],
 					prv = openpgp.key.readArmored(freshKeys.privateKeyArmored).keys[0];
@@ -85,7 +100,7 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 		return deferred.promise;
 	};
 
-	this.authenticate = (primaryKeyFingerprint, password) => {
+	var applyPassword = (primaryKeyFingerprint, password) => {
 		var privateKey = null;
 
 		try {
@@ -93,13 +108,48 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 				throw new Error(`Can't find key with fingerprint '${primaryKeyFingerprint}'`);
 
 			privateKey = self.keyPairs[primaryKeyFingerprint].prv;
-			privateKey.decrypt(password);
+			return privateKey.decrypt(password);
 		} catch (catchedError) {
 			console.error(catchedError);
 			return false;
 		}
+	};
 
-		return privateKey.primaryKey.isDecrypted;
+	this.changePassword = (primaryKeyFingerprint, oldPassword, newPassword, persist = 'local') => {
+		var privateKey = null;
+
+		try {
+			if (!self.keyPairs[primaryKeyFingerprint])
+				throw new Error(`Can't find key with fingerprint '${primaryKeyFingerprint}'`);
+
+			privateKey = self.keyPairs[primaryKeyFingerprint].prv;
+			if (!privateKey.decrypt(oldPassword))
+				return false;
+
+			var packets = privateKey.getAllKeyPackets();
+			packets.forEach(packet => packet.encrypt(newPassword));
+			var newKeyArmored = privateKey.armor();
+
+			if (persist == 'local') {
+				keyring.privateKeys.importKey(newKeyArmored);
+				keyring.store();
+			} else {
+				sessionKeyring.privateKeys.importKey(newKeyArmored);
+				sessionKeyring.store();
+			}
+
+			return true;
+		} catch (catchedError) {
+			console.error(catchedError);
+			return false;
+		}
+	};
+
+	this.authenticate = (primaryKeyFingerprint, password) => {
+		console.log(self.options.isRememberPasswords);
+		return (self.options.isRememberPasswords ?
+			self.changePassword(primaryKeyFingerprint, password, '', 'session')
+			: applyPassword(primaryKeyFingerprint, password));
 	};
 
 	this.encode = (primaryKeyFingerprint, message) => {
@@ -131,7 +181,7 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 			if (!self.keyPairs[primaryKeyFingerprint])
 				throw new Error(`Can't find key with fingerprint '${primaryKeyFingerprint}'`);
 
-			var privateKey = self.keyPairs[primaryKeyFingerprint].prv;
+			var privateKey = self.sessionKeyPairs[primaryKeyFingerprint] ? self.sessionKeyPairs[primaryKeyFingerprint].prv : self.keyPairs[primaryKeyFingerprint].prv;
 
 			var pgpMessage = openpgp.message.readArmored(message);
 			openpgp.decryptMessage(privateKey, pgpMessage)

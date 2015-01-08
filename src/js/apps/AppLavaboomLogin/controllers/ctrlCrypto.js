@@ -6,14 +6,23 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 	$scope.isGenerating = false;
 
 	$scope.decryptStatus = '';
-	$scope.keyPairs = crypto.initialize();
+	$scope.keyPairs = crypto.initialize({
+		isRememberPasswords: true
+	});
 	$scope.selectedKeyPair = {};
+
+	$scope.isRemember = false;
 	$scope.password = '';
 
 	$scope.text = "Hi! I'm super secret message about cats! Did you know that cats are going to conquer the world?... No seriously!";
 	$scope.error = '';
 
 	console.log('key pairs', $scope.keyPairs);
+
+	$scope.onIsRememberChanged = () => {
+		crypto.options.isRememberPasswords = $scope.isRemember;
+		console.log(crypto.options);
+	};
 
 	$scope.generateKeys = () => {
 		$scope.isGenerating = true;
