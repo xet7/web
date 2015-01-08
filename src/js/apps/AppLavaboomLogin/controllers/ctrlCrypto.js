@@ -6,14 +6,12 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 	$scope.isGenerating = false;
 
 	$scope.decryptStatus = '';
-	$scope.keyPairs = crypto.getKeyPairs();
+	$scope.keyPairs = crypto.initialize();
 	$scope.selectedKeyPair = {};
 	$scope.password = '';
 
 	$scope.text = "Hi! I'm super secret message about cats! Did you know that cats are going to conquer the world?... No seriously!";
 	$scope.error = '';
-
-	crypto.initialize();
 
 	console.log('key pairs', $scope.keyPairs);
 
@@ -30,19 +28,19 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 			})
 			.finally(() => {
 				$scope.isGenerating = false;
-				$scope.keyPairs = crypto.getKeyPairs();
+				$scope.keyPairs = crypto.keyPairs;
 			});
 	};
 
 	$scope.authenticate = () => {
-		if (crypto.authenticate($scope.keyPairs[$scope.selectedKeyPair].prv, $scope.password))
+		if (crypto.authenticate($scope.selectedKeyPair, $scope.password))
 			$scope.decryptStatus = 'decoded!';
 		else
 			$scope.decryptStatus = 'Cannot decode, check your password!';
 	};
 
 	$scope.encode = () => {
-		crypto.encode($scope.keyPairs[$scope.selectedKeyPair].pub, $scope.text)
+		crypto.encode($scope.selectedKeyPair, $scope.text)
 			.then(message => {
 				$scope.text = message;
 			})
@@ -52,7 +50,7 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 	};
 
 	$scope.decode = () => {
-		crypto.decode($scope.keyPairs[$scope.selectedKeyPair].prv, $scope.text)
+		crypto.decode($scope.selectedKeyPair, $scope.text)
 			.then(message => {
 				$scope.text = message;
 			})
