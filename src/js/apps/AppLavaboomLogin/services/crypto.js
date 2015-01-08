@@ -9,8 +9,18 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $rootScope) {
 			return null;
 		};
 
+		var findIndexByFingerprint = (keys, fingerprint) => {
+			for(var i = 0; i < keys.length; i++)
+				if (keys[i].primaryKey.fingerprint == fingerprint)
+					return i;
+			return null;
+		};
+
 		keyring.publicKeys.findByFingerprint = (fingerprint) => findByFingerprint(keyring.publicKeys.keys, fingerprint);
 		keyring.privateKeys.findByFingerprint = (fingerprint) => findByFingerprint(keyring.privateKeys.keys, fingerprint);
+
+		keyring.publicKeys.findIndexByFingerprint = (fingerprint) => findIndexByFingerprint(keyring.publicKeys.keys, fingerprint);
+		keyring.privateKeys.findIndexByFingerprint = (fingerprint) => findIndexByFingerprint(keyring.privateKeys.keys, fingerprint);
 
 		return keyring;
 	};
@@ -100,9 +110,16 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $rootScope) {
 		return deferred.promise;
 	};
 
-	this.changePassword = (privateKey, oldPassword, newPassword, persist = 'local') => {
+	this.changePassword = (privateKey, newPassword, persist = 'local') => {
 		try {
-			if (!privateKey.decrypt(oldPassword))
+			var origPrivateKey = privateKey;
+			if (!privateKey.primaryKey.isDecrypted) {
+				privateKey = sessionKeyring.privateKeys.findByFingerprint(privateKey.primaryKey.fingerprint);
+				privateKey.decrypt();
+				console.log('replaced with session private key', privateKey);
+			}
+
+			if (!privateKey || !privateKey.primaryKey.isDecrypted)
 				return false;
 
 			var packets = privateKey.getAllKeyPackets();
@@ -110,8 +127,25 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $rootScope) {
 			var newKeyArmored = privateKey.armor();
 
 			if (persist == 'local') {
+				var i = keyring.privateKeys.findIndexByFingerprint(origPrivateKey.primaryKey.fingerprint);
+				console.log('keyring index', i);
+
+				console.log('keyring length before', keyring.privateKeys.keys.length);
+				keyring.privateKeys.keys.splice(i, 1);
+				console.log('keyring length after', keyring.privateKeys.keys.length);
+
 				keyring.privateKeys.importKey(newKeyArmored);
 				keyring.store();
+
+				i = sessionKeyring.privateKeys.findIndexByFingerprint(origPrivateKey.primaryKey.fingerprint);
+				console.log('sessionKeyring index', i);
+
+				console.log('sessionKeyring length before', sessionKeyring.privateKeys.keys.length);
+				sessionKeyring.privateKeys.keys.splice(i, 1);
+				console.log('sessionKeyring length after', sessionKeyring.privateKeys.keys.length);
+
+				sessionKeyring.privateKeys.importKey(newKeyArmored);
+				sessionKeyring.store();
 			} else {
 				sessionKeyring.privateKeys.importKey(newKeyArmored);
 				sessionKeyring.store();
@@ -124,12 +158,15 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $rootScope) {
 		}
 	};
 
-
 	this.authenticate = (privateKey, password) => {
-		console.log(self.options.isRememberPasswords);
-		return (self.options.isRememberPasswords ?
-			self.changePassword(privateKey, password, '', 'session')
-			: applyPasswordToKeyPair(privateKey, password));
+		if (!applyPasswordToKeyPair(privateKey, password))
+			return false;
+
+		if (self.options.isRememberPasswords) {
+			self.changePassword(privateKey, '', 'session');
+		}
+
+		return true;
 	};
 
 	this.encode = (email, message) => {

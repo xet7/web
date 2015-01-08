@@ -25,15 +25,18 @@ html(lang="en", ng-app="AppLavaboomLogin")
 					div.ng-cloak(ng-if="privateKeys.keys.length > 0", ng-repeat="privateKey in privateKeys.keys")
 							div.row
 								div.col-md-6(ng-bind="privateKey.users[0].userId.userid")
-								div.col-md-9(ng-bind="privateKey.primaryKey.fingerprint")
-								div.col-md-9(ng-bind="privateKey.primaryKey.created")
+								div.col-md-10(ng-bind="privateKey.primaryKey.fingerprint")
+								div.col-md-8(ng-bind="privateKey.primaryKey.created")
 							div.row
 								div.col-md-6
 									input(type="text", placeholder="password", ng-model="passwords[privateKey.primaryKey.fingerprint]")
-								div.col-md-3
+								div.col-md-5
 									button.btn-success(ng-click="authenticate(privateKey, passwords[privateKey.primaryKey.fingerprint])") decode key!
-								div.col-md-6(ng-bind="statuses[privateKey.primaryKey.fingerprint]")
-								div.col-md-6(ng-if="privateDecryptedKeys.findByFingerprint(privateKey.primaryKey.fingerprint)") decrypted session storage key
+								div.col-md-5
+									button.btn-success(ng-click="changePassword(privateKey, passwords[privateKey.primaryKey.fingerprint])") change password!
+								div.col-md-8
+									span(ng-bind="statuses[privateKey.primaryKey.fingerprint]")
+									span(ng-if="privateDecryptedKeys.findByFingerprint(privateKey.primaryKey.fingerprint)") decrypted session storage key
 
 			div.row
 				div.col-md-12

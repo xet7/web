@@ -56,9 +56,20 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 
 	$scope.authenticate = (privateKey, password) => {
 		if (crypto.authenticate(privateKey, password))
-			$scope.statuses[privateKey.primaryKey.fingerprint] = 'decoded!';
+			$scope.statuses[privateKey.primaryKey.fingerprint] = 'decoded! ';
 		else
-			$scope.statuses[privateKey.primaryKey.fingerprint] = 'Cannot decode, check your password!';
+			$scope.statuses[privateKey.primaryKey.fingerprint] = 'Cannot decode, check your password! ';
+		$scope.privateKeys = crypto.getAvailablePrivateKeys();
+		$scope.privateDecryptedKeys = crypto.getAvailablePrivateDecryptedKeys();
+	};
+
+	$scope.changePassword = (privateKey, password) => {
+		if (crypto.changePassword(privateKey, password))
+			$scope.statuses[privateKey.primaryKey.fingerprint] = 'password updated! ';
+		else
+			$scope.statuses[privateKey.primaryKey.fingerprint] = 'Cannot update password! ';
+		$scope.privateKeys = crypto.getAvailablePrivateKeys();
+		$scope.privateDecryptedKeys = crypto.getAvailablePrivateDecryptedKeys();
 	};
 
 	$scope.encode = () => {
