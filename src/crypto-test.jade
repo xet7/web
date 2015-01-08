@@ -5,20 +5,21 @@ html(lang="en", ng-app="AppLavaboomLogin")
 		div.cryptotest-box(ng-controller="CtrlCrypto")
 			div.row
 				div.col-md-3
-					input(type=text, placeholder="email", ng-model="genEmail")
+					input(type="text", placeholder="email", ng-model="genEmail")
 				div.col-md-3
-					input(type=text, placeholder="password", ng-model="genPassword")
-				div.col-md-3
-					input(type=number, placeholder="bits", ng-model="genBits")
-				div.col-md-4
+					input(type="text", placeholder="password", ng-model="genPassword")
+				div.col-md-1
+					input(type="number", placeholder="bits", ng-model="genBits")
+				div.col-md-2
 					button.btn-success(ng-click="generateKeys()", ng-disabled="isGenerating") generate
+				div.col-md-3(ng-bind="genStatus")
 			div.row
 				div.col-md-6
 					select(ng-model="selectedKeyPair", ng-options="fingerprint as (keyPair.prv.users[0].userId.userid + ' - ' + keyPair.primaryKey.created+ ' - ' + keyPair.verificationStatus) for (fingerprint, keyPair) in keyPairs")
 						option(value="") Select key pair
 			div.row
 				div.col-md-3
-					input(type=text, placeholder="password", ng-model="password")
+					input(type="text", placeholder="password", ng-model="password")
 				div.col-md-3
 					button.btn-success.pull-left(ng-click="authenticate()") decode selected key
 			div.row

@@ -2,6 +2,7 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 	$scope.genEmail = 'test@test.ru';
 	$scope.genPassword = 'testit!';
 	$scope.genBits = 1024;
+	$scope.genStatus = 'Enter credentials!';
 	$scope.isGenerating = false;
 
 	$scope.keyPairs = crypto.getKeyPairs();
@@ -17,12 +18,18 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 
 	$scope.generateKeys = () => {
 		$scope.isGenerating = true;
-		crypto.generateOpenpgpKeys($scope.genEmail, $scope.genPassword, $scope.genBits)
+		$scope.genStatus = 'Generating...';
+		crypto.generateKeys($scope.genEmail, $scope.genPassword, $scope.genBits)
 			.then(function(keyPair) {
-				console.log("openpgp: key pair is", keyPair.publicKeyArmored, keyPair.privateKeyArmored);
+				$scope.genStatus = `Generated, primary key fingerprint: ${keyPair.primaryKey.fingerprint}`;
 			})
-			.catch(function(err) {
-				console.error("can't generate key pair: ", err);
+			.catch(function(error) {
+				$scope.genStatus = error.message;
+				console.log(error);
+			})
+			.finally(() => {
+				$scope.isGenerating = false;
+				$scope.keyPairs = crypto.getKeyPairs();
 			});
 	};
 

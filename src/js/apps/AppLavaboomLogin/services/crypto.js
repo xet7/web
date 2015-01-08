@@ -68,7 +68,7 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 		console.log('pk decrypted', privateKey);
 	};
 
-	this.generateOpenpgpKeys = (email, password, numBits) => {
+	this.generateKeys = (email, password, numBits) => {
 		if (!numBits)
 			numBits = 1024;
 
@@ -78,7 +78,15 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 				keyring.publicKeys.importKey(freshKeys.publicKeyArmored);
 				keyring.privateKeys.importKey(freshKeys.privateKeyArmored);
 				keyring.store();
-				deferred.resolve(freshKeys);
+
+				var pub = openpgp.key.readArmored(freshKeys.publicKeyArmored).keys[0],
+					prv = openpgp.key.readArmored(freshKeys.privateKeyArmored).keys[0];
+
+				deferred.resolve({
+					primaryKey: prv.primaryKey,
+					pub: pub,
+					prv: prv
+				});
 			})
 			.catch(error =>{
 				deferred.reject(error);
