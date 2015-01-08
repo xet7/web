@@ -1,0 +1,34 @@
+html(lang="en", ng-app="AppLavaboomLogin")
+	head
+		link(href="css/lavaboom.css", rel="stylesheet")
+	body
+		div.cryptotest-box(ng-controller="CtrlCrypto")
+			div.row
+				div.col-md-3
+					input(type=text, placeholder="email", ng-model="genEmail")
+				div.col-md-3
+					input(type=text, placeholder="password", ng-model="genPassword")
+				div.col-md-3
+					input(type=number, placeholder="bits", ng-model="genBits")
+				div.col-md-4
+					button.btn-success(ng-click="generateKeys()", ng-disabled="isGenerating") generate
+			div.row
+				div.col-md-6
+					select(ng-model="selectedKeyPair", ng-options="fingerprint as (keyPair.prv.users[0].userId.userid + ' - ' + fingerprint + ' - ' + keyPair.primaryKey.created) for (fingerprint, keyPair) in keyPairs")
+						option(value="") Select key pair
+			div.row
+				div.col-md-3
+					input(type=text, placeholder="password", ng-model="password")
+				div.col-md-3
+					button.btn-success.pull-left(ng-click="authenticate()") decode selected key
+			div.row
+				div.col-md-6
+					textarea(ng-model="text")
+			div.row
+				div.col-md-3
+					button.btn-success.pull-left(ng-click="encode()") encode!
+				div.col-md-3
+					button.btn-success.pull-right(ng-click="decode()") decode!
+			div.row
+				div.col-md-6(ng-bind="error")
+		script(src="js/lavaboom-login.js")
