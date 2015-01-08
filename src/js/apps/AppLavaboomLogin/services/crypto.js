@@ -3,11 +3,9 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 
 	var keyring = new openpgp.Keyring();
 	window.keyring = keyring;
-	console.log('crypto svc started...');
 
 	this.initialize = () => {
 		openpgp.initWorker('/vendor/openpgp.worker.js');
-		console.log('crypto svc initialized, keyring is:', keyring);
 	};
 
 	this.getKeyPairs = (email = null) => {
@@ -63,9 +61,14 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 	};
 
 	this.authenticate = (privateKey, password) => {
-		privateKey.decrypt(password);
+		try {
+			privateKey.decrypt(password);
+		} catch (catchedError) {
+			console.error(catchedError);
+			return false;
+		}
 
-		console.log('pk decrypted', privateKey);
+		return privateKey.primaryKey.isDecrypted;
 	};
 
 	this.generateKeys = (email, password, numBits) => {
@@ -98,13 +101,17 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 	this.encode = (publicKey, message) => {
 		var deferred = $q.defer();
 
-		openpgp.encryptMessage(publicKey, message)
-			.then(pgpMessage => {
-				deferred.resolve(pgpMessage);
-			})
-			.catch(error => {
-				deferred.reject(error);
-			});
+		try {
+			openpgp.encryptMessage(publicKey, message)
+				.then(pgpMessage => {
+					deferred.resolve(pgpMessage);
+				})
+				.catch(error => {
+					deferred.reject(error);
+				});
+		} catch (catchedError) {
+			deferred.reject(catchedError);
+		}
 
 		return deferred.promise;
 	};
@@ -112,14 +119,18 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $base64) {
 	this.decode = (privateKey, message) => {
 		var deferred = $q.defer();
 
-		var pgpMessage = openpgp.message.readArmored(message);
-		openpgp.decryptMessage(privateKey, pgpMessage)
-			.then(plainText => {
-				deferred.resolve(plainText);
-			})
-			.catch(error => {
-				deferred.reject(error);
-			});
+		try {
+			var pgpMessage = openpgp.message.readArmored(message);
+			openpgp.decryptMessage(privateKey, pgpMessage)
+				.then(plainText => {
+					deferred.resolve(plainText);
+				})
+				.catch(error => {
+					deferred.reject(error);
+				});
+		} catch (catchedError) {
+			deferred.reject(catchedError);
+		}
 
 		return deferred.promise;
 	};

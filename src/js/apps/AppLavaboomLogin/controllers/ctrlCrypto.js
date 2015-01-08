@@ -5,6 +5,7 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 	$scope.genStatus = 'Enter credentials!';
 	$scope.isGenerating = false;
 
+	$scope.decryptStatus = '';
 	$scope.keyPairs = crypto.getKeyPairs();
 	$scope.selectedKeyPair = {};
 	$scope.password = '';
@@ -34,7 +35,10 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 	};
 
 	$scope.authenticate = () => {
-		crypto.authenticate($scope.keyPairs[$scope.selectedKeyPair].prv, $scope.password);
+		if (crypto.authenticate($scope.keyPairs[$scope.selectedKeyPair].prv, $scope.password))
+			$scope.decryptStatus = 'decoded!';
+		else
+			$scope.decryptStatus = 'Cannot decode, check your password!';
 	};
 
 	$scope.encode = () => {
