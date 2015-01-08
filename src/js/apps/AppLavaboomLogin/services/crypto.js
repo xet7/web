@@ -116,7 +116,6 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $rootScope) {
 			if (!privateKey.primaryKey.isDecrypted) {
 				privateKey = sessionKeyring.privateKeys.findByFingerprint(privateKey.primaryKey.fingerprint);
 				privateKey.decrypt();
-				console.log('replaced with session private key', privateKey);
 			}
 
 			if (!privateKey || !privateKey.primaryKey.isDecrypted)
@@ -128,21 +127,13 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $rootScope) {
 
 			if (persist == 'local') {
 				var i = keyring.privateKeys.findIndexByFingerprint(origPrivateKey.primaryKey.fingerprint);
-				console.log('keyring index', i);
-
-				console.log('keyring length before', keyring.privateKeys.keys.length);
 				keyring.privateKeys.keys.splice(i, 1);
-				console.log('keyring length after', keyring.privateKeys.keys.length);
 
 				keyring.privateKeys.importKey(newKeyArmored);
 				keyring.store();
 
 				i = sessionKeyring.privateKeys.findIndexByFingerprint(origPrivateKey.primaryKey.fingerprint);
-				console.log('sessionKeyring index', i);
-
-				console.log('sessionKeyring length before', sessionKeyring.privateKeys.keys.length);
 				sessionKeyring.privateKeys.keys.splice(i, 1);
-				console.log('sessionKeyring length after', sessionKeyring.privateKeys.keys.length);
 
 				sessionKeyring.privateKeys.importKey(newKeyArmored);
 				sessionKeyring.store();
@@ -202,7 +193,6 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $rootScope) {
 
 			var privateKeys = keyring.privateKeys.getForAddress(email);
 			var decryptedPrivateKeys = sessionKeyring.privateKeys;
-			console.log('decryptedPrivateKeys', decryptedPrivateKeys);
 
 			if (privateKeys.length < 1)
 				deferred.reject(new Error('No private keys found!'));
