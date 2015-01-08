@@ -12,17 +12,7 @@ html(lang="en", ng-app="AppLavaboomLogin")
 					input(type="number", placeholder="bits", ng-model="genBits")
 				div.col-md-2
 					button.btn-success(ng-click="generateKeys()", ng-disabled="isGenerating") generate!
-				div.col-md-3(ng-bind="genStatus")
-			div.row
-				div.col-md-6
-					select(ng-model="selectedKeyPair", ng-options="fingerprint as (keyPair.prv.users[0].userId.userid + ' - ' + keyPair.primaryKey.created+ ' - ' + keyPair.verificationStatus) for (fingerprint, keyPair) in keyPairs")
-						option(value="") Select key pair
-			div.row
-				div.col-md-3
-					input(type="text", placeholder="password", ng-model="password")
-				div.col-md-3
-					button.btn-success.pull-left(ng-click="authenticate()") decode selected key!
-				div.col-md-6(ng-bind="decryptStatus")
+				div.col-md-9(ng-bind="genStatus")
 			div.row
 				div.col-md-6
 					input(type="checkbox", ng-model="isRemember", ng-change="onIsRememberChanged()")
@@ -31,19 +21,19 @@ html(lang="en", ng-app="AppLavaboomLogin")
 				div.col-md-6
 					textarea(ng-model="text")
 				div.col-md-16
-					div(ng-repeat="privateKey in privateKeys.keys")
+					div.ng-cloak(ng-if="privateKeys.keys.length < 1") No private keys available, generate one first
+					div.ng-cloak(ng-if="privateKeys.keys.length > 0", ng-repeat="privateKey in privateKeys.keys")
 							div.row
 								div.col-md-6(ng-bind="privateKey.users[0].userId.userid")
 								div.col-md-9(ng-bind="privateKey.primaryKey.fingerprint")
 								div.col-md-9(ng-bind="privateKey.primaryKey.created")
-							div.row(ng-if="privateDecryptedKeys.findByFingerprint(privateKey.primaryKey.fingerprint)")
-								div.col-md-6 decrypted key
-							div.row(ng-if="!privateDecryptedKeys.findByFingerprint(privateKey.primaryKey.fingerprint)")
+							div.row
 								div.col-md-6
 									input(type="text", placeholder="password", ng-model="passwords[privateKey.primaryKey.fingerprint]")
 								div.col-md-3
 									button.btn-success(ng-click="authenticate(privateKey, passwords[privateKey.primaryKey.fingerprint])") decode key!
 								div.col-md-6(ng-bind="statuses[privateKey.primaryKey.fingerprint]")
+								div.col-md-6(ng-if="privateDecryptedKeys.findByFingerprint(privateKey.primaryKey.fingerprint)") decrypted session storage key
 
 			div.row
 				div.col-md-12

@@ -6,11 +6,8 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 	$scope.isGenerating = false;
 
 	$scope.isRemember = false;
-	$scope.password = '';
-	$scope.decryptStatus = '';
 
-
-	$scope.keyPairs = crypto.initialize({
+	crypto.initialize({
 		isRememberPasswords: $scope.isRemember
 	});
 	$scope.dstEmails = crypto.getAvailableDestinationEmails();
@@ -18,7 +15,15 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 	$scope.privateKeys = crypto.getAvailablePrivateKeys();
 	$scope.privateDecryptedKeys = crypto.getAvailablePrivateDecryptedKeys();
 
-	$scope.selectedKeyPair = {};
+	$scope.$on('crypto-dst-emails-updated', (e, emails) => {
+		console.log('got crypto-dst-emails-updated', emails);
+		$scope.dstEmails = emails;
+	});
+
+	$scope.$on('crypto-src-emails-updated', (e, emails) => {
+		console.log('got crypto-src-emails-updated', emails);
+		$scope.srcEmails = emails;
+	});
 
 	$scope.text = "Hi! I'm super secret message about cats! Did you know that cats are going to conquer the world?... No seriously!";
 	$scope.error = '';
@@ -27,8 +32,6 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 	$scope.statuses = {};
 	$scope.encodeToEmail = '';
 	$scope.decodeForEmail = '';
-
-	console.log('key pairs', $scope.keyPairs);
 
 	$scope.onIsRememberChanged = () => {
 		crypto.options.isRememberPasswords = $scope.isRemember;
@@ -40,7 +43,7 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 		$scope.genStatus = 'Generating...';
 		crypto.generateKeys($scope.genEmail, $scope.genPassword, $scope.genBits)
 			.then(function(keyPair) {
-				$scope.genStatus = `Generated, primary key fingerprint: ${keyPair.primaryKey.fingerprint}`;
+				$scope.genStatus = `Generated, primary key fingerprint: ${keyPair.prv.primaryKey.fingerprint}`;
 			})
 			.catch(function(error) {
 				$scope.genStatus = error.message;
@@ -48,7 +51,6 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 			})
 			.finally(() => {
 				$scope.isGenerating = false;
-				$scope.keyPairs = crypto.keyPairs;
 			});
 	};
 
