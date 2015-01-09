@@ -1,0 +1,17 @@
+<form class="container" >
+       <div id="main-content" ui-view class="col-md-8 col-xs-22 col-md-offset-8 col-xs-offset-2">
+           <h1>Log In</h1>
+           <p>
+               <input type="text" class="form-control" placeholder="username or email address" ng-model="auth.username">
+           </p>
+           <p>
+               <input type="password" class="form-control" placeholder="password" ng-model="auth.password">
+           </p>
+           <p>
+               <button class="btn btn-block btn-lg btn-primary" ng-click="logIn()">Go to my Inbox</button>
+           </p>
+           <p class="text-center">
+               <a href="#/invite">No account yet. Sign Up here</a>
+           </p>
+       </div>
+</form>

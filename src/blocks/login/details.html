@@ -1,0 +1,21 @@
+<form class="container">
+    <div id="main-content" ui-view class="col-md-8 col-xs-22 col-md-offset-8 col-xs-offset-2">
+        <h1>Verify Invite code</h1>
+        <!--<p class="text-center">-->
+        <!--<a href="#/">Got an invite mail already</a>-->
+        <!--</p>-->
+        <p>
+            <input type="text" placeholder="First Name" class="form-control" ng-model="invite.firstName">
+        </p>
+        <p>
+            <input type="text" placeholder="Last Name" class="form-control" ng-model="invite.lastName">
+        </p>
+        <p>
+            <input type="text" placeholder="Display Name" class="form-control" ng-model="invite.displayName">
+        </p>
+
+     <p>
+            <a href="#/choose" class="btn btn-block btn-lg btn-primary">Next step</a>
+        </p>
+    </div>
+</form>

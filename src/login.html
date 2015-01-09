@@ -42,17 +42,16 @@
     <meta name="msapplication-TileImage" content="/assets/mstile-144x144.png">
     <meta name="msapplication-config" content="/assets/browserconfig.xml">
 </head>
-<body id="login-app" ng-controller="LoginController" ng-class="login">
-
-
-    <form class="container">
+<body id="login-app" ng-class="login">
+<div ui-view></div>
+  <!--  <form class="container">
         <div id="main-content" ui-view class="col-md-8 col-xs-22 col-md-offset-8 col-xs-offset-2">
             <h1>Get your own secure email account!</h1>
-            <input type="text" ng-model="auth.username">{{auth.password}}
-            <input type="text" ng-model="auth.password">
-
+            <input type="text" ng-model="auth.username">
+            <input type="password" ng-model="auth.password">
+            <input type="email" ng-model="auth.email">
             <p>
-                <!--<a href="#" class="btn btn-block btn-lg btn-primary">Log In</a>-->
+               <a href="#" class="btn btn-block btn-lg btn-primary">Log In</a>
                 <button class="btn btn-block btn-lg btn-primary" ng-click="logIn()">Log In</button>
             </p>
             <p>
@@ -62,11 +61,11 @@
                 <a href="#">Got an Invite?</a>
             </p>
         </div>
-    </form>
+    </form>-->
 
     <!-- Lavaboom JS File -->
     <script src="js/lavaboom-login.js"></script>
-    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha3.js"></script>
+
 </body>
 
 </html>

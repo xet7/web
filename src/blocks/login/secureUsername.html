@@ -1,0 +1,23 @@
+<form class="container">
+    <div id="main-content" ui-view class="col-md-8 col-xs-22 col-md-offset-8 col-xs-offset-2">
+        <h1>Secure your own Lavaboom username</h1>
+        <p class="text-center">
+            <a href="#/">Got an invite mail already</a>
+        </p>
+        <p>
+            <input type="text" class="form-control" ng-model="signUp.username">
+        </p>
+        <p>
+            <input type="email" class="form-control" placeholder="your current email address" ng-model="signUp.email">
+        </p>
+        <p>
+            <input type="password" class="form-control" placeholder="password" ng-model="signUp.password">
+        </p>
+        <p><input type="checkbox">
+            <label>I wan't</label>
+        </p>
+        <p>
+            <button class="btn btn-block btn-lg btn-primary" ng-click="secure()">Secure your username</button>
+        </p>
+    </div>
+</form>
