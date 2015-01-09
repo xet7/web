@@ -1,19 +1,18 @@
 angular.module(primaryApplicatioName).config(($translateProvider) => {
-	var defaultTranslation = {};
-	var setTranslation = (translation) => {
-		defaultTranslation = translation;
+	var defaultLangKey = 'en';
+
+	var setDefaultTranslation = (translation) => {
+		$translateProvider.translations(defaultLangKey, translation);
 	};
 
-	setTranslation(
+	// load pre-compiled default language so it will be available without extra request to the server
+	setDefaultTranslation(
 		// = require "../../../../../dist/translations/en.json"
 	);
-
-
-	$translateProvider.translations('en', defaultTranslation);
 
 	$translateProvider.useStaticFilesLoader({
 		prefix: '/translations/',
 		suffix: '.json'
 	});
-	$translateProvider.preferredLanguage(localStorage.lang ? localStorage.lang : 'en');
+	$translateProvider.preferredLanguage(localStorage.lang ? localStorage.lang : defaultLangKey);
 });
