@@ -138,7 +138,7 @@ gulp.task('build:styles', ['clean:dist'], function() {
 	return gulp.src(paths.styles.input)
 		.pipe(plumber())
 		.pipe(less())
-		.pipe(flatten())
+		//.pipe(flatten())
 		.pipe(plg.autoprefixer('last 2 version', '> 1%'))
 		//.pipe(header(config.banner.full, { package : package }))
 		.pipe(gulp.dest(paths.styles.output))

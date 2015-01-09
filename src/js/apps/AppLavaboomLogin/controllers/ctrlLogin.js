@@ -15,6 +15,11 @@ angular.module('AppLavaboomLogin').controller('LoginController', function($scope
 	var t = Date.now();
 	openpgp.generateOpenpgpKeys('test@test', 'wubwub', 1024)
 		.then(function(keyPair) {
-			console.log('openpgp: key pair is', keyPair.privateKeyArmored, keyPair.publicKeyArmored, 'time', Date.now() - t);
+			console.log('openpgp: key pair is', keyPair);
+		});
+
+	openpgp.generateOpenpgpKeys('test1@test1', 'wub1wub1', 1024)
+		.then(function(keyPair) {
+			console.log('openpgp: key pair is', keyPair);
 		});
 });

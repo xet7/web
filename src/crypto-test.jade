@@ -1,0 +1,62 @@
+html(lang="en", ng-app="AppLavaboomLogin")
+	head
+		link(href="css/lavaboom.css", rel="stylesheet")
+		script(src="js/lavaboom-login.js")
+	body
+		div.cryptotest-box(ng-controller="CtrlCrypto")
+			input.hidden(type="file", file-select, get-file="getFile(file)", id="import-btn")
+			div.row
+				div.col-md-3
+					input(type="text", placeholder="email", ng-model="genEmail")
+				div.col-md-3
+					input(type="text", placeholder="password", ng-model="genPassword")
+				div.col-md-1
+					input(type="number", placeholder="bits", ng-model="genBits")
+				div.col-md-2
+					button.btn-success(ng-click="generateKeys()", ng-disabled="isGenerating") generate!
+				div.col-md-9(ng-bind="genStatus")
+			div.row
+				div.col-md-3
+					button.btn-success(ng-click="importKeys()") import keys!
+				div.col-md-3
+					button.btn-success(ng-click="exportKeys()") export keys!
+				div.col-md-6
+					input(type="checkbox", ng-model="isRemember", ng-change="onIsRememberChanged()")
+					| remember decoded private keys?
+			div.row
+				div.col-md-6
+					textarea(ng-model="text")
+				div.col-md-16
+					div.ng-cloak(ng-if="privateKeys.keys.length < 1") No private keys available, generate one first
+					div.ng-cloak(ng-if="privateKeys.keys.length > 0", ng-repeat="privateKey in privateKeys.keys")
+							div.row
+								div.col-md-6(ng-bind="privateKey.users[0].userId.userid")
+								div.col-md-10(ng-bind="privateKey.primaryKey.fingerprint")
+								div.col-md-8(ng-bind="privateKey.primaryKey.created")
+							div.row
+								div.col-md-6
+									input(type="text", placeholder="password", ng-model="passwords[privateKey.primaryKey.fingerprint]")
+								div.col-md-5
+									button.btn-success(ng-click="authenticate(privateKey, passwords[privateKey.primaryKey.fingerprint])") decode key!
+								div.col-md-5
+									button.btn-success(ng-click="changePassword(privateKey, passwords[privateKey.primaryKey.fingerprint])") change password!
+								div.col-md-8
+									span(ng-bind="statuses[privateKey.primaryKey.fingerprint]")
+									span(ng-if="privateDecryptedKeys.findByFingerprint(privateKey.primaryKey.fingerprint)") decrypted session storage key
+
+			div.row
+				div.col-md-12
+					select(ng-model="encodeToEmail", ng-options="email for email in dstEmails")
+						option(value="") Select destination email
+			div.row
+				div.col-md-2
+					button.btn-success(ng-click="encode()") encode!
+			div.row
+				div.col-md-12
+					select(ng-model="decodeForEmail", ng-options="email for email in srcEmails")
+						option(value="") Select source email
+			div.row
+				div.col-md-2
+					button.btn-success(ng-click="decode()") decode!
+			div.row
+				div.col-md-6(ng-bind="error")
