@@ -1,4 +1,4 @@
-angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, crypto, cryptoKeys) {
+angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, user, crypto, cryptoKeys, fileReader, $base64) {
 	$scope.genEmail = 'Tester <test@test.ru>';
 	$scope.genPassword = 'testit!';
 	$scope.genBits = 1024;
@@ -14,6 +14,7 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 	$scope.srcEmails = crypto.getAvailableSourceEmails();
 	$scope.privateKeys = crypto.getAvailablePrivateKeys();
 	$scope.privateDecryptedKeys = crypto.getAvailablePrivateDecryptedKeys();
+	$scope.exportUrl = '';
 
 	$scope.$on('crypto-dst-emails-updated', (e, emails) => {
 		console.log('got crypto-dst-emails-updated', emails);
@@ -95,11 +96,29 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 			});
 	};
 
-	$scope.importKeys = () => {
+	$scope.getFile = function(file) {
+		fileReader.readAsText(file, $scope)
+			.then(jsonBackup => {
+				try {
+					var statuses = cryptoKeys.importKeys(jsonBackup);
+					alert(statuses.join('\n'));
+				} catch (error) {
+					console.error(error);
+				}
+			})
+			.catch(error => {
+				console.error(error);
+			});
+	};
 
+	$scope.importKeys = () => {
+		document.getElementById('import-btn').click();
 	};
 
 	$scope.exportKeys = () => {
-
+		var keysBackup = cryptoKeys.exportKeys();
+		var hashPostfix = $base64.encode(openpgp.crypto.hash.md5(keysBackup)).substr(0, 8);
+		var blob = new Blob([keysBackup], {type: "text/json;charset=utf-8"});
+		saveAs(blob, `${user.name}-${hashPostfix}.json`);
 	};
 });

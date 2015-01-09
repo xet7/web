@@ -1,8 +1,10 @@
 html(lang="en", ng-app="AppLavaboomLogin")
 	head
 		link(href="css/lavaboom.css", rel="stylesheet")
+		script(src="js/lavaboom-login.js")
 	body
 		div.cryptotest-box(ng-controller="CtrlCrypto")
+			input.hidden(type="file", file-select, get-file="getFile(file)", id="import-btn")
 			div.row
 				div.col-md-3
 					input(type="text", placeholder="email", ng-model="genEmail")
@@ -58,4 +60,3 @@ html(lang="en", ng-app="AppLavaboomLogin")
 					button.btn-success(ng-click="decode()") decode!
 			div.row
 				div.col-md-6(ng-bind="error")
-		script(src="js/lavaboom-login.js")

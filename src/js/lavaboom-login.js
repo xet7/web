@@ -14,6 +14,7 @@
 // = require "../bower_components/lavaboom/dist/lavaboom-angular.js"
 // = require "../bower_components/lavaboom/dist/lavaboom-api.js"
 // = require "../bower_components/angular-base64/angular-base64.js"
+// = require "../bower_components/file-saver/FileSaver.js"
 // = require "../vendor/openpgp.js"
 
 /*

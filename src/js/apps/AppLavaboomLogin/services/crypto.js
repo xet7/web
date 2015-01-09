@@ -32,6 +32,7 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $rootScope) {
 	var sessionKeyring = window.sessionKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(sessionStore));
 
 	this.options = {};
+	this.keyring = keyring;
 
 	var getAvailableEmails = (keys) => Object.keys(keys.keys.reduce((a, k) => {
 		var email = k.users[0].userId.userid.match(/<([^>]+)>/)[1];
