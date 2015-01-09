@@ -1,0 +1,20 @@
+form
+	img.login-logo(src="img/Lavaboom-logo.svg")
+	p.lead Log In
+	div.form-group
+		input.form-control.input-lg(type='text', ng-model='auth.username', placeholder="username or email address")
+
+	div.form-group
+		input.form-control.input-lg(type='password', ng-model='auth.password', placeholder="password")
+
+	p
+		label.switch
+			input(type='checkbox', checked='')
+			i
+		span &nbsp; &nbsp; Keep me logged in	
+
+	p
+		button.btn.btn-block.btn-lg.btn-primary(ng-click='logIn()') Go to my Inbox
+		
+	p.text-center
+		a(href='#') No Account Yet? Signup Here!
