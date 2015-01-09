@@ -3,9 +3,10 @@ angular.module(primaryApplicatioName).config(($translateProvider) => {
 		TEST: 'Hi! Im test string in English'
 	});
 
-	$translateProvider.translations('de', {
+	/*$translateProvider.translations('de', {
 		TEST: 'Hallo! Im Test-String in Englisch'
-	});
+	});*/
 
+	$translateProvider.useUrlLoader('translate.json');
 	$translateProvider.preferredLanguage('en');
 });

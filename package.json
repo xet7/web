@@ -59,5 +59,8 @@
     "karma-spec-reporter": "^0.0.13",
     "lazypipe": "^0.2.2",
     "node-fs": "^0.1.7"
+  },
+  "dependencies": {
+    "bluebird": "^2.6.2"
   }
 }

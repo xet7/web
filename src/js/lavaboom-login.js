@@ -8,6 +8,7 @@
 
 // = require "../bower_components/angular/angular.js"
 // = require "../bower_components/angular-translate/angular-translate.js"
+// = require "../bower_components/angular-translate-loader-url/angular-translate-loader-url.js"
 // = require "../bower_components/angular-ui-router/release/angular-ui-router.js"
 // = require "../bower_components/angular-bootstrap/ui-bootstrap.js"
 // = require "../bower_components/angular-sanitize/angular-sanitize.js"
