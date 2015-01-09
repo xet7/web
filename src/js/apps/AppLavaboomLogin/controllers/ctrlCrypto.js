@@ -1,4 +1,4 @@
-angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, crypto) {
+angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, crypto, cryptoKeys) {
 	$scope.genEmail = 'Tester <test@test.ru>';
 	$scope.genPassword = 'testit!';
 	$scope.genBits = 1024;
@@ -93,5 +93,13 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, cry
 				$scope.error = error.message;
 				console.log(error);
 			});
+	};
+
+	$scope.importKeys = () => {
+
+	};
+
+	$scope.exportKeys = () => {
+
 	};
 });

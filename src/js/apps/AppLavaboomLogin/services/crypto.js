@@ -73,14 +73,6 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $rootScope) {
 		}, null);
 	};
 
-	this.exportKeys = () => {
-
-	};
-
-	this.importKeys = () => {
-
-	};
-
 	this.generateKeys = (email, password, numBits) => {
 		if (!numBits)
 			numBits = 1024;
@@ -206,20 +198,22 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $rootScope) {
 						privateKey = decryptedPrivateKeys.findByFingerprint(privateKey.primaryKey.fingerprint);
 
 					if (privateKey && privateKey.primaryKey.isDecrypted)
-						decryptCallChain.push(() => {
-							openpgp.decryptMessage(privateKey, pgpMessage)
-								.then(plainText => {
-									isDecrypted = true;
-									deferred.resolve(plainText);
-								})
-								.catch(error => {
-									t--;
-									lastError = error;
-									if (!isDecrypted && t < 1) {
-										deferred.reject(new Error('Cannot find private key to decrypt email!'));
-									}
-								});
-						});
+						((privateKey) => {
+							decryptCallChain.push(() => {
+								openpgp.decryptMessage(privateKey, pgpMessage)
+									.then(plainText => {
+										isDecrypted = true;
+										deferred.resolve(plainText);
+									})
+									.catch(error => {
+										t--;
+										lastError = error;
+										if (!isDecrypted && t < 1) {
+											deferred.reject(new Error('Cannot find private key to decrypt email!'));
+										}
+									});
+							});
+						})(privateKey);
 					else
 						t--;
 				}
