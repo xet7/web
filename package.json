@@ -45,6 +45,7 @@
     "gulp-svgmin": "^0.4.6",
     "gulp-svgstore": "^2.0.0",
     "gulp-tap": "^0.1.1",
+    "gulp-toml": "^0.1.0",
     "gulp-traceur": "^0.15.0",
     "gulp-uglify": "^0.3.0",
     "gulp-util": "^3.0.1",
@@ -58,7 +59,8 @@
     "karma-phantomjs-launcher": "^0.1.4",
     "karma-spec-reporter": "^0.0.13",
     "lazypipe": "^0.2.2",
-    "node-fs": "^0.1.7"
+    "node-fs": "^0.1.7",
+    "toml": "^2.1.1"
   },
   "dependencies": {
     "bluebird": "^2.6.2"

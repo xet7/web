@@ -1,8 +1,19 @@
 angular.module(primaryApplicatioName).config(($translateProvider) => {
-	$translateProvider.translations('en', {
-		TEST: 'Hi! Im test string in English'
-	});
+	var defaultTranslation = {};
+	var setTranslation = (translation) => {
+		defaultTranslation = translation;
+	};
 
-	$translateProvider.useUrlLoader('translate.json');
+	setTranslation(
+		// = require "../../../../../dist/translations/en.json"
+	);
+
+
+	$translateProvider.translations('en', defaultTranslation);
+
+	$translateProvider.useStaticFilesLoader({
+		prefix: '/translations/',
+		suffix: '.json'
+	});
 	$translateProvider.preferredLanguage(localStorage.lang ? localStorage.lang : 'en');
 });

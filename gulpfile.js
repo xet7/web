@@ -4,6 +4,7 @@ var del = require('del');
 var path = require('path');
 var serve = require('./serve');
 var spawn = require('child_process').spawn;
+var toml = require('toml');
 
 // General
 var gulp = require('gulp');
@@ -75,7 +76,7 @@ gulp.task('build:apps', ['clean:dist', 'lint:scripts'], function() {
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
 });
 
-gulp.task('build:scripts', ['clean:dist', 'lint:scripts', 'build:apps'], function() {
+gulp.task('build:scripts', ['clean:dist', 'lint:scripts', 'build:apps', 'build:translations'], function() {
 	var prodPipeline = lazypipe()
 		.pipe(plg.gzip)
 		.pipe(gulp.dest, paths.scripts.output);
@@ -248,6 +249,13 @@ gulp.task('copy:assets', ['clean:docs'], function() {
 		.pipe(gulp.dest(paths.docs.output + '/assets'));
 });
 
+gulp.task('build:translations', ['clean:dist'], function() {
+	return gulp.src(paths.translations.input)
+		.pipe(plumber())
+		.pipe(plg.toml({to: JSON.stringify, ext: '.json'}))
+		.pipe(gulp.dest(paths.translations.output));
+});
+
 // Remove prexisting content from docs folder
 gulp.task('clean:docs', function () {
 	return del.sync(paths.docs.output);
@@ -332,6 +340,7 @@ var compileTasks = [
 	'build:jade',
 	'build:partials',
 	'build:partials-jade',
+	'build:translations',
 	'copy:static',
 	'copy:imgs',
 	'copy:fonts',

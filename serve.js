@@ -1,7 +1,4 @@
-var Promise		= require('bluebird');
-
-var fs			= Promise.promisifyAll(require('fs')),
-	path		= require('path'),
+var path		= require('path'),
 	http		= require('http'),
 	express		= require('express'),
 	staticGzip	= require('connect-gzip-static'),
@@ -18,23 +15,6 @@ module.exports = function () {
 		if (req.url == '/')
 			req.url = '/index.html';
 		next();
-	});
-
-	app.get('/translate.json', function (req, res, next) {
-		var lang = req.query.lang;
-		console.log('Got translation request for ', lang);
-
-		if (lang.length != 2)
-			return res.status(501);
-
-		try {
-			var translation = require('./translations/' + lang + '.js');
-		} catch (err) {
-			res.status(501);
-			console.error('Cannot read translation for language', lang, err.message, err.stack);
-		}
-
-		res.json(translation);
 	});
 
 	// inject livereload

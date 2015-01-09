@@ -1,42 +1,48 @@
+var output = 'dist/';
+
 module.exports = {
 	input: 'src/**/*',
-	output: 'dist/',
+	output: output,
 	scripts: {
 		input: 'src/js/*.js',
 		inputAll: 'src/js/**/*.js',
 		inputApps: 'src/js/apps/*.js',
-		output: 'dist/js/'
+		output: output + 'js/'
 	},
 	styles: {
 		input: 'src/less/lavaboom.less',
-		output: 'dist/css/'
+		output: output + 'css/'
 	},
 	svgs: {
 		input: 'src/svg/*',
-		output: 'dist/svg/'
+		output: output + 'svg/'
 	},
 	img: {
 		input: 'src/img/*',
-		output: 'dist/img/'
+		output: output + 'img/'
 	},
 	fonts: {
 		input: 'src/fonts/*',
-		output: 'dist/css/fonts/'
+		output: output + 'css/fonts/'
 	},
 	main_html: {
 		input: 'src/*.html',
 		inputJade: 'src/*.jade',
-		output: 'dist/'
+		output: output
 	},
 	partials: {
 		input: 'src/blocks/**/*.html',
 		inputJade: 'src/blocks/**/*.jade',
-		output: 'dist/partials/'
+		output: output + 'partials/'
 	},
 	staticFiles: 'src/static/**',
 	vendor: {
 		input: 'src/vendor/*.js',
-		output: 'dist/vendor/'
+		output: output + 'vendor/'
+	},
+	translations : {
+		input: 'src/translations/*.toml',
+		output: output + 'translations/'
 	},
 	test: {
 		input: 'src/js/**/*.js',
