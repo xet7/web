@@ -1,7 +1,7 @@
 (function() {
 	angular.module('utils', []);
 
-	angular.module('AppLavaboomLogin', ['lavaboom.api', 'utils', 'ngSanitize','ui.router', 'ui.bootstrap', 'ui.select', 'base64']);
+	angular.module('AppLavaboomLogin', ['lavaboom.api', 'utils', 'ngSanitize','ui.router', 'ui.bootstrap', 'ui.select', 'pascalprecht.translate', 'base64']);
 	// = require "../directives/*.js"
 	// = require "../services/*.js"
 
