@@ -49,9 +49,11 @@ gulp.task('build:apps', ['clean:dist', 'lint:scripts'], function() {
 
 	return gulp.src(paths.scripts.inputApps)
 		.pipe(plg.cached('build:apps'))
+		//.pipe(plg.sourcemaps.init())
 		.pipe(plg.include())
 		.pipe(traceur())
 		.pipe(plg.ngAnnotate())
+		//.pipe(plg.sourcemaps.write())
 		.pipe(plg.tap(function (file, t) {
 			appsCache[file.relative] = file.contents;
 		}))
@@ -89,7 +91,9 @@ gulp.task('build:scripts', ['clean:dist', 'lint:scripts', 'build:apps', 'build:t
 				return 'console.error("Cannot find angular.js application \\"' + key + '\\"!")';
 			return cache[key];
 		}))
+		.pipe(plg.sourcemaps.init())
 		//.pipe(header(config.banner.full, { package : package }))
+		.pipe(plg.sourcemaps.write('.', {sourceMappingURLPrefix: '/js/'}))
 		.pipe(gulp.dest(paths.scripts.output))
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
 });
