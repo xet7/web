@@ -131,32 +131,6 @@ gulp.task('build:styles', ['clean:dist'], function() {
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
 });
 
-// Generate SVG sprites
-gulp.task('build:svgs', ['clean:dist'], function () {
-	return gulp.src(paths.svgs.input)
-		.pipe(plg.plumber())
-		.pipe(plg.tap(function (file, t) {
-			if ( file.isDirectory() ) {
-				var name = file.relative + '.svg';
-				return gulp.src(file.path + '/*.svg')
-					.pipe(plg.svgmin())
-					.pipe(plg.svgstore({
-						fileName: name,
-						prefix: 'icon-',
-						inlineSvg: true
-					}))
-					.pipe(gulp.dest(paths.svgs.output));
-			}
-		}))
-		.pipe(plg.svgmin())
-		.pipe(plg.svgstore({
-			fileName: 'icons.svg',
-			prefix: 'icon-',
-			inlineSvg: true
-		}))
-		.pipe(gulp.dest(paths.svgs.output));
-});
-
 // Copy static files into output folder
 gulp.task('copy:vendor', ['clean:dist'], function() {
 	return gulp.src(paths.vendor.input)
@@ -165,7 +139,7 @@ gulp.task('copy:vendor', ['clean:dist'], function() {
 });
 
 // Copy images into output folder
-gulp.task('copy:imgs', ['clean:dist'], function() {
+gulp.task('copy:images', ['clean:dist'], function() {
 	return gulp.src(paths.img.input)
 		.pipe(plg.plumber())
 		.pipe(gulp.dest(paths.img.output));
@@ -185,7 +159,15 @@ gulp.task('copy:static', ['clean:dist'], function() {
 		.pipe(gulp.dest(paths.output));
 });
 
-// Remove prexisting content from output and test folders
+// Build translation files(toml -> json)
+gulp.task('build:translations', ['clean:dist'], function() {
+	return gulp.src(paths.translations.input)
+		.pipe(plg.plumber())
+		.pipe(plg.toml({to: JSON.stringify, ext: '.json'}))
+		.pipe(gulp.dest(paths.translations.output));
+});
+
+// Remove pre-existing content from output and test folders
 gulp.task('clean:dist', function () {
 	del.sync([
 		paths.output + '**/*',
@@ -234,14 +216,7 @@ gulp.task('copy:assets', ['clean:docs'], function() {
 		.pipe(gulp.dest(paths.docs.output + '/assets'));
 });
 
-gulp.task('build:translations', ['clean:dist'], function() {
-	return gulp.src(paths.translations.input)
-		.pipe(plg.plumber())
-		.pipe(plg.toml({to: JSON.stringify, ext: '.json'}))
-		.pipe(gulp.dest(paths.translations.output));
-});
-
-// Remove prexisting content from docs folder
+// Remove pre-existing content from docs folder
 gulp.task('clean:docs', function () {
 	return del.sync(paths.docs.output);
 });
@@ -312,19 +287,45 @@ gulp.task('build:partials-jade', function() {
 });
 
 /*
- // Generate documentation
- gulp.task('docs', [
- 'clean:docs',
- 'build:docs',
- 'copy:dist',
- 'copy:assets'
- ]);
+// Generate SVG sprites
+gulp.task('build:svgs', ['clean:dist'], function () {
+	return gulp.src(paths.svgs.input)
+		.pipe(plg.plumber())
+		.pipe(plg.tap(function (file, t) {
+			if ( file.isDirectory() ) {
+				var name = file.relative + '.svg';
+				return gulp.src(file.path + '/*.svg')
+					.pipe(plg.svgmin())
+					.pipe(plg.svgstore({
+						fileName: name,
+						prefix: 'icon-',
+						inlineSvg: true
+					}))
+					.pipe(gulp.dest(paths.svgs.output));
+			}
+		}))
+		.pipe(plg.svgmin())
+		.pipe(plg.svgstore({
+			fileName: 'icons.svg',
+			prefix: 'icon-',
+			inlineSvg: true
+		}))
+		.pipe(gulp.dest(paths.svgs.output));
+});
+
+// Generate documentation
+gulp.task('docs', [
+	'clean:docs',
+	'build:docs',
+	'copy:dist',
+	'copy:assets'
+]);
 
  // Generate documentation
- gulp.task('tests', [
- 'test:scripts'
- ]);
- */
+gulp.task('tests', [
+	'test:scripts'
+]);
+*/
 
 /**
  * Task Runners
@@ -343,11 +344,10 @@ gulp.task('compile', [
 	'build:partials-jade',
 	'build:translations',
 	'copy:static',
-	'copy:imgs',
+	'copy:images',
 	'copy:fonts',
 	'copy:vendor',
 	'build:scripts',
-	// 'build:svgs',
 	'build:styles'
 ]);
 
