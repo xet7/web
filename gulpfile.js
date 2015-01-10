@@ -118,15 +118,18 @@ gulp.task('build:styles', ['clean:dist'], function() {
 		})
 		//.pipe(header, config.banner.min, { package : package })
 		.pipe(plg.rename, { suffix: '.min' })
+		.pipe(plg.sourcemaps.write, '.')
 		.pipe(gulp.dest, paths.styles.output)
 		.pipe(plg.gzip)
 		.pipe(gulp.dest, paths.styles.output);
 
 	return gulp.src(paths.styles.input)
 		.pipe(plg.plumber())
+		.pipe(plg.sourcemaps.init())
 		.pipe(plg.less())
 		.pipe(plg.autoprefixer('last 2 version', '> 1%'))
 		//.pipe(header(config.banner.full, { package : package }))
+		.pipe(plg.sourcemaps.write('.'))
 		.pipe(gulp.dest(paths.styles.output))
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
 });
