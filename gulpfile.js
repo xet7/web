@@ -203,22 +203,22 @@ var createJadePipeline = function (input, output) {
 };
 
 // Build primary html files
-gulp.task('build:html', function() {
+gulp.task('build:html', ['clean:dist'], function() {
 	return createHtmlPipeline(paths.main_html.input, paths.main_html.output);
 });
 
 // Build primary jade files
-gulp.task('build:jade', function() {
+gulp.task('build:jade', ['clean:dist'], function() {
 	return createJadePipeline(paths.main_html.inputJade, paths.main_html.output);
 });
 
 // Build partials html files
-gulp.task('build:partials', function() {
+gulp.task('build:partials', ['clean:dist'], function() {
 	return createHtmlPipeline(paths.partials.input, paths.partials.output);
 });
 
 // Build partials jade files
-gulp.task('build:partials-jade', function() {
+gulp.task('build:partials-jade', ['clean:dist'], function() {
 	return createJadePipeline(paths.partials.inputJade, paths.partials.output);
 });
 
@@ -229,6 +229,11 @@ gulp.task('clean:dist', function () {
 		paths.test.coverage,
 		paths.test.results
 	]);
+});
+
+// Automatically install all bower dependencies
+gulp.task('bower', function() {
+	return plg.bower();
 });
 
 // Reload gulp on file change
@@ -270,8 +275,12 @@ gulp.task('compile', [
 ]);
 
 gulp.task('default', [
-	'compile'
+	'bower'
 ], function() {
+
+	// we can start compile only after we do have bower dependencies
+	gulp.start('compile');
+
 	// warning:
 	// we do this only once and only in the first gulp process(can be up to 2 due to gulpfile.js reloading)
 	// if we do reload gulp later all watching tasks will be handled by the first process anyway
