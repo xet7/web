@@ -61,8 +61,5 @@
     "lazypipe": "^0.2.2",
     "node-fs": "^0.1.7",
     "toml": "^2.1.1"
-  },
-  "dependencies": {
-    "bluebird": "^2.6.2"
   }
 }
