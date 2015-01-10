@@ -67,6 +67,7 @@ gulp.task('build:apps', ['clean:dist', 'lint:scripts'], function() {
 		});
 
 	return gulp.src(paths.scripts.inputApps)
+		.pipe(plg.cached('build:apps'))
 		.pipe(include())
 		.pipe(traceur())
 		.pipe(ngAnnotate())
@@ -116,6 +117,10 @@ gulp.task('build:scripts', ['clean:dist', 'lint:scripts', 'build:apps', 'build:t
 gulp.task('lint:scripts', function () {
 	return gulp.src(paths.scripts.inputAll)
 		.pipe(plumber())
+		.pipe(plg.cached('lint:scripts'))
+		.pipe(tap(function(file, t){
+			console.log('linting: ', file.relative);
+		}))
 		.pipe(jshint({
 			esnext: true,
 			noyield: true
@@ -139,7 +144,6 @@ gulp.task('build:styles', ['clean:dist'], function() {
 	return gulp.src(paths.styles.input)
 		.pipe(plumber())
 		.pipe(less())
-		//.pipe(flatten())
 		.pipe(plg.autoprefixer('last 2 version', '> 1%'))
 		//.pipe(header(config.banner.full, { package : package }))
 		.pipe(gulp.dest(paths.styles.output))

@@ -20,6 +20,7 @@
     "gulp": "^3.8.0",
     "gulp-angular-templatecache": "^1.5.0",
     "gulp-autoprefixer": "^0.0.7",
+    "gulp-cached": "^1.0.1",
     "gulp-concat": "^2.2.0",
     "gulp-file-include": "^0.5.1",
     "gulp-flatten": "^0.0.2",
