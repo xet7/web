@@ -1,4 +1,5 @@
 // system
+var os = require('os');
 var fs = require('fs');
 var del = require('del');
 var path = require('path');
@@ -174,8 +175,8 @@ gulp.task('build:translations', ['clean:dist'], function() {
 		.pipe(gulp.dest(paths.translations.output));
 });
 
-var createHtmlPipeline = function (input, output) {
-	var prodPipeline =  lazypipe()
+var prodHtmlPipeline  = function (input, output) {
+	return lazypipe()
 		.pipe(plg.minifyHtml, {
 			empty: true
 		})
@@ -183,30 +184,23 @@ var createHtmlPipeline = function (input, output) {
 		.pipe(gulp.dest, output)
 		.pipe(plg.gzip)
 		.pipe(gulp.dest, output);
+};
 
+var createHtmlPipeline = function (input, output) {
 	return gulp.src(input)
 		.pipe(plg.plumber())
 		.pipe(plg.fileInclude())
 		.pipe(gulp.dest(output))
-		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
+		.pipe(config.isProduction ? prodHtmlPipeline(input, output)() : plg.util.noop());
 };
 
 var createJadePipeline = function (input, output) {
-	var prodPipeline =  lazypipe()
-		.pipe(plg.minifyHtml, {
-			empty: true
-		})
-		.pipe(plg.rename, { suffix: '.min' })
-		.pipe(gulp.dest, output)
-		.pipe(plg.gzip)
-		.pipe(gulp.dest, output);
-
 	return gulp.src(input)
 		.pipe(plg.plumber())
 		.pipe(plg.jade())
 		.pipe(plg.fileInclude())
 		.pipe(gulp.dest(output))
-		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
+		.pipe(config.isProduction ? prodHtmlPipeline(input, output)() : plg.util.noop());
 };
 
 // Build primary html files
@@ -232,10 +226,16 @@ gulp.task('build:partials-jade', ['clean:dist'], function() {
 // Remove pre-existing content from output and test folders
 gulp.task('clean:dist', function () {
 	del.sync([
-		paths.output + '**/*',
-		paths.test.coverage,
-		paths.test.results
+		paths.output + '**/*'
 	]);
+});
+
+// Run some unit tests to check key logic
+gulp.task('tests', function() {
+	return gulp.src(paths.tests.unit.input)
+		.pipe(traceur())
+		.pipe(gulp.dest(os.tmpdir()))
+		.pipe(plg.jasmine());
 });
 
 // Automatically install all bower dependencies
@@ -282,7 +282,8 @@ gulp.task('compile', [
 ]);
 
 gulp.task('default', [
-	'bower'
+	'bower',
+	'tests'
 ], function() {
 
 	// we can start compile only after we do have bower dependencies

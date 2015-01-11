@@ -44,12 +44,11 @@ module.exports = {
 		input: 'src/translations/*.toml',
 		output: output + 'translations/'
 	},
-	test: {
-		input: 'src/js/**/*.js',
-		karma: 'test/karma.conf.js',
-		spec: 'test/spec/**/*.js',
-		coverage: 'test/coverage/',
-		results: 'test/results/'
+	tests: {
+		unit: {
+			input: 'src/tests/*.js',
+			output: 'src/tests/out/'
+		}
 	},
 	docs: {
 		input: 'src/docs/*.{html,md,markdown}',
