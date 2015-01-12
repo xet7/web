@@ -27,9 +27,17 @@ $scope.invite=[];
         });
 
     };
-
+$scope.setDetails = function(){
+    LavaboomAPI.accounts.update('me',{'settings': {'full_name': $scope.invite.firstName+" "+$scope.invite.lastName,'display_name':$scope.invite.displayName}}).then(function (resp) {
+        console.log(resp);
+        $location.url('choosePasswordIntro');
+    }).catch(function (err) {
+        console.log(err);
+        // $location.url('generateKeys');
+    });
+};
     $scope.updatePassword = function(){
-        LavaboomAPI.accounts.update('me',{'settings': {'current_password': +CryptoJS.SHA3("123", { outputLength: 256 }).toString(),'new_password':CryptoJS.SHA3($scope.invite.password, { outputLength: 256 }).toString()}}).then(function (resp) {
+        LavaboomAPI.accounts.update('me',{'settings': {'current_password': CryptoJS.SHA3("123", { outputLength: 256 }).toString(),'new_password':CryptoJS.SHA3($scope.invite.password, { outputLength: 256 }).toString()}}).then(function (resp) {
             console.log(resp);
            $location.url('generateKeys');
         }).catch(function (err) {
