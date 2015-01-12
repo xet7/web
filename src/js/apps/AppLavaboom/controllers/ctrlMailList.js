@@ -1,5 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlMailList', function($scope) {
-	console.log('executing CtrlMailList');
+angular.module(primaryApplicationName).controller('CtrlMailList', function($scope, LavaboomAPI) {
 	$scope.choose = function(item) {
 		$scope.selected = item;
 	};
@@ -7,6 +6,12 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($scop
 	$scope.save = function() {
 		$scope.selected = {};
 	};
+
+	LavaboomAPI.tokens.create($scope.login).then(function () {
+		//debugger;
+	}).catch(function () {
+		//	debugger;
+	});
 
 	$scope.items = [{
 		id: 3,
