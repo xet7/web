@@ -9,11 +9,12 @@ angular.module('AppLavaboomLogin').controller('AuthController', function($scope,
          "username": $scope.auth.username,
          "password": CryptoJS.SHA3($scope.auth.password, { outputLength: 256 }).toString()
          }).then(function (data) {
-            console.log(data);
+            console.log(data.token.id);
+            //LavaboomAPI.setAuthToken(data.token.id);
            // $location.absUrl("http://0.0.0.0:5000/");
            /* $location.path("http://0.0.0.0:5000/index.html");
             $location.replace();*/
-            window.location="http://0.0.0.0:5000/";
+          window.location="http://0.0.0.0:5000/";
          }).catch(function (err) {
          console.log(err);
          });

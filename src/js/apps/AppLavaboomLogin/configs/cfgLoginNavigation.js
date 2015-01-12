@@ -32,9 +32,13 @@ angular.module('AppLavaboomLogin').config(function($stateProvider, $urlRouterPro
             url: "/details",
             templateUrl: "partials/login/details.html",
             controller:"VerifyController"
-        }).state('choose', {
-            url: "/choose",
-            templateUrl: "partials/login/choose.html",
+        }).state('choosePassword', {
+            url: "/choosePassword",
+            templateUrl: "partials/login/choosePassword.html",
+            controller:"VerifyController"
+        }).state('choosePasswordIntro', {
+            url: "/choosePasswordIntro",
+            templateUrl: "partials/login/choosePasswordIntro.html",
             controller:"VerifyController"
         }).state('configuring', {
             url: "/configuring",

@@ -1,3 +1,3 @@
-/**
- * Created by user on 08.01.15.
- */
+angular.module('AppLavaboomLogin').config(function(LavaboomAPIProvider){
+    LavaboomAPIProvider.setURL('https://api.lavaboom.io');
+});

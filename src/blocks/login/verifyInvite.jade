@@ -1,0 +1,32 @@
+form
+	p.lead.pack Verify invite code
+
+	p.text-center.steps
+		span.icon-unread.active
+		span.icon-unread
+		span.icon-unread
+		span.icon-unread
+		span.icon-unread
+		span.icon-unread
+
+	div.form-group
+		input.form-control.input-lg(type='text', ng-model='invite.username', placeholder="your username")
+	div.form-group
+		textarea.form-control.input-lg(type='text', ng-model='invite.token', placeholder="please paste invite code here")
+
+	p.text-center
+		a(href='#') Got an invite mail already?
+	
+	hr.spacer
+
+	p
+		label.switch
+			input(type='checkbox', checked='')
+			i
+		span &nbsp; &nbsp; I want to be the first to hear about Lavaboom news, send me the latest from Lava HQ
+
+	p.text-center By signing up I've agreed that I've read and understood the
+		a Terms of Service and the Privacy Policy
+
+	p
+		button.btn.btn-block.btn-lg.btn-primary(ui-sref="plan") Next Step

@@ -1,5 +1,5 @@
 (function() {
-	angular.module('AppLavaboom', ['ngSanitize', 'ui.router', 'ui.bootstrap', 'ui.select']);
+	angular.module('AppLavaboom', ['lavaboom.api','ngSanitize', 'ui.router', 'ui.bootstrap', 'ui.select']);
 
 	// = require "./AppLavaboom/configs/*.js"
 	// = require "./AppLavaboom/directives/*.js"

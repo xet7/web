@@ -1,0 +1,25 @@
+form
+	p.lead.pack User Details
+
+	p.text-center.steps
+		span.icon-unread.active
+		span.icon-unread.active
+		span.icon-unread.active
+		span.icon-unread
+		span.icon-unread
+		span.icon-unread
+
+	div.form-group
+		input.form-control.input-lg(type='text', ng-model='auth.username', placeholder="First Name")
+	div.form-group
+		input.form-control.input-lg(type='text', ng-model='auth.username', placeholder="Last Name")
+	br
+	div.form-group
+		input.form-control.input-lg(type='text', ng-model='auth.username', placeholder="Display Name")
+
+	p.text-center This is the name under which you will appear when sending emails. You can use your real name or a pseudonym to stay anonymous.
+
+	hr.spacer
+		
+	p
+		button.btn.btn-block.btn-lg.btn-primary(ui-sref="choosePasswordIntro") Next Step

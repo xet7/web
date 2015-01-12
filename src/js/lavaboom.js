@@ -11,6 +11,8 @@
 // = require "../bower_components/angular-bootstrap/ui-bootstrap.js"
 // = require "../bower_components/angular-sanitize/angular-sanitize.js"
 // = require "../bower_components/angular-ui-select/dist/select.js"
+// = require "../bower_components/lavaboom/dist/lavaboom-angular.js"
+// = require "../bower_components/lavaboom/dist/lavaboom-api.js"
 
 /*
  a reference to particular angular application from apps folder
