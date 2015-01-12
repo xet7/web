@@ -13,6 +13,8 @@ form
 		input.form-control.input-lg(type='text', ng-model='invite.username', placeholder="your username")
 	div.form-group
 		textarea.form-control.input-lg(type='text', ng-model='invite.token', placeholder="please paste invite code here")
+	div.form-group
+		input.form-control.input-lg(type='text', ng-model='invite.password', placeholder="your pass")
 
 	p.text-center
 		a(href='#') Got an invite mail already?
@@ -29,4 +31,4 @@ form
 		a Terms of Service and the Privacy Policy
 
 	p
-		button.btn.btn-block.btn-lg.btn-primary(ui-sref="plan") Next Step
+		button.btn.btn-block.btn-lg.btn-primary(ng-click='verifyInvite()',ui-sref="plan") Next Step

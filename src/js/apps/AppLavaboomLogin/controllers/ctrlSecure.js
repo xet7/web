@@ -1,13 +1,16 @@
-angular.module('AppLavaboomLogin').controller('SecureController', function($scope, LavaboomAPI,$location) {
-    $scope.signUp=[];
-    $scope.secure=function()
+angular.module('AppLavaboomLogin').controller('SecureController', function($scope, LavaboomAPI,$location, $rootScope) {
+   if(!$rootScope.signUpSecure)
+   {
+       $rootScope.signUpSecure=[];
+   }
+   $scope.secure=function()
     {
        LavaboomAPI.accounts.reserve.username({
-        "username": $scope.signUpSecure.username,
-        "email": $scope.signUpSecure.email
+        "username": $rootScope.signUpSecure.username,
+        "email": $rootScope.signUpSecure.email
     }).then(function(resp) {
-        //$location.url('');
-        console.log(resp);
+        $location.url('reservedUsername');
+        //console.log(resp);
     }).catch(function(err) {
         console.log(err);
     });
