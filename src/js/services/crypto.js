@@ -1,4 +1,4 @@
-angular.module('AppLavaboomLogin').service('crypto', function($q, $rootScope) {
+angular.module(primaryApplicationName).service('crypto', function($q, $rootScope) {
 	var self = this;
 
 	var wrapOpenpgpKeyring = (keyring) => {
@@ -34,6 +34,8 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $rootScope) {
 	this.options = {};
 	this.keyring = keyring;
 
+	var getUserEmail = (user) => user.userId.userid.match(/<([^>]+)>/)[1];
+
 	var getAvailableEmails = (keys) => Object.keys(keys.keys.reduce((a, k) => {
 		var email = k.users[0].userId.userid.match(/<([^>]+)>/)[1];
 		a[email] = true;
@@ -47,6 +49,14 @@ angular.module('AppLavaboomLogin').service('crypto', function($q, $rootScope) {
 	this.getAvailableDestinationEmails = () => getAvailableEmails(keyring.publicKeys);
 
 	this.getAvailableSourceEmails = () => getAvailableEmails(keyring.privateKeys);
+
+	this.getAvailablePublicKeysForSourceEmails = () => {
+		var emails = getAvailableEmails(keyring.privateKeys);
+		return emails.reduce((a, email) => {
+			a[email] = keyring.publicKeys.getForAddress(email);
+			return a;
+		}, {});
+	};
 
 	this.initialize = (opt = {}) => {
 		if (!opt.isRememberPasswords)

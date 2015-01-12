@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlMailList', function($scope, user, inbox) {
+angular.module(primaryApplicationName).controller('CtrlMailList', function($scope, user, inbox, cryptoKeys) {
 	$scope.choose = function(item) {
 		$scope.selected = item;
 	};
@@ -11,6 +11,7 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($scop
 
 	$scope.$on('user-authenticated', () => {
 		inbox.requestList();
+		cryptoKeys.syncKeys();
 	});
 
 	$scope.$on('inbox-emails', () => {

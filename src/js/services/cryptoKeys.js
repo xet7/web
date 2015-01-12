@@ -1,5 +1,40 @@
-angular.module('AppLavaboomLogin').service('cryptoKeys', function($q, $rootScope, $filter, $base64, crypto) {
+angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $rootScope, $filter, $base64, crypto, user, LavaboomAPI) {
 	var self = this;
+
+	this.syncKeys = () => {
+		LavaboomAPI.keys.list(user.name)
+			.then(res => {
+				console.log('LavaboomAPI.keys.list: ', res);
+
+				var keysByFingerprint = res.keys.reduce((a, k) => {
+					a[k.id] = k;
+					return a;
+				}, {});
+
+				var publicKeys = crypto.getAvailablePublicKeysForSourceEmails();
+
+				Object.keys(publicKeys).forEach(email => {
+					var keysForEmail = publicKeys[email];
+					keysForEmail.forEach(key => {
+
+						if (!keysByFingerprint[key.primaryKey.fingerprint]) {
+							console.log(`Importing key with fingerprint '${key.primaryKey.fingerprint}' to the server...`);
+							LavaboomAPI.keys.create(key.armor())
+								.then(res => {
+									console.log('LavaboomAPI.keys.create: ', res);
+								})
+								.catch(err => {
+									console.log('LavaboomAPI.keys.create error: ', err.message, err.stack);
+								});
+						} else
+							console.log(`Key with fingerprint '${key.primaryKey.fingerprint}' already imported...`);
+					});
+				});
+			})
+			.catch(err => {
+				console.log('LavaboomAPI.keys.list error: ', err.message, err.stack);
+			});
+	};
 
 	this.importKeys = (jsonBackup) => {
 		var importObj = null;

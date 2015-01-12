@@ -1,4 +1,4 @@
-angular.module('AppLavaboomLogin').service('fileReader', function ($q, $log) {
+angular.module(primaryApplicationName).service('fileReader', function ($q, $log) {
 	var onLoad = function(reader, deferred, scope) {
 		return function () {
 			scope.$apply(function () {
