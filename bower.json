@@ -29,7 +29,7 @@
     "file-saver": "*",
     "angular-translate": "~2.5.2",
     "angular-translate-loader-static-files": "~2.5.2",
-    "lavaboom": "~0.1.5"
+    "lavaboom": "~0.1.6"
   },
   "resolutions": {
     "angular": "1.3.8"

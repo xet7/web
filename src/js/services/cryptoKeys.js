@@ -16,7 +16,6 @@ angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $root
 				Object.keys(publicKeys).forEach(email => {
 					var keysForEmail = publicKeys[email];
 					keysForEmail.forEach(key => {
-
 						if (!keysByFingerprint[key.primaryKey.fingerprint]) {
 							console.log(`Importing key with fingerprint '${key.primaryKey.fingerprint}' to the server...`);
 							LavaboomAPI.keys.create(key.armor())
