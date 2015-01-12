@@ -49,7 +49,7 @@ gulp.task('build:apps', ['clean:dist', 'lint:scripts'], function() {
 		});
 
 	return gulp.src(paths.scripts.inputApps)
-		.pipe(plg.cached('build:apps'))
+		//.pipe(plg.cached('build:apps'))
 		//.pipe(plg.sourcemaps.init())
 		.pipe(plg.include())
 		.pipe(traceur())

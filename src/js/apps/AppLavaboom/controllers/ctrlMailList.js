@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlMailList', function($scope, LavaboomAPI) {
+angular.module(primaryApplicationName).controller('CtrlMailList', function($scope, user, inbox) {
 	$scope.choose = function(item) {
 		$scope.selected = item;
 	};
@@ -7,10 +7,10 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($scop
 		$scope.selected = {};
 	};
 
-	LavaboomAPI.tokens.create($scope.login).then(function () {
-		//debugger;
-	}).catch(function () {
-		//	debugger;
+	user.singIn('let4be', 'ztest007');
+
+	$scope.$on('user-authenticated', () => {
+		inbox.requestList();
 	});
 
 	$scope.items = [{
