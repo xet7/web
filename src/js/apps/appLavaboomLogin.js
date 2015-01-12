@@ -2,8 +2,8 @@
 	angular.module('utils', []);
 
 
-	window.primaryApplicatioName = 'AppLavaboomLogin';
-	angular.module(primaryApplicatioName, ['lavaboom.api', 'utils', 'ngSanitize','ui.router', 'ui.bootstrap', 'ui.select', 'pascalprecht.translate', 'base64']);
+	window.primaryApplicationName = 'AppLavaboomLogin';
+	angular.module(primaryApplicationName, ['lavaboom.api', 'utils', 'ngSanitize','ui.router', 'ui.bootstrap', 'ui.select', 'pascalprecht.translate', 'base64']);
 	// = require "../directives/*.js"
 	// = require "../services/*.js"
 

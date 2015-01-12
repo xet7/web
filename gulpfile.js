@@ -197,8 +197,8 @@ var createHtmlPipeline = function (input, output) {
 var createJadePipeline = function (input, output) {
 	return gulp.src(input)
 		.pipe(plg.plumber())
-		.pipe(plg.jade())
 		.pipe(plg.fileInclude())
+		.pipe(plg.jade())
 		.pipe(gulp.dest(output))
 		.pipe(config.isProduction ? prodHtmlPipeline(input, output)() : plg.util.noop());
 };

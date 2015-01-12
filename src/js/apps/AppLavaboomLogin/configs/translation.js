@@ -1,4 +1,4 @@
-angular.module(primaryApplicatioName).config(($translateProvider) => {
+angular.module(primaryApplicationName).config(($translateProvider) => {
 	var defaultLangKey = 'en';
 
 	var setDefaultTranslation = (translation) => {

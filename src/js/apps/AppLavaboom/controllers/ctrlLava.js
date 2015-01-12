@@ -1,3 +1,3 @@
-angular.module('AppLavaboom').controller('LavaController', function($scope) {
+angular.module(primaryApplicationName).controller('CtrlLava', function($scope) {
 	$scope.switch = 'off';
 });

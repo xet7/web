@@ -1,6 +1,6 @@
-angular.module('AppLavaboom').config(function($stateProvider, $urlRouterProvider){
-	// For any unmatched url, send to /route1
+angular.module(primaryApplicationName).config(function($stateProvider, $urlRouterProvider){
 	$urlRouterProvider.otherwise("/in");
+
 	$stateProvider
 		.state('in', {
 			url: "/in",
