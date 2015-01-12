@@ -15,6 +15,8 @@
 // = require "../bower_components/lavaboom/dist/lavaboom-api.js"
 // = require "../vendor/openpgp.js"
 // = require "../bower_components/cryptojslib/rollups/sha3.js"
+// = require "../bower_components/angular-validation-match/dist/angular-input-match.js"
+
 
 /*
  a reference to particular angular application from apps folder

@@ -26,8 +26,7 @@ angular.module('AppLavaboomLogin').config(function($stateProvider, $urlRouterPro
             controller:"VerifyController"
         }).state('plan', {
             url: "/plan",
-            templateUrl: "partials/login/plan.html",
-            controller:"VerifyController"
+            templateUrl: "partials/login/plan.html"
         }).state('details', {
             url: "/details",
             templateUrl: "partials/login/details.html",
@@ -38,11 +37,13 @@ angular.module('AppLavaboomLogin').config(function($stateProvider, $urlRouterPro
             controller:"VerifyController"
         }).state('choosePasswordIntro', {
             url: "/choosePasswordIntro",
-            templateUrl: "partials/login/choosePasswordIntro.html",
+            templateUrl: "partials/login/choosePasswordIntro.html"
+        }).state('generateKeys', {
+            url: "/generateKeys",
+            templateUrl: "partials/login/generateKeys.html",
             controller:"VerifyController"
-        }).state('configuring', {
-            url: "/configuring",
-            templateUrl: "partials/login/configuring.html",
-            controller:"VerifyController"
-        });
+        }).state('generatingKeys', {
+            url: "/generatingKeys",
+            templateUrl: "partials/login/generatingKeys.html"
+        });//generatingKeys
 });

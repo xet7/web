@@ -138,8 +138,8 @@ gulp.task('build:styles', ['clean:dist'], function() {
 	return gulp.src(paths.styles.input)
 		.pipe(plumber())
 		.pipe(less())
-		.pipe(flatten())
-		.pipe(plg.autoprefixer('last 2 version', '> 1%'))
+		/*.pipe(flatten())
+		.pipe(plg.autoprefixer('last 2 version', '> 1%'))*/
 		//.pipe(header(config.banner.full, { package : package }))
 		.pipe(gulp.dest(paths.styles.output))
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
@@ -330,8 +330,8 @@ var compileTasks = [
 	'clean:dist',
 	'build:html',
 	'build:jade',
-	'build:partials',
 	'build:partials-jade',
+	'build:partials',
 	'copy:static',
 	'copy:imgs',
 	'copy:fonts',

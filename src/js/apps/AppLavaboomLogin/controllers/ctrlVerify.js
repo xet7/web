@@ -1,23 +1,41 @@
-angular.module('AppLavaboomLogin').controller('VerifyController', function($scope, LavaboomAPI) {
+angular.module('AppLavaboomLogin').controller('VerifyController', function($scope, LavaboomAPI,$location) {
 $scope.invite=[];
     $scope.verifyInvite = function() {
-      LavaboomAPI.accounts.create.invited({
+      LavaboomAPI.accounts.create.classic({
             "username": $scope.invite.username,
-            "password": CryptoJS.SHA3($scope.invite.password, {outputLength: 256}).toString(),
-            "token": $scope.invite.token
-        }).then(function (resp) {
+            "password": CryptoJS.SHA3('123', {outputLength: 256}).toString(),
+            "email": '123'
+        })
+          /*"username": $scope.signUp.username,
+           "password": CryptoJS.SHA3($scope.signUp.password, { outputLength: 256 }).toString(),
+           "email": $scope.signUp.email*/
+          .then(function (resp) {
             console.log(resp);
-        }).catch(function (err) {
+              LavaboomAPI.tokens.create({
+                  "token":"",
+                  "type":"auth",
+                  "username": $scope.invite.username,
+                  "password":  CryptoJS.SHA3("123", { outputLength: 256 }).toString()
+              }).then(function (data) {
+                  LavaboomAPI.setAuthToken(data.token.id);
+              }).catch(function (err) {
+                  console.log(err);
+              });
+              $location.url('plan');
+              }).catch(function (err) {
             console.log(err);
         });
-   /*   LavaboomAPI.accounts.create.invited({
-            "username": $scope.invite.username,
-            "password": CryptoJS.SHA3($scope.invite.password, {outputLength: 256}).toString(),
-            "token": $scope.invite.token
-        }).then(function (resp) {
+
+    };
+
+    $scope.updatePassword = function(){
+        LavaboomAPI.accounts.update('me',{'settings': {'current_password': +CryptoJS.SHA3("123", { outputLength: 256 }).toString(),'new_password':CryptoJS.SHA3($scope.invite.password, { outputLength: 256 }).toString()}}).then(function (resp) {
             console.log(resp);
+           $location.url('generateKeys');
         }).catch(function (err) {
             console.log(err);
-        });*/
+          // $location.url('generateKeys');
+        });
     };
+
 });

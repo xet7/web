@@ -3,6 +3,7 @@ angular.module('AppLavaboomLogin').controller('SecureController', function($scop
    {
        $rootScope.signUpSecure=[];
    }
+
    $scope.secure=function()
     {
        LavaboomAPI.accounts.reserve.username({
