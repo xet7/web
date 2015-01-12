@@ -2,6 +2,8 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	var self = this;
 
 	this.emails = [];
+	this.totalEmailsCount = 0;
+
 	this.isInboxLoading = false;
 
 	this.requestList = () => {
@@ -9,7 +11,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 		LavaboomAPI.emails.list()
 			.then(function (res) {
-				self.emails = res.emails;
+				self.emails = res.emails ? res.emails : [];
 
 				$rootScope.$broadcast('inbox-emails', self.emails);
 				console.log('LavaboomAPI.emails.list: ', res);

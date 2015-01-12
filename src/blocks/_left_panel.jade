@@ -12,7 +12,7 @@ div#left-panel
 				a(href="#", ui-sref="in")
 					span.icon-inbox
 					span.action Inbox
-					span.badge 999+
+					span.badge(ng-bind="inboxCountBadge")
 			li
 				a(href="#")
 					span.icon-draft

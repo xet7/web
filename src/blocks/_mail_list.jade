@@ -13,8 +13,8 @@
 			a(href="#")
 				span.icon-trash
 	.mail-list-group
+		div(ng-if="items.length < 1") No emails found
 		div(ng-repeat="item in items", ng-class="{active: selected==item}", ng-click="choose(item)")
-			// ng-template
 			.mail-list-item(class="{{item.active}}", href="#")
 				.row.no-gutter
 					.col-xs-3.clear.buttons
@@ -37,4 +37,3 @@
 								span.icon-paper-clip
 							a(href="#")
 								span.icon-lock
-			// //eng-template
