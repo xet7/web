@@ -1,8 +1,20 @@
-angular.module(primaryApplicationName).service('co', function($q) {
+angular.module(primaryApplicationName).factory('co', function($q, $rootScope, $exceptionHandler) {
 	var coWrapper = function (gen) {
 		var deferred = $q.defer();
 
-		coJS(gen)
+		coJS(function *() {
+			try {
+				var r = yield gen;
+
+				$rootScope.$apply();
+
+				return r;
+			} catch (err) {
+				$exceptionHandler(err);
+
+				throw err;
+			}
+		})
 			.then(function () {
 				deferred.resolve.apply(deferred.resolve, arguments);
 			})

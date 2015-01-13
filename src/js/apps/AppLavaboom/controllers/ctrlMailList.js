@@ -7,10 +7,7 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($scop
 		$scope.selected = {};
 	};
 
-	user.singIn('let4be-test', 'ztest007')
-		.then(() => {
-			console.log('user authenticated yield returned');
-		});
+	user.singIn('let4be-test', 'ztest007');
 
 	$scope.$on('user-authenticated', () => {
 		inbox.requestList();

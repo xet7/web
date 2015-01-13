@@ -1,57 +1,34 @@
-angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, LavaboomAPI) {
+angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, co, apiProxy, LavaboomAPI) {
 	var self = this;
 
 	this.emails = [];
 	this.senders = {};
 	this.totalEmailsCount = 0;
-
 	this.isInboxLoading = false;
-
-
 
 	this.requestList = () => {
 		self.isInboxLoading = true;
 
-		LavaboomAPI.emails.list()
-			.then(function (res) {
-				var getAccountPromises = [];
+		return co(function * (){
+			try {
+				var res = yield apiProxy('LavaboomAPI.emails.list', LavaboomAPI.emails.list);
 
-				var emails = res.emails.map(e => {
-
-					if (!(e.owner in self.senders)) {
-						self.senders[e.owner] = null;
-
-						getAccountPromises.push(
-							LavaboomAPI.accounts.get(e.owner)
-								.then(sender => {
-									self.senders[e.owner] = sender;
-									console.log('got sender, LavaboomAPI.accounts.get: ', sender);
-								})
-						);
-					}
-
+				self.emails = res.emails.map(e => {
 					return {
+						id: e.id,
 						subject: e.name,
 						date: e.date_created,
 						desc: 'no desc'
 					};
 				});
 
-				$q.all(getAccountPromises)
-					.then(() => {
-						console.log('all get accounts resolved!');
-					});
-
+				console.log('self.emails', self.emails);
 
 				$rootScope.$broadcast('inbox-emails', self.emails);
-				console.log('LavaboomAPI.emails.list: ', res);
-			})
-			.catch(function (err) {
-				console.log('LavaboomAPI.emails.list error: ', err.message, err.stack);
-			})
-			.finally(function () {
+			} finally {
 				self.isInboxLoading = false;
-			});
+			}
+		});
 	};
 
 	this.send = (to, subject, body) => {

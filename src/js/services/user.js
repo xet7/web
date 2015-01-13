@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).service('user', function($q, $rootScope, LavaboomAPI, co) {
+angular.module(primaryApplicationName).service('user', function($q, $rootScope, apiProxy, LavaboomAPI, co) {
 	var self = this;
 
 	this.name = 'let4be';
@@ -13,7 +13,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 	this.singIn = function (username, password) {
 		return co(function * (){
 			try {
-				var res = yield LavaboomAPI.tokens.create({
+				var res = yield apiProxy('LavaboomAPI.tokens.create', LavaboomAPI.tokens.create, {
 					type: 'auth',
 					username: username,
 					password: CryptoJS.SHA3(password, { outputLength: 256 }).toString()
@@ -21,11 +21,9 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 				setToken(res.token);
 				$rootScope.$broadcast('user-authenticated');
-				console.log('LavaboomAPI.tokens.create: ', res);
 			}
 			catch (err) {
 				$rootScope.$broadcast('user-authentication-error', err);
-				console.log('LavaboomAPI.tokens.create: ', err.message, err.stack);
 			}
 			finally {
 				self.isInboxLoading = false;
@@ -33,3 +31,4 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		});
 	};
 });
+
