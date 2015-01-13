@@ -1,4 +1,4 @@
-angular.module('AppLavaboomLogin').controller('VerifyController', function($scope, LavaboomAPI,$location) {
+angular.module('AppLavaboomLogin').controller('VerifyController', function($scope, LavaboomAPI,$state) {
 $scope.invite=[];
     $scope.verifyInvite = function() {
         LavaboomAPI.accounts.create.classic({
@@ -21,7 +21,7 @@ $scope.invite=[];
               }).catch(function (err) {
                   console.log(err);
               });
-              $location.url('plan');
+              $state.on('plan');
               }).catch(function (err) {
             console.log(err);
         });
@@ -29,12 +29,12 @@ $scope.invite=[];
     $scope.invite.fistName='';
     $scope.invite.lastName='';
     $scope.displayCreate=function(){
-        $scope.invite.displayName = $scope.invite.firstName+$scope.invite.lastName;
+        $scope.invite.displayName = $scope.invite.firstName + $scope.invite.lastName;
     };
     $scope.setDetails = function(){
         LavaboomAPI.accounts.update('me',{'current_password': CryptoJS.SHA3("123", { outputLength: 256 }).toString(),'settings': {'full_name': $scope.invite.firstName+" "+$scope.invite.lastName,'display_name':$scope.invite.displayName}}).then(function (resp) {
             console.log(resp);
-            $location.url('choosePasswordIntro');
+            $state.on('choosePasswordIntro');
         }).catch(function (err) {
             console.log(err);
             // $location.url('choosePasswordIntro');
@@ -43,7 +43,7 @@ $scope.invite=[];
     $scope.updatePassword = function(){
        LavaboomAPI.accounts.update('me',{'current_password': CryptoJS.SHA3("123", { outputLength: 256 }).toString(),'new_password':CryptoJS.SHA3($scope.invite.password, { outputLength: 256 }).toString()}).then(function (resp) {
             console.log(resp);
-           $location.url('generateKeys');
+           $state.on('generateKeys');
         }).catch(function (err) {
             console.log(err);
           // $location.url('generateKeys');
