@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, co, apiProxy, LavaboomAPI) {
+angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, co, apiProxy) {
 	var self = this;
 
 	this.emails = [];
@@ -32,18 +32,12 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	};
 
 	this.send = (to, subject, body) => {
-		LavaboomAPI.emails.create({
+		apiProxy('emails', 'create', {
 			to: to,
 			subject: subject,
 			is_encrypted: false,
 			body: body
-		})
-			.then(function (res) {
-				console.log('LavaboomAPI.emails.create: ', res);
-			})
-			.catch(function (err) {
-				console.log('LavaboomAPI.emails.create error: ', err.message, err.stack);
-			});
+		});
 	};
 
 	this.scroll = () => {

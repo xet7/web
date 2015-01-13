@@ -1,20 +1,22 @@
 angular.module(primaryApplicationName).factory('co', function($q, $rootScope, $exceptionHandler) {
+	var createGeneratorProxy = (gen) => function *() {
+		try {
+			var r = yield gen;
+
+			$rootScope.$apply();
+
+			return r;
+		} catch (err) {
+			$exceptionHandler(err);
+
+			throw err;
+		}
+	};
+
 	var coWrapper = function (gen) {
 		var deferred = $q.defer();
 
-		coJS(function *() {
-			try {
-				var r = yield gen;
-
-				$rootScope.$apply();
-
-				return r;
-			} catch (err) {
-				$exceptionHandler(err);
-
-				throw err;
-			}
-		})
+		coJS(createGeneratorProxy(gen))
 			.then(function () {
 				deferred.resolve.apply(deferred.resolve, arguments);
 			})
@@ -26,7 +28,7 @@ angular.module(primaryApplicationName).factory('co', function($q, $rootScope, $e
 	};
 
 	coWrapper.wrap = function (gen) {
-		var coFn = coJS.wrap(gen);
+		var coFn = coJS.wrap(createGeneratorProxy(gen));
 
 		return function () {
 			var deferred = $q.defer();
