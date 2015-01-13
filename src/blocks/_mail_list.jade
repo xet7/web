@@ -14,7 +14,7 @@
 				span.icon-trash
 	.mail-list-group
 		div(ng-if="items.length < 1") No emails found
-		div(ng-repeat="item in items", ng-class="{active: selected==item}", ng-click="choose(item)")
+		div(ng-repeat="item in items track by item.id", ng-class="{active: selected==item}", ng-click="choose(item)")
 			.mail-list-item(class="{{item.active}}", href="#")
 				.row.no-gutter
 					.col-xs-3.clear.buttons
@@ -29,7 +29,7 @@
 						p.subject {{item.subject}}
 						p.summary {{item.desc}}
 					.col-xs-5.when
-						span.date.lava-icon-row Yesterday
+						span.date.lava-icon-row {{item.date}}
 						br
 						br
 						.lava-icon-row

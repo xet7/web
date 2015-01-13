@@ -6,6 +6,16 @@
  so if a given library has a .min.js version it will be used automatically replaced when compiled in production mode
  */
 
+// white magic support to make ES6 alive
+// = require "../bower_components/traceur-runtime/traceur-runtime.js"
+
+// temporary hack to load co.js, will be removed as we move to browserify
+window.coJS = (function() {
+	var module = {};
+	// = require "../../node_modules/co/index.js"
+	return module.exports;
+})();
+
 // = require "../bower_components/angular/angular.js"
 // = require "../bower_components/angular-translate/angular-translate.js"
 // = require "../bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js"
