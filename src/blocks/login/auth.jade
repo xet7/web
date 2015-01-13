@@ -2,10 +2,10 @@ form
 	img.login-logo(src="img/Lavaboom-logo.svg")
 	p.lead Log In
 	div.form-group
-		input.form-control.input-lg(type='text', ng-model='auth.username', placeholder="username or email address")
+		input.form-control.input-lg(type='text', ng-model='auth.username', placeholder="username or email address", required)
 
 	div.form-group
-		input.form-control.input-lg(type='password', ng-model='auth.password', placeholder="password")
+		input.form-control.input-lg(type='password', ng-model='auth.password', placeholder="password", required)
 
 	p
 		label.switch
