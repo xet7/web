@@ -13,7 +13,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 	this.singIn = function (username, password) {
 		return co(function * (){
 			try {
-				var res = yield apiProxy('LavaboomAPI.tokens.create', LavaboomAPI.tokens.create, {
+				var res = yield apiProxy('tokens', 'create', {
 					type: 'auth',
 					username: username,
 					password: CryptoJS.SHA3(password, { outputLength: 256 }).toString()

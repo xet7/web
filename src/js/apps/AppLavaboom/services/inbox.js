@@ -11,7 +11,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 		return co(function * (){
 			try {
-				var res = yield apiProxy('LavaboomAPI.emails.list', LavaboomAPI.emails.list);
+				var res = yield apiProxy('emails', 'list');
 
 				self.emails = res.emails.map(e => {
 					return {
