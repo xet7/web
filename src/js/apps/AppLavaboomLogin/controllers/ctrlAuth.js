@@ -14,7 +14,7 @@ angular.module('AppLavaboomLogin').controller('AuthController', function($scope,
            // $location.absUrl("http://0.0.0.0:5000/");
            /* $location.path("http://0.0.0.0:5000/index.html");
             $location.replace();*/
-          window.location="http://127.0.0.1:5000/";
+          window.location="http://0.0.0.0:5000/";
          }).catch(function (err) {
          console.log(err);
          });
