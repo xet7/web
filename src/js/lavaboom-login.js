@@ -11,11 +11,13 @@
 // = require "../bower_components/angular-bootstrap/ui-bootstrap.js"
 // = require "../bower_components/angular-sanitize/angular-sanitize.js"
 // = require "../bower_components/angular-ui-select/dist/select.js"
+
+// = require "../bower_components/angular-validation-match/dist/angular-input-match.js"
 // = require "../bower_components/lavaboom/dist/lavaboom-angular.js"
 // = require "../bower_components/lavaboom/dist/lavaboom-api.js"
 // = require "../vendor/openpgp.js"
 // = require "../bower_components/cryptojslib/rollups/sha3.js"
-// = require "../bower_components/angular-validation-match/dist/angular-input-match.js"
+
 
 
 /*

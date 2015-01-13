@@ -10,12 +10,12 @@ form
 		span.icon-unread
 
 	div.form-group
-		input.form-control.input-lg(type='text', ng-model='invite.firstName', placeholder="First Name")
+		input.form-control.input-lg(type='text', ng-model='invite.firstName', ng-change='displayCreate()', placeholder="First Name", requared)
 	div.form-group
-		input.form-control.input-lg(type='text', ng-model='invite.lastName', placeholder="Last Name")
+		input.form-control.input-lg(type='text', ng-model='invite.lastName',ng-change='displayCreate()', placeholder="Last Name", requared)
 	br
 	div.form-group
-		input.form-control.input-lg(type='text', ng-model='invite.displayName', placeholder="Display Name")
+		input.form-control.input-lg(type='text',ng-model='invite.displayName', placeholder="Display Name")
 
 	p.text-center This is the name under which you will appear when sending emails. You can use your real name or a pseudonym to stay anonymous.
 
