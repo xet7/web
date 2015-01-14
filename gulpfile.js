@@ -15,6 +15,12 @@ var plg = require('gulp-load-plugins')({
 	replaceString: /\bgulp[\-.]/
 });
 
+// Browserify the mighty one
+var traceurify = require('traceurify'),
+	ngminify = require('browserify-ngmin'),
+	bulkify = require('bulkify'),
+	brfs = require('brfs');
+
 // Modules
 var serve = require('./serve');
 
