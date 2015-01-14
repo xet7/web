@@ -10,6 +10,8 @@ angular.module('AppLavaboomLogin').controller('CtrlDetails', function($scope, $s
 	});
 
 	$scope.setDetails = () => {
+		user.signup.details = $scope.form;
+
 		$state.go('choosePasswordIntro');
 	};
 });

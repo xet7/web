@@ -3,6 +3,14 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 	this.name = '';
 
+	this.signup = {
+		details: {
+			firstName: '',
+			lastName: '',
+			displayName: ''
+		}
+	};
+
 	// information about user from API
 	this.information = {
 
