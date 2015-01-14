@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).service('user', function($q, $rootScope, $window, apiProxy, LavaboomAPI, co) {
+angular.module(primaryApplicationName).service('user', function($q, $rootScope, $state, $timeout, $window, consts, apiProxy, LavaboomAPI, co) {
 	var self = this;
 
 	this.name = '';
@@ -53,11 +53,17 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 	this.checkAuth = () => {
 		console.log('Checking authentication token...');
-		if (self.isAuthenticated())
-			self.gatherUserInformation().then(() => {
-				console.log('We are already authenticated with a valid token - going to the main application');
-				$window.location = '/';
-			});
+		if (self.isAuthenticated()) {
+			if (primaryApplicationName == 'AppLavaboomLogin') {
+				self.gatherUserInformation().then(() => {
+					console.log('We are already authenticated with a valid token - going to the main application');
+					$window.location = '/';
+				});
+			}
+		}
+		else if (primaryApplicationName == 'AppLavaboom') {
+			$window.location = consts.loginUrl;
+		}
 	};
 });
 
