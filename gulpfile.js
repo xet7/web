@@ -282,7 +282,8 @@ gulp.task('compile', [
 ]);
 
 gulp.task('default', [
-	'bower'
+	'bower',
+	'tests'
 ], function() {
 
 	// we can start compile only after we do have bower dependencies
