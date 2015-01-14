@@ -1,3 +1,5 @@
+var fs = require('fs');
+
 angular.module(primaryApplicationName).config(($translateProvider) => {
 	var defaultLangKey = 'en';
 
@@ -5,9 +7,9 @@ angular.module(primaryApplicationName).config(($translateProvider) => {
 		$translateProvider.translations(defaultLangKey, translation);
 	};
 
-	// load pre-compiled default language so it will be available without extra request to the server
 	setDefaultTranslation(
-		// = require "../../../dist/translations/en.json"
+		// browserify brfs: load pre-compiled default language so it will be available without extra request to the server
+		fs.readFileSync(__dirname + '/../../../dist/translations/en.json')
 	);
 
 	$translateProvider.useStaticFilesLoader({
