@@ -5,7 +5,7 @@
 	#main-content{
 		position: relative;
 		top: 40%;
-		transform: translateY(-50%);
+		transform: translateY(-34%);
 	}
 
 	background-color: @lava-login-gray-darker;
@@ -61,6 +61,7 @@
 			line-height: 1.8em;
 			font-size: 18px;
 			font-weight: 100;
+			pointer-events: none;
 		}
 	}
 
@@ -69,7 +70,7 @@
 		margin-bottom: 1.1em;
 		font-size: 2em;
 		&.large{
-			margin-bottom: 1.5em;
+			margin-bottom: 2em;
 		}
 	}
 
@@ -124,20 +125,23 @@
 			text-decoration: none;
 		}
 	}
+
+	.btn{
+		color: @lava-login-gray-lighter;
+		margin-bottom: 1em;
+		font-weight: 100;
+	}
+
 	.btn-primary{
 		background-color: @lava-login-lava;
 		box-shadow: @lava-login-box-shadow;
+		color: #FFF;
 	}
 
 	.login-alert{
 		background-color: @lava-login-gray-dark;
 		box-shadow: @lava-login-box-shadow;
 		border-radius: 10px;
-	}
-
-	.btn{
-		color: @lava-login-gray-lighter;
-		margin-bottom: 1em;
 	}
 
 	label{
