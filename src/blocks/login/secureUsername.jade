@@ -14,11 +14,10 @@ form
 
 	p.checkbox-wrapper
 		label.switch
-			input(type='checkbox', checked='')
+			input(type='checkbox', checked='', name='subscribe')
 			i
-		span I want to be the first to hear about Lavaboom news, send me the latest from Lava HQ
+		span 
+			label(for='subscribe') I want to be the first to hear about Lavaboom news, send me the latest from Lava HQ
 
 	footer
 		button.btn.btn-block.btn-lg.btn-primary(ng-click='secure()') Secure your username
-		
-	
