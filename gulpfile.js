@@ -47,11 +47,27 @@ gulp.task('build:scripts:vendor', ['clean:dist', 'lint:scripts'], function() {
 	return gulp.src(paths.scripts.inputDeps)
 		.pipe(plg.plumber())
 		.pipe(plg.tap(function (file, t) {
-			var config = toml.parse(file.contents);
+			var appConfig = toml.parse(file.contents);
 			var dependencies = [];
 
-			for(var i = 0; i < config.application.dependencies.length; i++)
-				dependencies.push(paths.scripts.inputAppsFolder + config.application.dependencies[i]);
+			for(var i = 0; i < appConfig.application.dependencies.length; i++) {
+				var resolvedFileOriginal = paths.scripts.inputAppsFolder + appConfig.application.dependencies[i];
+
+				var resolvedFile = '';
+				if (config.isProduction) {
+					resolvedFile = resolvedFileOriginal.replace('.js', '.min.js');
+
+					if (!fs.existsSync(resolvedFile)) {
+						console.log('Cannot find minified version for vendor library: ', appConfig.application.dependencies[i]);
+						resolvedFile = resolvedFileOriginal;
+					}
+				} else resolvedFile = resolvedFileOriginal;
+
+				if (!fs.existsSync(resolvedFile))
+					throw new Error('Cannot find vendor library: "' + appConfig.application.dependencies[i] + '"');
+
+				dependencies.push(resolvedFile);
+			}
 
 			var newName = file.relative.replace('.toml', '-vendor.js');
 
