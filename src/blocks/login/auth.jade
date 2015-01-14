@@ -1,6 +1,7 @@
 form
 	img.login-logo(src="img/Lavaboom-logo.svg")
 	p.lead Log In
+	span.error(ng-bind="errorMessage")
 	div.form-group
 		input.form-control.input-lg(type='text', ng-model='auth.username', placeholder="username or email address", required)
 
@@ -9,12 +10,12 @@ form
 
 	p
 		label.switch
-			input(type='checkbox', checked='')
+			input(type='checkbox', ng-model="auth.isRemember")
 			i
 		span &nbsp; &nbsp; Keep me logged in	
 
 	p
-		button.btn.btn-block.btn-lg.btn-primary(ng-click='logIn()') Go to my Inbox
+		button.btn.btn-block.btn-lg.btn-primary(ng-click='logIn()', ng-disabled="isProcessing") Go to my Inbox
 		
 	p.text-center
 		a(href='#') No Account Yet? Signup Here!

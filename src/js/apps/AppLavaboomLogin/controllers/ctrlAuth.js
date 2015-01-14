@@ -1,28 +1,27 @@
-angular.module('AppLavaboomLogin').controller('AuthController', function($scope, openpgp, LavaboomAPI,$location) {
-    openpgp.initialize();
-    $scope.auth = [];
+angular.module('AppLavaboomLogin').controller('CtrlAuth', function($scope, $window, user) {
+    $scope.auth = {
+		username: '',
+		password: '',
+		isRemember: false
+	};
+	$scope.isProcessing = false;
+	$scope.errorMessage = '';
 
-    $scope.logIn = function(){
-      	LavaboomAPI.tokens.create({
-         "token":"",
-         "type":"auth",
-         "username": $scope.auth.username,
-         "password": CryptoJS.SHA3($scope.auth.password, { outputLength: 256 }).toString()
-         }).then(function (data) {
-            LavaboomAPI.setAuthToken(data.token.id);
-            //LavaboomAPI.setAuthToken(data.token.id);
-           // $location.absUrl("http://0.0.0.0:5000/");
-           /* $location.path("http://0.0.0.0:5000/index.html");
-            $location.replace();*/
-          window.location="http://0.0.0.0:5000/";
-         }).catch(function (err) {
-         console.log(err);
-         });
-        };
+    $scope.logIn = function() {
+		$scope.isProcessing = true;
+		user.singIn($scope.auth.username, $scope.auth.password)
+			.finally(() => {
+				$scope.isProcessing = false;
+			});
+	};
 
-    /*var t = Date.now();
-    openpgp.generateOpenpgpKeys('test@test', 'wubwub', 1024)
-        .then(function(keyPair) {
-            console.log('openpgp: key pair is', keyPair.privateKeyArmored, keyPair.publicKeyArmored, 'time', Date.now() - t);
-        });*/
+	$scope.$on('user-authenticated', () => {
+		user.persistAuth($scope.auth.isRemember);
+
+		$window.location = '/';
+	});
+
+	$scope.$on('user-authentication-error', (e, err) => {
+		$scope.errorMessage = err.body.message;
+	});
 });

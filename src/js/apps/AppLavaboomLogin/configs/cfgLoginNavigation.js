@@ -8,7 +8,7 @@ angular.module('AppLavaboomLogin').config(function($stateProvider, $urlRouterPro
         }).state('auth', {
             url: "/auth",
             templateUrl: "partials/login/auth.html",
-            controller:"AuthController"
+            controller:"CtrlAuth"
         }).state('invite', {
             url: "/invite",
             templateUrl: "partials/login/invite.html"

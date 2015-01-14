@@ -1,16 +1,29 @@
-angular.module(primaryApplicationName).service('user', function($q, $rootScope, apiProxy, LavaboomAPI, co) {
+angular.module(primaryApplicationName).service('user', function($q, $rootScope, $window, apiProxy, LavaboomAPI, co) {
 	var self = this;
 
 	this.name = '';
 
-	var token = null;
+	// information about user from API
+	this.information = {
 
-	var setToken = (_token) => {
-		token = _token;
-		LavaboomAPI.setAuthToken(_token.id);
 	};
 
-	this.singIn = function (username, password) {
+	var token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
+
+	if (token)
+		LavaboomAPI.setAuthToken(token);
+
+	this.isAuthenticated = () => !!token;
+
+	this.gatherUserInformation = () => {
+		return co(function * () {
+			var res = yield apiProxy('accounts', 'get', 'me');
+
+			return res.body;
+		});
+	};
+
+	this.singIn = (username, password) => {
 		self.name = username;
 
 		return co(function * (){
@@ -21,17 +34,30 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 					password: CryptoJS.SHA3(password, { outputLength: 256 }).toString()
 				});
 
-				setToken(res.body.token);
+				token = res.body.token.id;
+				LavaboomAPI.setAuthToken(token);
 
 				$rootScope.$broadcast('user-authenticated');
-			}
-			catch (err) {
+			} catch (err) {
 				$rootScope.$broadcast('user-authentication-error', err);
-			}
-			finally {
+			} finally {
 				self.isInboxLoading = false;
 			}
 		});
+	};
+
+	this.persistAuth = (isRemember = true) => {
+		var storage = isRemember ? localStorage : sessionStorage;
+		storage.lavaboomToken = token;
+	};
+
+	this.checkAuth = () => {
+		console.log('Checking authentication token...');
+		if (self.isAuthenticated())
+			self.gatherUserInformation().then(() => {
+				console.log('We are already authenticated with a valid token - going to the main application');
+				$window.location = '/';
+			});
 	};
 });
 
