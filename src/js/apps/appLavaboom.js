@@ -1,5 +1,9 @@
 (function() {
-	angular.module('AppLavaboom', ['lavaboom.api','ngSanitize', 'ui.router', 'ui.bootstrap', 'ui.select']);
+	window.primaryApplicationName = 'AppLavaboom';
+	angular.module(primaryApplicationName, ['lavaboom.api', 'ngSanitize', 'ui.router', 'ui.bootstrap', 'ui.select', 'pascalprecht.translate', 'base64']);
+
+	// = require "../configs/*.js"
+	// = require "../services/*.js"
 
 	// = require "./AppLavaboom/configs/*.js"
 	// = require "./AppLavaboom/directives/*.js"

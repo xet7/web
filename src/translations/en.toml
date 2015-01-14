@@ -1,0 +1,4 @@
+[test]
+	str = "Hello! Im Test-String in English"
+[INBOX]
+	NO_PREVIEW_AVAILABLE = "No preview available"
