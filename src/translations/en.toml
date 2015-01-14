@@ -2,6 +2,14 @@
 	str = "Hello! Im Test-String in English"
 [INBOX]
 	NO_PREVIEW_AVAILABLE = "No preview available"
+[LOGIN.SIGNUP]
+	HEADER = "Get your own secure email account!"
+ 	LOGIN = "Log In"
+ 	SIGNUP = "Sign Up"
+[LOGIN.AUTH]
+	GO_TO_MY_INBOX = "Go to my Inbox"
+	NO_ACCOUNT_YET = "No Account Yet? Signup Here!"
+
 [LOGIN.GENERATING_KEYS]
 	LABEL_GENERATING = "Generating your Keys"
 	LABEL_GENERATED = "Your keys are ready!"

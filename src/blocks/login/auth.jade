@@ -1,6 +1,6 @@
 form
 	img.login-logo(src="img/Lavaboom-logo.svg")
-	p.lead Log In
+	p.lead(ng-bind="'LOGIN.SIGNUP.LOGIN' | translate")
 	span.error(ng-bind="currentErrorMessage")
 	div.form-group
 		input.form-control.input-lg(type='text', ng-model='form.username', placeholder="username or email address", required)
@@ -15,7 +15,6 @@ form
 		span &nbsp; &nbsp; Keep me logged in	
 
 	p
-		button.btn.btn-block.btn-lg.btn-primary(ng-click='logIn()', ng-disabled="isProcessing") Go to my Inbox
-		
+		button.btn.btn-block.btn-lg.btn-primary(ng-click='logIn()', ng-disabled="isProcessing", ng-bind="'LOGIN.AUTH.GO_TO_MY_INBOX' | translate")
 	p.text-center
-		a(href='#') No Account Yet? Signup Here!
+		a(href='#', ng-bind="'LOGIN.AUTH.NO_ACCOUNT_YET' | translate")
