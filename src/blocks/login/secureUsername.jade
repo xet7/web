@@ -1,5 +1,5 @@
 form
-	p.lead Secure your own Lavaboom username
+	h1 Secure your own Lavaboom username
 	p.text-center
 		a(href='#') Got an invite mail already?
 	div.form-group
@@ -10,13 +10,13 @@ form
 	div.form-group.clearfix
 		input.form-control.input-lg(type='email', ng-model='signUpSecure.email', value='', placeholder="your current email address")
 
-	hr.spacer
+	hr.spacer.large
 
-	p
+	p.checkbox-wrapper
 		label.switch
 			input(type='checkbox', checked='')
 			i
-		span &nbsp; &nbsp; I want to be the first to hear about Lavaboom news, send me the latest from Lava HQ
+		span I want to be the first to hear about Lavaboom news, send me the latest from Lava HQ
 
 	p
 		button.btn.btn-block.btn-lg.btn-primary(ng-click='secure()') Secure your username
