@@ -5,19 +5,21 @@ var del = require('del');
 var path = require('path');
 var spawn = require('child_process').spawn;
 var toml = require('toml');
+var source = require('vinyl-source-stream');
+require('toml-require').install();
 var lazypipe = require('lazypipe');
 var filterTransform = require('filter-transform');
 
 // General
 var gulp = require('gulp');
-var traceur = require('gulp-traceur');
 var plg = require('gulp-load-plugins')({
 	pattern: ['gulp-*', 'gulp.*'],
 	replaceString: /\bgulp[\-.]/
 });
 
 // Browserify the mighty one
-var traceurify = require('traceurify'),
+var browserify = require('browserify'),
+	es6ify = require('es6ify'),
 	ngminify = require('browserify-ngmin'),
 	bulkify = require('bulkify'),
 	uglifyify = require('uglifyify'),
@@ -41,59 +43,53 @@ var args = process.argv.slice(2);
  * Gulp Taks
  */
 
-gulp.task('build:scripts', ['clean:dist', 'lint:scripts', 'build:translations'], function() {
-	var transforms = [
-		filterTransform(
-			function(file) {
-				console.log('Traceur ES6 -> ES5: ' + file);
-				return true;
-			},
-			traceurify({
-			})
-		),
-		filterTransform(
-			function(file) {
-				console.log('Bulkify prepare: ' + file);
-				return true;
-			},
-			bulkify),
-		filterTransform(
-			function(file) {
-				console.log('BRFS: ' + file);
-				return true;
-			},
-			brfs
-		)
-	];
-
-	if (config.isProduction) {
-		transforms.push(
-			filterTransform(
-				function(file) {
-					console.log('Angular prepare: ' + file);
-					return true;
-				},
-				ngminify)
-		);
-
-		transforms.push(
-			filterTransform(
-				function(file) {
-					console.log('Uglify prepare: ' + file);
-					return true;
-				},
-				uglifyify)
-		);
-	}
-
-	return gulp.src(paths.scripts.inputApps, { read: false })
+gulp.task('build:scripts:vendor', ['clean:dist', 'lint:scripts'], function() {
+	return gulp.src(paths.scripts.inputDeps)
 		.pipe(plg.plumber())
-		.pipe(plg.browserify({
-			transform: transforms,
-			extensions: ['.js'],
-			debug: true
+		.pipe(plg.tap(function (file, t) {
+			var config = toml.parse(file.contents);
+			var dependencies = [];
+
+			for(var i = 0; i < config.application.dependencies.length; i++)
+				dependencies.push(paths.scripts.inputAppsFolder + config.application.dependencies[i]);
+
+			var newName = file.relative.replace('.toml', '-vendor.js');
+
+			return gulp.src(dependencies)
+				.pipe(plg.concat(newName))
+				.pipe(gulp.dest(paths.scripts.output));
 		}))
 		.pipe(gulp.dest(paths.scripts.output));
+});
+
+var browserifyBundle = function(filename) {
+	var browserifyPipeline = browserify(filename, {
+		basedir: __dirname
+	})
+		.add(es6ify.runtime)
+		.transform(es6ify)
+		.transform(bulkify)
+		.transform(brfs);
+	if (config.isProduction) {
+		browserifyPipeline = browserifyPipeline
+			.transform(ngminify)
+			.transform(uglifyify);
+	}
+	return browserifyPipeline
+		.bundle()
+		.pipe(source(path.basename(filename)))
+		.pipe(gulp.dest(paths.scripts.output));
+};
+
+var scriptBuildSteps = [];
+
+paths.scripts.inputApps.forEach(function(appScript){
+	var name = 'build:scripts-' + (scriptBuildSteps.length + 1);
+
+	gulp.task(name, ['clean:dist', 'lint:scripts', 'build:translations', 'build:scripts:vendor'], function() {
+		return browserifyBundle(appScript);
+	});
+	scriptBuildSteps.push(name);
 });
 
 // Lint scripts
@@ -230,7 +226,7 @@ gulp.task('clean:dist', function () {
 // Run some unit tests to check key logic
 gulp.task('tests', function() {
 	return gulp.src(paths.tests.unit.input)
-		.pipe(traceur())
+		.pipe(plg.traceur())
 		.pipe(gulp.dest(os.tmpdir()))
 		.pipe(plg.jasmine());
 });
@@ -262,21 +258,22 @@ gulp.task('set-production', function () {
 	config.isProduction = true;
 });
 
+var compileSteps = ['clean:dist',
+		'build:html',
+		'build:jade',
+		'build:partials',
+		'build:partials-jade',
+		'build:translations',
+		'copy:static',
+		'copy:images',
+		'copy:fonts',
+		'copy:vendor',
+		'build:styles'
+	]
+	.concat(scriptBuildSteps);
+
 // Compile files
-gulp.task('compile', [
-	'clean:dist',
-	'build:html',
-	'build:jade',
-	'build:partials',
-	'build:partials-jade',
-	'build:translations',
-	'copy:static',
-	'copy:images',
-	'copy:fonts',
-	'copy:vendor',
-	'build:scripts',
-	'build:styles'
-]);
+gulp.task('compile', compileSteps);
 
 gulp.task('default', [
 	'bower',
