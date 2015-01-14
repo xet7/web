@@ -2,3 +2,8 @@
 	str = "Hello! Im Test-String in English"
 [INBOX]
 	NO_PREVIEW_AVAILABLE = "No preview available"
+[LOGIN.GENERATING_KEYS]
+	LABEL_GENERATING = "Generating your Keys"
+	LABEL_GENERATED = "Your keys are ready!"
+	LABEL_REACHED = "Our hamsters are running extra hard, just be a bit more patient..."
+	LABEL_DO_NOT_CLOSE = "Do not close this window!"

@@ -53,11 +53,16 @@ angular.module('AppLavaboomLogin').config(function($stateProvider, $urlRouterPro
 		.state('generateKeys', {
             url: '/generateKeys',
             templateUrl: 'partials/login/generateKeys.html',
-            controller:'VerifyController'
+            controller: 'CtrlGenerateKeys'
         })
 		.state('generatingKeys', {
             url: '/generatingKeys',
             templateUrl: 'partials/login/generatingKeys.html',
-            controller:'GenerateKeysController'
-        });
+            controller: 'CtrlGeneratingKeys'
+        })
+		.state('backupKeys', {
+			url: '/backupKeys',
+			templateUrl: 'partials/login/backup-you-key.html',
+			controller: 'CtrlBackup'
+		});
 });

@@ -58,13 +58,20 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		}, {});
 	};
 
+	var isInitialized = false;
+
 	this.initialize = (opt = {}) => {
 		if (!opt.isRememberPasswords)
 			opt.isRememberPasswords = false;
 
 		self.options = opt;
 
+		if (isInitialized)
+			return;
+
 		openpgp.initWorker('/vendor/openpgp.worker.js');
+
+		isInitialized = true;
 	};
 
 	var applyPasswordToKeyPair = (privateKey, password) => {
@@ -88,6 +95,8 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		if (!numBits)
 			numBits = 1024;
 
+		console.log('generating keys', email, password, numBits);
+
 		var deferred = $q.defer();
 		openpgp.generateKeyPair({numBits: numBits, userId: email, passphrase: password})
 			.then(freshKeys => {
@@ -98,8 +107,8 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 				var pub = openpgp.key.readArmored(freshKeys.publicKeyArmored).keys[0],
 					prv = openpgp.key.readArmored(freshKeys.privateKeyArmored).keys[0];
 
-				$rootScope.$broadcast('crypto-dst-emails-updated', self.getAvailableDestinationEmails());
-				$rootScope.$broadcast('crypto-src-emails-updated', self.getAvailableSourceEmails());
+				/*$rootScope.$broadcast('crypto-dst-emails-updated', self.getAvailableDestinationEmails());
+				$rootScope.$broadcast('crypto-src-emails-updated', self.getAvailableSourceEmails());*/
 
 				deferred.resolve({
 					pub: pub,

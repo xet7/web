@@ -2,6 +2,8 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 	var self = this;
 
 	this.name = '';
+	this.email = '';
+	this.nameEmail = '';
 
 	// information about user from API
 	this.information = {
@@ -25,8 +27,10 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		});
 	};
 
-	this.singIn = (username, password) => {
+	this.signIn = (username, password) => {
 		self.name = username;
+		self.email = `${username}@${consts.rootDomain}`;
+		self.nameEmail = `${self.name} <${self.email}>`;
 
 		return co(function * (){
 			try {

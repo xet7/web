@@ -4,8 +4,10 @@ angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, 
 	this.plan = null;
 	this.tokenSignup = null;
 	this.details = null;
+	this.password = null;
 
 	this.signUp = (password) => {
+		self.password = password;
 		return co(function * (){
 			var res = yield apiProxy('accounts', 'create', 'invited', {
 				username: self.tokenSignup.username,

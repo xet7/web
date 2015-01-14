@@ -1,7 +1,7 @@
 angular.module('AppLavaboomLogin').controller('VerifyController', function($scope, $state, signUp) {
 	$scope.form = {
-		username: 'let4be-signup-test',
-		token: 'mIQSiiVUBvCG80fm9hAX',
+		username: 'wtf-test2',
+		token: 'HGXHaV9bPSHSML3YGxwQ',
 		isNews: true
 	};
 
