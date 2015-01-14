@@ -18,6 +18,9 @@
 		border: 0;
 		box-shadow: none;
 		color: @lava-login-gray-lighter;
+		&.loading{
+			background: @lava-login-gray-dark url('/img/loader.svg') 100% center no-repeat;
+		}
 	}
 
 	p.big{
@@ -54,14 +57,15 @@
 			bottom: 0;
 			width: auto;
 			.z1();
-			line-height: 2em;
+			line-height: 1.8em;
 			font-size: 18px;
+			font-weight: 100;
 		}
 	}
 
 	hr.spacer{
 		border-color: transparent;
-		margin-bottom: 2em;
+		margin-bottom: 1.1em;
 		font-size: 2em;
 	}
 
@@ -73,7 +77,7 @@
 		color: @lava-login-gray-light;
 		font-weight: @light-font-weight;
 		.text-center();
-		margin-bottom: 2em;
+		margin-bottom: 1.1em;
 		&.pack{
 			margin-bottom: 0;
 		}
@@ -81,6 +85,10 @@
 			margin-top: .5em;
 			margin-bottom: .75em;
 		}
+	}
+
+	h1{
+		margin-bottom: 2em;
 	}
 
 	.steps{
@@ -94,13 +102,12 @@
 		}
 	}
 
-	h1{
-		margin-bottom: 1.5em;
-	}
-
 	.login-logo{
 		width: 60%;
 		margin-left: 20%;
+		& + h1, & + .lead {
+			margin-top: -.7em;
+		}
 	}
 
 	a{
@@ -126,5 +133,18 @@
 
 	.btn{
 		color: @lava-login-gray-lighter;
+		margin-bottom: 1em;
+	}
+
+	label{
+		font-weight: 100;
+	}
+
+	footer{
+		margin-top: 1.5em;
+	}
+
+	.checkbox-label{
+		margin-top: 3px;
 	}
 }
