@@ -3,14 +3,6 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 	this.name = '';
 
-	this.signup = {
-		details: {
-			firstName: '',
-			lastName: '',
-			displayName: ''
-		}
-	};
-
 	// information about user from API
 	this.information = {
 
@@ -18,7 +10,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 	var token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
 
-	var hash = (password) => CryptoJS.SHA3(password, { outputLength: 256 }).toString();
+	this.calculateHash = (password) => CryptoJS.SHA3(password, { outputLength: 256 }).toString();
 
 	if (token)
 		LavaboomAPI.setAuthToken(token);
@@ -33,18 +25,6 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		});
 	};
 
-	this.createInvited = (username, password, token) => {
-		return co(function * (){
-			var res = yield apiProxy('account', 'create', 'invited', {
-				username: username,
-				password: hash(password).toString(),
-				token: token
-			});
-
-			return res.body;
-		});
-	};
-
 	this.singIn = (username, password) => {
 		self.name = username;
 
@@ -53,7 +33,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 				var res = yield apiProxy('tokens', 'create', {
 					type: 'auth',
 					username: username,
-					password: hash(password)
+					password: self.calculateHash(password)
 				});
 
 				token = res.body.token.id;
