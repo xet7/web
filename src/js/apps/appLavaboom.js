@@ -1,12 +1,14 @@
-(function() {
-	window.primaryApplicationName = 'AppLavaboom';
-	angular.module(primaryApplicationName, ['lavaboom.api', 'ngSanitize', 'ui.router', 'ui.bootstrap', 'ui.select', 'pascalprecht.translate', 'base64']);
+window.primaryApplicationName = 'AppLavaboom';
+angular.module(primaryApplicationName, ['lavaboom.api', 'ngSanitize', 'ui.router', 'ui.bootstrap', 'ui.select', 'pascalprecht.translate', 'base64']);
 
-	// = require "../configs/*.js"
-	// = require "../services/*.js"
+var bulkRequire = require('bulk-require');
 
-	// = require "./AppLavaboom/configs/*.js"
-	// = require "./AppLavaboom/directives/*.js"
-	// = require "./AppLavaboom/services/*.js"
-	// = require "./AppLavaboom/controllers/*.js"
-})();
+bulkRequire(__dirname, [
+	'../configs/*.js',
+	'../services/*.js',
+
+	'./AppLavaboom/configs/*.js',
+	'./AppLavaboom/directives/*.js',
+	'./AppLavaboom/services/*.js',
+	'./AppLavaboom/controllers/*.js'
+]);

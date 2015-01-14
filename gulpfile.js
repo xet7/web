@@ -6,6 +6,7 @@ var path = require('path');
 var spawn = require('child_process').spawn;
 var toml = require('toml');
 var lazypipe = require('lazypipe');
+var filterTransform = require('filter-transform');
 
 // General
 var gulp = require('gulp');
@@ -19,6 +20,7 @@ var plg = require('gulp-load-plugins')({
 var traceurify = require('traceurify'),
 	ngminify = require('browserify-ngmin'),
 	bulkify = require('bulkify'),
+	uglifyify = require('uglifyify'),
 	brfs = require('brfs');
 
 // Modules
@@ -32,8 +34,6 @@ var config = require('./gulp/config');
 // Global variables
 var childProcess = null;
 var args = process.argv.slice(2);
-var appsCache = {};
-var appsCacheMin = {};
 
 
 
@@ -41,68 +41,59 @@ var appsCacheMin = {};
  * Gulp Taks
  */
 
+gulp.task('build:scripts', ['clean:dist', 'lint:scripts', 'build:translations'], function() {
+	var transforms = [
+		filterTransform(
+			function(file) {
+				console.log('Traceur ES6 -> ES5: ' + file);
+				return true;
+			},
+			traceurify({
+			})
+		),
+		filterTransform(
+			function(file) {
+				console.log('Bulkify prepare: ' + file);
+				return true;
+			},
+			bulkify),
+		filterTransform(
+			function(file) {
+				console.log('BRFS: ' + file);
+				return true;
+			},
+			brfs
+		)
+	];
 
+	if (config.isProduction) {
+		transforms.push(
+			filterTransform(
+				function(file) {
+					console.log('Angular prepare: ' + file);
+					return true;
+				},
+				ngminify)
+		);
 
-// process angular.js applications without their 3rd party dependencies
-// here we apply such special stuff as ng annotate, traceur - etc
-// i.e. build steps specific to our code
+		transforms.push(
+			filterTransform(
+				function(file) {
+					console.log('Uglify prepare: ' + file);
+					return true;
+				},
+				uglifyify)
+		);
+	}
 
-gulp.task('build:apps', ['clean:dist', 'lint:scripts'], function() {
-	var prodPipeline = lazypipe()
-		.pipe(plg.uglify)
-		.pipe(plg.tap, function (file, t) {
-			appsCacheMin[file.relative] = file.contents;
-		});
-
-	return gulp.src(paths.scripts.inputApps)
-		//.pipe(plg.cached('build:apps'))
-		//.pipe(plg.sourcemaps.init())
-		.pipe(plg.include())
-		.pipe(traceur())
-		.pipe(plg.ngAnnotate())
-		//.pipe(plg.sourcemaps.write())
-		.pipe(plg.tap(function (file, t) {
-			appsCache[file.relative] = file.contents;
-		}))
-		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
-});
-
-gulp.task('build:scripts', ['clean:dist', 'lint:scripts', 'build:apps', 'build:translations'], function() {
-	var prodPipeline = lazypipe()
-		.pipe(plg.gzip)
-		.pipe(gulp.dest, paths.scripts.output);
-
-	return gulp.src(paths.scripts.input)
+	return gulp.src(paths.scripts.inputApps, { read: false })
 		.pipe(plg.plumber())
-		.pipe(plg.replace(/require "(.*).js"/g, function(match, p1, p2, p3, offset, string) {
-			var file = p1 + (config.isProduction ? '.min.js' : '.js');
-			var resolvedFile = path.resolve(__dirname, path.dirname(paths.scripts.input), file);
-			if (fs.existsSync(resolvedFile))
-				return 'require "' + file + '"';
-
-			if (config.isProduction) {
-				file = p1 + '.js';
-				resolvedFile = path.resolve(__dirname, path.dirname(paths.scripts.input), file);
-				if (fs.existsSync(resolvedFile))
-					return 'require "' + file + '"';
-			}
-
-			return 'console.error("Cannot find angular.js include \\"' + file + '\\"!")';
+		.pipe(plg.browserify({
+			transform: transforms,
+			extensions: ['.js'],
+			debug: true
 		}))
-		.pipe(plg.include())
-		.pipe(plg.replace(/\/\/\s*=\s*require-application "(.*).js"/g, function(match, p1, p2, p3, offset, string) {
-			var key = p1 + '.js';
-			var cache = config.isProduction ? appsCacheMin : appsCache;
-
-			if (!cache[key])
-				return 'console.error("Cannot find angular.js application \\"' + key + '\\"!")';
-			return cache[key];
-		}))
-		.pipe(plg.sourcemaps.init())
-		//.pipe(header(config.banner.full, { package : package }))
-		.pipe(plg.sourcemaps.write('.', {sourceMappingURLPrefix: '/js/'}))
-		.pipe(gulp.dest(paths.scripts.output))
-		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
+		.pipe(gulp.dest(paths.scripts.output));
 });
 
 // Lint scripts
