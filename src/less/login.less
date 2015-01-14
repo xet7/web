@@ -1,15 +1,130 @@
 #login-app{
-	padding-top: 100px;
+	font-weight: 100 !important;
+
+	#main-content{
+		position: relative;
+		top: 40%;
+		transform: translateY(-50%);
+	}
+
 	background-color: @lava-login-gray-darker;
 	color: @lava-login-gray-light;
-	h1{
+	text-rendering: optimizelegibility;
+	-moz-osx-font-smoothing: grayscale;
+
+	input[type=text], input[type=password], textarea, .btn{
+		border-radius: 2px;
+		background: @lava-login-gray-dark;
+		border: 0;
+		box-shadow: none;
+		color: @lava-login-gray-lighter;
+	}
+
+	p.big{
+		font-size: 1.25em;
+	}
+
+	.highlight{
+		color: @lava-login-gray-lighter;
+	}
+
+	.progress{
+		height: 6px;
+		border: 0;
+		.progress-bar{
+			border: 0;
+			box-shadow: none;
+			border-radius: 2px;
+		}
+	}
+
+	.input-group.suffix{
+		display: block;
+		input{
+			display: block;
+		}
+		.input-group-addon{
+			display: block;
+			background: transparent none;
+			color: @lava-login-gray-light;
+			border: 0;
+			.pos-abs();
+			right: 0;
+			top: 0;
+			bottom: 0;
+			width: auto;
+			.z1();
+			line-height: 2em;
+			font-size: 18px;
+		}
+	}
+
+	hr.spacer{
+		border-color: transparent;
+		margin-bottom: 2em;
+		font-size: 2em;
+	}
+
+	h4{
+		color: white;
+	}
+	p.lead, h1{
 		font-size: 2em;
 		color: @lava-login-gray-light;
 		font-weight: @light-font-weight;
 		.text-center();
+		margin-bottom: 2em;
+		&.pack{
+			margin-bottom: 0;
+		}
+		+ .steps{
+			margin-top: .5em;
+			margin-bottom: .75em;
+		}
+	}
+
+	.steps{
+		font-size: 4em;
+		>span{
+			.opacity(.2);
+			margin: 0;
+			&.active{
+				.opacity(1);
+			}
+		}
+	}
+
+	h1{
+		margin-bottom: 1.5em;
+	}
+
+	.login-logo{
+		width: 60%;
+		margin-left: 20%;
 	}
 
 	a{
 		color: @lava-login-lava;
+		&:not(.btn){
+			display: inline-block;
+			border-bottom: 1px solid @lava-login-lava;
+		}
+		&:hover, &:focus{
+			text-decoration: none;
+		}
+	}
+	.btn-primary{
+		background-color: @lava-login-lava;
+		box-shadow: @lava-login-box-shadow;
+	}
+
+	.login-alert{
+		background-color: @lava-login-gray-dark;
+		box-shadow: @lava-login-box-shadow;
+		border-radius: 10px;
+	}
+
+	.btn{
+		color: @lava-login-gray-lighter;
 	}
 }

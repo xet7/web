@@ -1,6 +1,6 @@
-angular.module(primaryApplicationName).config(function($stateProvider, $urlRouterProvider){
+angular.module('AppLavaboom').config(function($stateProvider, $urlRouterProvider){
+	// For any unmatched url, send to /route1
 	$urlRouterProvider.otherwise("/in");
-
 	$stateProvider
 		.state('in', {
 			url: "/in",
@@ -10,7 +10,13 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 			// abstract:true,
 			url: "/settings",
 			templateUrl: "partials/settings.html"
-		}).state('settings.preferences', {
+		}).state('compose', {
+			// abstract:true,
+			url: "/compose",
+			templateUrl: "partials/compose.html",
+			controller:"ComposeController"
+		})
+		.state('settings.preferences', {
 			// abstract:true,
 			url: "/preferences",
 			templateUrl: "partials/settings/settings.preferences.html"
@@ -29,6 +35,6 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 		}).state('login.login', {
 			// abstract:true,
 			url: "/login",
-			templateUrl: "partials/login/login.html"
+			templateUrl: "partials/login/login1.html"
 		});
 });

@@ -14,6 +14,7 @@
   },
   "devDependencies": {
     "co": "^4.1.0",
+    "angular-validation": "^1.2.6",
     "connect-gzip-static": "^1.0.0",
     "connect-livereload": "^0.5.2",
     "del": "^0.1.3",
