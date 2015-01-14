@@ -8,7 +8,7 @@ angular.module('AppLavaboomLogin').controller('CtrlAuth', function($scope, $root
 
     $scope.logIn = () => {
 		$scope.isProcessing = true;
-		user.singIn($scope.form.username, $scope.form.password)
+		user.signIn($scope.form.username, $scope.form.password)
 			.finally(() => {
 				$scope.isProcessing = false;
 			});
