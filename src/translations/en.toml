@@ -15,3 +15,11 @@
 	LABEL_GENERATED = "Your keys are ready!"
 	LABEL_REACHED = "Our hamsters are running extra hard, just be a bit more patient..."
 	LABEL_DO_NOT_CLOSE = "Do not close this window!"
+
+# Generic error messages for Lavaboom REST API
+[LAVABOOM.API.ERROR]
+	UNKNOWN = "Unknown error, we're really sorry"
+	403 = "Wrong username or password!"
+
+# Specific error message for Lavaboom REST API
+[LAVABOOM.API.ERROR.PATH]

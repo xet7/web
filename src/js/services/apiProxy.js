@@ -1,10 +1,34 @@
-angular.module(primaryApplicationName).factory('apiProxy', function($q, $rootScope, co, LavaboomAPI) {
-	LavaboomAPI.formatError = (err) => err.body && err.body.message ? err.body.message : 'unknown error';
+angular.module(primaryApplicationName).factory('apiProxy', function($q, $rootScope, $translate, co, LavaboomAPI) {
+	LavaboomAPI.formatError = (callName, error) => {
+		callName = callName.toUpperCase();
+
+		/*jshint -W002 */
+		return co(function *(){
+			try {
+				return yield $translate(`LAVABOOM.API.ERROR.${callName}.${error.status}`);
+			} catch (err) {
+				try {
+					return yield $translate(`LAVABOOM.API.ERROR.${error.status}`);
+				} catch (err) {
+					if (error.body && error.body.message)
+						return error.body.message;
+
+					// huh? wtf!
+					try {
+						return yield $translate(`LAVABOOM.API.ERROR.UNKNOWN`);
+					} catch (err) {
+						// srsly? wtf!
+						return 'unknown error';
+					}
+				}
+			}
+		});
+	};
 
 	return function () {
 		var fnArgs = [].splice.call(arguments,0);
 		var args = fnArgs.splice(-1)[0];
-		var callName = `LavaboomAPI.${fnArgs.join('.')}`;
+		var callName = fnArgs.join('.');
 
 		console.log(`Calling ${callName}`, args ? args : '[no args]', '...');
 
@@ -24,7 +48,10 @@ angular.module(primaryApplicationName).factory('apiProxy', function($q, $rootSco
 
 				return res;
 			} catch (err) {
-				$rootScope.currentErrorMessage = LavaboomAPI.formatError(err);
+				LavaboomAPI.formatError(callName, err)
+					.then(formattedError => {
+						$rootScope.currentErrorMessage = formattedError;
+					});
 
 				console.error(`${callName} error: `, err);
 
