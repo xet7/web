@@ -14,7 +14,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 		return co(function * (){
 			try {
-				var res = yield apiProxy('emails', 'list');
+				var res = yield apiProxy('emails', 'list', {});
 
 				self.emails = res.body.emails ? res.body.emails.map(e => {
 					return {

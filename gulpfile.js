@@ -161,7 +161,6 @@ gulp.task('build:styles', ['clean:dist'], function() {
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
 });
 
-
 // Copy static files into output folder
 gulp.task('copy:vendor', ['clean:dist'], function() {
 	return gulp.src(paths.vendor.input)

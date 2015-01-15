@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).service('user', function($q, $rootScope, $state, $timeout, $window, consts, apiProxy, LavaboomAPI, co) {
+angular.module(primaryApplicationName).service('user', function($q, $rootScope, $state, $timeout, $window, consts, apiProxy, LavaboomAPI, co, app) {
 	var self = this;
 
 	this.name = '';
@@ -11,17 +11,23 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 	};
 
 	var token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
+	var isAuthenticated = false;
 
 	this.calculateHash = (password) => CryptoJS.SHA3(password, { outputLength: 256 }).toString();
 
 	if (token)
 		LavaboomAPI.setAuthToken(token);
 
-	this.isAuthenticated = () => !!token;
+	this.isAuthenticated = () => token && isAuthenticated;
 
 	this.gatherUserInformation = () => {
 		return co(function * () {
 			var res = yield apiProxy('accounts', 'get', 'me');
+
+			if (!isAuthenticated) {
+				isAuthenticated = true;
+				$rootScope.$broadcast('user-authenticated');
+			}
 
 			return res.body;
 		});
@@ -43,6 +49,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 				token = res.body.token.id;
 				LavaboomAPI.setAuthToken(token);
 
+				isAuthenticated = true;
 				$rootScope.$broadcast('user-authenticated');
 			} catch (err) {
 				$rootScope.$broadcast('user-authentication-error', err);
@@ -72,19 +79,22 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		console.log('Checking authentication token...');
 
 		return co(function * () {
-			if (self.isAuthenticated()) {
-				if (primaryApplicationName == 'AppLavaboomLogin') {
-					try {
-						yield self.gatherUserInformation();
-					} catch (err) {
-						return true;
-					}
+			if (token) {
+				try {
+					yield self.gatherUserInformation();
 
-					console.log('We are already authenticated with a valid token - going to the main application');
-					$window.location = '/';
+					if (app.isLoginApplication) {
+						console.log('We are already authenticated with a valid token - going to the main application');
+						$window.location = '/';
+					}
+				} catch (err) {
+					if (app.isLoginApplication)
+						return true;
+					if (app.isInboxApplication)
+						$window.location = consts.loginUrl;
 				}
 			}
-			else if (primaryApplicationName == 'AppLavaboom') {
+			else if (app.isInboxApplication) {
 				$window.location = consts.loginUrl;
 			}
 		});
