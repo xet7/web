@@ -1,4 +1,4 @@
-form
+form.steps-form
 	p.lead.pack Generate your keys
 
 	p.text-center.steps
@@ -9,15 +9,24 @@ form
 		span.icon-unread.active
 		span.icon-unread
 
-	p Lavaboom keeps you safe by encrypting your email and data. To do this, we give each other a pair of encryption keys.
+	div.info
+		span.icon-unread
+		p Lavaboom keeps you safe by encrypting your email and data. To do this, we give each other a pair of encryption keys.
 
 	hr.spacer
 	
-	h1.pack Public Key
-	p Lavaboom keeps you safe by encrypting your email and data. To do this, we give each other a pair of encryption keys.
+	ul.list-unstyled
+		li.table-list
+			span.icon-lock.cell
+			div.cell
+				h1.pack Public Key
+				p Lavaboom keeps you safe by encrypting your email and data. To do this, we give each other a pair of encryption keys.
+		li.table-list
+			span.icon-key.cell
+			div.cell
+				h1.pack Private Key
+				p Lavaboom keeps you safe by encrypting your email and data. To do this, we give each other a pair of encryption keys.
+	hr.spacer
 
-	h1.pack Private Key
-	p Lavaboom keeps you safe by encrypting your email and data. To do this, we give each other a pair of encryption keys.
-
-	p
+	footer
 		button.btn.btn-block.btn-lg.btn-primary(ui-sref="generatingKeys") Generate my key pair

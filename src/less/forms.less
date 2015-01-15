@@ -38,6 +38,25 @@
     transition: all @lava-ease-out-in 0.2s;
 }
 
+.switch + span, .switch + label {
+  padding-left: 1em;
+}
+
+.checkbox-wrapper{
+  display: table;
+  // height: 100%;
+  > *{
+    // height: 100%;
+    vertical-align: top;
+    display: table-cell;
+  }
+
+  .switch{
+    position: relative;
+    top: 5px;
+  }
+}
+
 form.settings{
   position: relative;
   height: 100%;
