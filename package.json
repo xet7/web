@@ -75,6 +75,7 @@
     "karma-phantomjs-launcher": "^0.1.4",
     "karma-spec-reporter": "^0.0.13",
     "lazypipe": "^0.2.2",
+    "mold-source-map": "^0.3.0",
     "node-fs": "^0.1.7",
     "toml": "^2.1.1",
     "toml-require": "^1.0.1",
