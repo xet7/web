@@ -5,15 +5,24 @@ var del = require('del');
 var path = require('path');
 var spawn = require('child_process').spawn;
 var toml = require('toml');
+var source = require('vinyl-source-stream');
 var lazypipe = require('lazypipe');
+var exorcist  = require('exorcist');
 
 // General
 var gulp = require('gulp');
-var traceur = require('gulp-traceur');
 var plg = require('gulp-load-plugins')({
 	pattern: ['gulp-*', 'gulp.*'],
 	replaceString: /\bgulp[\-.]/
 });
+
+// Browserify the mighty one
+var browserify = require('browserify'),
+	es6ify = require('es6ify'),
+	ngminify = require('browserify-ngmin'),
+	bulkify = require('bulkify'),
+	uglifyify = require('uglifyify'),
+	brfs = require('brfs');
 
 // Modules
 var serve = require('./serve');
@@ -26,77 +35,84 @@ var config = require('./gulp/config');
 // Global variables
 var childProcess = null;
 var args = process.argv.slice(2);
-var appsCache = {};
-var appsCacheMin = {};
 
-
+require('toml-require').install();
 
 /**
  * Gulp Taks
  */
 
-
-
-// process angular.js applications without their 3rd party dependencies
-// here we apply such special stuff as ng annotate, traceur - etc
-// i.e. build steps specific to our code
-
-gulp.task('build:apps', ['clean:dist', 'lint:scripts'], function() {
-	var prodPipeline = lazypipe()
-		.pipe(plg.uglify)
-		.pipe(plg.tap, function (file, t) {
-			appsCacheMin[file.relative] = file.contents;
-		});
-
-	return gulp.src(paths.scripts.inputApps)
-		//.pipe(plg.cached('build:apps'))
-		//.pipe(plg.sourcemaps.init())
-		.pipe(plg.include())
-		.pipe(traceur())
-		.pipe(plg.ngAnnotate())
-		//.pipe(plg.sourcemaps.write())
-		.pipe(plg.tap(function (file, t) {
-			appsCache[file.relative] = file.contents;
-		}))
-		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
-});
-
-gulp.task('build:scripts', ['clean:dist', 'lint:scripts', 'build:apps', 'build:translations'], function() {
-	var prodPipeline = lazypipe()
-		.pipe(plg.gzip)
-		.pipe(gulp.dest, paths.scripts.output);
-
-	return gulp.src(paths.scripts.input)
+gulp.task('build:scripts:vendor', ['clean:dist', 'lint:scripts'], function() {
+	return gulp.src(paths.scripts.inputDeps)
 		.pipe(plg.plumber())
-		.pipe(plg.replace(/require "(.*).js"/g, function(match, p1, p2, p3, offset, string) {
-			var file = p1 + (config.isProduction ? '.min.js' : '.js');
-			var resolvedFile = path.resolve(__dirname, path.dirname(paths.scripts.input), file);
-			if (fs.existsSync(resolvedFile))
-				return 'require "' + file + '"';
+		.pipe(plg.tap(function (file, t) {
+			var appConfig = toml.parse(file.contents);
+			var dependencies = [];
 
-			if (config.isProduction) {
-				file = p1 + '.js';
-				resolvedFile = path.resolve(__dirname, path.dirname(paths.scripts.input), file);
-				if (fs.existsSync(resolvedFile))
-					return 'require "' + file + '"';
+			for(var i = 0; i < appConfig.application.dependencies.length; i++) {
+				var resolvedFileOriginal = paths.scripts.inputAppsFolder + appConfig.application.dependencies[i];
+
+				var resolvedFile = '';
+				if (config.isProduction) {
+					resolvedFile = resolvedFileOriginal.replace('.js', '.min.js');
+
+					if (!fs.existsSync(resolvedFile)) {
+						console.log('Cannot find minified version for vendor library: ', appConfig.application.dependencies[i]);
+						resolvedFile = resolvedFileOriginal;
+					}
+				} else resolvedFile = resolvedFileOriginal;
+
+				if (!fs.existsSync(resolvedFile))
+					throw new Error('Cannot find vendor library: "' + appConfig.application.dependencies[i] + '"');
+
+				dependencies.push(resolvedFile);
 			}
 
-			return 'console.error("Cannot find angular.js include \\"' + file + '\\"!")';
-		}))
-		.pipe(plg.include())
-		.pipe(plg.replace(/\/\/\s*=\s*require-application "(.*).js"/g, function(match, p1, p2, p3, offset, string) {
-			var key = p1 + '.js';
-			var cache = config.isProduction ? appsCacheMin : appsCache;
+			var newName = file.relative.replace('.toml', '-vendor.js');
 
-			if (!cache[key])
-				return 'console.error("Cannot find angular.js application \\"' + key + '\\"!")';
-			return cache[key];
+			return gulp.src(dependencies)
+				.pipe(plg.plumber())
+				.pipe(plg.sourcemaps.init())
+				.pipe(plg.concat(newName))
+				.pipe(plg.sourcemaps.write('.', {sourceMappingURLPrefix: '/js/'}))
+				.pipe(gulp.dest(paths.scripts.output));
 		}))
-		.pipe(plg.sourcemaps.init())
-		//.pipe(header(config.banner.full, { package : package }))
-		.pipe(plg.sourcemaps.write('.', {sourceMappingURLPrefix: '/js/'}))
-		.pipe(gulp.dest(paths.scripts.output))
-		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
+		.pipe(gulp.dest(paths.scripts.output));
+});
+
+var browserifyBundle = function(filename) {
+	var browserifyPipeline = browserify(filename, {
+		basedir: __dirname,
+		debug: config.isDebugable
+	})
+		.add(es6ify.runtime)
+		.transform(es6ify)
+		.transform(bulkify)
+		.transform(brfs);
+	if (config.isProduction) {
+		browserifyPipeline = browserifyPipeline
+			.transform(ngminify)
+			.transform(uglifyify);
+	}
+
+	var basename = path.basename(filename);
+	var sourceMapBasename = basename.replace('.js', '.js.map');
+	return browserifyPipeline
+		.bundle()
+		.pipe(exorcist(paths.scripts.output + sourceMapBasename, '/js/' + sourceMapBasename))
+		.pipe(source(basename))
+		.pipe(gulp.dest(paths.scripts.output));
+};
+
+var scriptBuildSteps = [];
+
+paths.scripts.inputApps.forEach(function(appScript){
+	var name = 'build:scripts-' + (scriptBuildSteps.length + 1);
+
+	gulp.task(name, ['clean:dist', 'lint:scripts', 'build:translations', 'build:scripts:vendor'], function() {
+		return browserifyBundle(appScript);
+	});
+	scriptBuildSteps.push(name);
 });
 
 // Lint scripts
@@ -122,19 +138,25 @@ gulp.task('build:styles', ['clean:dist'], function() {
 			keepSpecialComments: 0
 		})
 		//.pipe(header, config.banner.min, { package : package })
-		.pipe(plg.rename, { suffix: '.min' })
-		.pipe(plg.sourcemaps.write, '.')
+
+	if (config.isDebugable) {
+		prodPipeline = prodPipeline
+			.pipe(plg.rename, { suffix: '.min' })
+			.pipe(plg.sourcemaps.write, '.');
+	}
+
+	prodPipeline = prodPipeline
 		.pipe(gulp.dest, paths.styles.output)
 		.pipe(plg.gzip)
 		.pipe(gulp.dest, paths.styles.output);
 
 	return gulp.src(paths.styles.input)
 		.pipe(plg.plumber())
-		.pipe(plg.sourcemaps.init())
+		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.nop())
 		.pipe(plg.less())
 		.pipe(plg.autoprefixer('last 2 version', '> 1%'))
 		//.pipe(header(config.banner.full, { package : package }))
-		.pipe(plg.sourcemaps.write('.'))
+		.pipe(config.isDebugable ? plg.sourcemaps.write('.') : plg.util.nop())
 		.pipe(gulp.dest(paths.styles.output))
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
 });
@@ -197,7 +219,6 @@ var createHtmlPipeline = function (input, output) {
 var createJadePipeline = function (input, output) {
 	return gulp.src(input)
 		.pipe(plg.plumber())
-		.pipe(plg.fileInclude())
 		.pipe(plg.jade())
 		.pipe(gulp.dest(output))
 		.pipe(config.isProduction ? prodHtmlPipeline(input, output)() : plg.util.noop());
@@ -233,7 +254,7 @@ gulp.task('clean:dist', function () {
 // Run some unit tests to check key logic
 gulp.task('tests', function() {
 	return gulp.src(paths.tests.unit.input)
-		.pipe(traceur())
+		.pipe(plg.traceur())
 		.pipe(gulp.dest(os.tmpdir()))
 		.pipe(plg.jasmine());
 });
@@ -265,21 +286,22 @@ gulp.task('set-production', function () {
 	config.isProduction = true;
 });
 
+var compileSteps = ['clean:dist',
+		'build:html',
+		'build:jade',
+		'build:partials',
+		'build:partials-jade',
+		'build:translations',
+		'copy:static',
+		'copy:images',
+		'copy:fonts',
+		'copy:vendor',
+		'build:styles'
+	]
+	.concat(scriptBuildSteps);
+
 // Compile files
-gulp.task('compile', [
-	'clean:dist',
-	'build:html',
-	'build:jade',
-	'build:partials',
-	'build:partials-jade',
-	'build:translations',
-	'copy:static',
-	'copy:images',
-	'copy:fonts',
-	'copy:vendor',
-	'build:scripts',
-	'build:styles'
-]);
+gulp.task('compile', compileSteps);
 
 gulp.task('default', [
 	'bower',
