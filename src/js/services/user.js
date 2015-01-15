@@ -13,6 +13,12 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 	var token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
 	var isAuthenticated = false;
 
+	var setupUserBasicInformation = (username) => {
+		self.name = username;
+		self.email = `${username}@${consts.rootDomain}`;
+		self.nameEmail = `${self.name} <${self.email}>`;
+	};
+
 	this.calculateHash = (password) => CryptoJS.SHA3(password, { outputLength: 256 }).toString();
 
 	if (token)
@@ -24,6 +30,8 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		return co(function * () {
 			var res = yield apiProxy('accounts', 'get', 'me');
 
+			setupUserBasicInformation(res.body.user.name);
+
 			if (!isAuthenticated) {
 				isAuthenticated = true;
 				$rootScope.$broadcast('user-authenticated');
@@ -34,9 +42,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 	};
 
 	this.signIn = (username, password) => {
-		self.name = username;
-		self.email = `${username}@${consts.rootDomain}`;
-		self.nameEmail = `${self.name} <${self.email}>`;
+		setupUserBasicInformation(username);
 
 		return co(function * (){
 			try {

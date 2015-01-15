@@ -39,8 +39,10 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			var publicKey = res.body.key;
 			var encryptedMessage = yield crypto.encodeWithKey(to, body, publicKey.key);
 
+			console.log(encryptedMessage, publicKey.id);
+
 			apiProxy('emails', 'create', {
-				to: to,
+				to: [to],
 				subject: subject,
 				body: encryptedMessage,
 				pgp_fingerprints: [publicKey.id]

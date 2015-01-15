@@ -11,8 +11,8 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 
 	$scope.$on('user-authenticated', () => {
 		inbox.requestList();
-		/*cryptoKeys.syncKeys();
-		inbox.send('let4be-1@lavaboom.io', 'test PGP subject', 'test PGP body');*/
+		cryptoKeys.syncKeys();
+		//inbox.send('let4be-1@lavaboom.io', 'test PGP subject', 'test PGP body');
 	});
 
 	$scope.$on('inbox-emails', () => {
