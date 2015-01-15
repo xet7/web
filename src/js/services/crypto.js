@@ -254,6 +254,40 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		return deferred.promise;
 	};
 
+	this.decodeByListedFingerprints = (email, message, fingerprints) => {
+		var deferred = $q.defer();
+
+		try {
+			var isDecrypted = true;
+			var lastError = null;
+			var pgpMessage = openpgp.message.readArmored(message);
+
+			var privateKey = fingerprints.reduce((a, fingerprint) => {
+				var privateKey = keyring.privateKeys.findByFingerprint(fingerprint);
+				if (!privateKey || !privateKey.primaryKey.isDecrypted)
+					privateKey = sessionKeyring.privateKeys.findByFingerprint(fingerprint);
+
+				if (privateKey && privateKey.primaryKey.isDecrypted)
+					return privateKey;
+			}, {});
+
+			if (!privateKey)
+				deferred.reject(new Error('No decrypted private key found!'));
+
+			openpgp.decryptMessage(privateKey, pgpMessage)
+				.then(plainText => {
+					deferred.resolve(plainText);
+				})
+				.catch(error => {
+					deferred.reject(new Error('Cannot decrypt email!'));
+				});
+		} catch (catchedError) {
+			deferred.reject(catchedError);
+		}
+
+		return deferred.promise;
+	};
+
 	this.encodeWithKey = (email, message, publicKey) => {
 		var deferred = $q.defer();
 

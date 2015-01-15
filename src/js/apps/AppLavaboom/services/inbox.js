@@ -9,6 +9,10 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	crypto.initialize();
 
+	var decode = (body, pgpFingerprints) => {
+
+	};
+
 	this.requestList = () => {
 		self.isInboxLoading = true;
 

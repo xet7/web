@@ -8,8 +8,9 @@ angular.module('AppLavaboomLogin').controller('VerifyController', function($scop
 	$scope.isProcessing = false;
 
 	$scope.verifyInvite = () => {
-		signUp.tokenSignup = $scope.form;
-
-		$state.go('plan');
+		signUp.verifyInvite($scope.form)
+			.then(() => {
+				$state.go('plan');
+			});
 	};
 });
