@@ -12,9 +12,9 @@ form
 		label.switch
 			input(type='checkbox', ng-model="form.isRemember")
 			i
-		span &nbsp; &nbsp; Keep me logged in
+		span Keep me logged in
 
-	p
+	footer
 		button.btn.btn-block.btn-lg.btn-primary(ng-click='logIn()', ng-disabled="isProcessing", ng-bind="'LOGIN.AUTH.GO_TO_MY_INBOX' | translate")
 	p.text-center
-		a(href='#', ng-bind="'LOGIN.AUTH.NO_ACCOUNT_YET' | translate")
+		a(href='#', ui-sref="invite") No Account Yet? Signup Here!

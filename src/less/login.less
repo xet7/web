@@ -1,10 +1,20 @@
 #login-app{
 	font-weight: 100 !important;
+	font-size: 13px;
+
+	p{
+		word-break: break-word;
+		-webkit-hyphens: auto;
+		-moz-hyphens: auto;
+		-ms-hyphens: auto;
+		-o-hyphens: auto;
+		hyphens: auto;
+	}
 
 	#main-content{
 		position: relative;
 		top: 40%;
-		transform: translateY(-50%);
+		transform: translateY(-34%);
 	}
 
 	background-color: @lava-login-gray-darker;
@@ -12,16 +22,99 @@
 	text-rendering: optimizelegibility;
 	-moz-osx-font-smoothing: grayscale;
 
-	input[type=text], input[type=password], textarea, .btn{
+	input[type=text], input[type=email], input[type=password], textarea, .btn, .checkbox label:before{
 		border-radius: 2px;
 		background: @lava-login-gray-dark;
 		border: 0;
 		box-shadow: none;
 		color: @lava-login-gray-lighter;
+		&.loading{
+			background: @lava-login-gray-dark url('/img/loader.svg') 100% center no-repeat;
+		}
 	}
 
-	p.big{
+	input[type=checkbox] {  
+	    display: none;  
+	}
+
+	.checkbox label:before {  
+		content: "";  
+	    display: inline-block;  
+	  
+	    width: 24px;  
+	    height: 20px;  
+	  
+	    margin-right: 20px;  
+	    position: absolute;  
+	    left: 0;  
+	    
+	}
+
+	.checkbox label{
+		padding-left: 30px;
+	}
+
+	input[type=checkbox]:checked + label:before {
+		font-family: 'lavaboom';
+	    content: "7";  
+	    line-height: 20px;
+	    font-size: 20px;
+	    text-align: center;
+	}  
+
+	.form-control::-moz-placeholder {
+		color: @lava-login-gray;
+	  	opacity: 1;
+	}
+	.form-control:-ms-input-placeholder {
+	  	color: @lava-login-gray;
+	}
+	.form-control::-webkit-input-placeholder {
+	  	color: @lava-login-gray;
+	}
+
+	.table-list{
+		display: table;
+		.cell{
+			display: table-cell;
+		}
+		span.cell{
+			font-size: 3.5em;
+			text-shadow: 0px 0px 6px rgba(0, 0, 0, .5);
+			padding-right: 10px;
+			.pos-rel();
+			top: .25em;
+		}
+		h1{
+			text-align: left;
+			margin-top: 0;
+		}
+	}
+
+	div.info{
+		display: table;
+		margin-bottom: 1.5em;
+		span.icon-unread{
+			padding-right: 10px;
+			font-size: 3em;
+			line-height: 0;
+			position: relative;
+			top: .3em;
+		}
+		> *{
+			display: table-cell;
+		}
+	}
+
+	.pack{
+		margin-bottom: 0 !important;
+	}
+
+	.big{
 		font-size: 1.25em;
+		&.xtra{
+			margin-bottom: 1.5em;
+		}
 	}
 
 	.highlight{
@@ -31,6 +124,7 @@
 	.progress{
 		height: 6px;
 		border: 0;
+		margin-bottom: 2em;
 		.progress-bar{
 			border: 0;
 			box-shadow: none;
@@ -54,15 +148,28 @@
 			bottom: 0;
 			width: auto;
 			.z1();
-			line-height: 2em;
+			line-height: 1.8em;
 			font-size: 18px;
+			font-weight: 100;
+			pointer-events: none;
 		}
 	}
 
 	hr.spacer{
 		border-color: transparent;
-		margin-bottom: 2em;
+		margin-bottom: 1.1em;
 		font-size: 2em;
+		&.large{
+			margin-bottom: 3em;
+		}
+	}
+
+	hr.blank{
+		border-color: transparent;
+	}
+
+	form.steps-form hr.spacer{
+		margin-bottom: 2.5em;
 	}
 
 	h4{
@@ -73,18 +180,25 @@
 		color: @lava-login-gray-light;
 		font-weight: @light-font-weight;
 		.text-center();
-		margin-bottom: 2em;
+		margin-bottom: 1.1em;
 		&.pack{
 			margin-bottom: 0;
 		}
 		+ .steps{
 			margin-top: .5em;
-			margin-bottom: .75em;
+			margin-bottom: 1em;
+			&.large{
+				margin-bottom: 2.25em;
+			}
 		}
 	}
 
+	h1{
+		margin-bottom: 3em;
+	}
+
 	.steps{
-		font-size: 4em;
+		font-size: 2.7em;
 		>span{
 			.opacity(.2);
 			margin: 0;
@@ -94,13 +208,12 @@
 		}
 	}
 
-	h1{
-		margin-bottom: 1.5em;
-	}
-
 	.login-logo{
 		width: 60%;
 		margin-left: 20%;
+		& + h1, & + .lead {
+			margin-top: -.7em;
+		}
 	}
 
 	a{
@@ -113,18 +226,46 @@
 			text-decoration: none;
 		}
 	}
+
+	.btn{
+		color: @lava-login-gray-lighter;
+		margin-bottom: 1em;
+		font-weight: 100;
+	}
+
 	.btn-primary{
 		background-color: @lava-login-lava;
 		box-shadow: @lava-login-box-shadow;
+		color: #FFF;
 	}
 
 	.login-alert{
 		background-color: @lava-login-gray-dark;
 		box-shadow: @lava-login-box-shadow;
 		border-radius: 10px;
+		h1 {
+			border-bottom: 1px solid @lava-login-gray-light;
+			padding-bottom: .70em;
+			margin-bottom: .75em;
+		}
+		hr{
+			border-color: @lava-login-gray-light;
+		}
 	}
 
-	.btn{
-		color: @lava-login-gray-lighter;
+	label{
+		font-weight: 100;
+	}
+
+	footer{
+		margin-top: 2em;
+	}
+
+	.checkbox-label{
+		margin-top: 3px;
+	}
+
+	p.steps{
+		// font-size: 1.5em;
 	}
 }

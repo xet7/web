@@ -1,7 +1,7 @@
-form(name="verify", validate)
+form.steps-form(name="verify", validate)
 	p.lead.pack Verify invite code
 
-	p.text-center.steps
+	p.text-center.steps.large
 		span.icon-unread.active
 		span.icon-unread
 		span.icon-unread
@@ -16,14 +16,14 @@ form(name="verify", validate)
 
 	hr.spacer
 
-	p
-		label.switch
-			input(type='checkbox', ng-model='form.isNews')
-			i
-		span &nbsp; &nbsp; I want to be the first to hear about Lavaboom news, send me the latest from Lava HQ
+	.checkbox
+		input#check1(type='checkbox', name='check', value='check1')
+		label(for='check') I want to be the first to hear about Lavaboom news, send me the latest form.Lava HQ
 
-	p.text-center By signing up I've agreed that I've read and understood the
+
+	p.text-center 
+		span By signing up I've agreed that I've read and understood the
 		a Terms of Service and the Privacy Policy
 
-	p
+	footer
 		button.btn.btn-block.btn-lg.btn-primary(type='submit', ng-disabled='verify.$invalid', ng-click='verifyInvite()') Next Step

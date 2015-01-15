@@ -1,4 +1,4 @@
-form(name="details")
+form.steps-form(name="details")
 	p.lead.pack User Details
 
 	p.text-center.steps
@@ -10,6 +10,10 @@ form(name="details")
 		span.icon-unread
 
 	span.error(ng-bind="")
+	div.info 
+		span.icon-unread
+		p We are legally obliged to ask you this information. However, we neither actually use nor verify this data.
+
 	div.form-group
 		input.form-control.input-lg(type='text', ng-model='form.firstName', placeholder="First Name", requared, minlength=2)
 	div.form-group
@@ -22,5 +26,5 @@ form(name="details")
 
 	hr.spacer
 		
-	p
+	footer
 		button.btn.btn-block.btn-lg.btn-primary(type='submit', ng-disabled='details.$invalid', ng-click='setDetails()') Next Step
