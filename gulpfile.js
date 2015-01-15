@@ -6,9 +6,8 @@ var path = require('path');
 var spawn = require('child_process').spawn;
 var toml = require('toml');
 var source = require('vinyl-source-stream');
-require('toml-require').install();
 var lazypipe = require('lazypipe');
-var filterTransform = require('filter-transform');
+var exorcist  = require('exorcist');
 
 // General
 var gulp = require('gulp');
@@ -37,7 +36,7 @@ var config = require('./gulp/config');
 var childProcess = null;
 var args = process.argv.slice(2);
 
-
+require('toml-require').install();
 
 /**
  * Gulp Taks
@@ -72,7 +71,10 @@ gulp.task('build:scripts:vendor', ['clean:dist', 'lint:scripts'], function() {
 			var newName = file.relative.replace('.toml', '-vendor.js');
 
 			return gulp.src(dependencies)
+				.pipe(plg.plumber())
+				.pipe(plg.sourcemaps.init())
 				.pipe(plg.concat(newName))
+				.pipe(plg.sourcemaps.write('.', {sourceMappingURLPrefix: '/js/'}))
 				.pipe(gulp.dest(paths.scripts.output));
 		}))
 		.pipe(gulp.dest(paths.scripts.output));
@@ -80,7 +82,8 @@ gulp.task('build:scripts:vendor', ['clean:dist', 'lint:scripts'], function() {
 
 var browserifyBundle = function(filename) {
 	var browserifyPipeline = browserify(filename, {
-		basedir: __dirname
+		basedir: __dirname,
+		debug: config.isDebugable
 	})
 		.add(es6ify.runtime)
 		.transform(es6ify)
@@ -91,9 +94,13 @@ var browserifyBundle = function(filename) {
 			.transform(ngminify)
 			.transform(uglifyify);
 	}
+
+	var basename = path.basename(filename);
+	var sourceMapBasename = basename.replace('.js', '.js.map');
 	return browserifyPipeline
 		.bundle()
-		.pipe(source(path.basename(filename)))
+		.pipe(exorcist(paths.scripts.output + sourceMapBasename, '/js/' + sourceMapBasename))
+		.pipe(source(basename))
 		.pipe(gulp.dest(paths.scripts.output));
 };
 
@@ -131,19 +138,25 @@ gulp.task('build:styles', ['clean:dist'], function() {
 			keepSpecialComments: 0
 		})
 		//.pipe(header, config.banner.min, { package : package })
-		.pipe(plg.rename, { suffix: '.min' })
-		.pipe(plg.sourcemaps.write, '.')
+
+	if (config.isDebugable) {
+		prodPipeline = prodPipeline
+			.pipe(plg.rename, { suffix: '.min' })
+			.pipe(plg.sourcemaps.write, '.');
+	}
+
+	prodPipeline = prodPipeline
 		.pipe(gulp.dest, paths.styles.output)
 		.pipe(plg.gzip)
 		.pipe(gulp.dest, paths.styles.output);
 
 	return gulp.src(paths.styles.input)
 		.pipe(plg.plumber())
-		.pipe(plg.sourcemaps.init())
+		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.nop())
 		.pipe(plg.less())
 		.pipe(plg.autoprefixer('last 2 version', '> 1%'))
 		//.pipe(header(config.banner.full, { package : package }))
-		.pipe(plg.sourcemaps.write('.'))
+		.pipe(config.isDebugable ? plg.sourcemaps.write('.') : plg.util.nop())
 		.pipe(gulp.dest(paths.styles.output))
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
 });
@@ -206,7 +219,6 @@ var createHtmlPipeline = function (input, output) {
 var createJadePipeline = function (input, output) {
 	return gulp.src(input)
 		.pipe(plg.plumber())
-		.pipe(plg.fileInclude())
 		.pipe(plg.jade())
 		.pipe(gulp.dest(output))
 		.pipe(config.isProduction ? prodHtmlPipeline(input, output)() : plg.util.noop());
