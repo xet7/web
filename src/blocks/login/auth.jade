@@ -8,11 +8,9 @@ form
 	div.form-group
 		input.form-control.input-lg(type='password', ng-model='form.password', placeholder="password", required)
 
-	p
-		label.switch
-			input(type='checkbox', ng-model="form.isRemember")
-			i
-		span Keep me logged in
+	.checkbox
+		input#check1(type='checkbox', checked='', ng-model="form.isRemember")
+		label(for='check1') Keep me logged in
 
 	footer
 		button.btn.btn-block.btn-lg.btn-primary(ng-click='logIn()', ng-disabled="isProcessing", ng-bind="'LOGIN.AUTH.GO_TO_MY_INBOX' | translate")
