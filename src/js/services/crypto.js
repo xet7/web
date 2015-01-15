@@ -161,6 +161,22 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		}
 	};
 
+	this.authenticateDefault = (password) => {
+		var decryptedFingerprints = [];
+		var failedFingerprints = [];
+		keyring.privateKeys.keys.forEach(privateKey => {
+			if (self.authenticate(privateKey, password))
+				decryptedFingerprints.push(privateKey.primaryKey.fingerprint);
+			else
+				failedFingerprints.push(privateKey.primaryKey.fingerprint);
+		});
+
+		return {
+			decryptedFingerprints: decryptedFingerprints,
+			failedFingerprints: failedFingerprints
+		};
+	};
+
 	this.authenticate = (privateKey, password) => {
 		if (!applyPasswordToKeyPair(privateKey, password))
 			return false;
@@ -254,18 +270,18 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		return deferred.promise;
 	};
 
-	this.decodeByListedFingerprints = (email, message, fingerprints) => {
+	this.decodeByListedFingerprints = (message, fingerprints) => {
 		var deferred = $q.defer();
 
 		try {
-			var isDecrypted = true;
-			var lastError = null;
 			var pgpMessage = openpgp.message.readArmored(message);
 
 			var privateKey = fingerprints.reduce((a, fingerprint) => {
 				var privateKey = keyring.privateKeys.findByFingerprint(fingerprint);
+				console.log('decrypt 1', fingerprint, privateKey);
 				if (!privateKey || !privateKey.primaryKey.isDecrypted)
 					privateKey = sessionKeyring.privateKeys.findByFingerprint(fingerprint);
+				console.log('decrypt 2', fingerprint, privateKey);
 
 				if (privateKey && privateKey.primaryKey.isDecrypted)
 					return privateKey;

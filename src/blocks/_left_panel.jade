@@ -1,4 +1,4 @@
-div#left-panel
+div#left-panel(ng-controller="CtrlNavigation")
 	nav#navigation
 		div#brand
 			a(herf="#")
@@ -7,7 +7,7 @@ div#left-panel
 			li.compose
 				a(href="#")
 					span.icon-compose
-					span.action Compose
+					span.action(ng-click="composeTest()") Compose
 			li(ui-sref-active="active")
 				a(href="#", ui-sref="in")
 					span.icon-inbox
