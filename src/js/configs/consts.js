@@ -1,3 +1,4 @@
 angular.module(primaryApplicationName).constant('consts', {
-	'loginUrl': '/login.html'
+	'loginUrl': '/login.html',
+	'rootDomain': 'lavaboom.io'
 });
