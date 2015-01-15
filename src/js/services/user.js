@@ -1,7 +1,9 @@
-angular.module(primaryApplicationName).service('user', function($q, $rootScope, $state, $timeout, $window, consts, apiProxy, LavaboomAPI, co) {
+angular.module(primaryApplicationName).service('user', function($q, $rootScope, $state, $timeout, $window, consts, apiProxy, LavaboomAPI, co, app) {
 	var self = this;
 
 	this.name = '';
+	this.email = '';
+	this.nameEmail = '';
 
 	// information about user from API
 	this.information = {
@@ -9,48 +11,51 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 	};
 
 	var token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
+	var isAuthenticated = false;
 
-	var hash = (password) => CryptoJS.SHA3(password, { outputLength: 256 }).toString();
+	var setupUserBasicInformation = (username) => {
+		self.name = username;
+		self.email = `${username}@${consts.rootDomain}`;
+		self.nameEmail = `${self.name} <${self.email}>`;
+	};
+
+	this.calculateHash = (password) => CryptoJS.SHA3(password, { outputLength: 256 }).toString();
 
 	if (token)
 		LavaboomAPI.setAuthToken(token);
 
-	this.isAuthenticated = () => !!token;
+	this.isAuthenticated = () => token && isAuthenticated;
 
 	this.gatherUserInformation = () => {
 		return co(function * () {
 			var res = yield apiProxy('accounts', 'get', 'me');
 
-			return res.body;
-		});
-	};
+			setupUserBasicInformation(res.body.user.name);
 
-	this.createInvited = (username, password, token) => {
-		return co(function * (){
-			var res = yield apiProxy('account', 'create', 'invited', {
-				username: username,
-				password: hash(password).toString(),
-				token: token
-			});
+			if (!isAuthenticated) {
+				isAuthenticated = true;
+				$rootScope.$broadcast('user-authenticated');
+			}
 
 			return res.body;
 		});
 	};
 
-	this.singIn = (username, password) => {
-		self.name = username;
+	this.signIn = (username, password) => {
+		setupUserBasicInformation(username);
 
 		return co(function * (){
 			try {
 				var res = yield apiProxy('tokens', 'create', {
 					type: 'auth',
 					username: username,
-					password: hash(password)
+					password: self.calculateHash(password)
 				});
 
 				token = res.body.token.id;
 				LavaboomAPI.setAuthToken(token);
 
+				isAuthenticated = true;
 				$rootScope.$broadcast('user-authenticated');
 			} catch (err) {
 				$rootScope.$broadcast('user-authentication-error', err);
@@ -80,19 +85,22 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		console.log('Checking authentication token...');
 
 		return co(function * () {
-			if (self.isAuthenticated()) {
-				if (primaryApplicationName == 'AppLavaboomLogin') {
-					try {
-						yield self.gatherUserInformation();
-					} catch (err) {
-						return true;
-					}
+			if (token) {
+				try {
+					yield self.gatherUserInformation();
 
-					console.log('We are already authenticated with a valid token - going to the main application');
-					$window.location = '/';
+					if (app.isLoginApplication) {
+						console.log('We are already authenticated with a valid token - going to the main application');
+						$window.location = '/';
+					}
+				} catch (err) {
+					if (app.isLoginApplication)
+						return true;
+					if (app.isInboxApplication)
+						$window.location = consts.loginUrl;
 				}
 			}
-			else if (primaryApplicationName == 'AppLavaboom') {
+			else if (app.isInboxApplication) {
 				$window.location = consts.loginUrl;
 			}
 		});

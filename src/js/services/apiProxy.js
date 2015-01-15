@@ -18,7 +18,6 @@ angular.module(primaryApplicationName).factory('apiProxy', function($q, $rootSco
 						return;
 					}
 				});
-
 				var res = yield call.apply(call, [args]);
 
 				console.log(`${callName}: `, res);

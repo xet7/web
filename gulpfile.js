@@ -152,11 +152,11 @@ gulp.task('build:styles', ['clean:dist'], function() {
 
 	return gulp.src(paths.styles.input)
 		.pipe(plg.plumber())
-		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.nop())
+		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.noop())
 		.pipe(plg.less())
 		.pipe(plg.autoprefixer('last 2 version', '> 1%'))
 		//.pipe(header(config.banner.full, { package : package }))
-		.pipe(config.isDebugable ? plg.sourcemaps.write('.') : plg.util.nop())
+		.pipe(config.isDebugable ? plg.sourcemaps.write('.') : plg.util.noop())
 		.pipe(gulp.dest(paths.styles.output))
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
 });

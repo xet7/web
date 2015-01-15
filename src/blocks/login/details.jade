@@ -1,4 +1,4 @@
-form
+form(name="details")
 	p.lead.pack User Details
 
 	p.text-center.steps
@@ -11,16 +11,16 @@ form
 
 	span.error(ng-bind="")
 	div.form-group
-		input.form-control.input-lg(type='text', ng-model='form.firstName', placeholder="First Name", requared)
+		input.form-control.input-lg(type='text', ng-model='form.firstName', placeholder="First Name", requared, minlength=2)
 	div.form-group
-		input.form-control.input-lg(type='text', ng-model='form.lastName', placeholder="Last Name", requared)
+		input.form-control.input-lg(type='text', ng-model='form.lastName', placeholder="Last Name", requared, minlength=2)
 	br
 	div.form-group
-		input.form-control.input-lg(type='text', ng-model='form.displayName', placeholder="Display Name")
+		input.form-control.input-lg(type='text', ng-model='form.displayName', placeholder="Display Name", required, minlength=4)
 
 	p.text-center This is the name under which you will appear when sending emails. You can use your real name or a pseudonym to stay anonymous.
 
 	hr.spacer
 		
 	p
-		button.btn.btn-block.btn-lg.btn-primary(ng-click='setDetails()') Next Step
+		button.btn.btn-block.btn-lg.btn-primary(type='submit', ng-disabled='details.$invalid', ng-click='setDetails()') Next Step
