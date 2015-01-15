@@ -125,7 +125,8 @@ gulp.task('lint:scripts', function () {
 		}))
 		.pipe(plg.jshint({
 			esnext: true,
-			noyield: true
+			noyield: true,
+			'-W002': false
 		}))
 		.pipe(plg.jshint.reporter(plg.jshintStylish))
 		.pipe(plg.jshint.reporter('fail'));

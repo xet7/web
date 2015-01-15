@@ -2,7 +2,6 @@ angular.module(primaryApplicationName).factory('apiProxy', function($q, $rootSco
 	LavaboomAPI.formatError = (callName, error) => {
 		callName = callName.toUpperCase();
 
-		/*jshint -W002 */
 		return co(function *(){
 			try {
 				return yield $translate(`LAVABOOM.API.ERROR.${callName}.${error.status}`);
