@@ -1,2 +1,2 @@
-[test]
-	str = "Hallo! Im Test-String in Englisch"
+[TEST]
+	STR = "Hallo! Im Test-String in Englisch"
