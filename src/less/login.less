@@ -73,6 +73,23 @@
 	  	color: @lava-login-gray;
 	}
 
+	.table-list{
+		display: table;
+		.cell{
+			display: table-cell;
+		}
+		span.cell{
+			font-size: 3.5em;
+			text-shadow: 0px 0px 6px rgba(0, 0, 0, .5);
+			padding-right: 10px;
+			.pos-rel();
+			top: .25em;
+		}
+		h1{
+			text-align: left;
+		}
+	}
+
 	div.info{
 		display: table;
 		margin-bottom: 1.5em;
@@ -81,11 +98,15 @@
 			font-size: 3em;
 			line-height: 0;
 			position: relative;
-			top: .25em;
+			top: .3em;
 		}
 		> *{
 			display: table-cell;
 		}
+	}
+
+	.pack{
+		margin-bottom: 0 !important;
 	}
 
 	.big{
