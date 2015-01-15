@@ -8,7 +8,6 @@ angular.module(primaryApplicationName).factory('apiProxy', function($q, $rootSco
 
 		console.log(`Calling ${callName}`, args ? args : '[no args]', '...');
 
-		console.log('co', co);
 		return co(function *(){
 			try {
 				var call = LavaboomAPI;
@@ -19,9 +18,6 @@ angular.module(primaryApplicationName).factory('apiProxy', function($q, $rootSco
 						return;
 					}
 				});
-
-				console.log('calling api call', callName, call);
-
 				var res = yield call.apply(call, [args]);
 
 				console.log(`${callName}: `, res);
