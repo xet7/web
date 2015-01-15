@@ -1,40 +1,9 @@
 form
 	img.login-logo(src="img/Lavaboom-logo.svg")
-	p.lead Log In
+	p.lead(ng-bind="'LOGIN.SIGNUP.HEADER' | translate")
 
 	p
-		a.btn.btn-block.btn-lg.btn-primary(href="#/auth", ui-sref="auth") Log In
+		a.btn.btn-block.btn-lg.btn-primary(href="#/auth", ui-sref="auth", ng-bind="'LOGIN.SIGNUP.LOGIN' | translate")
 		
 	p
-		a.btn.btn-block.btn-lg.btn-default(href="#/invite", ui-sref="invite") Sign Up
-
-
-	//ul
-	//	li
-	//		a(href='#', ui-sref="login") login
-	//	li
-	//		a(href='#', ui-sref="login-signup") login signup
-	//	li
-	//		a(href='#', ui-sref="secure-your-username") secure your username
-	//	li
-	//		a(href='#', ui-sref="invite") invite
-	//	li
-	//		a(href='#', ui-sref="verify-invite-code") verify invite code
-	//	li
-	//		a(href='#', ui-sref="secure-your-username") secure your username
-	//	li
-	//		a(href='#', ui-sref="secure-your-username") secure your username
-	//	li
-	//		a(href='#', ui-sref="secure-your-username") secure your username
-	//	li
-	//		a(href='#', ui-sref="secure-your-username") secure your username
-	//	li
-	//		a(href='#', ui-sref="secure-your-username") secure your username
-	//	li
-	//		a(href='#', ui-sref="secure-your-username") secure your username
-	//	li
-	//		a(href='#', ui-sref="secure-your-username") secure your username
-	//	li
-	//		a(href='#', ui-sref="secure-your-username") secure your username
-	//	li
-	//		a(href='#', ui-sref="secure-your-username") secure your username
+		a.btn.btn-block.btn-lg.btn-default(href="#/invite", ui-sref="invite", ng-bind="'LOGIN.SIGNUP.SIGNUP' | translate")

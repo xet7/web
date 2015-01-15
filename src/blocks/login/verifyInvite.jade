@@ -1,4 +1,4 @@
-form.steps-form
+form.steps-form(name="verify", validate)
 	p.lead.pack Verify invite code
 
 	p.text-center.steps.large
@@ -10,18 +10,15 @@ form.steps-form
 		span.icon-unread
 
 	div.form-group
-		input.form-control.input-lg(type='text', ng-model='invite.username', placeholder="your username", required)
+		input.form-control.input-lg(type='text', ng-model='form.username', placeholder="your username", minlength=4, required)
 	div.form-group
-		textarea.form-control.input-lg(type='text', ng-model='invite.token', placeholder="please paste invite code here")
+		textarea.form-control.input-lg(type='text', ng-model='form.token', placeholder="please paste invite code here", minlength=16, required)
 
-	p.text-center
-		a(href='#') Got an invite mail already?
-	
 	hr.spacer
 
 	.checkbox
 		input#check1(type='checkbox', name='check', value='check1')
-		label(for='check1') I want to be the first to hear about Lavaboom news, send me the latest form.Lava HQ
+		label(for='check') I want to be the first to hear about Lavaboom news, send me the latest form.Lava HQ
 
 
 	p.text-center 
@@ -29,4 +26,4 @@ form.steps-form
 		a Terms of Service and the Privacy Policy
 
 	footer
-		button.btn.btn-block.btn-lg.btn-primary(ng-click='verifyInvite()') Next Step
+		button.btn.btn-block.btn-lg.btn-primary(type='submit', ng-disabled='verify.$invalid', ng-click='verifyInvite()') Next Step

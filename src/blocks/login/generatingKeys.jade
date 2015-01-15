@@ -2,8 +2,8 @@ form
 	img.login-logo(src="img/Lavaboom-logo.svg")
 
 	.progress
-		.progress-bar(role='progressbar', aria-valuenow='40', aria-valuemin='0', aria-valuemax='100', style='width: 40%;')
-			span.sr-only 40% Complete
+		.progress-bar(role='progressbar', aria-valuenow='{{progress}}', aria-valuemin='0', aria-valuemax='100', style='width: {{progress}}%;')
+			span.sr-only {{progress}}% Complete
 
-	p.lead Generating your Keys
-	p Do not close this window!
+	p.lead(ng-bind="label")
+	p(ng-bind="'LOGIN.GENERATING_KEYS.LABEL_DO_NOT_CLOSE' | translate")

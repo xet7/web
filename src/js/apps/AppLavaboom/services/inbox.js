@@ -9,12 +9,16 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	crypto.initialize();
 
+	var decode = (body, pgpFingerprints) => {
+
+	};
+
 	this.requestList = () => {
 		self.isInboxLoading = true;
 
 		return co(function * (){
 			try {
-				var res = yield apiProxy('emails', 'list');
+				var res = yield apiProxy('emails', 'list', {});
 
 				self.emails = res.body.emails ? res.body.emails.map(e => {
 					return {
@@ -39,8 +43,10 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			var publicKey = res.body.key;
 			var encryptedMessage = yield crypto.encodeWithKey(to, body, publicKey.key);
 
+			console.log(encryptedMessage, publicKey.id);
+
 			apiProxy('emails', 'create', {
-				to: to,
+				to: [to],
 				subject: subject,
 				body: encryptedMessage,
 				pgp_fingerprints: [publicKey.id]
