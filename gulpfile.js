@@ -235,6 +235,11 @@ var createHtmlPipeline = function (input, output) {
 var createJadePipeline = function (input, output) {
 	return gulp.src(input)
 		.pipe(plg.plumber())
+		.pipe(plg.ignore(function(file){
+			var basename = path.basename(file.relative);
+			console.log('JADE', basename);
+			return basename.indexOf('_') == 0;
+		}))
 		.pipe(plg.jade())
 		.pipe(gulp.dest(output))
 		.pipe(config.isProduction ? prodHtmlPipeline(input, output)() : plg.util.noop());

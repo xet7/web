@@ -41,6 +41,7 @@
     "gulp-footer": "^1.0.5",
     "gulp-gzip": "0.0.8",
     "gulp-header": "^1.1.1",
+    "gulp-ignore": "^1.2.1",
     "gulp-include": "^1.1.0",
     "gulp-jade": "^0.10.0",
     "gulp-jasmine": "^1.0.1",
