@@ -86,7 +86,7 @@ gulp.task('build:scripts:vendor', ['clean:dist', 'lint:scripts'], function() {
 
 var browserifyBundle = function(filename) {
 	var basename = path.basename(filename);
-	
+
 	return gulp.src(filename, {read: false})
 		.pipe(plg.tap(function (file){
 			var d = domain.create();
@@ -290,7 +290,7 @@ gulp.task('gulp-reload', function() {
 });
 
 gulp.task('livereload', ['compile'], function() {
-	return gulp.src(paths.main_html.input)
+	return gulp.src(paths.main_html.inputJade)
 		.pipe(plg.livereload());
 });
 
