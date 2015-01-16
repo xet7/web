@@ -1,5 +1,5 @@
 form.steps-form
-	p.lead.pack Generate your keys
+	p.lead.pack {{'LOGIN.GENERATE_KEYS.TITLE' | translate}}
 
 	p.text-center.steps
 		span.icon-unread.active
@@ -11,22 +11,22 @@ form.steps-form
 
 	div.info
 		span.icon-info-circle
-		p Lavaboom keeps you safe by encrypting your email and data. To do this, we give each other a pair of encryption keys.
+		p {{'LOGIN.GENERATE_KEYS.LB_WARNING1' | translate}}
 
 	hr.spacer
-	
+
 	ul.list-unstyled
 		li.table-list
 			span.icon-lock-hallow.cell.shadow
 			div.cell
-				h1.pack Public Key
-				p Thus Key is used to encrypt messages coming your way. You can share it with contacts so they can encrpt the messages the messages they would send to you.
+				h1.pack {{'GLOBAL.LB_PUBLIC_KEY' | translate}}
+				p {{'LOGIN.GENERATE_KEYS.LB_WARNING2' | translate}}
 		li.table-list
 			span.icon-key-solid.cell.shadow
 			div.cell
-				h1.pack Private Key
-				p This Key is used to decrypt your data. It is like a super-safe password. Keep it safe and do not share it with anyone.
+				h1.pack {{'GLOBAL.LB_PRIVATE_KEY' | translate}}
+				p {{'LOGIN.GENERATE_KEYS.LB_WARNING3' | translate}}
 	hr.spacer
 
 	footer
-		button.btn.btn-block.btn-lg.btn-primary(ui-sref="generatingKeys") Generate my key pair
+		button.btn.btn-block.btn-lg.btn-primary(ui-sref="generatingKeys") {{'LOGIN.GENERATE_KEYS.BTN_NET' | translate}}

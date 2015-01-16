@@ -14,6 +14,8 @@
 	LB_DISPLAY_NAME = "This is the name under which you will appear when sending emails. You can use your real name or a pseudonym to stay anonymous."
 	PLC_CHOOSE_PASSWORD = "Choose password"
 	PLC_RETYPE_PASSWORD = "Retype password"
+	LB_PRIVATE_KEY = "Private Key"
+    LB_PUBLIC_KEY = "Public Key"
 
 [LOGIN.SECURE_USERNAME]
 	TITLE = "Secure your own Lavaboom username"
@@ -69,36 +71,11 @@
 
 [LOGIN.GENERATE_KEYS]
 	TITLE = "Generate your keys"
+	LB_WARNING1 = "Lavaboom keeps you safe by encrypting your email and data. To do this, we give each other a pair of encryption keys."
+	LB_WARNING2 = "Thus Key is used to encrypt messages coming your way. You can share it with contacts so they can encrpt the messages the messages they would send to you."
+	LB_WARNING3 = "This Key is used to decrypt your data. It is like a super-safe password. Keep it safe and do not share it with anyone."
+	BTN_NEXT = "Generate my key pair"
 
-    	p.text-center.steps
-    		span.icon-unread.active
-    		span.icon-unread.active
-    		span.icon-unread.active
-    		span.icon-unread.active
-    		span.icon-unread.active
-    		span.icon-unread
-
-    	div.info
-    		span.icon-unread
-    		p Lavaboom keeps you safe by encrypting your email and data. To do this, we give each other a pair of encryption keys.
-
-    	hr.spacer
-
-    	ul.list-unstyled
-    		li.table-list
-    			span.icon-lock.cell
-    			div.cell
-    				h1.pack Public Key
-    				p Lavaboom keeps you safe by encrypting your email and data. To do this, we give each other a pair of encryption keys.
-    		li.table-list
-    			span.icon-key.cell
-    			div.cell
-    				h1.pack Private Key
-    				p Lavaboom keeps you safe by encrypting your email and data. To do this, we give each other a pair of encryption keys.
-    	hr.spacer
-
-    	footer
-    		button.btn.btn-block.btn-lg.btn-primary(ui-sref="generatingKeys") Generate my key pair
 
 [LOGIN.GENERATING_KEYS]
 	LABEL_GENERATING = "Generating your Keys"
