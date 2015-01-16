@@ -2,7 +2,7 @@ angular.module('AppLavaboomLogin').controller('CtrlAuth', function($scope, $root
     $scope.form = {
 		username: '',
 		password: '',
-		isRemember: false
+		isRemember: true
 	};
 	$scope.isProcessing = false;
 
