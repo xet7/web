@@ -1,14 +1,14 @@
-form
-	h1 Congrats!<br>Your username has been reserved.
+form.ng-cloak
+	h1 {{'LOGIN.SECURED.TITLE' | translate}}<br>{{'LOGIN.SECURED.SUB_TITLE' | translate}}
 
 	hr.spacer
 
-	p.text-center.big We have just sent and email to
-	p.big.highlight.text-center felix.vlooz@gmail.com
+	p.text-center.big {{'LOGIN.SECURED.LB_EMAIL_SENT' | translate}}
+	p.big.highlight.text-center(ng-bind="email")
 
 	hr.spacer.large
 		
-	p.text-center Follow the link in the invite to complete Sign-Up. If no invite email arrives in your Inbox, please check your Spam folder
+	p.text-center {{'LOGIN.SECURED.LB_COMPLETE' | translate}}
 	
 	footer
-		button.btn.btn-block.btn-lg.btn-primary(ui-sref="generate-your-keys") OK
+		button.btn.btn-block.btn-lg.btn-primary(ui-sref="verifyInvite") {{'LOGIN.SECURED.BTN_COMPLETE' | translate}}

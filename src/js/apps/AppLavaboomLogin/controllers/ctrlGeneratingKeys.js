@@ -1,6 +1,8 @@
 angular.module('AppLavaboomLogin').controller('CtrlGeneratingKeys', function($scope, $state, $rootScope, $interval, $timeout, $translate, crypto, user, co, signUp) {
-	/*if (!user.isAuthenticated())
-		$state.go('invite');*/
+	if (!user.isAuthenticated())
+		$state.go('login');
+
+	crypto.initialize();
 
 	const bits = 2048;
 	const estimatedTimeSeconds = 120;
@@ -22,8 +24,6 @@ angular.module('AppLavaboomLogin').controller('CtrlGeneratingKeys', function($sc
 		co(translate);
 	});
 	co(translate);
-
-	crypto.initialize();
 
 	var progressBarInterval = $interval(() => {
 		$scope.progress = Math.floor(++timePassed / estimatedTimeSeconds * 100);

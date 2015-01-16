@@ -16,7 +16,7 @@ angular.module('AppLavaboomLogin').controller('CtrlDetails', function($scope, $s
 		$scope.form.displayName = firstName || lastName ? autoDisplayName : $scope.form.displayName;
 	});
 
-	$scope.setDetails = () => {
+	$scope.requestDetailsUpdate = () => {
 		signUp.details = $scope.form;
 
 		$state.go('choosePasswordIntro');

@@ -19,13 +19,13 @@ angular.module('AppLavaboomLogin').config(function($stateProvider, $urlRouterPro
 		.state('secureUsername', {
             url: '/secureUsername',
             templateUrl: 'partials/login/secureUsername.html',
-            controller:'CtrlSecure'
+            controller:'CtrlSecureUsername'
         })
 		.state('reservedUsername', {
             url: '/reservedUsername',
             templateUrl: 'partials/login/reservedUsername.html',
-            controller:'SecureController'
-        })
+			controller:'CtrlReservedUsername'
+		})
 		.state('verifyInvite', {
             url: '/verifyInvite',
             templateUrl: 'partials/login/verifyInvite.html',
@@ -48,7 +48,8 @@ angular.module('AppLavaboomLogin').config(function($stateProvider, $urlRouterPro
         })
 		.state('choosePasswordIntro', {
             url: '/choosePasswordIntro',
-            templateUrl: 'partials/login/choosePasswordIntro.html'
+            templateUrl: 'partials/login/choosePasswordIntro.html',
+			controller:'CtrlPassword'
         })
 		.state('generateKeys', {
             url: '/generateKeys',

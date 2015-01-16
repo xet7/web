@@ -36,10 +36,8 @@ angular.module(primaryApplicationName).factory('apiProxy', function($q, $rootSco
 				var call = LavaboomAPI;
 				fnArgs.forEach(a => {
 					call = call[a];
-					if (!call) {
+					if (!call)
 						console.error(`undefined API call - no such call '${callName}'!`);
-						return;
-					}
 				});
 				var res = yield call.apply(call, [args]);
 
