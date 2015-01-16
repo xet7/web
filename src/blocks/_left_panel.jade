@@ -5,7 +5,7 @@ div#left-panel(ng-controller="CtrlNavigation")
 				img(src="img/Lavaboom-logo-full.svg")
 		ul.list-unstyled
 			li.compose
-				a(href="#")
+				a(href="#", ui-sref="compose")
 					span.icon-compose
 					span.action(ng-click="composeTest()") Compose
 			li(ui-sref-active="active")
