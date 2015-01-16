@@ -8,6 +8,7 @@ var toml = require('toml');
 var source = require('vinyl-source-stream');
 var lazypipe = require('lazypipe');
 var exorcist  = require('exorcist');
+var mold = require('mold-source-map');
 
 // General
 var gulp = require('gulp');
@@ -99,6 +100,7 @@ var browserifyBundle = function(filename) {
 	var sourceMapBasename = basename.replace('.js', '.js.map');
 	return browserifyPipeline
 		.bundle()
+		.pipe(mold.transformSourcesRelativeTo(path.join(__dirname, paths.scripts.inputFolder)))
 		.pipe(exorcist(paths.scripts.output + sourceMapBasename, '/js/' + sourceMapBasename))
 		.pipe(source(basename))
 		.pipe(gulp.dest(paths.scripts.output));
@@ -125,7 +127,9 @@ gulp.task('lint:scripts', function () {
 		}))
 		.pipe(plg.jshint({
 			esnext: true,
-			noyield: true
+			noyield: true,
+			'-W002': false,
+			'-W014': false
 		}))
 		.pipe(plg.jshint.reporter(plg.jshintStylish))
 		.pipe(plg.jshint.reporter('fail'));
@@ -136,7 +140,7 @@ gulp.task('build:styles', ['clean:dist'], function() {
 	var prodPipeline = lazypipe()
 		.pipe(plg.minifyCss, {
 			keepSpecialComments: 0
-		})
+		});
 		//.pipe(header, config.banner.min, { package : package })
 
 	if (config.isDebugable) {
