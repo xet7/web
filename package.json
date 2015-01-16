@@ -18,6 +18,7 @@
     "browserify": "^8.1.0",
     "browserify-ngannotate": "^0.5.0",
     "browserify-ngmin": "^0.1.0",
+    "buffer": "^3.0.1",
     "bulk-require": "^0.2.1",
     "bulkify": "^1.0.2",
     "co": "^4.1.0",

@@ -1,3 +1,5 @@
+var Buffer = require('buffer/').Buffer;
+
 angular.module(primaryApplicationName).service('user', function($q, $rootScope, $state, $timeout, $window, consts, apiProxy, LavaboomAPI, co, app, crypto) {
 	var self = this;
 
@@ -19,7 +21,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		self.nameEmail = `${self.name} <${self.email}>`;
 	};
 
-	this.calculateHash = (password) => CryptoJS.SHA3(password, { outputLength: 256 }).toString();
+	this.calculateHash = (password) => (new Buffer(openpgp.crypto.hash.sha256(password))).toString('hex');
 
 	if (token)
 		LavaboomAPI.setAuthToken(token);
