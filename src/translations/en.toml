@@ -50,6 +50,10 @@
     PLAN1_OPT5_KEY = "forever!"
 	BTN_SELECT = "I'll take this"
 
+[LOGIN.DETAILS]
+	TITLE = "User Details"
+    SUB_TITLE = "We are legally obliged to ask you this information. However, we neither actually use nor verify this data."
+
 [LOGIN.CHOOSE_PASSWORD_INTRO]
 	TITLE = "Choose password"
 	LB_WARNING_TITLE = "Attention"
@@ -63,9 +67,44 @@
 	LB_WARNING2 = "Please remember, we can't set your password back for you when you forget it!. So only continue when you have really memorised it!"
 	BTN_NEXT = "I have memorized it"
 
-[LOGIN.DETAILS]
-	TITLE = "User Details"
-    SUB_TITLE = "We are legally obliged to ask you this information. However, we neither actually use nor verify this data."
+[LOGIN.GENERATE_KEYS]
+	TITLE = "Generate your keys"
+
+    	p.text-center.steps
+    		span.icon-unread.active
+    		span.icon-unread.active
+    		span.icon-unread.active
+    		span.icon-unread.active
+    		span.icon-unread.active
+    		span.icon-unread
+
+    	div.info
+    		span.icon-unread
+    		p Lavaboom keeps you safe by encrypting your email and data. To do this, we give each other a pair of encryption keys.
+
+    	hr.spacer
+
+    	ul.list-unstyled
+    		li.table-list
+    			span.icon-lock.cell
+    			div.cell
+    				h1.pack Public Key
+    				p Lavaboom keeps you safe by encrypting your email and data. To do this, we give each other a pair of encryption keys.
+    		li.table-list
+    			span.icon-key.cell
+    			div.cell
+    				h1.pack Private Key
+    				p Lavaboom keeps you safe by encrypting your email and data. To do this, we give each other a pair of encryption keys.
+    	hr.spacer
+
+    	footer
+    		button.btn.btn-block.btn-lg.btn-primary(ui-sref="generatingKeys") Generate my key pair
+
+[LOGIN.GENERATING_KEYS]
+	LABEL_GENERATING = "Generating your Keys"
+	LABEL_GENERATED = "Your keys are ready!"
+	LABEL_REACHED = "Our hamsters are running extra hard, just be a bit more patient..."
+	LABEL_DO_NOT_CLOSE = "Do not close this window!"
 
 [LOGIN.SIGNUP]
 	HEADER = "Get your own secure email account!"
@@ -75,12 +114,6 @@
 [LOGIN.AUTH]
 	GO_TO_MY_INBOX = "Go to my Inbox"
 	NO_ACCOUNT_YET = "No Account Yet? Signup Here!"
-
-[LOGIN.GENERATING_KEYS]
-	LABEL_GENERATING = "Generating your Keys"
-	LABEL_GENERATED = "Your keys are ready!"
-	LABEL_REACHED = "Our hamsters are running extra hard, just be a bit more patient..."
-	LABEL_DO_NOT_CLOSE = "Do not close this window!"
 
 # Generic error messages for Lavaboom REST API
 [LAVABOOM.API.ERROR]

@@ -46,6 +46,8 @@ angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, 
 				password: user.calculateHash(password)
 			});
 
+			yield user.signIn(self.tokenSignup.username, password, true);
+
 			return res.body;
 		});
 	};
