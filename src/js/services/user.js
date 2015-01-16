@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).service('user', function($q, $rootScope, $state, $timeout, $window, consts, apiProxy, LavaboomAPI, co, app) {
+angular.module(primaryApplicationName).service('user', function($q, $rootScope, $state, $timeout, $window, consts, apiProxy, LavaboomAPI, co, app, crypto) {
 	var self = this;
 
 	this.name = '';
@@ -41,8 +41,12 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		});
 	};
 
-	this.signIn = (username, password) => {
+	this.signIn = (username, password, isRemember) => {
 		setupUserBasicInformation(username);
+
+		crypto.initialize({
+			isRememberPasswords: isRemember
+		});
 
 		return co(function * (){
 			try {
@@ -54,6 +58,8 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 				token = res.body.token.id;
 				LavaboomAPI.setAuthToken(token);
+				var r = crypto.authenticateDefault(password);
+				console.log(r);
 
 				isAuthenticated = true;
 				$rootScope.$broadcast('user-authenticated');
