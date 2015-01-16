@@ -58,6 +58,10 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 				token = res.body.token.id;
 				LavaboomAPI.setAuthToken(token);
+
+				res = yield apiProxy('keys', 'list', self.name);
+				console.log('Server knows my keys', res);
+
 				var r = crypto.authenticateDefault(password);
 				console.log(r);
 

@@ -12,6 +12,8 @@
 	PLC_LAST_NAME = "Last Name"
 	PLC_DISPLAY_NAME = "Display Name"
 	LB_DISPLAY_NAME = "This is the name under which you will appear when sending emails. You can use your real name or a pseudonym to stay anonymous."
+	PLC_CHOOSE_PASSWORD = "Choose password"
+	PLC_RETYPE_PASSWORD = "Retype password"
 
 [LOGIN.SECURE_USERNAME]
 	TITLE = "Secure your own Lavaboom username"
@@ -47,6 +49,19 @@
     PLAN1_OPT4_KEY = "500 MB free forever"
     PLAN1_OPT5_KEY = "forever!"
 	BTN_SELECT = "I'll take this"
+
+[LOGIN.CHOOSE_PASSWORD_INTRO]
+	TITLE = "Choose password"
+	LB_WARNING_TITLE = "Attention"
+    LB_WARNING1 = "Please note that we don't store your passwords on our servers. This makes lavaboom <em>this</em> safe. However, it also means that we cannot reset the password for you, in case you lose it."
+    LB_WARNING2 = "Please memorize the password that you choose now very thoroughly. You might lose your account otherwise."
+    BTN_NEXT = "I understand"
+
+[LOGIN.CHOOSE_PASSWORD]
+	TITLE = "Choose password"
+	LB_WARNING1 = "We recommend a long password including numbers and special characters. It should still be easy to remember for you."
+	LB_WARNING2 = "Please remember, we can't set your password back for you when you forget it!. So only continue when you have really memorised it!"
+	BTN_NEXT = "I have memorized it"
 
 [LOGIN.DETAILS]
 	TITLE = "User Details"

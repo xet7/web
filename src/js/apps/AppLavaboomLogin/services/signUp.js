@@ -37,13 +37,13 @@ angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, 
 		});
 	};
 
-	this.signUp = (password) => {
+	this.setup = (password) => {
 		self.password = password;
 		return co(function * (){
-			var res = yield apiProxy('accounts', 'create', 'invited', {
+			var res = yield apiProxy('accounts', 'create', 'setup', {
 				username: self.tokenSignup.username,
-				password: user.calculateHash(password),
-				token: self.tokenSignup.token
+				invite_code: self.tokenSignup.token,
+				password: user.calculateHash(password)
 			});
 
 			return res.body;

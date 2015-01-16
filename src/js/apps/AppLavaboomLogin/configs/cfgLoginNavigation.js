@@ -48,7 +48,8 @@ angular.module('AppLavaboomLogin').config(function($stateProvider, $urlRouterPro
         })
 		.state('choosePasswordIntro', {
             url: '/choosePasswordIntro',
-            templateUrl: 'partials/login/choosePasswordIntro.html'
+            templateUrl: 'partials/login/choosePasswordIntro.html',
+			controller:'CtrlPassword'
         })
 		.state('generateKeys', {
             url: '/generateKeys',
