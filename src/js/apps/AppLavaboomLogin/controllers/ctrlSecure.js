@@ -1,4 +1,4 @@
-angular.module('AppLavaboomLogin').controller('CtrlSecure', function($scope, $state, user) {
+angular.module('AppLavaboomLogin').controller('CtrlSecure', function($scope, $state, signUp) {
 	$scope.form = {
 		username: '',
 		email: '',
@@ -8,7 +8,7 @@ angular.module('AppLavaboomLogin').controller('CtrlSecure', function($scope, $st
 
 	$scope.secure = () => {
 		$scope.isProcessing = true;
-		user.reserve($scope.form.username, $scope.form.email)
+		signUp.register($scope.form.username, $scope.form.email)
 			.then(() => {
 				$state.go('reservedUsername');
 			})

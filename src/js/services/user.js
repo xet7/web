@@ -71,17 +71,6 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		});
 	};
 
-	this.reserve = (username, email) => {
-		return co(function * (){
-			var res = yield apiProxy('accounts', 'reserve', 'username', {
-				username: username,
-				email: email
-			});
-
-			return res.body;
-		});
-	};
-
 	this.persistAuth = (isRemember = true) => {
 		var storage = isRemember ? localStorage : sessionStorage;
 		storage.lavaboomToken = token;

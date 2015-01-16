@@ -6,6 +6,17 @@ angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, 
 	this.details = null;
 	this.password = null;
 
+	this.register = (username, altEmail) => {
+		return co(function * (){
+			var res = yield apiProxy('accounts', 'create', 'register', {
+				username: username,
+				alt_email: altEmail
+			});
+
+			return res.body;
+		});
+	};
+
 	this.verifyInvite = (form) => {
 		self.tokenSignup = form;
 
