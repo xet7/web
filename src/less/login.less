@@ -29,7 +29,10 @@
 		box-shadow: none;
 		color: @lava-login-gray-lighter;
 		&.loading{
-			background: @lava-login-gray-dark url('/img/loader.svg') 100% center no-repeat;
+			background: @lava-login-gray-dark url('/img/loader.svg') 96% center no-repeat;
+		}
+		&.success{
+			background: @lava-login-gray-dark url('/img/check.svg') 96% center no-repeat;
 		}
 	}
 
@@ -79,11 +82,11 @@
 			display: table-cell;
 		}
 		span.cell{
-			font-size: 3.5em;
+			font-size: 3em;
 			text-shadow: 0px 0px 6px rgba(0, 0, 0, .5);
 			padding-right: 10px;
 			.pos-rel();
-			top: .25em;
+			top: .5em;
 		}
 		h1{
 			text-align: left;
@@ -94,12 +97,12 @@
 	div.info{
 		display: table;
 		margin-bottom: 1.5em;
-		span.icon-unread{
+		span[class^="icon-"], span[class*=" icon-"], .lava-icon {
 			padding-right: 10px;
-			font-size: 3em;
+			font-size: 2em;
 			line-height: 0;
 			position: relative;
-			top: .3em;
+			top: .35em;
 		}
 		> *{
 			display: table-cell;
@@ -225,6 +228,10 @@
 		&:hover, &:focus{
 			text-decoration: none;
 		}
+	}
+
+	.shadow{
+		text-shadow: @lava-login-box-shadow;
 	}
 
 	.btn{
