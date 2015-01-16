@@ -76,12 +76,24 @@
 	LB_WARNING3 = "This Key is used to decrypt your data. It is like a super-safe password. Keep it safe and do not share it with anyone."
 	BTN_NEXT = "Generate my key pair"
 
-
 [LOGIN.GENERATING_KEYS]
 	LABEL_GENERATING = "Generating your Keys"
 	LABEL_GENERATED = "Your keys are ready!"
 	LABEL_REACHED = "Our hamsters are running extra hard, just be a bit more patient..."
 	LABEL_DO_NOT_CLOSE = "Do not close this window!"
+
+[LOGIN.BACKUP_KEY]
+	TITLE = "Back up your key"
+    INFO1 = "We create and store your Private Key locally in your browser, which you are using right now."
+    INFO2 = "This means that if you want to access your Lavaboom account on a different browser or a different machine you need to import your Key there before you can do this."
+    INFO3 = "Furthermore, if you Lose your browser cache, you might lose your Key and in turn, lose access to your Lavaboom account."
+    INFO4 = "To prevent this, you should back up your Private Key to your hard drive to keep it safe. No worries - it's encrypted."
+    INFO5 = "You can back up your Key at any time in the Settings / My Keys page"
+    BTN_BACKUP_NOW = "Back up my key now"
+	BTN_BACKUP_LATER = "Do Back up later"
+
+[DECRYPTING_INBOX]
+	LB_DECRYPTING = "Decrypting your Inbox"
 
 [LOGIN.SIGNUP]
 	HEADER = "Get your own secure email account!"

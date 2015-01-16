@@ -1,4 +1,7 @@
 angular.module('AppLavaboomLogin').controller('CtrlBackup', function($scope, $state, $base64, user, cryptoKeys) {
+	if (!user.isAuthenticated())
+		$state.go('login');
+
 	$scope.backup = () => {
 		var keysBackup = cryptoKeys.exportKeys();
 

@@ -63,7 +63,12 @@ angular.module('AppLavaboomLogin').config(function($stateProvider, $urlRouterPro
         })
 		.state('backupKeys', {
 			url: '/backupKeys',
-			templateUrl: 'partials/login/backup-you-key.html',
+			templateUrl: 'partials/login/backupKey.html',
+			controller: 'CtrlBackup'
+		})
+		.state('backupKeys', {
+			url: '/backupKeys',
+			templateUrl: 'partials/login/backupKey.html',
 			controller: 'CtrlBackup'
 		});
 });

@@ -21,6 +21,11 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		self.nameEmail = `${self.name} <${self.email}>`;
 	};
 
+	var persistAuth = (isRemember = true) => {
+		var storage = isRemember ? localStorage : sessionStorage;
+		storage.lavaboomToken = token;
+	};
+
 	this.calculateHash = (password) => (new Buffer(openpgp.crypto.hash.sha256(password), 'binary')).toString('hex');
 
 	if (token)
@@ -60,26 +65,23 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 				token = res.body.token.id;
 				LavaboomAPI.setAuthToken(token);
+				persistAuth(isRemember);
+				isAuthenticated = true;
 
 				res = yield apiProxy('keys', 'list', self.name);
-				console.log('Server knows my keys', res);
+				if (!res.body.keys || res.body.keys.length < 1) {
+					$state.go('generateKeys');
+					return;
+				}
 
 				var r = crypto.authenticateDefault(password);
 				console.log(r);
 
-				isAuthenticated = true;
 				$rootScope.$broadcast('user-authenticated');
 			} catch (err) {
 				$rootScope.$broadcast('user-authentication-error', err);
-			} finally {
-				self.isInboxLoading = false;
 			}
 		});
-	};
-
-	this.persistAuth = (isRemember = true) => {
-		var storage = isRemember ? localStorage : sessionStorage;
-		storage.lavaboomToken = token;
 	};
 
 	this.checkAuth = () => {
