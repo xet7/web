@@ -1,4 +1,6 @@
-angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $rootScope, $filter, $base64, co, apiProxy, crypto, user) {
+var Buffer = require('buffer/').Buffer;
+
+angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $rootScope, $filter, co, apiProxy, crypto, user) {
 	var self = this;
 
 	this.syncKeys = () => {
@@ -40,7 +42,7 @@ angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $root
 			throw new Error('Invalid keys backup format, json expected!');
 		}
 
-		var bodyHash = $base64.encode(openpgp.crypto.hash.sha512(JSON.stringify(importObj.body)));
+		var bodyHash = (new Buffer(openpgp.crypto.hash.sha512(JSON.stringify(importObj.body)), 'binary')).toString('hex');
 		if (bodyHash != importObj.bodyHash)
 			throw new Error('Backup keys are corrupted!');
 
@@ -94,12 +96,17 @@ angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $root
 			exported: $filter('date')(Date.now(), 'yyyy-MM-dd HH:mm:ss Z')
 		};
 
-		var bodyHash = $base64.encode(openpgp.crypto.hash.sha512(JSON.stringify(body)));
+		var bodyHash = (new Buffer(openpgp.crypto.hash.sha512(JSON.stringify(body)), 'binary')).toString('hex');
 
 		return JSON.stringify({
 			readme: 'https://lavaboom.com/placeholder/help/backup-file',
 			body: body,
 			bodyHash: bodyHash
 		}, null, 4);
+	};
+
+	this.getExportFilename = (backup) => {
+		var hashPostfix = (new Buffer(openpgp.crypto.hash.md5(backup), 'binary')).toString('hex').substr(0, 8);
+		return `${user.name}-${hashPostfix}.json`;
 	};
 });

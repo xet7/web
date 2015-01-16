@@ -10,6 +10,6 @@
 		"../../bower_components/angular-ui-select/dist/select.js",
 		"../../bower_components/lavaboom/dist/lavaboom-angular.js",
 		"../../bower_components/lavaboom/dist/lavaboom-api.js",
-		"../../bower_components/angular-base64/angular-base64.js",
+		"../../bower_components/file-saver/FileSaver.js",
 		"../../vendor/openpgp.js"
 	]
