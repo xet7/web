@@ -8,6 +8,8 @@
 	USERNAME = "username"
 	CURRENT_EMAIL = "your current email address"
 	NEXT_STEP = "Next Step"
+	PLC_USERNAME_OR_EMAIL = "username or email address"
+	PLC_PASSWORD = "password"
 	PLC_FIRST_NAME = "First Name"
 	PLC_LAST_NAME = "Last Name"
 	PLC_DISPLAY_NAME = "Display Name"
@@ -29,6 +31,11 @@
 	LB_EMAIL_SENT = "We have just sent and email to"
 	LB_COMPLETE = "Follow the link in the invite to complete Sign-Up. If no invite email arrives in your Inbox, please check your Spam folder"
 	BTN_COMPLETE = "OK"
+
+[LOGIN.INVITE]
+	TITLE = "Have you got an invite already?"
+	BTN_SEND_ME_INVITE = "No, send me an invite"
+	BTN_I_HAVE_INVITE_CODE = "Yes, I've got my invite code"
 
 [LOGIN.VERIFY_INVITE]
 	TITLE = "Verify invite code"
@@ -101,8 +108,8 @@
  	SIGNUP = "Sign Up"
 
 [LOGIN.AUTH]
-	GO_TO_MY_INBOX = "Go to my Inbox"
-	NO_ACCOUNT_YET = "No Account Yet? Signup Here!"
+	BTN_GO_TO_MY_INBOX = "Go to my Inbox"
+	BTN_NO_ACCOUNT_YET = "No Account Yet? Signup Here!"
 
 # Generic error messages for Lavaboom REST API
 [LAVABOOM.API.ERROR]
