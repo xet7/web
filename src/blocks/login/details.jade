@@ -1,5 +1,5 @@
-form.steps-form(name="details")
-	p.lead.pack User Details
+form.steps-form.ng-cloak(name="details")
+	p.lead.pack {{'LOGIN.DETAILS.TITLE' | translate}}
 
 	p.text-center.steps
 		span.icon-unread.active
@@ -12,19 +12,19 @@ form.steps-form(name="details")
 	span.error(ng-bind="")
 	div.info 
 		span.icon-info
-		p We are legally obliged to ask you this information. However, we neither actually use nor verify this data.
+		p {{'LOGIN.DETAILS.SUB_TITLE' | translate}}
 
 	div.form-group
-		input.form-control.input-lg(type='text', ng-model='form.firstName', placeholder="First Name", requared, minlength=2)
+		input.form-control.input-lg(type='text', ng-model='form.firstName', placeholder="{{'GLOBAL.PLC_FIRST_NAME' | translate}}", requared, minlength=2)
 	div.form-group
-		input.form-control.input-lg(type='text', ng-model='form.lastName', placeholder="Last Name", requared, minlength=2)
+		input.form-control.input-lg(type='text', ng-model='form.lastName', placeholder="{{'GLOBAL.PLC_LAST_NAME' | translate}}", requared, minlength=2)
 	br
 	div.form-group
-		input.form-control.input-lg(type='text', ng-model='form.displayName', placeholder="Display Name", required, minlength=4)
+		input.form-control.input-lg(type='text', ng-model='form.displayName', placeholder="{{'GLOBAL.PLC_DISPLAY_NAME' | translate}}", required, minlength=4)
 
-	p.text-center This is the name under which you will appear when sending emails. You can use your real name or a pseudonym to stay anonymous.
+	p.text-center {{'GLOBAL.LB_DISPLAY_NAME' | translate}}
 
 	hr.spacer
 		
 	footer
-		button.btn.btn-block.btn-lg.btn-primary(type='submit', ng-disabled='details.$invalid', ng-click='setDetails()') Next Step
+		button.btn.btn-block.btn-lg.btn-primary(type='submit', ng-disabled='details.$invalid', ng-click='requestDetailsUpdate()') {{'GLOBAL.NEXT_STEP' | translate}}

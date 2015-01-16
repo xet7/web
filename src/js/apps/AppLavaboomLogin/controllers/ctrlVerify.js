@@ -1,13 +1,13 @@
 angular.module('AppLavaboomLogin').controller('VerifyController', function($scope, $state, signUp) {
 	$scope.form = {
-		username: 'wtf-test2',
-		token: 'HGXHaV9bPSHSML3YGxwQ',
+		username: signUp.reserve ? signUp.reserve.username : '',
+		token: '',
 		isNews: true
 	};
 
 	$scope.isProcessing = false;
 
-	$scope.verifyInvite = () => {
+	$scope.requestVerify = () => {
 		signUp.verifyInvite($scope.form)
 			.then(() => {
 				$state.go('plan');
