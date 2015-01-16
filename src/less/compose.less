@@ -9,4 +9,31 @@
 	left: 0;
 	right: 0;
 	bottom: 0;
+	header{
+		padding: @filter-height 1em 0;
+		background-color: @lava-compose-header;
+		color: @lava-gray !important;
+		.table-list{
+			> *{
+				vertical-align: top;
+			}
+			.fields{
+				.pos-rel();
+				padding-right: 40px;
+				span.icon-close{
+					.pos-abs();
+					right: 0;
+					top: 0;
+					line-height: 3em;
+				}
+				width: 100%;
+			}
+			label {
+				color: @lava-gray;
+				font-weight: @base-font-weight;
+				line-height: 3em;
+				font-size: 14px;
+			}
+		}
+	}
 }

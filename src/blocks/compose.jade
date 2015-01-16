@@ -1,8 +1,19 @@
-div#compose-wrapper
-	div#compose
+div#compose-wrapper(ng-controller="ComposeController")
+	form#compose
 		.filters.row.no-gutter.lava-icon-row
 			.lava-icon-wrapper.pull-right
 				a(href="#")
 					span.icon-sent
 				a(href="#")
 					span.icon-close
+
+		header#compose-header
+			.table-list
+				.cell.label
+					label to:
+				.cell.fields
+					tags-input(ng-model="tags")
+						auto-complete(source="loadTags($query)")
+					span.icon-close.pull-right
+
+		article#compose-body
