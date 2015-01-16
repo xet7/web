@@ -237,7 +237,6 @@ var createJadePipeline = function (input, output) {
 		.pipe(plg.plumber())
 		.pipe(plg.ignore(function(file){
 			var basename = path.basename(file.relative);
-			console.log('JADE', basename);
 			return basename.indexOf('_') == 0;
 		}))
 		.pipe(plg.jade())
