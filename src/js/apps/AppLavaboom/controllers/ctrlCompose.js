@@ -1,29 +1,21 @@
 angular.module('AppLavaboom').controller('ComposeController', function($scope,  LavaboomAPI) {
-    LavaboomAPI.emails.create({
-        "to": "kuprina.ks@gmail.com",
-       "bcc": "kuprina.ks@gmail.com",
-       "reply_to":"",
-       "thread_id": "",
-        "subject": "Lavaboom master race!",
-        "is_encrypted": false,
-        "body": "Check out this cool new email service!",
-       "body_version_major":1,
-       "body_version_minor": 1,
-       "preview": "",
-       "preview_version_major": "",
-       "preview_version_minor": "",
-       "attachments": "",
-       "pgp_fingerprints": "",
-        "token":"3sPpg18YqdzpqJKtAziz"
+	$scope.tags = [
+		{ text: 'piggyslasher@gmail.com' },
+		{ text: 'comegetsome@lavaboom.com' },
+		{ text: 'nospoon@found.com' }
+	];
 
+	$scope.tags2 = [
+		{ text: 'scissorhands@edwar.ds' },
+		{ text: 'bogeyman3@mail.ru' }
+	];
 
+	$scope.tags3 = [
+		{ text: 'rhymezene@gmail.com' },
+		{ text: 'boogieman4@lavaboom.com' }
+	];
 
-
-
-
-    }).then(function(resp) {
-        console.log(resp);
-    }).catch(function(err) {
-        console.log(err);
-    });
+	$scope.loadTags = function(query) {
+		return [];//$http.get('/tags?query=' + query);
+	};
 });
