@@ -9,6 +9,7 @@ var source = require('vinyl-source-stream');
 var lazypipe = require('lazypipe');
 var exorcist  = require('exorcist');
 var mold = require('mold-source-map');
+var domain = require('domain');
 
 // General
 var gulp = require('gulp');
@@ -16,6 +17,7 @@ var plg = require('gulp-load-plugins')({
 	pattern: ['gulp-*', 'gulp.*'],
 	replaceString: /\bgulp[\-.]/
 });
+global.plg = plg;
 
 // Browserify the mighty one
 var browserify = require('browserify'),
@@ -32,6 +34,7 @@ var serve = require('./serve');
 var package = require('./package.json');
 var paths = require('./gulp/paths');
 var config = require('./gulp/config');
+var utils = require('./gulp/utils');
 
 // Global variables
 var childProcess = null;
@@ -82,27 +85,36 @@ gulp.task('build:scripts:vendor', ['clean:dist', 'lint:scripts'], function() {
 });
 
 var browserifyBundle = function(filename) {
-	var browserifyPipeline = browserify(filename, {
-		basedir: __dirname,
-		debug: config.isDebugable
-	})
-		.add(es6ify.runtime)
-		.transform(es6ify)
-		.transform(bulkify)
-		.transform(brfs);
-	if (config.isProduction) {
-		browserifyPipeline = browserifyPipeline
-			.transform(ngminify)
-			.transform(uglifyify);
-	}
-
 	var basename = path.basename(filename);
-	var sourceMapBasename = basename.replace('.js', '.js.map');
-	return browserifyPipeline
-		.bundle()
-		.pipe(mold.transformSourcesRelativeTo(path.join(__dirname, paths.scripts.inputFolder)))
-		.pipe(exorcist(paths.scripts.output + sourceMapBasename, '/js/' + sourceMapBasename))
-		.pipe(source(basename))
+
+	return gulp.src(filename, {read: false})
+		.pipe(plg.tap(function (file){
+			var d = domain.create();
+
+			d.on("error", function(err) {
+				utils.logGulpError('Browserify compile error:', file.path, err);
+			});
+
+			d.run(function (){
+				var browserifyPipeline = browserify(file.path, {
+					basedir: __dirname,
+					debug: config.isDebugable
+				})
+					.add(es6ify.runtime)
+					.transform(es6ify)
+					.transform(bulkify)
+					.transform(brfs);
+				if (config.isProduction) {
+					browserifyPipeline = browserifyPipeline
+						.transform(ngminify)
+						.transform(uglifyify);
+				}
+
+				file.contents = browserifyPipeline
+					.bundle();
+			});
+		}))
+		.pipe(plg.streamify(plg.concat(basename)))
 		.pipe(gulp.dest(paths.scripts.output));
 };
 
@@ -223,6 +235,10 @@ var createHtmlPipeline = function (input, output) {
 var createJadePipeline = function (input, output) {
 	return gulp.src(input)
 		.pipe(plg.plumber())
+		.pipe(plg.ignore(function(file){
+			var basename = path.basename(file.relative);
+			return basename.indexOf('_') == 0;
+		}))
 		.pipe(plg.jade())
 		.pipe(gulp.dest(output))
 		.pipe(config.isProduction ? prodHtmlPipeline(input, output)() : plg.util.noop());
@@ -278,7 +294,7 @@ gulp.task('gulp-reload', function() {
 });
 
 gulp.task('livereload', ['compile'], function() {
-	return gulp.src(paths.main_html.input)
+	return gulp.src(paths.main_html.inputJade)
 		.pipe(plg.livereload());
 });
 
