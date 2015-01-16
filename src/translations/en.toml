@@ -1,11 +1,62 @@
 [TEST]
 	STR = "Hello! Im Test-String in English"
+
 [INBOX]
 	NO_PREVIEW_AVAILABLE = "No preview available"
+
+[GLOBAL]
+	USERNAME = "username"
+	CURRENT_EMAIL = "your current email address"
+	NEXT_STEP = "Next Step"
+	PLC_FIRST_NAME = "First Name"
+	PLC_LAST_NAME = "Last Name"
+	PLC_DISPLAY_NAME = "Display Name"
+	LB_DISPLAY_NAME = "This is the name under which you will appear when sending emails. You can use your real name or a pseudonym to stay anonymous."
+
+[LOGIN.SECURE_USERNAME]
+	TITLE = "Secure your own Lavaboom username"
+    LNK_INVITE_QUESTION = "Got an invite mail already?"
+    LB_NEWS = "I want to be the first to hear about Lavaboom news, send me the latest form.Lava HQ"
+	BTN_SECURE = "Secure your username"
+
+[LOGIN.SECURED]
+	TITLE = "Congrats!"
+	SUB_TITLE = "Your username has been reserved."
+	LB_EMAIL_SENT = "We have just sent and email to"
+	LB_COMPLETE = "Follow the link in the invite to complete Sign-Up. If no invite email arrives in your Inbox, please check your Spam folder"
+	BTN_COMPLETE = "OK"
+
+[LOGIN.VERIFY_INVITE]
+	TITLE = "Verify invite code"
+	PLC_INVITE_CODE = "please paste invite code here"
+	LB_NEWS = "I want to be the first to hear about Lavaboom news, send me the latest form.Lava HQ"
+	LB_TOS = "By signing up I've agreed that I've read and understood the" 
+    LNK_TOS = "Terms of Service and the Privacy Policy"
+
+[LOGIN.PLAN]
+	TITLE = "Your Plan"
+    PLAN1_TITLE = "Beta"
+	PLAN1_OPT1_VALUE = "1 GB"
+	PLAN1_OPT2_VALUE = "Two Factor"
+	PLAN1_OPT3_VALUE = "Secure"
+	PLAN1_OPT4_VALUE = "Additional"
+	PLAN1_OPT5_VALUE = "Free"
+	PLAN1_OPT1_KEY = "Secure Email Storage"
+    PLAN1_OPT2_KEY = "Authentication"
+    PLAN1_OPT3_KEY = "Contacts"
+    PLAN1_OPT4_KEY = "500 MB free forever"
+    PLAN1_OPT5_KEY = "forever!"
+	BTN_SELECT = "I'll take this"
+
+[LOGIN.DETAILS]
+	TITLE = "User Details"
+    SUB_TITLE = "We are legally obliged to ask you this information. However, we neither actually use nor verify this data."
+
 [LOGIN.SIGNUP]
 	HEADER = "Get your own secure email account!"
  	LOGIN = "Log In"
  	SIGNUP = "Sign Up"
+
 [LOGIN.AUTH]
 	GO_TO_MY_INBOX = "Go to my Inbox"
 	NO_ACCOUNT_YET = "No Account Yet? Signup Here!"

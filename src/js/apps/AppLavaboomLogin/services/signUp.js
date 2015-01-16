@@ -1,12 +1,19 @@
 angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, user) {
 	var self = this;
 
+	this.reserve = null;
 	this.plan = null;
 	this.tokenSignup = null;
 	this.details = null;
 	this.password = null;
 
-	this.register = (username, altEmail) => {
+	this.register = (username, altEmail, isNews) => {
+		self.reserve = {
+			username: username,
+			altEmail: altEmail,
+			isNews: isNews
+		};
+
 		return co(function * (){
 			var res = yield apiProxy('accounts', 'create', 'register', {
 				username: username,
