@@ -15,5 +15,12 @@ div#compose-wrapper(ng-controller="ComposeController")
 					tags-input(ng-model="tags")
 						auto-complete(source="loadTags($query)")
 					span.icon-close.pull-right
+			.table-list
+				.cell.label
+					label CC:
+				.cell.fields
+					tags-input(ng-model="tags2")
+						auto-complete(source="loadTags($query)")
+					span.icon-close.pull-right
 
 		article#compose-body

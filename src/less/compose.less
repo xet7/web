@@ -9,11 +9,13 @@
 	left: 0;
 	right: 0;
 	bottom: 0;
+	box-shadow:  0px 0px 30px 10px rgba(0, 0, 0, 0.19);
 	header{
 		padding: @filter-height 1em 0;
 		background-color: @lava-compose-header;
 		color: @lava-gray !important;
 		.table-list{
+			border-bottom: 1px solid @lava-gray;
 			> *{
 				vertical-align: top;
 			}
@@ -31,8 +33,9 @@
 			label {
 				color: @lava-gray;
 				font-weight: @base-font-weight;
-				line-height: 3em;
+				line-height: 1em;
 				font-size: 14px;
+				padding-top: 13px;
 			}
 		}
 	}
