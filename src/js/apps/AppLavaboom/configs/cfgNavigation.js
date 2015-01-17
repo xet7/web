@@ -7,7 +7,8 @@ angular.module('AppLavaboom').config(function($stateProvider, $urlRouterProvider
 			url: '/decrypting',
 			views: {
 				'login-view': {
-					templateUrl: 'partials/login/decrypting.html'
+					templateUrl: 'partials/login/decrypting.html',
+					controller: 'CtrlDecrypting'
 				}
 			}
 		})
@@ -17,7 +18,8 @@ angular.module('AppLavaboom').config(function($stateProvider, $urlRouterProvider
 
 			views: {
 				'left-view': {
-					templateUrl: 'partials/left_panel.html'
+					templateUrl: 'partials/left_panel.html',
+					controller: 'CtrlNavigation'
 				}
 			}
 		})
