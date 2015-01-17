@@ -35,5 +35,12 @@ angular.module('AppLavaboom').config(function($stateProvider, $urlRouterProvider
 		.state('login.login', {
 			url: '/login',
 			templateUrl: 'partials/login/login1.html'
-		});
+		}).state('decrypting', {
+            url: '/decrypting',
+            views: {
+                'login-view': {
+                    templateUrl: 'partials/login/decrypting.html'
+                }
+            }
+        });
 });

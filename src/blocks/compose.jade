@@ -23,4 +23,12 @@ div#compose-wrapper(ng-controller="ComposeController")
 						auto-complete(source="loadTags($query)")
 					span.icon-close.pull-right
 
+			.table-list
+				.cell.label
+					label CC:
+				.cell.fields
+					tags-input(ng-model="tags3")
+						auto-complete(source="loadTags($query)")
+					span.icon-close.pull-right
+
 		article#compose-body
