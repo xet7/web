@@ -33,8 +33,10 @@ html(lang="en", ng-app="AppLavaboom")
 		meta(name="msapplication-config", content="/assets/browserconfig.xml")
 
 	body(ng-controller="CtrlLavaboom")
-		div#login-app.container.login
-			#main-content.col-md-8.col-xs-22.col-md-offset-8.col-xs-offset-2(ui-view="login-view")
+		div#login-app.login.logged-in
+			.container.main-container
+				.row
+					#main-content.col-md-8.col-xs-22.col-md-offset-8.col-xs-offset-1(ui-view="login-view")
 		#leftPanel(ui-view="left-view")
 		#content(ui-view="main-view")
 		// guide
