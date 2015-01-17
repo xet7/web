@@ -12,7 +12,7 @@ angular.module(primaryApplicationName).controller('CtrlDecrypting', function($sc
 		cryptoKeys.syncKeys();
 	});
 
-	$scope.on('inbox-decrypt-status', (e, status) => {
+	$scope.$on('inbox-decrypt-status', (e, status) => {
 		if (status.current < status.total) {
 			$scope.caption = lbDecrypting;
 			$scope.progress = 25 + (status.current / status.total) * 75;
