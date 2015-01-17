@@ -1,5 +1,5 @@
-form.steps-form
-	p.lead.pack Back up your key
+form.steps-form.ng-cloak
+	p.lead.pack {{'LOGIN.BACKUP_KEY.TITLE' | translate}}
 
 	p.text-center.steps
 		span.icon-unread.active
@@ -12,14 +12,14 @@ form.steps-form
 	div.info
 		span.icon-info
 		div
-			p We create and store your Private Key locally in your browser, which you are using right now.
-			p This means that if you want to access your Lavaboom account on a different browsre or a different maching you need to import your Key there before you can do this.
-			p Furthermore, if you Lose your browser cache, you might lose your Kay and in turn, lose access to your Lavaboom account.
-			p To prevent this, you should back up your Private Key to your hard drive to keep it safe. No worries - it's encrypted.
-			p You can back up your Key at any time in the Settings / My Keys page
+			p {{'LOGIN.BACKUP_KEY.INFO1' | translate}}
+			p {{'LOGIN.BACKUP_KEY.INFO2' | translate}}
+			p {{'LOGIN.BACKUP_KEY.INFO3' | translate}}
+			p {{'LOGIN.BACKUP_KEY.INFO4' | translate}}
+			p {{'LOGIN.BACKUP_KEY.INFO5' | translate}}
 
 	hr.blank
 
 	footer
-		button.btn.btn-block.btn-lg.btn-primary(ui-sref="generatingKeys") Back up my key now
-		button.btn.btn-block.btn-lg.btn(ui-sref="/") Do Back up later
+		button.btn.btn-block.btn-lg.btn-primary(ng-click="backup()") {{'LOGIN.BACKUP_KEY.BTN_BACKUP_NOW' | translate}}
+		button.btn.btn-block.btn-lg.btn(ui-sref="skip()") {{'LOGIN.BACKUP_KEY.BTN_BACKUP_LATER' | translate}}

@@ -2,7 +2,7 @@ angular.module('AppLavaboomLogin').controller('CtrlAuth', function($scope, $root
     $scope.form = {
 		username: '',
 		password: '',
-		isRemember: false
+		isRemember: true
 	};
 	$scope.isProcessing = false;
 
@@ -15,8 +15,6 @@ angular.module('AppLavaboomLogin').controller('CtrlAuth', function($scope, $root
 	};
 
 	$scope.$on('user-authenticated', () => {
-		user.persistAuth($scope.form.isRemember);
-
 		$window.location = '/';
 	});
 });

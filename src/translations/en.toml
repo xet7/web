@@ -8,6 +8,8 @@
 	USERNAME = "username"
 	CURRENT_EMAIL = "your current email address"
 	NEXT_STEP = "Next Step"
+	PLC_USERNAME_OR_EMAIL = "username or email address"
+	PLC_PASSWORD = "password"
 	PLC_FIRST_NAME = "First Name"
 	PLC_LAST_NAME = "Last Name"
 	PLC_DISPLAY_NAME = "Display Name"
@@ -29,6 +31,11 @@
 	LB_EMAIL_SENT = "We have just sent and email to"
 	LB_COMPLETE = "Follow the link in the invite to complete Sign-Up. If no invite email arrives in your Inbox, please check your Spam folder"
 	BTN_COMPLETE = "OK"
+
+[LOGIN.INVITE]
+	TITLE = "Have you got an invite already?"
+	BTN_SEND_ME_INVITE = "No, send me an invite"
+	BTN_I_HAVE_INVITE_CODE = "Yes, I've got my invite code"
 
 [LOGIN.VERIFY_INVITE]
 	TITLE = "Verify invite code"
@@ -76,12 +83,24 @@
 	LB_WARNING3 = "This Key is used to decrypt your data. It is like a super-safe password. Keep it safe and do not share it with anyone."
 	BTN_NEXT = "Generate my key pair"
 
-
 [LOGIN.GENERATING_KEYS]
 	LABEL_GENERATING = "Generating your Keys"
 	LABEL_GENERATED = "Your keys are ready!"
 	LABEL_REACHED = "Our hamsters are running extra hard, just be a bit more patient..."
 	LABEL_DO_NOT_CLOSE = "Do not close this window!"
+
+[LOGIN.BACKUP_KEY]
+	TITLE = "Back up your key"
+    INFO1 = "We create and store your Private Key locally in your browser, which you are using right now."
+    INFO2 = "This means that if you want to access your Lavaboom account on a different browser or a different machine you need to import your Key there before you can do this."
+    INFO3 = "Furthermore, if you Lose your browser cache, you might lose your Key and in turn, lose access to your Lavaboom account."
+    INFO4 = "To prevent this, you should back up your Private Key to your hard drive to keep it safe. No worries - it's encrypted."
+    INFO5 = "You can back up your Key at any time in the Settings / My Keys page"
+    BTN_BACKUP_NOW = "Back up my key now"
+	BTN_BACKUP_LATER = "Do Back up later"
+
+[DECRYPTING_INBOX]
+	LB_DECRYPTING = "Decrypting your Inbox"
 
 [LOGIN.SIGNUP]
 	HEADER = "Get your own secure email account!"
@@ -89,8 +108,8 @@
  	SIGNUP = "Sign Up"
 
 [LOGIN.AUTH]
-	GO_TO_MY_INBOX = "Go to my Inbox"
-	NO_ACCOUNT_YET = "No Account Yet? Signup Here!"
+	BTN_GO_TO_MY_INBOX = "Go to my Inbox"
+	BTN_NO_ACCOUNT_YET = "No Account Yet? Signup Here!"
 
 # Generic error messages for Lavaboom REST API
 [LAVABOOM.API.ERROR]

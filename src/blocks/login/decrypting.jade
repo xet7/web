@@ -1,8 +1,8 @@
-form
+form.ng-cloak
 	img.login-logo(src="img/Lavaboom-logo.svg")
 
 	.progress
-		.progress-bar(role='progressbar', aria-valuenow='70', aria-valuemin='0', aria-valuemax='100', style='width: 70%;')
+		.progress-bar(role='progressbar', aria-valuenow='{{progress}}', aria-valuemin='0', aria-valuemax='100', style='width: {{progress}}%;')
 			span.sr-only 70% Complete
 
-	p.lead Decrypting your Inbox
+	p.lead {{'DECRYPTING_INBOX.LB_DECRYPTING' | translate}}

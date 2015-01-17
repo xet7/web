@@ -1,4 +1,4 @@
-angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, user, crypto, cryptoKeys, fileReader, $base64) {
+angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, user, crypto, cryptoKeys, fileReader) {
 	$scope.genEmail = 'Tester <test@test.ru>';
 	$scope.genPassword = 'testit!';
 	$scope.genBits = 1024;
@@ -117,8 +117,7 @@ angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, use
 
 	$scope.exportKeys = () => {
 		var keysBackup = cryptoKeys.exportKeys();
-		var hashPostfix = $base64.encode(openpgp.crypto.hash.md5(keysBackup)).substr(0, 8);
 		var blob = new Blob([keysBackup], {type: "text/json;charset=utf-8"});
-		saveAs(blob, `${user.name}-${hashPostfix}.json`);
+		saveAs(blob, cryptoKeys.getExportFilename(keysBackup));
 	};
 });

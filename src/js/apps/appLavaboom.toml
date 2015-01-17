@@ -12,5 +12,6 @@
 		"../../bower_components/lavaboom/dist/lavaboom-api.js",
 		"../../bower_components/angular-base64/angular-base64.js",
 		"../../bower_components/ng-tags-input/ng-tags-input.js",
+		"../../bower_components/file-saver/FileSaver.js",
 		"../../vendor/openpgp.js"
 	]
