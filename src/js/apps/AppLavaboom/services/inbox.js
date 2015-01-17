@@ -74,6 +74,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 					});
 				} else {
 					self.emails = [];
+					$rootScope.$broadcast('inbox-decrypt-status', {current: 0, total: 0});
 				}
 
 				$rootScope.$broadcast('inbox-emails', self.emails);
