@@ -1,3 +1,18 @@
+var gulp = require('gulp');
+var plg = require('gulp-load-plugins')({
+	pattern: ['gulp-*', 'gulp.*'],
+	replaceString: /\bgulp[\-.]/
+});
+global.plg = plg;
+
+var utils = require('./gulp/utils');
+var config = require('./gulp/config');
+
+if (process.version != config.nodeVersion) {
+	utils.logGulpError('Incompatible node.js version\n', 'gulpfile.js', new Error('This gulpfile requires node.js version ' + config.nodeVersion));
+	return;
+}
+
 // system
 var os = require('os');
 var fs = require('fs');
@@ -10,14 +25,6 @@ var lazypipe = require('lazypipe');
 var exorcist  = require('exorcist');
 var mold = require('mold-source-map');
 var domain = require('domain');
-
-// General
-var gulp = require('gulp');
-var plg = require('gulp-load-plugins')({
-	pattern: ['gulp-*', 'gulp.*'],
-	replaceString: /\bgulp[\-.]/
-});
-global.plg = plg;
 
 // Browserify the mighty one
 var browserify = require('browserify'),
@@ -33,8 +40,6 @@ var serve = require('./serve');
 // Configuration
 var package = require('./package.json');
 var paths = require('./gulp/paths');
-var config = require('./gulp/config');
-var utils = require('./gulp/utils');
 
 // Global variables
 var childProcess = null;

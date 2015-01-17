@@ -100,7 +100,10 @@
 	BTN_BACKUP_LATER = "Do Back up later"
 
 [DECRYPTING_INBOX]
-	LB_DECRYPTING = "Decrypting your Inbox"
+	LB_SYNCHRONIZE = "Synchronizing your keys..."
+	LB_RETRIEVING = "Retrieving emails..."
+	LB_DECRYPTING = "Decrypting your Inbox..."
+	LB_SUCCESS = "Done..."
 
 [LOGIN.SIGNUP]
 	HEADER = "Get your own secure email account!"

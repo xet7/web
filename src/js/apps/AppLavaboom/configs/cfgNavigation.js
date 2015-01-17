@@ -1,7 +1,6 @@
 angular.module('AppLavaboom').config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$locationProvider.hashPrefix('!');
-	$urlRouterProvider.otherwise('/in');
-
+	$urlRouterProvider.otherwise('/decrypting');
 
 	$stateProvider
 		.state('decrypting', {
