@@ -2,8 +2,6 @@ angular.module('AppLavaboomLogin').controller('CtrlGeneratingKeys', function($sc
 	if (!user.isAuthenticated())
 		$state.go('login');
 
-	crypto.initialize();
-
 	const bits = 2048;
 	const estimatedTimeSeconds = 120;
 	var timePassed = 0;

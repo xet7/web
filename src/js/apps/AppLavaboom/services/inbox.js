@@ -3,11 +3,9 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	this.emails = [];
 	this.selected = null;
-	this.senders = {};
 	this.totalEmailsCount = 0;
-	this.isInboxLoading = false;
-
-	crypto.initialize();
+	this.decryptingTotal = 0;
+	this.decryptingCurrent = 0;
 
 	var decode = (body, pgpFingerprints, defaultBody = '') => {
 		var deferred = $q.defer();
@@ -20,7 +18,13 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			return crypto.decodeByListedFingerprints(body, pgpFingerprints);
 
 		deferred.resolve(body);
+
 		return deferred.promise;
+	};
+
+	var decodeFinished = () => {
+		self.decryptingCurrent++;
+		$rootScope.$broadcast('decrypt-status', {current: self.decryptingCurrent, total: self.decryptingTotal});
 	};
 
 	this.requestList = () => {
@@ -30,38 +34,47 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			try {
 				var res = yield apiProxy('emails', 'list', {});
 
-				self.emails = res.body.emails ? res.body.emails.map(e => {
-					var email = {
-						id: e.id,
-						subject: e.name,
-						date: e.date_created,
-						preview: '',
-						previewState: 'processing',
-						body: '',
-						bodyState: 'processing'
-					};
+				self.decryptingCurrent = 0;
+				if (res.body.emails) {
+					self.decryptingTotal = res.body.emails.length;
 
-					decode(e.preview.raw, e.preview.pgp_fingerprints)
-						.then(value => {
-							email.preview = value;
-							email.previewState = 'ok';
-						})
-						.catch(err => {
-							email.preview = err.message;
-							email.previewState = 'error';
-						});
-					decode(e.body.raw, e.body.pgp_fingerprints)
-						.then(value => {
-							email.body = value;
-							email.bodyState = 'ok';
-						})
-						.catch(err => {
-							email.body = err.message;
-							email.bodyState = 'error';
-						});
+					self.emails = res.body.emails.map(e => {
+						var email = {
+							id: e.id,
+							subject: e.name,
+							date: e.date_created,
+							preview: '',
+							previewState: 'processing',
+							body: '',
+							bodyState: 'processing'
+						};
 
-					return email;
-				}) : [];
+						decode(e.preview.raw, e.preview.pgp_fingerprints)
+							.then(value => {
+								email.preview = value;
+								email.previewState = 'ok';
+							})
+							.catch(err => {
+								email.preview = err.message;
+								email.previewState = 'error';
+							})
+							.finally(decodeFinished);
+						decode(e.body.raw, e.body.pgp_fingerprints)
+							.then(value => {
+								email.body = value;
+								email.bodyState = 'ok';
+							})
+							.catch(err => {
+								email.body = err.message;
+								email.bodyState = 'error';
+							})
+							.finally(decodeFinished);
+
+						return email;
+					});
+				} else {
+					self.emails = [];
+				}
 
 				$rootScope.$broadcast('inbox-emails', self.emails);
 			} finally {

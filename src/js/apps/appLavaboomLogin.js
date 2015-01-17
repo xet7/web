@@ -8,9 +8,10 @@ window.coJS = require('co');
 var bulkRequire = require('bulk-require');
 
 bulkRequire(__dirname, [
+	'../runs/*.js',
 	'../configs/*.js',
+	'../directives/*.js',
 	'../services/*.js',
-	"../directives/*.js",
 
 	'./AppLavaboomLogin/configs/*.js',
 	'./AppLavaboomLogin/runs/*.js',
