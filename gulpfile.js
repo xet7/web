@@ -1,3 +1,18 @@
+var gulp = require('gulp');
+var plg = require('gulp-load-plugins')({
+	pattern: ['gulp-*', 'gulp.*'],
+	replaceString: /\bgulp[\-.]/
+});
+global.plg = plg;
+
+var utils = require('./gulp/utils');
+var config = require('./gulp/config');
+
+if (process.version != config.nodeVersion) {
+	utils.logGulpError('Incompatible node.js version\n', 'gulpfile.js', new Error('This gulpfile requires node.js version ' + config.nodeVersion));
+	return;
+}
+
 // system
 var os = require('os');
 var fs = require('fs');
@@ -10,14 +25,6 @@ var lazypipe = require('lazypipe');
 var exorcist  = require('exorcist');
 var mold = require('mold-source-map');
 var domain = require('domain');
-
-// General
-var gulp = require('gulp');
-var plg = require('gulp-load-plugins')({
-	pattern: ['gulp-*', 'gulp.*'],
-	replaceString: /\bgulp[\-.]/
-});
-global.plg = plg;
 
 // Browserify the mighty one
 var browserify = require('browserify'),
@@ -33,8 +40,8 @@ var serve = require('./serve');
 // Configuration
 var package = require('./package.json');
 var paths = require('./gulp/paths');
-var config = require('./gulp/config');
-var utils = require('./gulp/utils');
+
+var filterTransform = require('filter-transform');
 
 // Global variables
 var childProcess = null;
@@ -95,6 +102,14 @@ var browserifyBundle = function(filename) {
 				utils.logGulpError('Browserify compile error:', file.path, err);
 			});
 
+			var uglifyifyTransformed = filterTransform(
+				function(file) {
+					if (file.indexOf('traceur-runtime') > -1)
+						return false;
+					return true;
+				},
+				uglifyify);
+
 			d.run(function (){
 				var browserifyPipeline = browserify(file.path, {
 					basedir: __dirname,
@@ -107,7 +122,7 @@ var browserifyBundle = function(filename) {
 				if (config.isProduction) {
 					browserifyPipeline = browserifyPipeline
 						.transform(ngminify)
-						.transform(uglifyify);
+						.transform(uglifyifyTransformed);
 				}
 
 				file.contents = browserifyPipeline
@@ -351,6 +366,10 @@ gulp.task('default', [
 	});
 
 	// start local http server
+	serve();
+});
+
+gulp.task('serve', function () {
 	serve();
 });
 

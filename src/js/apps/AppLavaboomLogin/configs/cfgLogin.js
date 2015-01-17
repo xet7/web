@@ -1,3 +1,3 @@
-angular.module('AppLavaboomLogin').config(function(LavaboomAPIProvider){
+angular.module(primaryApplicationName).config(function(LavaboomAPIProvider){
     LavaboomAPIProvider.setURL('https://api.lavaboom.io');
 });

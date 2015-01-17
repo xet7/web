@@ -1,4 +1,4 @@
-angular.module('AppLavaboomLogin').controller('CtrlAuth', function($scope, $rootScope, $window, $interval, user) {
+angular.module(primaryApplicationName).controller('CtrlAuth', function($scope, $rootScope, $window, $interval, user) {
     $scope.form = {
 		username: '',
 		password: '',

@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlLavaboom', function($scope, inbox, user) {
+angular.module(primaryApplicationName).controller('CtrlLavaboom', function($scope, crypto, user, inbox) {
 	$scope.switch = 'off';
 
 	var setInboxCount = (inboxCount = 0) => {
@@ -12,5 +12,6 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($scop
 		setInboxCount(inbox.totalEmailsCount);
 	});
 
+	crypto.initialize();
 	user.checkAuth();
 });

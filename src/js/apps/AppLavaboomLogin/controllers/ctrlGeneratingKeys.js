@@ -1,8 +1,6 @@
-angular.module('AppLavaboomLogin').controller('CtrlGeneratingKeys', function($scope, $state, $rootScope, $interval, $timeout, $translate, crypto, user, co, signUp) {
+angular.module(primaryApplicationName).controller('CtrlGeneratingKeys', function($scope, $state, $rootScope, $interval, $timeout, $translate, crypto, user, co, signUp) {
 	if (!user.isAuthenticated())
 		$state.go('login');
-
-	crypto.initialize();
 
 	const bits = 2048;
 	const estimatedTimeSeconds = 120;

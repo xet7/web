@@ -1,4 +1,4 @@
-angular.module('AppLavaboomLogin').directive('fileSelect', ($parse) => {
+angular.module(primaryApplicationName).directive('fileSelect', ($parse) => {
 	return {
 		link: (scope, element, attrs) => {
 			var getFile = $parse(attrs.getFile);

@@ -1,4 +1,4 @@
-angular.module('AppLavaboomLogin').controller('CtrlSecureUsername', function($scope, $state, signUp) {
+angular.module(primaryApplicationName).controller('CtrlSecureUsername', function($scope, $state, signUp) {
 	$scope.form = {
 		username: '',
 		email: '',

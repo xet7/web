@@ -1,4 +1,4 @@
-angular.module('AppLavaboomLogin').controller('CtrlBackup', function($scope, $state, $window, user, cryptoKeys) {
+angular.module(primaryApplicationName).controller('CtrlBackup', function($scope, $state, $window, user, cryptoKeys) {
 	if (!user.isAuthenticated())
 		$state.go('login');
 

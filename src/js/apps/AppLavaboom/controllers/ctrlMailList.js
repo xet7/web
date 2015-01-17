@@ -7,11 +7,6 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 		$scope.selected = {};
 	};
 
-	$scope.$on('user-authenticated', () => {
-		inbox.requestList();
-		cryptoKeys.syncKeys();
-	});
-
 	$scope.$on('inbox-emails', () => {
 		$scope.items = inbox.emails;
 	});

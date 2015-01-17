@@ -1,4 +1,4 @@
-angular.module('AppLavaboomLogin').controller('VerifyController', function($scope, $state, user, signUp) {
+angular.module(primaryApplicationName).controller('VerifyController', function($scope, $state, user, signUp) {
 	$scope.form = {
 		username: signUp.reserve ? signUp.reserve.username : '',
 		token: '',

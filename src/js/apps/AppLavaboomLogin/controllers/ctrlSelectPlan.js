@@ -1,4 +1,4 @@
-angular.module('AppLavaboomLogin').controller('CtrlSelectPlan', function($scope, $state, signUp) {
+angular.module(primaryApplicationName).controller('CtrlSelectPlan', function($scope, $state, signUp) {
 	if (!signUp.tokenSignup)
 		$state.go('invite');
 

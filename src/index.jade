@@ -1,4 +1,3 @@
-doctype html
 html(lang="en", ng-app="AppLavaboom")
 	head
 		meta(charset="utf-8")
@@ -32,11 +31,16 @@ html(lang="en", ng-app="AppLavaboom")
 		meta(name="msapplication-TileColor", content="#000000")
 		meta(name="msapplication-TileImage", content="/assets/mstile-144x144.png")
 		meta(name="msapplication-config", content="/assets/browserconfig.xml")
+
 	body(ng-controller="CtrlLavaboom")
-		include ./blocks/_left_panel.jade
-		#content(ui-view="")
+		div#login-app.login
+			.container.main-container
+				.row
+					#main-content.col-md-8.col-xs-22.col-md-offset-8.col-xs-offset-1(ui-view="login-view")
+		#leftPanel(ui-view="left-view")
+		#content(ui-view="main-view")
 		// guide
-		#guide
+		//#guide
 		// Lavaboom JS File
 		script(src='js/appLavaboom-vendor.js')
 		script(src='js/appLavaboom.js')

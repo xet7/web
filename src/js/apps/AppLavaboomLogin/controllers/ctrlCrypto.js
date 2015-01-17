@@ -1,4 +1,4 @@
-angular.module('AppLavaboomLogin').controller('CtrlCrypto', function($scope, user, crypto, cryptoKeys, fileReader) {
+angular.module(primaryApplicationName).controller('CtrlCrypto', function($scope, user, crypto, cryptoKeys, fileReader) {
 	$scope.genEmail = 'Tester <test@test.ru>';
 	$scope.genPassword = 'testit!';
 	$scope.genBits = 1024;
