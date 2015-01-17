@@ -41,6 +41,8 @@ var serve = require('./serve');
 var package = require('./package.json');
 var paths = require('./gulp/paths');
 
+var filterTransform = require('filter-transform');
+
 // Global variables
 var childProcess = null;
 var args = process.argv.slice(2);
@@ -100,6 +102,14 @@ var browserifyBundle = function(filename) {
 				utils.logGulpError('Browserify compile error:', file.path, err);
 			});
 
+			var uglifyifyTransformed = filterTransform(
+				function(file) {
+					if (file.indexOf('traceur-runtime') > -1)
+						return false;
+					return true;
+				},
+				uglifyify);
+
 			d.run(function (){
 				var browserifyPipeline = browserify(file.path, {
 					basedir: __dirname,
@@ -112,7 +122,7 @@ var browserifyBundle = function(filename) {
 				if (config.isProduction) {
 					browserifyPipeline = browserifyPipeline
 						.transform(ngminify)
-						.transform(uglifyify);
+						.transform(uglifyifyTransformed);
 				}
 
 				file.contents = browserifyPipeline
@@ -356,6 +366,10 @@ gulp.task('default', [
 	});
 
 	// start local http server
+	serve();
+});
+
+gulp.task('serve', function () {
 	serve();
 });
 
