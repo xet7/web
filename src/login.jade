@@ -32,8 +32,11 @@ html(ng-app="AppLavaboomLogin")
 		meta(name="msapplication-TileImage", content="/assets/mstile-144x144.png")
 		meta(name="msapplication-config", content="/assets/browserconfig.xml")
 
-	body#login-app.container.login(ng-controller="CtrlLavaboomLogin")
-		#main-content.col-md-8.col-xs-22.col-md-offset-8.col-xs-offset-2(ui-view="")
+	body(ng-controller="CtrlLavaboomLogin")
+		div#login-app.login
+			.container.main-container
+				.row
+					#main-content.col-md-8.col-xs-22.col-md-offset-8.col-xs-offset-2(ui-view="")
 
 		// Lavaboom JS File
 		script(src="js/appLavaboomLogin-vendor.js")
