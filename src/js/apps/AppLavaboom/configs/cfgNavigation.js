@@ -1,4 +1,4 @@
-angular.module('AppLavaboom').config(function($stateProvider, $urlRouterProvider, $locationProvider){
+angular.module(primaryApplicationName).config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$locationProvider.hashPrefix('!');
 	$urlRouterProvider.otherwise('/decrypting');
 
@@ -24,8 +24,8 @@ angular.module('AppLavaboom').config(function($stateProvider, $urlRouterProvider
 			}
 		})
 
-		.state('main.in', {
-			url: '/in',
+		.state('main.inbox', {
+			url: '/inbox',
 			views: {
 				'main-view@': {
 					templateUrl: 'partials/inbox.html'

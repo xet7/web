@@ -24,7 +24,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	var decodeFinished = () => {
 		self.decryptingCurrent++;
-		$rootScope.$broadcast('decrypt-status', {current: self.decryptingCurrent, total: self.decryptingTotal});
+		$rootScope.$broadcast('inbox-decrypt-status', {current: self.decryptingCurrent, total: self.decryptingTotal});
 	};
 
 	this.requestList = () => {

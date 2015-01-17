@@ -1,2 +1,2 @@
-angular.module('AppLavaboom').controller('CtrlCompose', function($scope) {
+angular.module(primaryApplicationName).controller('CtrlCompose', function($scope) {
 });
