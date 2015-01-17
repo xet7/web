@@ -7,6 +7,10 @@ angular.module('AppLavaboomLogin').config(function($stateProvider, $urlRouterPro
             url: '/',
             templateUrl: 'partials/login/login-signup.html'
         })
+		.state('decrypting', {
+			url: '/decrypting',
+			templateUrl: 'partials/login/decrypting.html'
+		})
 		.state('auth', {
             url: '/auth',
             templateUrl: 'partials/login/auth.html',
