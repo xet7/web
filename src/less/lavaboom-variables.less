@@ -104,7 +104,10 @@ body{
 	transition: 0.3s left;
 	top: 0; bottom: 0; right: 0;
 	position: absolute;
-	background: #FFF;
+	> * {
+		background: #FFF;
+	}
+
 	@media (max-width: @screen-md-max) {
 		left: @left-panel-width-sm;
 	}
