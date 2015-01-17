@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlLavaboom', function($scope, crypto, inbox, user) {
+angular.module(primaryApplicationName).controller('CtrlLavaboom', function($scope, crypto, user, inbox) {
 	$scope.switch = 'off';
 
 	var setInboxCount = (inboxCount = 0) => {
