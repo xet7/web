@@ -31,10 +31,7 @@
 						| Subject:
 						span(ng-bind="selected.subject")
 					.col-xs-2.when
-						span
-							| Today
-							br
-							| 7:28am
+						span(ng-bind="selected.date | date")
 					.col-xs-1.secure
 						a.icon-<!--.$secure.-->
 				.mail-content.row.no-gutter
