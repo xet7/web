@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlDecrypting', function($scope, $state, $translate, $timeout, consts, user, inbox, cryptoKeys) {
+angular.module(primaryApplicationName).controller('CtrlDecrypting', function($scope, $state, $translate, $timeout, consts, user, crypto, inbox, cryptoKeys) {
 	$scope.progress = 0;
 
 	var lbLoading = $translate.instant('DECRYPTING_INBOX.LB_LOADING');
@@ -6,6 +6,8 @@ angular.module(primaryApplicationName).controller('CtrlDecrypting', function($sc
 	var lbSuccess = $translate.instant('DECRYPTING_INBOX.LB_SUCCESS');
 
 	$scope.caption = lbLoading;
+
+	user.checkAuth();
 
 	var initiateLoading = () => {
 		inbox.requestList();
