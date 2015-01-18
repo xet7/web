@@ -1,0 +1,87 @@
+.row.settings-panel
+	form.settings.col-xs-12.col-xs-offset-6
+		h4 Accounts
+		ul.list-group
+			li.list-group-item
+				label Account Enabled
+				.control
+					label.switch
+						input(type='checkbox', checked='')
+						i
+		h4 Storage Space
+		ul.list-group.suppress-borders
+			li.list-group-item
+				label Total Storage
+				.control
+			li.list-group-item
+				label Total Storage
+				.control 53.7MB (53%)
+			li.list-group-item
+				.progress.clearfix
+					.progress-bar.progress-bar-info(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
+						span.sr-only 60% Complete
+		h4 Date / Time
+		ul.list-group
+			li.list-group-item
+				.dropdown-control
+					label Time Zone
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match {{$select.selected.name}}
+						ui-select-choices(repeat='item in [{name: "UTC+1"}, {name:"UTC+2"}, {name:"UTC+3"}, {name:"UTC+4"}]')
+							span(ng-click='item.selected=item', ng-bind-html='item.name')
+			li.list-group-item
+				.dropdown-control
+					label Date / Time
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match {{$select.selected.name}}
+						ui-select-choices(repeat='item in [{name: "day/month/year"}, {name:"month/date/year"}, {name:"year/month/date"}]')
+							span(ng-click='item.selected=item', ng-bind-html='item.name')
+			li.list-group-item
+				.dropdown-control
+					label Time Format
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match {{$select.selected.name}}
+						ui-select-choices(repeat='item in [{name: "24-hours"}, {name:"12-hours"}]')
+							span(ng-click='item.selected=item', ng-bind-html='item.name')
+		h4 User Interface
+		ul.list-group
+			li.list-group-item
+				.dropdown-control
+					label Language
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match {{$select.selected.name}}
+						ui-select-choices(repeat='item in [{name: "English (UK)"}, {name:"English (US)"}]')
+							span(ng-click='item.selected=item', ng-bind-html='item.name')
+			li.list-group-item
+				.dropdown-control
+					label Font Size
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match {{$select.selected.name}}
+						ui-select-choices(repeat='item in [{name: "medium"}, {name:"English (US)"}]')
+							span(ng-click='item.selected=item', ng-bind-html='item.name')
+		h4 Mail Behaviour
+		ul.list-group
+			li.list-group-item
+				.dropdown-control
+					label Composed Mails
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match
+							| {{$select.selected.name}}
+							span(ng-class='item.icon')
+						ui-select-choices(repeat='item in [{name: "English (UK)", icon: "icon-draft"}, {name:"English (US)", icon: "icon-inbox"}]')
+							span(ng-click='item.selected=item', ng-bind-html='item.name')
+							span.dropdown-icon(ng-class='item.icon')
+			li.list-group-item
+				.dropdown-control
+					label Marked as Spam
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match {{$select.selected.name}}
+						ui-select-choices(repeat='item in [{name: "Move to Spam Folder"}, {name:"English (US)"}]')
+							span(ng-click='item.selected=item', ng-bind-html='item.name')
+			li.list-group-item
+				.dropdown-control
+					label Deleted Emails
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match {{$select.selected.name}}
+						ui-select-choices(repeat='item in [{name: "Move to Spam Folder"}, {name:"English (US)"}]')
+							span(ng-click='item.selected=item', ng-bind-html='item.name')
