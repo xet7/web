@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).service('crypto', function($q, $rootScope) {
+angular.module(primaryApplicationName).service('crypto', function($q, consts) {
 	var self = this;
 
 	var wrapOpenpgpKeyring = (keyring) => {
@@ -25,16 +25,17 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		return keyring;
 	};
 
-	var sessionStore = new openpgp.Keyring.localstore();
-	sessionStore.storage = window.sessionStorage;
+	var sessionDecryptedStore = new openpgp.Keyring.localstore();
+	sessionDecryptedStore.storage = window.sessionStorage;
+
+	var localDecryptedStore = new openpgp.Keyring.localstore('openpgp-decrypted-');
 
 	var keyring = window.keyring = wrapOpenpgpKeyring(new openpgp.Keyring());
-	var sessionKeyring = window.sessionKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(sessionStore));
+	var localKeyring = window.localKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(localDecryptedStore));
+	var sessionKeyring = window.sessionKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(sessionDecryptedStore));
 
 	this.options = {};
 	this.keyring = keyring;
-
-	var getUserEmail = (user) => user.userId.userid.match(/<([^>]+)>/)[1];
 
 	var getAvailableEmails = (keys) => Object.keys(keys.keys.reduce((a, k) => {
 		var email = k.users[0].userId.userid.match(/<([^>]+)>/)[1];
@@ -66,12 +67,10 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 
 		self.options = opt;
 
-		if (isInitialized)
-			return;
-
-		openpgp.initWorker('/vendor/openpgp.worker.js');
-
-		isInitialized = true;
+		if (!isInitialized) {
+			openpgp.initWorker('/vendor/openpgp.worker.js');
+			isInitialized = true;
+		}
 	};
 
 	var applyPasswordToKeyPair = (privateKey, password) => {
@@ -83,22 +82,14 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		}
 	};
 
-	var getTheLatestPublicKeyForUser = (email) => {
-		return keyring.publicKeys.getForAddress(email).reduce((a, k) => {
-			if (!a || k.primaryKey.created > a.primaryKey.created)
-				a = k;
-			return a;
-		}, null);
-	};
-
-	this.generateKeys = (email, password, numBits) => {
+	this.generateKeys = (nameEmail, password, numBits) => {
 		if (!numBits)
-			numBits = 1024;
+			numBits = consts.DEFAULT_KEY_LENGTH;
 
-		console.log('generating keys', email, password, numBits);
+		console.log('generating keys', nameEmail, password, numBits);
 
 		var deferred = $q.defer();
-		openpgp.generateKeyPair({numBits: numBits, userId: email, passphrase: password})
+		openpgp.generateKeyPair({numBits: numBits, userId: nameEmail, passphrase: password})
 			.then(freshKeys => {
 				keyring.publicKeys.importKey(freshKeys.publicKeyArmored);
 				keyring.privateKeys.importKey(freshKeys.privateKeyArmored);
@@ -107,8 +98,8 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 				var pub = openpgp.key.readArmored(freshKeys.publicKeyArmored).keys[0],
 					prv = openpgp.key.readArmored(freshKeys.privateKeyArmored).keys[0];
 
-				/*$rootScope.$broadcast('crypto-dst-emails-updated', self.getAvailableDestinationEmails());
-				$rootScope.$broadcast('crypto-src-emails-updated', self.getAvailableSourceEmails());*/
+				$rootScope.$broadcast('crypto-dst-emails-updated', self.getAvailableDestinationEmails());
+				$rootScope.$broadcast('crypto-src-emails-updated', self.getAvailableSourceEmails());
 
 				deferred.resolve({
 					pub: pub,
@@ -188,88 +179,6 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		return true;
 	};
 
-    // obsolete
-	this.encode = (email, message) => {
-		var deferred = $q.defer();
-
-		try {
-			var publicKey = getTheLatestPublicKeyForUser(email);
-
-			if (!publicKey)
-				throw new Error(`Can't find public key for user with email '${email}'`);
-
-			console.log(publicKey.primaryKey.fingerprint);
-
-			openpgp.encryptMessage(publicKey, message)
-				.then(pgpMessage => {
-					deferred.resolve(pgpMessage);
-				})
-				.catch(error => {
-					deferred.reject(error);
-				});
-		} catch (catchedError) {
-			deferred.reject(catchedError);
-		}
-
-		return deferred.promise;
-	};
-
-	// obsolete
-	this.decode = (email, message) => {
-		var deferred = $q.defer();
-
-		try {
-			var isDecrypted = true;
-			var lastError = null;
-			var pgpMessage = openpgp.message.readArmored(message);
-
-			var privateKeys = keyring.privateKeys.getForAddress(email);
-			var decryptedPrivateKeys = sessionKeyring.privateKeys;
-
-			if (privateKeys.length < 1)
-				deferred.reject(new Error('No private keys found!'));
-			else {
-				var t = privateKeys.length;
-				var decryptCallChain = [];
-
-				for (var i = 0; i < privateKeys.length; i++) {
-					var privateKey = privateKeys[i];
-					if (!privateKey.primaryKey.isDecrypted)
-						privateKey = decryptedPrivateKeys.findByFingerprint(privateKey.primaryKey.fingerprint);
-
-					if (privateKey && privateKey.primaryKey.isDecrypted)
-						((privateKey) => {
-							decryptCallChain.push(() => {
-								openpgp.decryptMessage(privateKey, pgpMessage)
-									.then(plainText => {
-										isDecrypted = true;
-										deferred.resolve(plainText);
-									})
-									.catch(error => {
-										t--;
-										lastError = error;
-										if (!isDecrypted && t < 1) {
-											deferred.reject(new Error('Cannot find private key to decrypt email!'));
-										}
-									});
-							});
-						})(privateKey);
-					else
-						t--;
-				}
-
-				decryptCallChain.forEach(decrypt => decrypt());
-
-				if (decryptCallChain < 0)
-					deferred.reject(new Error('Please decrypt at least one your private key!'));
-			}
-		} catch (catchedError) {
-			deferred.reject(catchedError);
-		}
-
-		return deferred.promise;
-	};
-
 	this.decodeByListedFingerprints = (message, fingerprints) => {
 		var deferred = $q.defer();
 
@@ -278,10 +187,12 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 
 			var privateKey = fingerprints.reduce((a, fingerprint) => {
 				var privateKey = keyring.privateKeys.findByFingerprint(fingerprint);
-				console.log('decrypt 1', fingerprint, privateKey);
+
 				if (!privateKey || !privateKey.primaryKey.isDecrypted)
 					privateKey = sessionKeyring.privateKeys.findByFingerprint(fingerprint);
-				console.log('decrypt 2', fingerprint, privateKey);
+
+				if (!privateKey || !privateKey.primaryKey.isDecrypted)
+					privateKey = localKeyring.privateKeys.findByFingerprint(fingerprint);
 
 				if (privateKey && privateKey.primaryKey.isDecrypted)
 					return privateKey;
