@@ -17,7 +17,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 	var setupUserBasicInformation = (username) => {
 		self.name = username;
-		self.email = `${username}@${consts.rootDomain}`;
+		self.email = `${username}@${consts.ROOT_DOMAIN}`;
 		self.nameEmail = `${self.name} <${self.email}>`;
 	};
 
@@ -100,11 +100,11 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 					if (app.isLoginApplication)
 						return true;
 					if (app.isInboxApplication)
-						$window.location = consts.loginUrl;
+						$window.location = consts.LOGIN_URL;
 				}
 			}
 			else if (app.isInboxApplication) {
-				$window.location = consts.loginUrl;
+				$window.location = consts.LOGIN_URL;
 			}
 		});
 	};
