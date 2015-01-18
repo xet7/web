@@ -204,7 +204,7 @@ angular.module(primaryApplicationName).service('crypto', function($q, consts) {
 					deferred.resolve(plainText);
 				})
 				.catch(error => {
-					deferred.reject(new Error('Cannot decrypt email!'));
+					deferred.reject(error);
 				});
 		} catch (catchedError) {
 			deferred.reject(catchedError);
