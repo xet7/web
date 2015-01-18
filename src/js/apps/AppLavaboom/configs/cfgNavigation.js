@@ -1,8 +1,11 @@
 angular.module(primaryApplicationName).config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$locationProvider.hashPrefix('!');
-	$urlRouterProvider.otherwise('/decrypting');
+	$urlRouterProvider.otherwise('/loading');
 
 	$stateProvider
+		.state('loading', {
+			url: '/loading'
+		})
 		.state('decrypting', {
 			url: '/decrypting',
 			views: {

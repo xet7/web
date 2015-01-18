@@ -14,10 +14,17 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($scop
 
 	crypto.initialize();
 
-	$scope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-		if (!inbox.isDecrypted && toState.name != 'decrypting') {
+	user.checkAuth();
+
+	$scope.$on('user-authenticated', () => {
+		$state.go('decrypting');
+	});
+
+	var once = $scope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
+		if (toState.name != 'loading') {
 			event.preventDefault();
-			$state.go('decrypting');
+			$state.go('loading');
 		}
+		once();
 	});
 });

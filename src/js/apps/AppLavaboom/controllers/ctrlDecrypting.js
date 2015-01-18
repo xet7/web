@@ -7,8 +7,6 @@ angular.module(primaryApplicationName).controller('CtrlDecrypting', function($sc
 
 	$scope.caption = lbLoading;
 
-	user.checkAuth();
-
 	var initiateLoading = () => {
 		inbox.requestList();
 		cryptoKeys.syncKeys();
