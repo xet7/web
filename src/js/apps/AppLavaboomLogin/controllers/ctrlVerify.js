@@ -7,8 +7,6 @@ angular.module(primaryApplicationName).controller('VerifyController', function($
 
 	$scope.isProcessing = false;
 
-	console.log(user.calculateHash('test'));
-
 	$scope.requestVerify = () => {
 		signUp.verifyInvite($scope.form)
 			.then(() => {

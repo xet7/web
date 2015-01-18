@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).service('crypto', function($q, consts) {
+angular.module(primaryApplicationName).service('crypto', function($q, $rootScope, consts) {
 	var self = this;
 
 	var wrapOpenpgpKeyring = (keyring) => {

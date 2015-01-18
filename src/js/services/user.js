@@ -93,7 +93,6 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		$window.location = consts.LOGIN_URL;
 	};
 
-
 	this.checkAuth = () => {
 		console.log('Checking authentication token...');
 
