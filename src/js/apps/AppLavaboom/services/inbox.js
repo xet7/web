@@ -6,6 +6,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.totalEmailsCount = 0;
 	this.decryptingTotal = 0;
 	this.decryptingCurrent = 0;
+	this.isDecrypted = false;
 
 	var decode = (body, pgpFingerprints, defaultBody = '') => {
 		var deferred = $q.defer();
@@ -29,6 +30,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	this.requestList = () => {
 		self.isInboxLoading = true;
+		self.isDecrypted = true;
 
 		return co(function * (){
 			try {
