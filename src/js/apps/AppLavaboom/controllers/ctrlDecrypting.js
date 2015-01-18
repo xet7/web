@@ -14,7 +14,7 @@ angular.module(primaryApplicationName).controller('CtrlDecrypting', function($sc
 
 	if (user.isAuthenticated)
 		initiateLoading();
-	
+
 	$scope.$on('user-authenticated', () => {
 		initiateLoading();
 	});

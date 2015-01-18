@@ -85,6 +85,15 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		});
 	};
 
+	this.logout = () => {
+		if (localStorage.lavaboomToken)
+			delete localStorage.lavaboomToken;
+		if (sessionStorage.lavaboomToken)
+			delete sessionStorage.lavaboomToken;
+		$window.location = consts.LOGIN_URL;
+	};
+
+
 	this.checkAuth = () => {
 		console.log('Checking authentication token...');
 

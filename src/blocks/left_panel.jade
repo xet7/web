@@ -5,9 +5,9 @@ div#left-panel
 				img(src="img/Lavaboom-logo-full.svg")
 		ul.list-unstyled
 			li.compose
-				a(href="#")
+				a(href="#", ng-click="composeTest()")
 					span.icon-compose
-					span.action(ng-click="composeTest()") Compose
+					span.action Compose
 			li(ui-sref-active="active")
 				a(href="#", ui-sref="in")
 					span.icon-inbox
@@ -48,6 +48,6 @@ div#left-panel
 					span.action Settings
 			li.logout
 				small &#169; Lavaboom 2014
-				a(href="#")
+				a(href="#", ng-click="logout()")
 					span.icon-power
 					span.action Logout
