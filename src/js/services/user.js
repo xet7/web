@@ -35,7 +35,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 	this.gatherUserInformation = () => {
 		return co(function * () {
-			var res = yield apiProxy('accounts', 'get', 'me');
+			var res = yield apiProxy(['accounts', 'get'], 'me');
 
 			setupUserBasicInformation(res.body.user.name);
 
@@ -57,7 +57,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 		return co(function * (){
 			try {
-				var res = yield apiProxy('tokens', 'create', {
+				var res = yield apiProxy(['tokens', 'create'], {
 					type: 'auth',
 					username: username,
 					password: self.calculateHash(password)
@@ -68,7 +68,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 				persistAuth(isRemember);
 				isAuthenticated = true;
 
-				res = yield apiProxy('keys', 'list', self.name);
+				res = yield apiProxy(['keys', 'list'], self.name);
 				if (!res.body.keys || res.body.keys.length < 1) {
 					$state.go('generateKeys');
 					return;

@@ -5,7 +5,7 @@ angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $root
 
 	this.syncKeys = () => {
 		co(function *(){
-			var res = yield apiProxy('keys', 'list', user.name);
+			var res = yield apiProxy(['keys', 'list'], user.name);
 
 			var keysByFingerprint = res.body.keys ? res.body.keys.reduce((a, k) => {
 				a[k.id] = k;
@@ -21,7 +21,7 @@ angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $root
 					if (!keysByFingerprint[key.primaryKey.fingerprint]) {
 						console.log(`Importing key with fingerprint '${key.primaryKey.fingerprint}' to the server...`);
 
-						keysCreationPromises.push(apiProxy('keys', 'create', key.armor()));
+						keysCreationPromises.push(apiProxy(['keys', 'create'], key.armor()));
 					} else
 						console.log(`Key with fingerprint '${key.primaryKey.fingerprint}' already imported...`);
 				});

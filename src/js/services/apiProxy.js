@@ -26,20 +26,21 @@ angular.module(primaryApplicationName).factory('apiProxy', function($q, $rootSco
 
 	return function () {
 		var fnArgs = [].splice.call(arguments,0);
-		var args = fnArgs.splice(-1)[0];
-		var callName = fnArgs.join('.');
+		var path = fnArgs[0];
+		var callArgs = fnArgs.slice(1);
+		var callName = path.join('.');
 
-		console.log(`Calling ${callName}`, args ? args : '[no args]', '...');
+		console.log(`Calling ${callName}`, callArgs ? callArgs : '[no args]', '...');
 
 		return co(function *(){
 			try {
 				var call = LavaboomAPI;
-				fnArgs.forEach(a => {
+				path.forEach(a => {
 					call = call[a];
 					if (!call)
 						console.error(`undefined API call - no such call '${callName}'!`);
 				});
-				var res = yield call.apply(call, [args]);
+				var res = yield call.apply(call, callArgs);
 
 				console.log(`${callName}: `, res);
 

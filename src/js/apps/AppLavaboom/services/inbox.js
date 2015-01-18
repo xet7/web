@@ -34,7 +34,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 		return co(function * (){
 			try {
-				var res = yield apiProxy('emails', 'list', {});
+				var res = yield apiProxy(['emails', 'list'], {});
 
 				self.decryptingCurrent = 0;
 				if (res.body.emails) {
@@ -91,13 +91,13 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	this.send = (to, subject, body) => {
 		return co(function * () {
-			var res = yield apiProxy('keys', 'get', to);
+			var res = yield apiProxy(['keys', 'get'], to);
 			var publicKey = res.body.key;
 			var encryptedMessage = yield crypto.encodeWithKey(to, body, publicKey.key);
 
 			console.log(encryptedMessage, publicKey.id);
 
-			apiProxy('emails', 'create', {
+			apiProxy(['emails', 'create'], {
 				to: [to],
 				subject: subject,
 				body: encryptedMessage,

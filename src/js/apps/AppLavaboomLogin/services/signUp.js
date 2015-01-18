@@ -15,7 +15,7 @@ angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, 
 		};
 
 		return co(function * (){
-			var res = yield apiProxy('accounts', 'create', 'register', {
+			var res = yield apiProxy(['accounts', 'create', 'register'], {
 				username: username,
 				alt_email: altEmail
 			});
@@ -28,7 +28,7 @@ angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, 
 		self.tokenSignup = form;
 
 		return co(function * (){
-			var res = yield apiProxy('accounts', 'create', 'verify', {
+			var res = yield apiProxy(['accounts', 'create', 'verify'], {
 				username: self.tokenSignup.username,
 				invite_code: self.tokenSignup.token
 			});
@@ -40,10 +40,14 @@ angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, 
 	this.setup = (password) => {
 		self.password = password;
 		return co(function * (){
-			var res = yield apiProxy('accounts', 'create', 'setup', {
+			yield apiProxy(['accounts', 'create', 'setup'], {
 				username: self.tokenSignup.username,
 				invite_code: self.tokenSignup.token,
 				password: user.calculateHash(password)
+			});
+
+			yield apiProxy(['accounts', 'update'], 'me', {
+				settings: self.details
 			});
 
 			yield user.signIn(self.tokenSignup.username, password, true);
