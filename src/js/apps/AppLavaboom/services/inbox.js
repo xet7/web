@@ -41,12 +41,15 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 					self.emails = res.body.emails.map(e => {
 						var email = {
 							id: e.id,
+							isEncrypted: e.body.pgp_fingerprints.length > 0 || e.preview.pgp_fingerprints.length > 0,
 							subject: e.name,
 							date: e.date_created,
+							from: e.from,
 							preview: '',
 							previewState: 'processing',
 							body: '',
-							bodyState: 'processing'
+							bodyState: 'processing',
+							attachments: e.attachments
 						};
 
 						decode(e.preview.raw, e.preview.pgp_fingerprints)

@@ -33,7 +33,7 @@
 						br
 						br
 						.lava-icon-row
-							a
+							a(ng-show="item.attachments && item.attachments.length > 0")
 								span.icon-paper-clip
-							a(href="#")
+							a(ng-show="item.isEncrypted")
 								span.icon-lock

@@ -48,7 +48,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		});
 	};
 
-	this.signIn = (username, password, isRemember) => {
+	this.signIn = (username, password, isRemember, isPrivateComputer) => {
 		setupUserBasicInformation(username);
 
 		crypto.initialize({
@@ -74,6 +74,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 					return;
 				}
 
+				crypto.options.isPrivateComputer = isPrivateComputer;
 				var r = crypto.authenticateDefault(password);
 				console.log(r);
 
