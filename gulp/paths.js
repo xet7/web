@@ -14,6 +14,7 @@ module.exports = {
 	},
 	styles: {
 		input: 'src/less/lavaboom.less',
+		inputAll: 'src/less/**/*.less',
 		output: output + 'css/'
 	},
 	svgs: {
