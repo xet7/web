@@ -118,5 +118,3 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		});
 	};
 });
-
-

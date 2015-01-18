@@ -1,4 +1,4 @@
-.row.settings-panel.ng-cloak
+.row.settings-panel.ng-cloak(ng-controller="ctrlSettingsPersonal")
 	form.settings.col-xs-12.col-xs-offset-6
 		h4 Picture
 		.row.settings-row
@@ -12,17 +12,17 @@
 			li.list-group-item
 				.text-control
 					label Username
-					input.icon-field.form-control(disabled='', value='piggyslasher')
+					input.icon-field.form-control(disabled='', ng-bind="username")
 					span.icon-lock
 			li.list-group-item
 				.text-control
 					label First Name
-					input.icon-field.form-control(value='Vikram')
+					input.icon-field.form-control(ng-model="information.firstName")
 					span.icon-edit
 			li.list-group-item
 				.text-control
-					label Surname
-					input.icon-field.icon-edit.form-control(value='Ramanujam')
+					label Last Name
+					input.icon-field.icon-edit.form-control(ng-model="information.lastName")
 					span.icon-edit
 		h4 Signature
 		ul.list-group
