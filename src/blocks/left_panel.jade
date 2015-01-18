@@ -9,7 +9,7 @@ div#left-panel
 					span.icon-compose
 					span.action Compose
 			li(ui-sref-active="active")
-				a(href="#", ui-sref="in")
+				a(href="#", ui-sref="main.inbox")
 					span.icon-inbox
 					span.action Inbox
 					span.badge(ng-bind="inboxCountBadge")
@@ -43,7 +43,7 @@ div#left-panel
 					span.icon-head
 					span.action Contacts
 			li(ui-sref-active="active")
-				a(href="#", ui-sref="settings.preferences")
+				a(href="#", ui-sref="main.settings.preferences")
 					span.icon-cog
 					span.action Settings
 			li.logout
