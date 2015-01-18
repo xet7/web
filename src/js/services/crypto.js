@@ -62,8 +62,8 @@ angular.module(primaryApplicationName).service('crypto', function($q, consts) {
 	var isInitialized = false;
 
 	this.initialize = (opt = {}) => {
-		if (!opt.isRememberPasswords)
-			opt.isRememberPasswords = false;
+		if (!opt.isPrivateComputer)
+			opt.isPrivateComputer = false;
 
 		self.options = opt;
 
@@ -113,9 +113,25 @@ angular.module(primaryApplicationName).service('crypto', function($q, consts) {
 		return deferred.promise;
 	};
 
-	this.changePassword = (privateKey, newPassword, persist = 'local') => {
+	var persistKey = (privateKey, storage = 'local', isDecrypted = false) => {
+		var newKeyArmored = privateKey.armor();
+
+		if (storage == 'local') {
+			var selectedKeyring = isDecrypted ? localKeyring : keyring;
+
+			var i = selectedKeyring.privateKeys.findIndexByFingerprint(privateKey.primaryKey.fingerprint);
+			selectedKeyring.privateKeys.keys.splice(i, 1);
+
+			selectedKeyring.privateKeys.importKey(newKeyArmored);
+			selectedKeyring.store();
+		} else {
+			sessionKeyring.privateKeys.importKey(newKeyArmored);
+			sessionKeyring.store();
+		}
+	};
+
+	this.changePassword = (privateKey, newPassword, storage = 'local') => {
 		try {
-			var origPrivateKey = privateKey;
 			if (!privateKey.primaryKey.isDecrypted) {
 				privateKey = sessionKeyring.privateKeys.findByFingerprint(privateKey.primaryKey.fingerprint);
 				privateKey.decrypt();
@@ -126,24 +142,8 @@ angular.module(primaryApplicationName).service('crypto', function($q, consts) {
 
 			var packets = privateKey.getAllKeyPackets();
 			packets.forEach(packet => packet.encrypt(newPassword));
-			var newKeyArmored = privateKey.armor();
 
-			if (persist == 'local') {
-				var i = keyring.privateKeys.findIndexByFingerprint(origPrivateKey.primaryKey.fingerprint);
-				keyring.privateKeys.keys.splice(i, 1);
-
-				keyring.privateKeys.importKey(newKeyArmored);
-				keyring.store();
-
-				i = sessionKeyring.privateKeys.findIndexByFingerprint(origPrivateKey.primaryKey.fingerprint);
-				sessionKeyring.privateKeys.keys.splice(i, 1);
-
-				sessionKeyring.privateKeys.importKey(newKeyArmored);
-				sessionKeyring.store();
-			} else {
-				sessionKeyring.privateKeys.importKey(newKeyArmored);
-				sessionKeyring.store();
-			}
+			persistKey(privateKey, storage, !newPassword);
 
 			return true;
 		} catch (catchedError) {
@@ -172,9 +172,7 @@ angular.module(primaryApplicationName).service('crypto', function($q, consts) {
 		if (!applyPasswordToKeyPair(privateKey, password))
 			return false;
 
-		if (self.options.isRememberPasswords) {
-			self.changePassword(privateKey, '', 'session');
-		}
+		self.changePassword(privateKey, '', self.options.isPrivateComputer ? 'local' : 'session');
 
 		return true;
 	};
