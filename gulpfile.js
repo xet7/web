@@ -104,11 +104,17 @@ var browserifyBundle = function(filename) {
 
 			var uglifyifyTransformed = filterTransform(
 				function(file) {
-					if (file.indexOf('traceur-runtime') > -1)
-						return false;
-					return true;
+					return file.indexOf('traceur-runtime') < 0;
 				},
 				uglifyify);
+
+			var ownCodebaseTransform = function(transform) {
+				return filterTransform(
+					function(file) {
+						return file.indexOf(path.resolve(__dirname, paths.scripts.inputFolder)) > -1;
+					},
+					transform);
+			};
 
 			d.run(function (){
 				var browserifyPipeline = browserify(file.path, {
@@ -116,12 +122,13 @@ var browserifyBundle = function(filename) {
 					debug: config.isDebugable
 				})
 					.add(es6ify.runtime)
-					.transform(es6ify)
-					.transform(bulkify)
-					.transform(brfs);
+					.transform(ownCodebaseTransform(es6ify))
+					.transform(ownCodebaseTransform(bulkify))
+					.transform(ownCodebaseTransform(brfs));
+
 				if (config.isProduction) {
 					browserifyPipeline = browserifyPipeline
-						.transform(ngminify)
+						.transform(ownCodebaseTransform(ngminify))
 						.transform(uglifyifyTransformed);
 				}
 
