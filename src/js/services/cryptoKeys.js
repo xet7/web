@@ -14,24 +14,21 @@ angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $root
 
 			var publicKeys = crypto.getAvailablePublicKeysForSourceEmails();
 
+			var keysCreationPromises = [];
 			Object.keys(publicKeys).forEach(email => {
 				var keysForEmail = publicKeys[email];
 				keysForEmail.forEach(key => {
 					if (!keysByFingerprint[key.primaryKey.fingerprint]) {
 						console.log(`Importing key with fingerprint '${key.primaryKey.fingerprint}' to the server...`);
 
-						apiProxy('keys', 'create', key.armor());
+						keysCreationPromises.push(apiProxy('keys', 'create', key.armor()));
 					} else
 						console.log(`Key with fingerprint '${key.primaryKey.fingerprint}' already imported...`);
 				});
 			});
-		});
-	};
 
-	this.importPublicKey = (publicKey) => {
-		var key = openpgp.key.readArmored(publicKey).keys[0];
-		console.log('Importing public key ', key);
-		crypto.keyring.publicKeys.importKey(key);
+			yield keysCreationPromises;
+		});
 	};
 
 	this.importKeys = (jsonBackup) => {
