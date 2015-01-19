@@ -52,13 +52,20 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		});
 	};
 
-	this.requestList = () => {
+	this.requestList = (labelName) => {
+		if (!self.labels[labelName]) {
+			console.error('requestList unknown label name', labelName);
+			return;
+		}
+
+		var labelId = self.labels[labelName].id;
+
 		self.isInboxLoading = true;
 		self.isDecrypted = true;
 
 		return co(function * (){
 			try {
-				var res = yield apiProxy(['emails', 'list'], {});
+				var res = yield apiProxy(['emails', 'list'], labelId ? {label: labelId} : {});
 
 				self.decryptingCurrent = 0;
 				if (res.body.emails) {

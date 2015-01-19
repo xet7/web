@@ -9,9 +9,12 @@ angular.module(primaryApplicationName).controller('CtrlDecrypting', function($sc
 
 	var initiateLoading = () => {
 		inbox.initialize();
-		inbox.requestList();
-		cryptoKeys.syncKeys();
 	};
+
+	$scope.$on('inbox-labels', (e, labels) => {
+		inbox.requestList('Inbox');
+		cryptoKeys.syncKeys();
+	});
 
 	if (user.isAuthenticated)
 		initiateLoading();
