@@ -3,8 +3,8 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 		$scope.selected = item;
 	};
 
-	$scope.save = function() {
-		$scope.selected = {};
+	$scope.delete = () => {
+		inbox.requestDelete($scope.selected.id);
 	};
 
 	$scope.$on('inbox-emails', () => {

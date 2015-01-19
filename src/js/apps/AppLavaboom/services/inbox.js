@@ -28,6 +28,11 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		$rootScope.$broadcast('inbox-decrypt-status', {current: self.decryptingCurrent, total: self.decryptingTotal});
 	};
 
+	this.requestDelete = (id) => {
+		apiProxy(['emails', 'delete'], id);
+		self.requestList();
+	};
+
 	this.requestList = () => {
 		self.isInboxLoading = true;
 		self.isDecrypted = true;

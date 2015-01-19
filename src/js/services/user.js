@@ -57,6 +57,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 			self.settings.lastName = settings.lastName;
 		if (settings.displayName)
 			self.settings.displayName = settings.displayName;
+
 		return apiProxy(['accounts', 'update'], 'me', {
 			settings: self.setting
 		});

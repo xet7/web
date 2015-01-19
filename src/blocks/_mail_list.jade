@@ -3,14 +3,14 @@
 		label.search-icon.col-xs-3(for="top-search")
 			span.icon-search
 		input#top-search.search.col-xs-13(type="text", placeholder="Search Emails")
-		.lava-icon-wrapper.col-xs-8
+		.lava-icon-wrapper.col-xs-8(ng-show="selected")
 			a(href="#")
 				span.icon-arrow-down
 			a(href="#")
 				span.icon-star
 			a(href="#")
 				span.icon-ban
-			a(href="#")
+			a(href="#", ng-click="delete()")
 				span.icon-trash
 	.mail-list-group
 		div(ng-if="items.length < 1") No emails found
