@@ -12,8 +12,20 @@ div#compose-wrapper(ng-controller="ComposeController")
 				.cell.label
 					label to:
 				.cell.fields
-					tags-input(ng-model="tags")
-						auto-complete(source="loadTags($query)")
+					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="multipleDemo.selectedPeople2", theme="bootstrap", ng-disabled="disabled", style="width: 800px;", title="Choose a person")
+						ui-select-match(placeholder="Select person...", ng-class="{{item.name}}")
+							| {{$item.name}} &#60;{{$item.email}}&#62;
+							span ad
+						ui-select-choices(repeat="person in people | propsFilter: {name: $select.search, email: $select.search}")
+							div(ng-if="person.isTag", ng-bind-html="person.name + ' ' + $select.taggingLabel | highlight: $select.search")
+							div(ng-if="!person.isTag", ng-bind-html="person.name| highlight: $select.search")
+							small
+								| email: {{person.email}}
+								| age:
+								span(ng-bind-html="''+person.age | highlight: $select.search")
+
+					p Selected: {{multipleDemo.selectedPeople1}}
+
 					span.icon-close.pull-right
 			.table-list
 				.cell.label
@@ -27,8 +39,13 @@ div#compose-wrapper(ng-controller="ComposeController")
 				.cell.label
 					label CC:
 				.cell.fields
-					tags-input(ng-model="tags3")
+					//tags-input(ng-model="tags3")
 						auto-complete(source="loadTags($query)")
 					span.icon-close.pull-right
 
 		article#compose-body
+
+
+
+
+
