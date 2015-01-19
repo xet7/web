@@ -8,7 +8,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 	this.nameEmail = '';
 
 	// information about user from API
-	this.information = {
+	this.settings = {
 
 	};
 
@@ -37,6 +37,8 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		return co(function * () {
 			var res = yield apiProxy(['accounts', 'get'], 'me');
 
+			self.settings = res.body.settings;
+
 			setupUserBasicInformation(res.body.user.name);
 
 			if (!isAuthenticated) {
@@ -45,6 +47,18 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 			}
 
 			return res.body;
+		});
+	};
+
+	this.update = (settings) => {
+		if (settings.firstName)
+			self.settings.firstName = settings.firstName;
+		if (settings.lastName)
+			self.settings.lastName = settings.lastName;
+		if (settings.displayName)
+			self.settings.displayName = settings.displayName;
+		return apiProxy(['accounts', 'update'], 'me', {
+			settings: self.setting
 		});
 	};
 

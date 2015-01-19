@@ -46,15 +46,11 @@ angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, 
 				password: user.calculateHash(password)
 			});
 
-			yield apiProxy(['accounts', 'update'], 'me', {
-				settings: self.details
-			});
-
 			yield user.signIn(self.tokenSignup.username, password, true);
+
+			yield user.update(self.details);
 
 			return res.body;
 		});
 	};
 });
-
-

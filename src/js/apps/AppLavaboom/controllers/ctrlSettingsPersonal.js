@@ -3,5 +3,5 @@ angular.module(primaryApplicationName).controller('ctrlSettingsPersonal', functi
 
 	console.log('$scope.username', $scope.username);
 
-	$scope.information = user.information;
+	$scope.settings = user.settings;
 });
