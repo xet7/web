@@ -8,35 +8,11 @@ div#left-panel.ng-cloak
 				a(href="#", ng-click="composeTest()")
 					span.icon-compose
 					span.action Compose
-			li(ui-sref-active="active")
-				a(href="#", ui-sref="main.inbox")
+			li(ui-sref-active="active", ng-repeat="(name, label) in labels track by label.id")
+				a(href="#", ui-sref="main.label({labelName: label.name})")
 					span.icon-inbox
-					span.action Inbox
-					span.badge(ng-bind="inboxCountBadge")
-			li
-				a(href="#")
-					span.icon-draft
-					span.action Draft
-			li
-				a(href="#")
-					span.icon-outbox
-					span.action Outbox
-			li
-				a(href="#")
-					span.icon-sent
-					span.action Sent
-			li
-				a(href="#")
-					span.icon-star
-					span.action Favorites
-			li
-				a(href="#")
-					span.icon-ban
-					span.action Junk
-			li
-				a(href="#")
-					span.icon-trash
-					span.action Trash
+					span.action(ng-bind="label.name")
+					span.badge
 			li.separator
 			li
 				a(href="#")

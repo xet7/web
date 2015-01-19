@@ -7,6 +7,10 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 		inbox.requestDelete($scope.selected.id);
 	};
 
+	$scope.star = () => {
+		inbox.requestStar($scope.selected.id);
+	};
+
 	$scope.$on('inbox-emails', () => {
 		$scope.items = inbox.emails;
 	});

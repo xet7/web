@@ -7,6 +7,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.decryptingTotal = 0;
 	this.decryptingCurrent = 0;
 	this.isDecrypted = false;
+	this.labels = [];
 
 	var decode = (body, pgpFingerprints, defaultBody = '') => {
 		var deferred = $q.defer();
@@ -31,6 +32,24 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.requestDelete = (id) => {
 		apiProxy(['emails', 'delete'], id);
 		self.requestList();
+	};
+
+	this.requestStar = (id) => {
+
+	};
+
+
+	this.initialize = () => {
+		return co(function *(){
+			var res = yield apiProxy(['labels', 'list']);
+
+			self.labels = res.body.labels.reduce((a, c) => {
+				a[c.name] = c;
+				return a;
+			}, {});
+
+			$rootScope.$broadcast('inbox-labels', self.labels);
+		});
 	};
 
 	this.requestList = () => {
