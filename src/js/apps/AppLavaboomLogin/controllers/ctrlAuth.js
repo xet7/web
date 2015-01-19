@@ -2,13 +2,14 @@ angular.module(primaryApplicationName).controller('CtrlAuth', function($scope, $
     $scope.form = {
 		username: '',
 		password: '',
-		isRemember: true
+		isRemember: true,
+		isPrivateComputer: true
 	};
 	$scope.isProcessing = false;
 
     $scope.logIn = () => {
 		$scope.isProcessing = true;
-		user.signIn($scope.form.username, $scope.form.password, $scope.form.isRemember)
+		user.signIn($scope.form.username, $scope.form.password, $scope.form.isRemember, $scope.form.isPrivateComputer)
 			.finally(() => {
 				$scope.isProcessing = false;
 			});

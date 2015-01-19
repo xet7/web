@@ -1,15 +1,15 @@
-div#left-panel
+div#left-panel.ng-cloak
 	nav#navigation
 		div#brand
 			a(herf="#")
 				img(src="img/Lavaboom-logo-full.svg")
 		ul.list-unstyled
 			li.compose
-				a(href="#")
+				a(href="#", ng-click="composeTest()")
 					span.icon-compose
-					span.action(ng-click="composeTest()") Compose
+					span.action Compose
 			li(ui-sref-active="active")
-				a(href="#", ui-sref="in")
+				a(href="#", ui-sref="main.inbox")
 					span.icon-inbox
 					span.action Inbox
 					span.badge(ng-bind="inboxCountBadge")
@@ -43,11 +43,11 @@ div#left-panel
 					span.icon-head
 					span.action Contacts
 			li(ui-sref-active="active")
-				a(href="#", ui-sref="settings.preferences")
+				a(href="#", ui-sref="main.settings.preferences")
 					span.icon-cog
 					span.action Settings
 			li.logout
 				small &#169; Lavaboom 2014
-				a(href="#")
+				a(href="#", ng-click="logout()")
 					span.icon-power
 					span.action Logout

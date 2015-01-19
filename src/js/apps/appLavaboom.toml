@@ -11,5 +11,6 @@
 		"../../bower_components/lavaboom/dist/lavaboom-angular.js",
 		"../../bower_components/lavaboom/dist/lavaboom-api.js",
 		"../../bower_components/file-saver/FileSaver.js",
-		"../../vendor/openpgp.js"
+		"../../vendor/openpgp.js",
+		#"../../bower_components/sockjs-client/dist/sockjs.js"
 	]

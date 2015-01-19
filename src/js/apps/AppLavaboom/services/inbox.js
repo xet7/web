@@ -6,6 +6,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.totalEmailsCount = 0;
 	this.decryptingTotal = 0;
 	this.decryptingCurrent = 0;
+	this.isDecrypted = false;
 
 	var decode = (body, pgpFingerprints, defaultBody = '') => {
 		var deferred = $q.defer();
@@ -27,12 +28,18 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		$rootScope.$broadcast('inbox-decrypt-status', {current: self.decryptingCurrent, total: self.decryptingTotal});
 	};
 
+	this.requestDelete = (id) => {
+		apiProxy(['emails', 'delete'], id);
+		self.requestList();
+	};
+
 	this.requestList = () => {
 		self.isInboxLoading = true;
+		self.isDecrypted = true;
 
 		return co(function * (){
 			try {
-				var res = yield apiProxy('emails', 'list', {});
+				var res = yield apiProxy(['emails', 'list'], {});
 
 				self.decryptingCurrent = 0;
 				if (res.body.emails) {
@@ -41,12 +48,15 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 					self.emails = res.body.emails.map(e => {
 						var email = {
 							id: e.id,
+							isEncrypted: e.body.pgp_fingerprints.length > 0 || e.preview.pgp_fingerprints.length > 0,
 							subject: e.name,
 							date: e.date_created,
+							from: e.from,
 							preview: '',
 							previewState: 'processing',
 							body: '',
-							bodyState: 'processing'
+							bodyState: 'processing',
+							attachments: e.attachments
 						};
 
 						decode(e.preview.raw, e.preview.pgp_fingerprints)
@@ -86,13 +96,13 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	this.send = (to, subject, body) => {
 		return co(function * () {
-			var res = yield apiProxy('keys', 'get', to);
+			var res = yield apiProxy(['keys', 'get'], to);
 			var publicKey = res.body.key;
 			var encryptedMessage = yield crypto.encodeWithKey(to, body, publicKey.key);
 
 			console.log(encryptedMessage, publicKey.id);
 
-			apiProxy('emails', 'create', {
+			apiProxy(['emails', 'create'], {
 				to: [to],
 				subject: subject,
 				body: encryptedMessage,

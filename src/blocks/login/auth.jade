@@ -9,8 +9,11 @@ form.ng-cloak
 		input.form-control.input-lg(type='password', ng-model='form.password', placeholder="{{'GLOBAL.PLC_PASSWORD' | translate}}", required)
 
 	.checkbox
-		input#check1(type='checkbox', ng-model="form.isRemember")
+		input#check1(type='checkbox', name="check1", ng-model="form.isRemember")
 		label(for='check1') Keep me logged in
+	.checkbox
+		input#check1(type='checkbox', name="check2", ng-model="form.isPrivateComputer")
+		label(for='check2') This is private computer
 
 	footer
 		button.btn.btn-block.btn-lg.btn-primary(ng-click='logIn()', ng-disabled="isProcessing") {{'LOGIN.AUTH.BTN_GO_TO_MY_INBOX' | translate}}

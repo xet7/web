@@ -53,7 +53,39 @@ require('toml-require').install();
  * Gulp Taks
  */
 
-gulp.task('build:scripts:vendor', ['clean:dist', 'lint:scripts'], function() {
+gulp.task('build:scripts:vendor:min', function() {
+	return gulp.src(paths.scripts.inputDeps)
+		.pipe(plg.plumber())
+		.pipe(plg.tap(function (file, t) {
+			var appConfig = toml.parse(file.contents);
+			var dependencies = [];
+
+			for(var i = 0; i < appConfig.application.dependencies.length; i++) {
+				var resolvedFileOriginal = paths.scripts.inputAppsFolder + appConfig.application.dependencies[i];
+
+				if (fs.existsSync(resolvedFileOriginal)) {
+					var resolvedFile = resolvedFileOriginal.replace('.js', '.min.js');
+
+					if (!fs.existsSync(resolvedFile) && !fs.existsSync(path.resolve(__dirname, paths.scripts.cacheOutput, path.basename(resolvedFileOriginal)))) {
+						dependencies.push(resolvedFileOriginal);
+					}
+				}
+			}
+
+			console.log(dependencies);
+
+			return gulp.src(dependencies)
+				.pipe(plg.plumber())
+				.pipe(plg.sourcemaps.init())
+				.pipe(plg.ngAnnotate())
+				.pipe(plg.uglify())
+				.pipe(plg.sourcemaps.write('.'))
+				.pipe(gulp.dest(paths.scripts.cacheOutput));
+		}))
+		.pipe(gulp.dest(paths.scripts.output));
+});
+
+gulp.task('build:scripts:vendor', ['clean:dist', 'build:scripts:vendor:min', 'lint:scripts'], function() {
 	return gulp.src(paths.scripts.inputDeps)
 		.pipe(plg.plumber())
 		.pipe(plg.tap(function (file, t) {
@@ -66,6 +98,14 @@ gulp.task('build:scripts:vendor', ['clean:dist', 'lint:scripts'], function() {
 				var resolvedFile = '';
 				if (config.isProduction) {
 					resolvedFile = resolvedFileOriginal.replace('.js', '.min.js');
+
+					if (!fs.existsSync(resolvedFile)) {
+						resolvedFile = path.resolve(__dirname, paths.scripts.cacheOutput, path.basename(resolvedFileOriginal));
+
+						if (fs.existsSync(resolvedFile)) {
+							console.log('Took minified version for vendor library from cache: ', resolvedFile);
+						}
+					}
 
 					if (!fs.existsSync(resolvedFile)) {
 						console.log('Cannot find minified version for vendor library: ', appConfig.application.dependencies[i]);
@@ -104,11 +144,17 @@ var browserifyBundle = function(filename) {
 
 			var uglifyifyTransformed = filterTransform(
 				function(file) {
-					if (file.indexOf('traceur-runtime') > -1)
-						return false;
-					return true;
+					return file.indexOf('traceur-runtime') < 0;
 				},
 				uglifyify);
+
+			var ownCodebaseTransform = function(transform) {
+				return filterTransform(
+					function(file) {
+						return file.indexOf(path.resolve(__dirname, paths.scripts.inputFolder)) > -1;
+					},
+					transform);
+			};
 
 			d.run(function (){
 				var browserifyPipeline = browserify(file.path, {
@@ -116,12 +162,13 @@ var browserifyBundle = function(filename) {
 					debug: config.isDebugable
 				})
 					.add(es6ify.runtime)
-					.transform(es6ify)
-					.transform(bulkify)
-					.transform(brfs);
+					.transform(ownCodebaseTransform(es6ify))
+					.transform(ownCodebaseTransform(bulkify))
+					.transform(ownCodebaseTransform(brfs));
+
 				if (config.isProduction) {
 					browserifyPipeline = browserifyPipeline
-						.transform(ngminify)
+						.transform(ownCodebaseTransform(ngminify))
 						.transform(uglifyifyTransformed);
 				}
 

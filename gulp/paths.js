@@ -4,6 +4,7 @@ module.exports = {
 	input: 'src/**/*',
 	output: output,
 	scripts: {
+		cacheOutput: './cache/',
 		input: 'src/js/*.js',
 		inputFolder: 'src/js/',
 		inputAll: 'src/js/**/*.js',
@@ -14,6 +15,7 @@ module.exports = {
 	},
 	styles: {
 		input: 'src/less/lavaboom.less',
+		inputAll: 'src/less/**/*.less',
 		output: output + 'css/'
 	},
 	svgs: {

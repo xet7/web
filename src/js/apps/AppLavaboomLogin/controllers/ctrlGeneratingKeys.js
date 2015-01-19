@@ -1,9 +1,9 @@
-angular.module(primaryApplicationName).controller('CtrlGeneratingKeys', function($scope, $state, $rootScope, $interval, $timeout, $translate, crypto, user, co, signUp) {
+angular.module(primaryApplicationName).controller('CtrlGeneratingKeys', function($scope, $state, $rootScope, $interval, $timeout, $translate, consts, crypto, user, co, signUp) {
 	if (!user.isAuthenticated())
 		$state.go('login');
 
-	const bits = 2048;
-	const estimatedTimeSeconds = 120;
+	const bits = consts.DEFAULT_KEY_LENGTH;
+	const estimatedTimeSeconds = consts.ESTIMATED_KEY_GENERATION_TIME_SECONDS;
 	var timePassed = 0;
 
 	$scope.progress = 0;
@@ -40,7 +40,7 @@ angular.module(primaryApplicationName).controller('CtrlGeneratingKeys', function
 
 			$timeout(() => {
 				$state.go('backupKeys');
-			}, 1000);
+			}, consts.BACKUP_KEYS_REDIRECT_DELAY);
 		})
 		.catch(err => {
 			console.log('keys generation error!', err);
