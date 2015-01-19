@@ -13,5 +13,9 @@
 		"../../bower_components/angular-base64/angular-base64.js",
 		"../../bower_components/ng-tags-input/ng-tags-input.js",
 		"../../bower_components/file-saver/FileSaver.js",
+		'../../bower_components/rangy/rangy-core.js',
+		'../../bower_components/rangy/rangy-selectionsaverestore.js',
+		'../../bower_components/textAngular/dist/textAngular-sanitize.min.js',
+		'../../bower_components/textAngular/dist/textAngular.min.js',
 		"../../vendor/openpgp.js"
 	]

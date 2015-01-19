@@ -12,40 +12,48 @@ div#compose-wrapper(ng-controller="ComposeController")
 				.cell.label
 					label to:
 				.cell.fields
-					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="multipleDemo.selectedPeople2", theme="bootstrap", ng-disabled="disabled", style="width: 800px;", title="Choose a person")
-						ui-select-match(placeholder="Select person...", ng-class="{{item.name}}")
+					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="composeSelected.to", theme="bootstrap", ng-disabled="disabled", style="width: 100%;", title="Choose a person")
+						ui-select-match(placeholder="Select person...", ng-class="{{$item.name}}")
 							| {{$item.name}} &#60;{{$item.email}}&#62;
-							span ad
+							span(class="icon-lock sec-{{person.sec}}")
 						ui-select-choices(repeat="person in people | propsFilter: {name: $select.search, email: $select.search}")
 							div(ng-if="person.isTag", ng-bind-html="person.name + ' ' + $select.taggingLabel | highlight: $select.search")
 							div(ng-if="!person.isTag", ng-bind-html="person.name| highlight: $select.search")
 							small
 								| email: {{person.email}}
-								| age:
-								span(ng-bind-html="''+person.age | highlight: $select.search")
-
-					p Selected: {{multipleDemo.selectedPeople1}}
-
+								span(class="icon-lock sec-{{person.sec}}")
 					span.icon-close.pull-right
 			.table-list
 				.cell.label
 					label CC:
 				.cell.fields
-					tags-input(ng-model="tags2")
-						auto-complete(source="loadTags($query)")
+					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="composeSelected.cc", theme="bootstrap", ng-disabled="disabled", style="width: 100%;", title="Choose a person")
+						ui-select-match(placeholder="Select person...", ng-class="{{$item.name}}")
+							| {{$item.name}} &#60;{{$item.email}}&#62;
+							span(class="icon-lock sec-{{person.sec}}")
+						ui-select-choices(repeat="person in people | propsFilter: {name: $select.search, email: $select.search}")
+							div(ng-if="person.isTag", ng-bind-html="person.name + ' ' + $select.taggingLabel | highlight: $select.search")
+							div(ng-if="!person.isTag", ng-bind-html="person.name| highlight: $select.search")
+							small
+								| email: {{person.email}}
+								span(class="icon-lock sec-{{person.sec}}")
 					span.icon-close.pull-right
-
 			.table-list
 				.cell.label
 					label CC:
 				.cell.fields
-					//tags-input(ng-model="tags3")
-						auto-complete(source="loadTags($query)")
+					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="composeSelected.bcc", theme="bootstrap", ng-disabled="disabled", style="width: 100%;", title="Choose a person")
+						ui-select-match(placeholder="Select person...", ng-class="{{$item.name}}")
+							| {{$item.name}} &#60;{{$item.email}}&#62;
+							span(class="icon-lock sec-{{person.sec}}")
+						ui-select-choices(repeat="person in people | propsFilter: {name: $select.search, email: $select.search}")
+							div(ng-if="person.isTag", ng-bind-html="person.name + ' ' + $select.taggingLabel | highlight: $select.search")
+							div(ng-if="!person.isTag", ng-bind-html="person.name| highlight: $select.search")
+							small
+								| email: {{person.email}}
+								span(class="icon-lock sec-{{person.sec}}")
+					span.icon-close.pull-right
 					span.icon-close.pull-right
 
 		article#compose-body
-
-
-
-
-
+			div(text-angular="", ng-model="htmlVariable")
