@@ -10,7 +10,6 @@ angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function(
 			crypto.initialize();
 
 			if (isInitialized) {
-				console.log('$state.go login');
 				$state.go('login', {}, {reload: true})
 					.then(() => deferred.resolve())
 					.catch(error => deferred.reject({message: 'Initialization failed...', error: error}));

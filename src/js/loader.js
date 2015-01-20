@@ -160,6 +160,8 @@
 		};
 
 		var initializeApplication = (app, opts) => {
+			console.log('loader: initializing application', app.appName);
+
 			isMainApp = app.container == APP_LAVABOOM_MAIN.container;
 
 			if (!opts)
@@ -180,6 +182,8 @@
 		};
 
 		var loadApplication = (app, opts, onFinished) => {
+			console.log('loader: loading application', app.appName);
+
 			isMainApp = app.container == APP_LAVABOOM_MAIN.container;
 
 			loadScripts(app, () => {
