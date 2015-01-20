@@ -23,7 +23,7 @@ module.exports = {
 		output: output + 'svg/'
 	},
 	img: {
-		input: 'src/img/*',
+		input: 'src/img/**/*',
 		output: output + 'img/'
 	},
 	fonts: {

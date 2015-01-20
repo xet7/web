@@ -27,11 +27,11 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 			}
 		})
 
-		.state('main.inbox', {
-			url: '/inbox',
+		.state('main.label', {
+			url: '/label/:labelName',
 			views: {
 				'main-view@': {
-					templateUrl: 'partials/inbox.html'
+					templateUrl: 'partials/inbox.html' //stateParams => `partials/${stateParams.labelName.toLowerCase()}.html`
 				}
 			}
 		})

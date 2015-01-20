@@ -49,8 +49,6 @@ angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, 
 			yield user.signIn(self.tokenSignup.username, password, true);
 
 			yield user.update(self.details);
-
-			return res.body;
 		});
 	};
 });

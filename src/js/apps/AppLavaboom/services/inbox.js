@@ -7,6 +7,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.decryptingTotal = 0;
 	this.decryptingCurrent = 0;
 	this.isDecrypted = false;
+	this.labels = [];
 
 	var decode = (body, pgpFingerprints, defaultBody = '') => {
 		var deferred = $q.defer();
@@ -33,13 +34,38 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		self.requestList();
 	};
 
-	this.requestList = () => {
+	this.requestStar = (id) => {
+
+	};
+
+
+	this.initialize = () => {
+		return co(function *(){
+			var res = yield apiProxy(['labels', 'list']);
+
+			self.labels = res.body.labels.reduce((a, c) => {
+				a[c.name] = c;
+				return a;
+			}, {});
+
+			$rootScope.$broadcast('inbox-labels', self.labels);
+		});
+	};
+
+	this.requestList = (labelName) => {
+		if (!self.labels[labelName]) {
+			console.error('requestList unknown label name', labelName);
+			return;
+		}
+
+		var labelId = self.labels[labelName].id;
+
 		self.isInboxLoading = true;
 		self.isDecrypted = true;
 
 		return co(function * (){
 			try {
-				var res = yield apiProxy(['emails', 'list'], {});
+				var res = yield apiProxy(['emails', 'list'], labelId ? {label: labelId} : {});
 
 				self.decryptingCurrent = 0;
 				if (res.body.emails) {

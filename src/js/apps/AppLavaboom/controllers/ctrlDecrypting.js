@@ -8,9 +8,13 @@ angular.module(primaryApplicationName).controller('CtrlDecrypting', function($sc
 	$scope.caption = lbLoading;
 
 	var initiateLoading = () => {
-		inbox.requestList();
-		cryptoKeys.syncKeys();
+		inbox.initialize();
 	};
+
+	$scope.$on('inbox-labels', (e, labels) => {
+		inbox.requestList('Inbox');
+		cryptoKeys.syncKeys();
+	});
 
 	if (user.isAuthenticated)
 		initiateLoading();
@@ -28,7 +32,7 @@ angular.module(primaryApplicationName).controller('CtrlDecrypting', function($sc
 			$scope.progress = 100;
 
 			$timeout(() => {
-				$state.go('main.inbox');
+				$state.go('main.label', {labelName: 'Inbox'});
 			}, consts.INBOX_REDIRECT_DELAY);
 		}
 	});
