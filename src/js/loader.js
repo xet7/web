@@ -115,6 +115,7 @@
 			// state
 			isLoginAppLoaded = false,
 			isMainAppLoaded = false,
+			isMainAppLoading = false,
 			currentProgress,
 			progress;
 
@@ -202,12 +203,15 @@
 			if (isMainAppLoaded)
 				return;
 
-			//loginAppContainer.parentNode.removeChild(loginAppContainer);
+			isMainAppLoading = true;
 
 			loadApplication(mainAppContainer, APP_LAVABOOM_MAIN, () => {
+				isMainAppLoading = false;
 				isMainAppLoaded = true;
 			});
 		};
+
+		this.isMainApplication = () => isMainAppLoading || isMainAppLoaded;
 
 		this.showLoader = (isImmediate = false) => {
 			showContainer(loaderContainer, isImmediate);

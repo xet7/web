@@ -1,9 +1,17 @@
 angular.module(primaryApplicationName).config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$locationProvider.hashPrefix('!');
-	$urlRouterProvider.otherwise('/');
+
+	$urlRouterProvider.otherwise(($injector, $location) => {
+		if (window.loader.isMainApplication())
+			return undefined;
+		return '/';
+	});
 
     $stateProvider
-       .state('login', {
+		.state('404', {
+			template: ''
+		})
+		.state('login', {
             url: '/',
             templateUrl: 'partials/login/login-signup.html'
         })
@@ -70,4 +78,34 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 			templateUrl: 'partials/login/backupKey.html',
 			controller: 'CtrlBackup'
 		});
+
+	/*
+	 $stateProvider.state('empty', {
+	 url: '/'
+	 })
+	 .state('main', {
+	 abstract: true
+	 })
+	 .state('main.label', {
+	 url: '/label/:labelName'
+	 })
+	 .state('main.settings', {
+	 url: '/settings'
+	 })
+	 .state('main.compose', {
+	 url: '/compose'
+	 })
+	 .state('main.settings.preferences', {
+	 url: '/preferences'
+	 })
+	 .state('main.settings.profile', {
+	 url: '/profile'
+	 })
+	 .state('main.settings.security', {
+	 url: '/security'
+	 })
+	 .state('main.settings.plan', {
+	 url: '/plan'
+	 });
+	 */
 });
