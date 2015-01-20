@@ -10,7 +10,6 @@
 		"../../bower_components/angular-ui-router/release/angular-ui-router.js",
 
 		"../../bower_components/lavaboom/dist/lavaboom-angular.js",
-		"../../bower_components/lavaboom/dist/lavaboom-api.js",
 		"../../bower_components/file-saver/FileSaver.js",
 
 		"../../vendor/openpgp.js",

@@ -1,0 +1,4 @@
+[application]
+	dependencies = [
+		"../../bower_components/lavaboom/dist/lavaboom-api.js"
+	]
