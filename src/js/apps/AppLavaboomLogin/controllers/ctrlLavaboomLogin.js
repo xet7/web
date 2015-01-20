@@ -13,7 +13,6 @@ angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function(
 				$state.go('login', {}, {reload: true})
 					.then(() => deferred.resolve())
 					.catch(error => deferred.reject({message: 'Initialization failed...', error: error}));
-
 			} else {
 				isInitialized = true;
 				deferred.resolve();
