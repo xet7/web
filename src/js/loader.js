@@ -127,11 +127,11 @@
 			currentProgress,
 			progress;
 
-		var showContainer = (e, isImmediate = false) => {
+		var showContainer = (e, lbDone, isImmediate = false) => {
 			if (e.container != LOADER.container)
 				isMainApp = e.container == APP_LAVABOOM_MAIN.container;
 
-			self.setProgress(LB_DONE, 100);
+			self.setProgress(lbDone ? lbDone : LB_DONE, 100);
 
 			setTimeout(() => {
 				for (let c of containers)
@@ -162,12 +162,12 @@
 			load();
 		};
 
-		var initializeApplication = (app) => {
+		var initializeApplication = (app, opts) => {
 			var scope = angular.element(app.container).scope();
 			scope.$apply(() => {
 				scope.initializeApplication()
 					.then(r => {
-						showContainer(app);
+						showContainer(app, r && r.lbDone ? r.lbDone : opts.lbDone);
 					})
 					.catch(err => {
 						self.setProgressText(err.message);
@@ -177,12 +177,12 @@
 			});
 		};
 
-		var loadApplication = (app, onFinished) => {
+		var loadApplication = (app, opts, onFinished) => {
 			loadScripts(app, () => {
 				angular.element(app.container).ready(() => {
 					angular.bootstrap(app.container, [app.appName]);
 
-					initializeApplication(app);
+					initializeApplication(app, opts);
 
 					onFinished();
 				});
@@ -227,23 +227,23 @@
 			});
 		};
 
-		this.loadLoginApplication = () => {
+		this.loadLoginApplication = (opts) => {
 			isError = false;
 			if (isLoginAppLoaded)
-				return initializeApplication(APP_LAVABOOM_LOGIN);
+				return initializeApplication(APP_LAVABOOM_LOGIN, opts);
 
-			loadApplication(APP_LAVABOOM_LOGIN, () => {
+			loadApplication(APP_LAVABOOM_LOGIN, opts, () => {
 				isLoginAppLoaded = true;
 			});
 		};
 
-		this.loadMainApplication = () => {
+		this.loadMainApplication = (opts) => {
 			isMainAppLoading = true;
 			isError = false;
 			if (isMainAppLoaded)
-				return initializeApplication(APP_LAVABOOM_MAIN);
+				return initializeApplication(APP_LAVABOOM_MAIN, opts);
 
-			loadApplication(APP_LAVABOOM_MAIN, () => {
+			loadApplication(APP_LAVABOOM_MAIN, opts, () => {
 				isMainAppLoaded = true;
 				isMainAppLoading = false;
 			});

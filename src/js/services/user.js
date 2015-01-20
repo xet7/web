@@ -109,6 +109,6 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 		loader.resetProgress();
 		loader.showLoader(true);
-		loader.loadLoginApplication();
+		loader.loadLoginApplication({lbDone: 'See you soon :)'});
 	};
 });

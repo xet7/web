@@ -1,12 +1,12 @@
 angular.module(primaryApplicationName).service('loader', function() {
 	var loader = window.loader;
 
-	this.loadMainApplication = () => {
-		loader.loadMainApplication();
+	this.loadMainApplication = (opts) => {
+		loader.loadMainApplication(opts);
 	};
 
-	this.loadLoginApplication = () => {
-		loader.loadLoginApplication();
+	this.loadLoginApplication = (opts) => {
+		loader.loadLoginApplication(opts);
 	};
 
 	this.resetProgress = () => {
