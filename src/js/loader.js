@@ -12,40 +12,62 @@
 		LB_DONE = 'Done!';
 
 	const
-		APP_LAVABOOM_LOGIN_SCRIPTS = [
-			{
-				src: SRC_APP_LAVABOOM_LOGIN_VENDOR,
-				progress: 'Loading system libraries...'
-			},
-			{
-				src: SRC_OPENPGP,
-				progress: 'Loading openpgp.js...'
-			},
-			{
-				src: SRC_APP_LAVABOOM_LOGIN,
-				progress: 'Loading Lavaboom...',
-				afterProgress: 'Please wait...'
-			}
-		],
-		APP_LAVABOOM_MAIN_SCRIPTS = [
-			{
-				src: SRC_APP_LAVABOOM_LOGIN_VENDOR,
-				progress: 'Loading system libraries (1/2)...'
-			},
-			{
-				src: SRC_APP_LAVABOOM_MAIN_VENDOR,
-				progress: 'Loading system libraries (2/2)...'
-			},
-			{
-				src: SRC_OPENPGP,
-				progress: 'Loading openpgp.js...'
-			},
-			{
-				src: SRC_APP_LAVABOOM_MAIN,
-				progress: 'Loading Lavaboom...',
-				afterProgress: 'Please wait...'
-			}
-		];
+		CHECKER = {
+			afterProgressText: 'Checking...',
+			afterProgressValue: 30,
+			scripts: [
+				{
+					src: SRC_CHECKER_VENDOR,
+					progressText: 'Loading system libraries(1)...'
+				},
+				{
+					src: SRC_CHECKER,
+					progressText: 'Loading system libraries(2)...'
+				}
+			]
+		},
+		APP_LAVABOOM_LOGIN = {
+			appName: 'AppLavaboomLogin',
+			afterProgressText: 'Please wait...',
+			afterProgressValue: 90,
+			scripts: [
+				{
+					src: SRC_APP_LAVABOOM_LOGIN_VENDOR,
+					progressText: 'Loading system libraries(3)...'
+				},
+				{
+					src: SRC_OPENPGP,
+					progressText: 'Loading openpgp.js...'
+				},
+				{
+					src: SRC_APP_LAVABOOM_LOGIN,
+					progressText: 'Loading Lavaboom...'
+				}
+			]
+		},
+		APP_LAVABOOM_MAIN = {
+			appName: 'AppLavaboom',
+			afterProgressText: 'Please wait...',
+			afterProgressValue: 90,
+			scripts: [
+				{
+					src: SRC_APP_LAVABOOM_LOGIN_VENDOR,
+					progressText: 'Loading system libraries(3)...'
+				},
+				{
+					src: SRC_APP_LAVABOOM_MAIN_VENDOR,
+					progressText: 'Loading system libraries(4)...'
+				},
+				{
+					src: SRC_OPENPGP,
+					progressText: 'Loading openpgp.js...'
+				},
+				{
+					src: SRC_APP_LAVABOOM_MAIN,
+					progressText: 'Loading Lavaboom...'
+				}
+			]
+		};
 
 	const
 		DEBUG_DELAY = 1500,
@@ -104,24 +126,27 @@
 		};
 
 		var setProgress = (text, percent) => {
+			console.log('loader.progress', percent, text);
 			loaderProgressText.innerHTML = text;
 			loaderProgressBar.setAttribute('aria-valuenow', percent);
 			loaderProgressBar.setAttribute('style', `width: ${percent}%;`);
 		};
 
-		var loadScripts = (scripts, maxProgress, onFinished) => {
+		var loadScripts = (opts, onFinished) => {
+			var total = opts.scripts.length;
 			var load = (loaded = 0) => {
-				var script = scripts.splice(0, 1)[0];
-				setProgress(script.progress, Math.ceil(progress + (maxProgress - progress) * loaded/scripts.length));
+				var script = opts.scripts.splice(0, 1)[0];
+				setProgress(script.progressText, Math.ceil(progress + (opts.afterProgressValue - progress) * loaded/total));
 
 				loadJS(script.src, () => {
-					if (scripts.length > 0)
+					if (opts.scripts.length > 0)
 						load(loaded + 1);
 					else {
-						progress = maxProgress;
-						setProgress(script.afterProgress, maxProgress);
+						progress = opts.afterProgressValue;
+						setProgress(opts.afterProgressText, opts.afterProgressValue);
 
-						onFinished();
+						if (onFinished)
+							onFinished();
 					}
 				});
 			};
@@ -129,33 +154,23 @@
 			load();
 		};
 
-		var loadApplication = (element, appName, scripts, maxProgress, onFinished) => {
-			loadScripts(scripts, maxProgress, () => {
+		var loadApplication = (element, opts, onFinished) => {
+			loadScripts(opts, () => {
 				angular.element(element).ready(() => {
-					angular.bootstrap(element, [appName]);
+					angular.bootstrap(element, [opts.appName]);
+
+					onFinished();
+
+					showContainer(element);
 				});
-
-				showContainer(element);
-
-				onFinished();
 			});
 		};
 
 		this.initialize = () => {
 			progress = 10;
 
-			loadScripts([
-				{
-					src: SRC_CHECKER_VENDOR,
-					progress: 'Loading system libraries(1/2)...'
-				},
-				{
-					src: SRC_CHECKER,
-					progress: 'Loading system libraries(2/2)...',
-					afterProgress: 'Checking...'
-				}
-			], 30, () => {
-
+			loadScripts(CHECKER, () => {
+				window.checker.check();
 			});
 		};
 
@@ -163,7 +178,7 @@
 			if (isLoginAppLoaded)
 				return;
 
-			loadApplication(loginAppContainer, 'AppLavaboomLogin', APP_LAVABOOM_LOGIN_SCRIPTS, 90, () => {
+			loadApplication(loginAppContainer, APP_LAVABOOM_LOGIN, () => {
 				isLoginAppLoaded = true;
 			});
 		};
@@ -172,7 +187,7 @@
 			if (isMainAppLoaded)
 				return;
 
-			loadApplication(mainAppContainer, 'AppLavaboom', APP_LAVABOOM_MAIN_SCRIPTS, 90, () => {
+			loadApplication(mainAppContainer, APP_LAVABOOM_MAIN, () => {
 				isMainAppLoaded = true;
 			});
 		};
