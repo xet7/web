@@ -116,6 +116,7 @@
 # Generic error messages for Lavaboom REST API
 [LAVABOOM.API.ERROR]
 	UNKNOWN = "Unknown error, we're really sorry"
+	DOWN = "It seems Lavaboom is down, please try again later"
 	403 = "Wrong username or password!"
 
 # Specific error message for Lavaboom REST API
