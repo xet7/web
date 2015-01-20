@@ -161,6 +161,13 @@
 			});
 		};
 
+		var wakeApplication = (element) => {
+			var scope = angular.element(element).scope();
+			scope.$apply(() => {
+				scope.wakeUp();
+			});
+		};
+
 		this.setProgress = (text, percent) => {
 			percent = Math.ceil(percent);
 
@@ -193,6 +200,8 @@
 		this.loadLoginApplication = () => {
 			isMainApp = false;
 			if (isLoginAppLoaded) {
+				wakeApplication(loginAppContainer);
+
 				self.showLoginApplication(true);
 				return;
 			}
@@ -205,6 +214,8 @@
 		this.loadMainApplication = () => {
 			isMainApp = true;
 			if (isMainAppLoaded) {
+				wakeApplication(mainAppContainer);
+
 				self.showMainApplication(true);
 				return;
 			}

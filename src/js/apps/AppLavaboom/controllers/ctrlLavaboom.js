@@ -44,4 +44,8 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($scop
 			loader.showMainApplication();
 		}
 	});
+
+	$scope.wakeUp = () => {
+		$state.go('main.label', {labelName: 'Inbox'}, {reload: true});
+	};
 });

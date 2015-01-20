@@ -1,14 +1,6 @@
 angular.module(primaryApplicationName).config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$locationProvider.hashPrefix('!');
 
-	// small hack...
-	$urlRouterProvider.otherwise(($injector, $location) => {
-		console.log('login router otherwise: window.loader.isMainApplication()', window.loader.isMainApplication(), $location);
-		if (window.loader.isMainApplication())
-			return undefined;
-		return '/';
-	});
-
     $stateProvider
 		.state('login', {
             url: '/',
@@ -77,4 +69,12 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 			templateUrl: 'partials/login/backupKey.html',
 			controller: 'CtrlBackup'
 		});
+
+	// small hack...
+	$urlRouterProvider.otherwise(($injector, $location) => {
+		console.log('login router otherwise: window.loader.isMainApplication()', window.loader.isMainApplication(), $location);
+		if (window.loader.isMainApplication())
+			return undefined;
+		return '/';
+	});
 });

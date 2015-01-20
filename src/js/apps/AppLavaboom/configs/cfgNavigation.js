@@ -1,14 +1,6 @@
 angular.module(primaryApplicationName).config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$locationProvider.hashPrefix('!');
 
-	// small hack...
-	$urlRouterProvider.otherwise(($injector, $location) => {
-		console.log('main router otherwise: window.loader.isMainApplication()', window.loader.isMainApplication(), $location);
-		if (!window.loader.isMainApplication())
-			return undefined;
-		return '/';
-	});
-
 	$stateProvider
 		.state('empty', {
 			url: '/'
@@ -72,4 +64,12 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 			url: '/plan',
 			templateUrl: 'partials/settings/settings.plan.html'
 		});
+
+	// small hack...
+	$urlRouterProvider.otherwise(($injector, $location) => {
+		console.log('main router otherwise: window.loader.isMainApplication()', window.loader.isMainApplication(), $location);
+		if (!window.loader.isMainApplication())
+			return undefined;
+		return '/';
+	});
 });
