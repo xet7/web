@@ -122,16 +122,13 @@
 			isError = false,
 			isLoginAppLoaded = false,
 			isMainAppLoaded = false,
-			isMainAppLoading = false,
 			isMainApp = false,
 			currentProgress,
 			progress;
 
 		var showContainer = (e, lbDone, isImmediate = false) => {
 			if (e.container != LOADER.container)
-				isMainApp = e.container == APP_LAVABOOM_MAIN.container;
-
-			self.setProgress(lbDone ? lbDone : LB_DONE, 100);
+				self.setProgress(lbDone ? lbDone : LB_DONE, 100);
 
 			setTimeout(() => {
 				for (let c of containers)
@@ -163,6 +160,11 @@
 		};
 
 		var initializeApplication = (app, opts) => {
+			isMainApp = app.container == APP_LAVABOOM_MAIN.container;
+
+			if (!opts)
+				opts = {};
+
 			var scope = angular.element(app.container).scope();
 			scope.$apply(() => {
 				scope.initializeApplication()
@@ -178,6 +180,8 @@
 		};
 
 		var loadApplication = (app, opts, onFinished) => {
+			isMainApp = app.container == APP_LAVABOOM_MAIN.container;
+
 			loadScripts(app, () => {
 				angular.element(app.container).ready(() => {
 					angular.bootstrap(app.container, [app.appName]);
@@ -228,6 +232,9 @@
 		};
 
 		this.loadLoginApplication = (opts) => {
+			if (!opts)
+				opts = {};
+
 			isError = false;
 			if (isLoginAppLoaded)
 				return initializeApplication(APP_LAVABOOM_LOGIN, opts);
@@ -238,21 +245,22 @@
 		};
 
 		this.loadMainApplication = (opts) => {
-			isMainAppLoading = true;
+			if (!opts)
+				opts = {};
+
 			isError = false;
 			if (isMainAppLoaded)
 				return initializeApplication(APP_LAVABOOM_MAIN, opts);
 
 			loadApplication(APP_LAVABOOM_MAIN, opts, () => {
 				isMainAppLoaded = true;
-				isMainAppLoading = false;
 			});
 		};
 
-		this.isMainApplication = () => isMainApp || isMainAppLoading;
+		this.isMainApplication = () => isMainApp;
 
 		this.showLoader = (isImmediate = false) => {
-			showContainer(LOADER, isImmediate);
+			showContainer(LOADER, null, isImmediate);
 		};
 	};
 

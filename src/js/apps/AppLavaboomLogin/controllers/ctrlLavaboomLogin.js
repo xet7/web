@@ -1,4 +1,6 @@
 angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function($q, $rootScope, $state, $scope, $sce, crypto, loader) {
+	var isInitialized = false;
+
 	$scope.initializeApplication = () => {
 		var deferred = $q.defer();
 
@@ -7,7 +9,16 @@ angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function(
 
 			crypto.initialize();
 
-			deferred.resolve();
+			if (isInitialized) {
+				console.log('$state.go login');
+				$state.go('login', {}, {reload: true})
+					.then(() => deferred.resolve())
+					.catch(error => deferred.reject({message: 'Initialization failed...', error: error}));
+
+			} else {
+				isInitialized = true;
+				deferred.resolve();
+			}
 		} catch (error) {
 			deferred.reject({message: 'Initialization failed...', error: error});
 		}
