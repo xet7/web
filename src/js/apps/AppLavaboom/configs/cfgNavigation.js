@@ -1,5 +1,6 @@
 angular.module(primaryApplicationName).config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$locationProvider.hashPrefix('!');
+
 	$urlRouterProvider.otherwise('/');
 
 	$stateProvider

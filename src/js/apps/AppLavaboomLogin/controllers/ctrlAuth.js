@@ -11,9 +11,41 @@ angular.module(primaryApplicationName).controller('CtrlAuth', function($scope, $
 		$scope.isProcessing = true;
 		user.signIn($scope.form.username, $scope.form.password, $scope.form.isRemember, $scope.form.isPrivateComputer)
 			.then(() => {
-				loader.resetProgress();
-				loader.showLoader(true);
-				loader.loadMainApplication();
+				/*angular.module(primaryApplicationName).config(function($stateProvider){
+					$stateProvider.state('empty', {
+						url: '/'
+					})
+						.state('main', {
+							abstract: true
+						})
+						.state('main.label', {
+							url: '/label/:labelName'
+						})
+						.state('main.settings', {
+							url: '/settings'
+						})
+						.state('main.compose', {
+							url: '/compose'
+						})
+						.state('main.settings.preferences', {
+							url: '/preferences'
+						})
+						.state('main.settings.profile', {
+							url: '/profile'
+						})
+						.state('main.settings.security', {
+							url: '/security'
+						})
+						.state('main.settings.plan', {
+							url: '/plan'
+						});
+					console.log('blank configuration added');
+
+					loader.resetProgress();
+					loader.showLoader(true);
+					loader.loadMainApplication();
+				});*/
+				$window.location = '/';
 			})
 			.finally(() => {
 				$scope.isProcessing = false;
