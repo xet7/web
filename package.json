@@ -88,8 +88,5 @@
     "uglify": "^0.1.1",
     "uglifyify": "^2.6.0",
     "vinyl-source-stream": "^1.0.0"
-  },
-  "dependencies": {
-    "filter-transform": "^0.1.1"
   }
 }
