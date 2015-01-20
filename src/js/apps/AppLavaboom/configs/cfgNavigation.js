@@ -1,7 +1,13 @@
 angular.module(primaryApplicationName).config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$locationProvider.hashPrefix('!');
 
-	$urlRouterProvider.otherwise('/');
+	// small hack...
+	$urlRouterProvider.otherwise(($injector, $location) => {
+		console.log('main router otherwise: window.loader.isMainApplication()', window.loader.isMainApplication(), $location);
+		if (!window.loader.isMainApplication())
+			return undefined;
+		return '/';
+	});
 
 	$stateProvider
 		.state('empty', {

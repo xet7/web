@@ -5,6 +5,10 @@ angular.module(primaryApplicationName).service('loader', function() {
 		loader.loadMainApplication();
 	};
 
+	this.loadLoginApplication = () => {
+		loader.loadLoginApplication();
+	};
+
 	this.resetProgress = () => {
 		loader.resetProgress();
 	};

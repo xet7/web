@@ -115,7 +115,7 @@
 			// state
 			isLoginAppLoaded = false,
 			isMainAppLoaded = false,
-			isMainAppLoading = false,
+			isMainApp = false,
 			currentProgress,
 			progress;
 
@@ -123,8 +123,8 @@
 			self.setProgress(LB_DONE, 100);
 
 			setTimeout(() => {
-				for (var c in containers)
-					containers[c].className = 'hidden';
+				for (let c of containers)
+					c.className = 'hidden';
 				e.className = '';
 			}, isImmediate ? 0 :APP_TRANSITION_DELAY);
 		};
@@ -191,8 +191,11 @@
 		};
 
 		this.loadLoginApplication = () => {
-			if (isLoginAppLoaded)
+			isMainApp = false;
+			if (isLoginAppLoaded) {
+				self.showLoginApplication(true);
 				return;
+			}
 
 			loadApplication(loginAppContainer, APP_LAVABOOM_LOGIN, () => {
 				isLoginAppLoaded = true;
@@ -200,28 +203,31 @@
 		};
 
 		this.loadMainApplication = () => {
-			if (isMainAppLoaded)
+			isMainApp = true;
+			if (isMainAppLoaded) {
+				self.showMainApplication(true);
 				return;
-
-			isMainAppLoading = true;
+			}
 
 			loadApplication(mainAppContainer, APP_LAVABOOM_MAIN, () => {
-				isMainAppLoading = false;
 				isMainAppLoaded = true;
 			});
 		};
 
-		this.isMainApplication = () => isMainAppLoading || isMainAppLoaded;
+		this.isMainApplication = () => isMainApp;
 
 		this.showLoader = (isImmediate = false) => {
+			isMainApp = false;
 			showContainer(loaderContainer, isImmediate);
 		};
 
 		this.showLoginApplication = (isImmediate = false) => {
+			isMainApp = false;
 			showContainer(loginAppContainer, isImmediate);
 		};
 
 		this.showMainApplication = (isImmediate = false) => {
+			isMainApp = true;
 			showContainer(mainAppContainer, isImmediate);
 		};
 	};

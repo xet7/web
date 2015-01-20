@@ -1,6 +1,6 @@
 var Buffer = require('buffer/').Buffer;
 
-angular.module(primaryApplicationName).service('user', function($q, $rootScope, $state, $timeout, $window, consts, apiProxy, LavaboomAPI, co, app, crypto) {
+angular.module(primaryApplicationName).service('user', function($q, $rootScope, $state, $timeout, $window, consts, apiProxy, LavaboomAPI, co, app, crypto, loader) {
 	var self = this;
 
 	this.name = '';
@@ -105,6 +105,9 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 			delete localStorage.lavaboomToken;
 		if (sessionStorage.lavaboomToken)
 			delete sessionStorage.lavaboomToken;
-		$window.location = consts.LOGIN_URL;
+
+		loader.resetProgress();
+		loader.showLoader(true);
+		loader.loadLoginApplication();
 	};
 });
