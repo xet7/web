@@ -66,7 +66,7 @@
 [LOGIN.CHOOSE_PASSWORD_INTRO]
 	TITLE = "Choose password"
 	LB_WARNING_TITLE = "Attention"
-    LB_WARNING1 = "Please note that we don't store your passwords on our servers. This makes lavaboom <em>this</em> safe. However, it also means that we cannot reset the password for you, in case you lose it."
+    LB_WARNING1 = "Please note that we don't store your passwords on our servers. This makes lavaboom this safe. However, it also means that we cannot reset the password for you, in case you lose it."
     LB_WARNING2 = "Please memorize the password that you choose now very thoroughly. You might lose your account otherwise."
     BTN_NEXT = "I understand"
 

@@ -3,8 +3,8 @@ angular.module(primaryApplicationName).controller('CtrlPassword', function($scop
 		$state.go('login');
 
 	$scope.form = {
-		password: 'ztest007',
-		passwordConfirm: 'ztest007'
+		password: '',
+		passwordConfirm: ''
 	};
 
 	$scope.updatePassword = () => {

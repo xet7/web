@@ -3,14 +3,14 @@ angular.module(primaryApplicationName).controller('CtrlDetails', function($scope
 		$state.go('invite');
 
 	$scope.form = {
-		firstName: 'Li',
-		lastName: 'Wun',
+		firstName: '',
+		lastName: '',
 		displayName: ''
 	};
 
 	$scope.$watchGroup(['form.firstName', 'form.lastName'], () => {
-		var firstName = $scope.form.firstName.trim();
-		var lastName = $scope.form.lastName.trim();
+		var firstName = $scope.form.firstName ? $scope.form.firstName.trim() : '';
+		var lastName = $scope.form.lastName ? $scope.form.lastName.trim() : '';
 		var autoDisplayName = `${firstName} ${lastName}`;
 
 		$scope.form.displayName = firstName || lastName ? autoDisplayName : $scope.form.displayName;
