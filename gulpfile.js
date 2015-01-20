@@ -437,8 +437,11 @@ gulp.task('default-reload', [
 
 gulp.task('production', [
 	'set-production',
-	'compile'
-]);
+	'bower'
+], function() {
+	// we can start compile only after we do have bower dependencies
+	gulp.start('compile');
+});
 
 gulp.task('production-reload', [
 	'set-production',
