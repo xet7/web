@@ -3,8 +3,8 @@ angular.module(primaryApplicationName).controller('CtrlDetails', function($scope
 		$state.go('invite');
 
 	$scope.form = {
-		firstName: 'Li',
-		lastName: 'Wun',
+		firstName: '',
+		lastName: '',
 		displayName: ''
 	};
 
