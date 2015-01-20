@@ -15,7 +15,7 @@ div#compose-wrapper(ng-controller="ComposeController")
 					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="composeSelected.to", theme="bootstrap", ng-disabled="disabled", style="width: 100%;", title="Choose a person")
 						ui-select-match(placeholder="Select person...", ng-class="{{$item.name}}")
 							| {{$item.name}} &#60;{{$item.email}}&#62;
-							span(class="icon-lock sec-{{person.sec}}")
+							span(class="icon-lock sec-{{$item.sec}}")
 						ui-select-choices(repeat="person in people | propsFilter: {name: $select.search, email: $select.search}")
 							div(ng-if="person.isTag", ng-bind-html="person.name + ' ' + $select.taggingLabel | highlight: $select.search")
 							div(ng-if="!person.isTag", ng-bind-html="person.name| highlight: $select.search")
@@ -30,7 +30,7 @@ div#compose-wrapper(ng-controller="ComposeController")
 					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="composeSelected.cc", theme="bootstrap", ng-disabled="disabled", style="width: 100%;", title="Choose a person")
 						ui-select-match(placeholder="Select person...", ng-class="{{$item.name}}")
 							| {{$item.name}} &#60;{{$item.email}}&#62;
-							span(class="icon-lock sec-{{person.sec}}")
+							span(class="icon-lock sec-{{$item.sec}}")
 						ui-select-choices(repeat="person in people | propsFilter: {name: $select.search, email: $select.search}")
 							div(ng-if="person.isTag", ng-bind-html="person.name + ' ' + $select.taggingLabel | highlight: $select.search")
 							div(ng-if="!person.isTag", ng-bind-html="person.name| highlight: $select.search")
@@ -45,7 +45,7 @@ div#compose-wrapper(ng-controller="ComposeController")
 					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="composeSelected.bcc", theme="bootstrap", ng-disabled="disabled", style="width: 100%;", title="Choose a person")
 						ui-select-match(placeholder="Select person...", ng-class="{{$item.name}}")
 							| {{$item.name}} &#60;{{$item.email}}&#62;
-							span(class="icon-lock sec-{{person.sec}}")
+							span(class="icon-lock sec-{{$item.sec}}")
 						ui-select-choices(repeat="person in people | propsFilter: {name: $select.search, email: $select.search}")
 							div(ng-if="person.isTag", ng-bind-html="person.name + ' ' + $select.taggingLabel | highlight: $select.search")
 							div(ng-if="!person.isTag", ng-bind-html="person.name| highlight: $select.search")
@@ -53,6 +53,11 @@ div#compose-wrapper(ng-controller="ComposeController")
 								| email: {{person.email}}
 								span(class="icon-lock sec-{{person.sec}}")
 					span.icon-close.pull-right
+			.table-list
+				.cell.label.text-primary
+					label Subject:
+				.cell.fields
+					input#subject.form-control.col-xs-24(type="text", name="subject", auto-complete="off").text-primary
 					span.icon-close.pull-right
 
 		article#compose-body

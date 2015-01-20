@@ -14,11 +14,11 @@
 	header{
 		padding: @filter-height 1em 0;
 		background-color: @lava-compose-header;
-		color: @lava-gray !important;
+		color: @lava-compose-header-fg !important;
 		.table-list{
-			border-bottom: 1px solid @lava-gray;
+			border-bottom: 1px solid @lava-gray-lighter;
 			> *{
-				vertical-align: top;
+				vertical-align: middle;
 			}
 			.fields{
 				.pos-rel();
@@ -32,12 +32,79 @@
 				width: 100%;
 			}
 			label {
-				color: @lava-gray;
+				color: @lava-compose-header-fg;
 				font-weight: @base-font-weight;
 				line-height: 1em;
 				font-size: 14px;
-				padding-top: 13px;
+				padding-top: 12px;
 			}
+		}
+	}
+
+	.ta-toolbar{
+		display: none;
+	}
+
+	input{
+		background: transparent;
+		box-shadow: none !important;
+		border: 0 !important;
+		background-position: -200% -200% !important;
+	}
+
+	.ui-select-container{
+		border: 0;
+		box-shadow: none;
+		background-color: transparent;
+		.btn-default{
+			color: @lava-compose-header-fg;
+			border: 0 none;
+			background-color: transparent;
+			border-radius: 2px;
+			font-weight: @light-font-weight;
+			&:hover, &.btn-primary{
+				background-color: @lava-compose-tags-bg;
+				.close.ui-select-match-close{
+					transition: .3s opacity;
+					.opacity(.9);
+				}
+			}
+
+		}
+
+		.text-primary{
+			color: @lava-login-lava;
+		}
+
+		.icon-lock{
+			color: @lava-login-lava;
+			font-size: 1.2em;
+			vertical-align: middle;
+			padding-left: 5px;
+		}
+		.icon-lock.sec-0{
+			color: @lava-warning;
+			&:before{
+				content: "\71";
+			}
+		}
+
+		.close.ui-select-match-close{
+			font-family: 'lavaboom';
+			speak: none;
+			font-style: normal;
+			font-weight: normal;
+			font-variant: normal;
+			text-transform: none;
+			line-height: 1;
+			margin-left: -6px;
+
+			/* Better Font Rendering =========== */
+			-webkit-font-smoothing: antialiased;
+			-moz-osx-font-smoothing: grayscale;
+			content: '7';
+			.opacity(0);
+			transition: .2s opacity;
 		}
 	}
 }

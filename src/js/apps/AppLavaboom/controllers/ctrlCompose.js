@@ -84,7 +84,7 @@ angular.module('AppLavaboom').controller('ComposeController', function($scope, L
 	    { name: 'Amalie',    email: 'amalie@email.com',    sec: 0},
 	    { name: 'Estefanía', email: 'estefania@email.com', sec: 0},
 	    { name: 'Adrian',    email: 'adrian@email.com',    sec: 1},
-	    { name: 'Wladimir',  email: 'wladimir@email.com',  sec: 0},
+	    { name: 'Wladimir',  email: 'wladimir@email.com',  sec: 1},
 	    { name: 'Samantha',  email: 'samantha@email.com',  sec: 0},
 	    { name: 'Nicole',    email: 'nicole@email.com',    sec: 1},
 	    { name: 'Natasha',   email: 'natasha@email.com',   sec: 1},
