@@ -84,6 +84,7 @@
     "toml": "^2.1.1",
     "toml-require": "^1.0.1",
     "traceur": "0.0.81",
+    "uglify": "^0.1.1",
     "uglifyify": "^2.6.0",
     "vinyl-source-stream": "^1.0.0"
   }
