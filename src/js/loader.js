@@ -161,10 +161,12 @@
 			});
 		};
 
-		var wakeApplication = (element) => {
+		var wakeApplication = (element, callback) => {
 			var scope = angular.element(element).scope();
 			scope.$apply(() => {
-				scope.wakeUp();
+				scope.wakeUp().then(r => {
+					callback(r);
+				});
 			});
 		};
 
@@ -199,12 +201,10 @@
 
 		this.loadLoginApplication = () => {
 			isMainApp = false;
-			if (isLoginAppLoaded) {
-				wakeApplication(loginAppContainer);
-
-				self.showLoginApplication(true);
-				return;
-			}
+			if (isLoginAppLoaded)
+				return wakeApplication(loginAppContainer, () => {
+					self.showLoginApplication(true);
+				});
 
 			loadApplication(loginAppContainer, APP_LAVABOOM_LOGIN, () => {
 				isLoginAppLoaded = true;
@@ -213,12 +213,10 @@
 
 		this.loadMainApplication = () => {
 			isMainApp = true;
-			if (isMainAppLoaded) {
-				wakeApplication(mainAppContainer);
-
-				self.showMainApplication(true);
-				return;
-			}
+			if (isMainAppLoaded)
+				return wakeApplication(mainAppContainer, () => {
+					self.showMainApplication(true);
+				});
 
 			loadApplication(mainAppContainer, APP_LAVABOOM_MAIN, () => {
 				isMainAppLoaded = true;

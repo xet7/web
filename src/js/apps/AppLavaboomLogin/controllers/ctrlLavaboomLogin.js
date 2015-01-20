@@ -6,6 +6,6 @@ angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function(
 	loader.showLoginApplication();
 
 	$scope.wakeUp = () => {
-		$state.go('login', {}, {reload: true});
+		return $state.go('login', {}, {reload: true});
 	};
 });

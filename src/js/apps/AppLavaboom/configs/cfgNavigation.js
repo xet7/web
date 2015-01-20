@@ -1,6 +1,13 @@
 angular.module(primaryApplicationName).config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$locationProvider.hashPrefix('!');
 
+	// small hack - both routers(login && main app) work at the same time, so we need to troubleshot this
+	$urlRouterProvider.otherwise(($injector, $location) => {
+		if (!window.loader.isMainApplication())
+			return undefined;
+		return '/';
+	});
+
 	$stateProvider
 		.state('empty', {
 			url: '/'
@@ -64,12 +71,4 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 			url: '/plan',
 			templateUrl: 'partials/settings/settings.plan.html'
 		});
-
-	// small hack...
-	$urlRouterProvider.otherwise(($injector, $location) => {
-		console.log('main router otherwise: window.loader.isMainApplication()', window.loader.isMainApplication(), $location);
-		if (!window.loader.isMainApplication())
-			return undefined;
-		return '/';
-	});
 });

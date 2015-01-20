@@ -1,7 +1,6 @@
 angular.module(primaryApplicationName).controller('CtrlLavaboom', function($scope, $state, $translate, crypto, cryptoKeys, user, inbox, loader) {
 	var
-		beforeDecryptingProgress,
-		isInitialized = false;
+		beforeDecryptingProgress;
 
 	const
 		lbLoading = $translate.instant('DECRYPTING_INBOX.LB_LOADING'),
@@ -32,20 +31,15 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($scop
 		if (status.current < status.total)
 			loader.setProgress(lbDecrypting, beforeDecryptingProgress + (status.current / status.total) * (100 - beforeDecryptingProgress));
 		else {
-			isInitialized = true;
 			inboxDecryptStatusListener();
-			$state.go('main.label', {labelName: 'Inbox'}, {reload: true});
-		}
-	});
-
-	var stateChangeSuccessListener = $scope.$on('$stateChangeSuccess', (event, toState, toParams, fromState, fromParams) => {
-		if (isInitialized && toState.name == 'main.label') {
-			stateChangeSuccessListener();
-			loader.showMainApplication();
+			$state.go('main.label', {labelName: 'Inbox'}, {reload: true})
+				.then(() => {
+					loader.showMainApplication();
+				});
 		}
 	});
 
 	$scope.wakeUp = () => {
-		$state.go('main.label', {labelName: 'Inbox'}, {reload: true});
+		return $state.go('main.label', {labelName: 'Inbox'}, {reload: true});
 	};
 });
