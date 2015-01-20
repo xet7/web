@@ -40,7 +40,7 @@ div#compose-wrapper(ng-controller="ComposeController")
 					span.icon-close.pull-right
 			.table-list
 				.cell.label
-					label CC:
+					label BCC:
 				.cell.fields
 					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="composeSelected.bcc", theme="bootstrap", ng-disabled="disabled", style="width: 100%;", title="Choose a person")
 						ui-select-match(placeholder="Select person...", ng-class="{{$item.name}}")
@@ -54,18 +54,19 @@ div#compose-wrapper(ng-controller="ComposeController")
 								span(class="icon-lock sec-{{person.sec}}")
 					span.icon-close.pull-right
 			.table-list
-				.cell.label from:
+				.cell.label
+					label from:
 				.dropdown-control.cell
-					ui-select(ng-model='fromEmails.selected', search-enabled='false')
+					ui-select(ng-model='fromEmails.selected', search-enabled='false', style="width: 50%;")
 						ui-select-match {{$select.selected.mail}}
 						ui-select-choices(repeat='item in fromEmails')
 							span(ng-click='item.selected=item', ng-bind-html='item.mail')
 			.table-list
-				.cell.label.text-primary
-					label Subject:
+				.cell.label
+					label.text-primary Subject:
 				.cell.fields
-					input#subject.form-control.col-xs-24(type="text", name="subject", auto-complete="off").text-primary
-					span.icon-close.pull-right
+					input#subject.form-control.text-primary.col-xs-24(type="text", name="subject", auto-complete="off", value="Re: there never was any spoon").text-primary
+					
 
 		article#compose-body
 			div(text-angular="", ng-model="htmlVariable")

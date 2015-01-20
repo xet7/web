@@ -5,6 +5,10 @@
 }
 #compose{
 	.pos-abs();
+
+	.text-primary{
+		color: @lava-login-lava !important;
+	}
 	
 	top: 0;
 	left: 0;
@@ -12,11 +16,13 @@
 	bottom: 0;
 	box-shadow:  0px 0px 30px 10px rgba(0, 0, 0, 0.19);
 	header{
-		padding: @filter-height 1em 0;
+		padding: @filter-height 1.75em 0;
 		background-color: @lava-compose-header;
 		color: @lava-compose-header-fg !important;
 		.table-list{
-			border-bottom: 1px solid @lava-gray-lighter;
+			&:not(:last-child){
+				border-bottom: 1px solid @lava-gray-lighter;
+			}
 			> *{
 				vertical-align: middle;
 			}
@@ -37,10 +43,15 @@
 				line-height: 1em;
 				font-size: 14px;
 				padding-top: 12px;
+				padding-bottom: 6px;
+
 			}
 		}
 	}
 
+	.dropdown-control.cell{
+		width: 100%;
+	}
 	.ta-toolbar{
 		display: none;
 	}
@@ -53,6 +64,7 @@
 	}
 
 	.ui-select-container{
+		font-size: 14px;
 		border: 0;
 		box-shadow: none;
 		background-color: transparent;
@@ -62,6 +74,7 @@
 			background-color: transparent;
 			border-radius: 2px;
 			font-weight: @light-font-weight;
+			// padding-right: 1em;
 			&:hover, &.btn-primary{
 				background-color: @lava-compose-tags-bg;
 				.close.ui-select-match-close{
@@ -72,15 +85,14 @@
 
 		}
 
-		.text-primary{
-			color: @lava-login-lava;
-		}
 
 		.icon-lock{
 			color: @lava-login-lava;
-			font-size: 1.2em;
+			font-size: 1.24em;
 			vertical-align: middle;
-			padding-left: 5px;
+			padding-left: 6px;
+			position: relative;
+			top: -1px;
 		}
 		.icon-lock.sec-0{
 			color: @lava-warning;
@@ -92,12 +104,21 @@
 		.close.ui-select-match-close{
 			font-family: 'lavaboom';
 			speak: none;
+			font-size: 0;
 			font-style: normal;
 			font-weight: normal;
 			font-variant: normal;
 			text-transform: none;
 			line-height: 1;
-			margin-left: -8px;
+			margin-left: 7px;
+
+			&:before{
+				position: relative;
+				top: 3px;
+				left: -1px;
+				content: "\73";
+				font-size: 12px;
+			}
 
 			/* Better Font Rendering =========== */
 			-webkit-font-smoothing: antialiased;
@@ -106,5 +127,23 @@
 			.opacity(0);
 			transition: .2s opacity;
 		}
+	}
+
+	.ui-select-bootstrap.dropdown{
+		.btn-block{
+			.text-left();
+		}
+	}
+
+	.ta-scroll-window > .ta-bind{
+		outline: 0 !important
+	}
+
+	.ta-editor{
+		box-shadow: none !important;
+		outline: 0 !important;
+		border: 0 !important;
+		padding: .5em 1.25em;
+		border-radius: 0;
 	}
 }
