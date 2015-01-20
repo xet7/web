@@ -70,7 +70,7 @@
 		};
 
 	const
-		DEBUG_DELAY = 1000,
+		DEBUG_DELAY = 100,
 		APP_TRANSITION_DELAY = 1000;
 
 	var loadedScripts = {};
@@ -118,14 +118,14 @@
 			currentProgress,
 			progress;
 
-		var showContainer = (e) => {
+		var showContainer = (e, isImmediate = false) => {
 			self.setProgress(LB_DONE, 100);
 
 			setTimeout(() => {
 				for (var c in containers)
 					containers[c].className = 'hidden';
 				e.className = '';
-			}, APP_TRANSITION_DELAY);
+			}, isImmediate ? 0 :APP_TRANSITION_DELAY);
 		};
 
 		var loadScripts = (opts, onFinished) => {
@@ -176,6 +176,12 @@
 
 		this.getProgress = () => currentProgress;
 
+		this.resetProgress = () => {
+			progress = 10;
+
+			self.setProgress('', progress);
+		};
+
 		this.initialize = () => {
 			progress = 10;
 			loadScripts(CHECKER, () => {
@@ -196,21 +202,23 @@
 			if (isMainAppLoaded)
 				return;
 
+			//loginAppContainer.parentNode.removeChild(loginAppContainer);
+
 			loadApplication(mainAppContainer, APP_LAVABOOM_MAIN, () => {
 				isMainAppLoaded = true;
 			});
 		};
 
-		this.showLoader = () => {
-			showContainer(loaderContainer);
+		this.showLoader = (isImmediate = false) => {
+			showContainer(loaderContainer, isImmediate);
 		};
 
-		this.showLoginApplication = () => {
-			showContainer(loginAppContainer);
+		this.showLoginApplication = (isImmediate = false) => {
+			showContainer(loginAppContainer, isImmediate);
 		};
 
-		this.showMainApplication = () => {
-			showContainer(mainAppContainer);
+		this.showMainApplication = (isImmediate = false) => {
+			showContainer(mainAppContainer, isImmediate);
 		};
 	};
 

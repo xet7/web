@@ -69,5 +69,40 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 			url: '/backupKeys',
 			templateUrl: 'partials/login/backupKey.html',
 			controller: 'CtrlBackup'
+		})
+
+		.state('empty', {
+			url: '/'
+		})
+		.state('main', {
+			abstract: true
+		})
+		.state('main.label', {
+			url: '/label/:labelName',
+			abstract: true
+		})
+		.state('main.settings', {
+			url: '/settings',
+			abstract: true
+		})
+		.state('main.compose', {
+			url: '/compose',
+			abstract: true
+		})
+		.state('main.settings.preferences', {
+			url: '/preferences',
+			abstract: true
+		})
+		.state('main.settings.profile', {
+			url: '/profile',
+			abstract: true
+		})
+		.state('main.settings.security', {
+			url: '/security',
+			abstract: true
+		})
+		.state('main.settings.plan', {
+			url: '/plan',
+			abstract: true
 		});
 });

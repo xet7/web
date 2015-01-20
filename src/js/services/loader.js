@@ -5,6 +5,10 @@ angular.module(primaryApplicationName).service('loader', function() {
 		loader.loadMainApplication();
 	};
 
+	this.resetProgress = () => {
+		loader.resetProgress();
+	};
+
 	this.setProgress = (text, progress) => {
 		loader.setProgress(text, progress);
 	};
@@ -15,15 +19,15 @@ angular.module(primaryApplicationName).service('loader', function() {
 
 	this.getProgress = () => loader.getProgress();
 
-	this.showLoader = () => {
-		loader.showLoader();
+	this.showLoader = (isImmediate = false) => {
+		loader.showLoader(isImmediate);
 	};
 
-	this.showLoginApplication = () => {
-		loader.showLoginApplication();
+	this.showLoginApplication = (isImmediate = false) => {
+		loader.showLoginApplication(isImmediate);
 	};
 
-	this.showMainApplication = () => {
-		loader.showMainApplication();
+	this.showMainApplication = (isImmediate = false) => {
+		loader.showMainApplication(isImmediate);
 	};
 });
