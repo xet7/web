@@ -230,12 +230,12 @@ gulp.task('build:styles', ['clean:dist'], function() {
 
 	if (config.isDebugable) {
 		prodPipeline = prodPipeline
-			.pipe(plg.rename, { suffix: '.min' })
-			.pipe(plg.sourcemaps.write, '.');
+			.pipe(plg.sourcemaps.write, '.', {sourceMappingURLPrefix: '/css/'});
 	}
 
 	prodPipeline = prodPipeline
 		.pipe(gulp.dest, paths.styles.output)
+		.pipe(plg.ignore.exclude, '*.map')
 		.pipe(plg.gzip)
 		.pipe(gulp.dest, paths.styles.output);
 
@@ -245,8 +245,8 @@ gulp.task('build:styles', ['clean:dist'], function() {
 		.pipe(plg.less())
 		.pipe(plg.autoprefixer('last 2 version', '> 1%'))
 		//.pipe(header(config.banner.full, { package : package }))
-		.pipe(config.isDebugable ? plg.sourcemaps.write('.') : plg.util.noop())
-		.pipe(gulp.dest(paths.styles.output))
+		.pipe(config.isDebugable && !config.isProduction ? plg.sourcemaps.write('.', {sourceMappingURLPrefix: '/css/'}) : plg.util.noop())
+		.pipe(!config.isProduction ? gulp.dest(paths.styles.output) : plg.util.noop())
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
 });
 
@@ -437,8 +437,11 @@ gulp.task('default-reload', [
 
 gulp.task('production', [
 	'set-production',
-	'compile'
-]);
+	'bower'
+], function() {
+	// we can start compile only after we do have bower dependencies
+	gulp.start('compile');
+});
 
 gulp.task('production-reload', [
 	'set-production',
