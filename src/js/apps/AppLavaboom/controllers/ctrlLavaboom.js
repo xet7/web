@@ -1,30 +1,47 @@
-angular.module(primaryApplicationName).controller('CtrlLavaboom', function($scope, $state, crypto, user, inbox) {
-	$scope.switch = 'off';
+angular.module(primaryApplicationName).controller('CtrlLavaboom', function($scope, $state, $translate, crypto, cryptoKeys, user, inbox, loader) {
+	var
+		beforeDecryptingProgress,
+		isInitialized = false;
 
-	var setInboxCount = (inboxCount = 0) => {
-		$scope.inboxCount = inboxCount;
-		$scope.inboxCountBadge = $scope.inboxCount > 0 ? ($scope.inboxCount <= 999 ? $scope.inboxCount : '999+') : '';
-	};
+	const
+		lbLoading = $translate.instant('DECRYPTING_INBOX.LB_LOADING'),
+		lbDecrypting = $translate.instant('DECRYPTING_INBOX.LB_DECRYPTING'),
+		lbSuccess = $translate.instant('DECRYPTING_INBOX.LB_SUCCESS');
 
-	setInboxCount();
-
-	$scope.$on('inbox-emails', () => {
-		setInboxCount(inbox.totalEmailsCount);
-	});
+	loader.incProgress('Initializing openpgp.js...', 1);
 
 	crypto.initialize();
 
-	user.checkAuth();
+	loader.incProgress('Authenticating...', 5);
 
-	$scope.$on('user-authenticated', () => {
-		$state.go('decrypting');
+	user.gatherUserInformation();
+
+	var userAuthenticatedListener = $scope.$on('user-authenticated', () => {
+		userAuthenticatedListener();
+
+		loader.incProgress('Loading emails...', 5);
+
+		inbox.initialize();
+		inbox.requestList('Inbox');
+		cryptoKeys.syncKeys();
+
+		beforeDecryptingProgress = loader.getProgress();
 	});
 
-	var once = $scope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
-		if (toState.name != 'loading') {
-			event.preventDefault();
-			$state.go('loading');
+	var inboxDecryptStatusListener = $scope.$on('inbox-decrypt-status', (e, status) => {
+		if (status.current < status.total)
+			loader.setProgress(lbDecrypting, beforeDecryptingProgress + (status.current / status.total) * (100 - beforeDecryptingProgress));
+		else {
+			isInitialized = true;
+			inboxDecryptStatusListener();
+			$state.go('main.label', {labelName: 'Inbox'}, {reload: true});
 		}
-		once();
+	});
+
+	var stateChangeSuccessListener = $scope.$on('$stateChangeSuccess', (event, toState, toParams, fromState, fromParams) => {
+		if (isInitialized && toState.name == 'main.label') {
+			stateChangeSuccessListener();
+			loader.showMainApplication();
+		}
 	});
 });

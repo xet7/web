@@ -22,5 +22,5 @@
 		};
 	};
 
-	window.checker = new Checker('https://api.lavaboom.io/');
+	window.checker = new Checker('https://api.lavaboom.io');
 })();

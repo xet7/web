@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlAuth', function($scope, $rootScope, $window, $interval, user) {
+angular.module(primaryApplicationName).controller('CtrlAuth', function($scope, $rootScope, $window, $interval, user, loader) {
     $scope.form = {
 		username: '',
 		password: '',
@@ -16,6 +16,7 @@ angular.module(primaryApplicationName).controller('CtrlAuth', function($scope, $
 	};
 
 	$scope.$on('user-authenticated', () => {
-		$window.location = '/';
+		loader.showLoader();
+		//loader.loadMainApplication();
 	});
 });

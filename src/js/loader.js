@@ -48,7 +48,7 @@
 		APP_LAVABOOM_MAIN = {
 			appName: 'AppLavaboom',
 			afterProgressText: 'Please wait...',
-			afterProgressValue: 90,
+			afterProgressValue: 50,
 			scripts: [
 				{
 					src: SRC_APP_LAVABOOM_LOGIN_VENDOR,
@@ -70,7 +70,7 @@
 		};
 
 	const
-		DEBUG_DELAY = 0,
+		DEBUG_DELAY = 1000,
 		APP_TRANSITION_DELAY = 1000;
 
 	var loadedScripts = {};
@@ -100,6 +100,8 @@
 	var Loader = function () {
 		console.log('Initialize loader...');
 
+		var self = this;
+
 		var // containers
 			loaderContainer = document.getElementById('loader-container'),
 			loginAppContainer = document.getElementById('login-app-container'),
@@ -113,10 +115,11 @@
 			// state
 			isLoginAppLoaded = false,
 			isMainAppLoaded = false,
+			currentProgress,
 			progress;
 
 		var showContainer = (e) => {
-			setProgress(LB_DONE, 100);
+			self.setProgress(LB_DONE, 100);
 
 			setTimeout(() => {
 				for (var c in containers)
@@ -125,25 +128,18 @@
 			}, APP_TRANSITION_DELAY);
 		};
 
-		var setProgress = (text, percent) => {
-			console.log('loader.progress', percent, text);
-			loaderProgressText.innerHTML = text;
-			loaderProgressBar.setAttribute('aria-valuenow', percent);
-			loaderProgressBar.setAttribute('style', `width: ${percent}%;`);
-		};
-
 		var loadScripts = (opts, onFinished) => {
 			var total = opts.scripts.length;
 			var load = (loaded = 0) => {
 				var script = opts.scripts.splice(0, 1)[0];
-				setProgress(script.progressText, Math.ceil(progress + (opts.afterProgressValue - progress) * loaded/total));
+				self.setProgress(script.progressText, Math.ceil(progress + (opts.afterProgressValue - progress) * loaded/total));
 
 				loadJS(script.src, () => {
 					if (opts.scripts.length > 0)
 						load(loaded + 1);
 					else {
 						progress = opts.afterProgressValue;
-						setProgress(opts.afterProgressText, opts.afterProgressValue);
+						self.setProgress(opts.afterProgressText, opts.afterProgressValue);
 
 						if (onFinished)
 							onFinished();
@@ -160,15 +156,28 @@
 					angular.bootstrap(element, [opts.appName]);
 
 					onFinished();
-
-					showContainer(element);
 				});
 			});
 		};
 
+		this.setProgress = (text, percent) => {
+			percent = Math.ceil(percent);
+
+			console.log('loader.progress', percent, text);
+			loaderProgressText.innerHTML = text;
+			loaderProgressBar.setAttribute('aria-valuenow', percent);
+			loaderProgressBar.setAttribute('style', `width: ${percent}%;`);
+			currentProgress = percent;
+		};
+
+		this.incProgress = (text, percent) => {
+			self.setProgress(text, currentProgress + percent);
+		};
+
+		this.getProgress = () => currentProgress;
+
 		this.initialize = () => {
 			progress = 10;
-
 			loadScripts(CHECKER, () => {
 				window.checker.check();
 			});
@@ -190,6 +199,18 @@
 			loadApplication(mainAppContainer, APP_LAVABOOM_MAIN, () => {
 				isMainAppLoaded = true;
 			});
+		};
+
+		this.showLoader = () => {
+			showContainer(loaderContainer);
+		};
+
+		this.showLoginApplication = () => {
+			showContainer(loginAppContainer);
+		};
+
+		this.showMainApplication = () => {
+			showContainer(mainAppContainer);
 		};
 	};
 

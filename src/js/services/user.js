@@ -107,29 +107,4 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 			delete sessionStorage.lavaboomToken;
 		$window.location = consts.LOGIN_URL;
 	};
-
-	this.checkAuth = () => {
-		console.log('Checking authentication token...');
-
-		return co(function * () {
-			if (token) {
-				try {
-					yield self.gatherUserInformation();
-
-					if (app.isLoginApplication) {
-						console.log('We are already authenticated with a valid token - going to the main application');
-						$window.location = '/';
-					}
-				} catch (err) {
-					if (app.isLoginApplication)
-						return true;
-					if (app.isInboxApplication)
-						$window.location = consts.LOGIN_URL;
-				}
-			}
-			else if (app.isInboxApplication) {
-				$window.location = consts.LOGIN_URL;
-			}
-		});
-	};
 });
