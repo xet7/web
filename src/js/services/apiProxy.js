@@ -4,6 +4,9 @@ angular.module(primaryApplicationName).factory('apiProxy', function($q, $rootSco
 
 		return co(function *(){
 			try {
+				if (error.body && error.body.message == 'Unexpected end of input')
+					return yield $translate(`LAVABOOM.API.ERROR.DOWN`);
+
 				return yield $translate(`LAVABOOM.API.ERROR.${callName}.${error.status}`);
 			} catch (err) {
 				try {

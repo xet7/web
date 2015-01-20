@@ -1,5 +1,5 @@
 angular.module(primaryApplicationName).constant('consts', {
-	LOGIN_URL: '/login.html',
+	LOGIN_URL: '/',
 	ROOT_DOMAIN: 'lavaboom.io',
 	DEFAULT_KEY_LENGTH: 2048,
 	ESTIMATED_KEY_GENERATION_TIME_SECONDS: 24,
