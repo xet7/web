@@ -23,6 +23,8 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 		$rootScope.$broadcast('inbox-selection-changed', $scope.selected);
 	});
 
-	console.log('$stateParams.labelName', $stateParams.labelName);
-	inbox.requestList($stateParams.labelName);
+	if ($scope.isInitialized) {
+		console.log('$stateParams.labelName', $stateParams.labelName);
+		inbox.requestList($stateParams.labelName);
+	}
 });

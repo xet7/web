@@ -72,8 +72,6 @@ gulp.task('build:scripts:vendor:min', function() {
 				}
 			}
 
-			console.log(dependencies);
-
 			return gulp.src(dependencies)
 				.pipe(plg.plumber())
 				.pipe(plg.sourcemaps.init())
@@ -85,7 +83,20 @@ gulp.task('build:scripts:vendor:min', function() {
 		.pipe(gulp.dest(paths.scripts.output));
 });
 
-gulp.task('build:scripts:vendor', ['clean:dist', 'build:scripts:vendor:min', 'lint:scripts'], function() {
+gulp.task('build:scripts:core', ['clean:dist'], function() {
+	var prodPipeline = lazypipe()
+		.pipe(plg.uglify);
+
+	return gulp.src(paths.scripts.input)
+		.pipe(plg.plumber())
+		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.noop())
+		.pipe(plg.traceur())
+		.pipe(config.isProduction ? prodPipeline() : plg.util.noop())
+		.pipe(config.isDebugable ? plg.sourcemaps.write('.', {sourceMappingURLPrefix: '/js/'}) : plg.util.noop())
+		.pipe(gulp.dest(paths.scripts.output));
+});
+
+gulp.task('build:scripts:vendor', ['clean:dist', 'build:scripts:vendor:min', 'lint:scripts', 'build:scripts:core'], function() {
 	return gulp.src(paths.scripts.inputDeps)
 		.pipe(plg.plumber())
 		.pipe(plg.tap(function (file, t) {

@@ -1,19 +1,17 @@
 angular.module(primaryApplicationName).config(function($stateProvider, $urlRouterProvider, $locationProvider){
 	$locationProvider.hashPrefix('!');
-	$urlRouterProvider.otherwise('/loading');
+
+	// small hack - both routers(login && main app) work at the same time, so we need to troubleshot this
+	$urlRouterProvider.otherwise(($injector, $location) => {
+		console.log('main router otherwise: window.loader.isMainApplication()', window.loader.isMainApplication(), $location);
+		if (!window.loader.isMainApplication())
+			return undefined;
+		return '/label/Inbox';
+	});
 
 	$stateProvider
-		.state('loading', {
-			url: '/loading'
-		})
-		.state('decrypting', {
-			url: '/decrypting',
-			views: {
-				'login-view': {
-					templateUrl: 'partials/login/decrypting.html',
-					controller: 'CtrlDecrypting'
-				}
-			}
+		.state('empty', {
+			url: '/'
 		})
 
 		.state('main', {
@@ -31,7 +29,7 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 			url: '/label/:labelName',
 			views: {
 				'main-view@': {
-					templateUrl: 'partials/inbox.html' //stateParams => `partials/${stateParams.labelName.toLowerCase()}.html`
+					templateUrl: 'partials/inbox.html'
 				}
 			}
 		})

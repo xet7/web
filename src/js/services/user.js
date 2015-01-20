@@ -1,6 +1,6 @@
 var Buffer = require('buffer/').Buffer;
 
-angular.module(primaryApplicationName).service('user', function($q, $rootScope, $state, $timeout, $window, consts, apiProxy, LavaboomAPI, co, app, crypto) {
+angular.module(primaryApplicationName).service('user', function($q, $rootScope, $state, $timeout, $window, consts, apiProxy, LavaboomAPI, co, app, crypto, loader) {
 	var self = this;
 
 	this.name = '';
@@ -96,6 +96,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 				$rootScope.$broadcast('user-authenticated');
 			} catch (err) {
 				$rootScope.$broadcast('user-authentication-error', err);
+				throw err;
 			}
 		});
 	};
@@ -105,31 +106,9 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 			delete localStorage.lavaboomToken;
 		if (sessionStorage.lavaboomToken)
 			delete sessionStorage.lavaboomToken;
-		$window.location = consts.LOGIN_URL;
-	};
 
-	this.checkAuth = () => {
-		console.log('Checking authentication token...');
-
-		return co(function * () {
-			if (token) {
-				try {
-					yield self.gatherUserInformation();
-
-					if (app.isLoginApplication) {
-						console.log('We are already authenticated with a valid token - going to the main application');
-						$window.location = '/';
-					}
-				} catch (err) {
-					if (app.isLoginApplication)
-						return true;
-					if (app.isInboxApplication)
-						$window.location = consts.LOGIN_URL;
-				}
-			}
-			else if (app.isInboxApplication) {
-				$window.location = consts.LOGIN_URL;
-			}
-		});
+		loader.resetProgress();
+		loader.showLoader(true);
+		loader.loadLoginApplication({lbDone: 'See you soon :)'});
 	};
 });

@@ -53,12 +53,15 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	};
 
 	this.requestList = (labelName) => {
-		if (!self.labels[labelName]) {
-			console.error('requestList unknown label name', labelName);
-			return;
-		}
+		var labelId = null;
 
-		var labelId = self.labels[labelName].id;
+		if (labelName != 'Inbox') {
+			if (!self.labels[labelName]) {
+				console.error('requestList unknown label name', labelName);
+				return;
+			}
+			labelId = self.labels[labelName].id;
+		}
 
 		self.isInboxLoading = true;
 		self.isDecrypted = true;
