@@ -3,6 +3,7 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 
 	// small hack - both routers(login && main app) work at the same time, so we need to troubleshot this
 	$urlRouterProvider.otherwise(($injector, $location) => {
+		console.log('login router otherwise: window.loader.isMainApplication()', window.loader.isMainApplication(), $location);
 		if (window.loader.isMainApplication())
 			return undefined;
 		return '/';

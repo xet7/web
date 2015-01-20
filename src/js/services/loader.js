@@ -27,15 +27,7 @@ angular.module(primaryApplicationName).service('loader', function() {
 		loader.showLoader(isImmediate);
 	};
 
-	this.showLoginApplication = (isImmediate = false) => {
-		loader.showLoginApplication(isImmediate);
-	};
-
 	this.isMainApplication = () => {
 		return loader.isMainApplication();
-	};
-
-	this.showMainApplication = (isImmediate = false) => {
-		loader.showMainApplication(isImmediate);
 	};
 });

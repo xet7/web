@@ -11,7 +11,13 @@
 	const
 		LB_DONE = 'Done!';
 
-	const
+	var // containers
+		loaderContainer = document.getElementById('loader-container'),
+		loginAppContainer = document.getElementById('login-app-container'),
+		mainAppContainer = document.getElementById('main-app-container'),
+		containers = [loaderContainer, loginAppContainer, mainAppContainer];
+
+	var
 		CHECKER = {
 			afterProgressText: 'Checking...',
 			afterProgressValue: 30,
@@ -26,8 +32,12 @@
 				}
 			]
 		},
+		LOADER = {
+			container: loaderContainer
+		},
 		APP_LAVABOOM_LOGIN = {
 			appName: 'AppLavaboomLogin',
+			container: loginAppContainer,
 			afterProgressText: 'Please wait...',
 			afterProgressValue: 90,
 			scripts: [
@@ -47,6 +57,7 @@
 		},
 		APP_LAVABOOM_MAIN = {
 			appName: 'AppLavaboom',
+			container: mainAppContainer,
 			afterProgressText: 'Please wait...',
 			afterProgressValue: 50,
 			scripts: [
@@ -102,30 +113,30 @@
 
 		var self = this;
 
-		var // containers
-			loaderContainer = document.getElementById('loader-container'),
-			loginAppContainer = document.getElementById('login-app-container'),
-			mainAppContainer = document.getElementById('main-app-container'),
-			containers = [loaderContainer, loginAppContainer, mainAppContainer],
-
+		var
 			// loader elements
 			loaderProgressText = document.getElementById('loader-progress-text'),
 			loaderProgressBar = document.getElementById('loader-progress-bar'),
 
 			// state
+			isError = false,
 			isLoginAppLoaded = false,
 			isMainAppLoaded = false,
+			isMainAppLoading = false,
 			isMainApp = false,
 			currentProgress,
 			progress;
 
 		var showContainer = (e, isImmediate = false) => {
+			if (e.container != LOADER.container)
+				isMainApp = e.container == APP_LAVABOOM_MAIN.container;
+
 			self.setProgress(LB_DONE, 100);
 
 			setTimeout(() => {
 				for (let c of containers)
 					c.className = 'hidden';
-				e.className = '';
+				e.container.className = '';
 			}, isImmediate ? 0 :APP_TRANSITION_DELAY);
 		};
 
@@ -151,26 +162,43 @@
 			load();
 		};
 
-		var loadApplication = (element, opts, onFinished) => {
-			loadScripts(opts, () => {
-				angular.element(element).ready(() => {
-					angular.bootstrap(element, [opts.appName]);
+		var initializeApplication = (app) => {
+			var scope = angular.element(app.container).scope();
+			scope.$apply(() => {
+				scope.initializeApplication()
+					.then(r => {
+						showContainer(app);
+					})
+					.catch(err => {
+						self.setProgressText(err.message);
+						isError = true;
+						console.error('loader: initialization of app.appName failed', err.error);
+					});
+			});
+		};
+
+		var loadApplication = (app, onFinished) => {
+			loadScripts(app, () => {
+				angular.element(app.container).ready(() => {
+					angular.bootstrap(app.container, [app.appName]);
+
+					initializeApplication(app);
 
 					onFinished();
 				});
 			});
 		};
 
-		var wakeApplication = (element, callback) => {
-			var scope = angular.element(element).scope();
-			scope.$apply(() => {
-				scope.wakeUp().then(r => {
-					callback(r);
-				});
-			});
+		this.setProgressText = (text) => {
+			if (isError)
+				return;
+			loaderProgressText.innerHTML = text;
 		};
 
 		this.setProgress = (text, percent) => {
+			if (isError)
+				return;
+
 			percent = Math.ceil(percent);
 
 			console.log('loader.progress', percent, text);
@@ -200,44 +228,31 @@
 		};
 
 		this.loadLoginApplication = () => {
-			isMainApp = false;
+			isError = false;
 			if (isLoginAppLoaded)
-				return wakeApplication(loginAppContainer, () => {
-					self.showLoginApplication(true);
-				});
+				return initializeApplication(APP_LAVABOOM_LOGIN);
 
-			loadApplication(loginAppContainer, APP_LAVABOOM_LOGIN, () => {
+			loadApplication(APP_LAVABOOM_LOGIN, () => {
 				isLoginAppLoaded = true;
 			});
 		};
 
 		this.loadMainApplication = () => {
-			isMainApp = true;
+			isMainAppLoading = true;
+			isError = false;
 			if (isMainAppLoaded)
-				return wakeApplication(mainAppContainer, () => {
-					self.showMainApplication(true);
-				});
+				return initializeApplication(APP_LAVABOOM_MAIN);
 
-			loadApplication(mainAppContainer, APP_LAVABOOM_MAIN, () => {
+			loadApplication(APP_LAVABOOM_MAIN, () => {
 				isMainAppLoaded = true;
+				isMainAppLoading = false;
 			});
 		};
 
-		this.isMainApplication = () => isMainApp;
+		this.isMainApplication = () => isMainApp || isMainAppLoading;
 
 		this.showLoader = (isImmediate = false) => {
-			isMainApp = false;
-			showContainer(loaderContainer, isImmediate);
-		};
-
-		this.showLoginApplication = (isImmediate = false) => {
-			isMainApp = false;
-			showContainer(loginAppContainer, isImmediate);
-		};
-
-		this.showMainApplication = (isImmediate = false) => {
-			isMainApp = true;
-			showContainer(mainAppContainer, isImmediate);
+			showContainer(LOADER, isImmediate);
 		};
 	};
 
