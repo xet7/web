@@ -96,6 +96,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 				$rootScope.$broadcast('user-authenticated');
 			} catch (err) {
 				$rootScope.$broadcast('user-authentication-error', err);
+				throw err;
 			}
 		});
 	};

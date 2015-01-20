@@ -83,7 +83,7 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
             templateUrl: 'partials/login/generatingKeys.html',
             controller: 'CtrlGeneratingKeys'
         })
-		
+
 		.state('backupKeys', {
 			url: '/backupKeys',
 			templateUrl: 'partials/login/backupKey.html',
