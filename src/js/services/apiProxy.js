@@ -24,6 +24,10 @@ angular.module(primaryApplicationName).factory('apiProxy', function($q, $rootSco
 		});
 	};
 
+	$rootScope.$on('$stateChangeSuccess', () => {
+		$rootScope.currentErrorMessage = '';
+	});
+
 	return function () {
 		var fnArgs = [].splice.call(arguments,0);
 		var path = fnArgs[0];
