@@ -7,6 +7,8 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 		lbDecrypting = $translate.instant('DECRYPTING_INBOX.LB_DECRYPTING'),
 		lbSuccess = $translate.instant('DECRYPTING_INBOX.LB_SUCCESS');
 
+	$scope.isInitialized = false;
+
 	$scope.initializeApplication = () => {
 		var deferred = $q.defer();
 		try {
@@ -35,7 +37,10 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 					inboxDecryptStatusListener();
 
 					$state.go('main.label', {labelName: 'Inbox'}, {reload: true})
-						.then(() => deferred.resolve())
+						.then(() => {
+							$scope.isInitialized = true;
+							deferred.resolve();
+						})
 						.catch(error => deferred.reject({message: 'Initialization failed...', error: error}));
 				}
 			});
