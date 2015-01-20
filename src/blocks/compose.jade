@@ -54,6 +54,13 @@ div#compose-wrapper(ng-controller="ComposeController")
 								span(class="icon-lock sec-{{person.sec}}")
 					span.icon-close.pull-right
 			.table-list
+				.cell.label from:
+				.dropdown-control.cell
+					ui-select(ng-model='fromEmails.selected', search-enabled='false')
+						ui-select-match {{$select.selected.mail}}
+						ui-select-choices(repeat='item in fromEmails')
+							span(ng-click='item.selected=item', ng-bind-html='item.mail')
+			.table-list
 				.cell.label.text-primary
 					label Subject:
 				.cell.fields
