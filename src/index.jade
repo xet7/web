@@ -28,7 +28,7 @@ html(lang="en")
 
 	body
 		#loader-container
-			div#login-app.login
+			#login-app.login
 				.container.main-container
 					.row
 						#main-content.col-md-8.col-xs-22.col-md-offset-8.col-xs-offset-1
@@ -39,10 +39,10 @@ html(lang="en")
 								p#loader-progress-text.lead Initializing...
 
 		#login-app-container.hidden
-			div#login-app.login
-			.container.main-container
-				.row
-					#main-content.col-md-8.col-xs-22.col-md-offset-8.col-xs-offset-1(ui-view="")
+			#login-app.login
+				.container.main-container
+					.row
+						#main-content.col-md-8.col-xs-22.col-md-offset-8.col-xs-offset-1(ui-view="")
 
 		#main-app-container.hidden
 			#leftPanel(ui-view="left-view")

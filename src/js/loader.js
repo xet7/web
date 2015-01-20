@@ -70,7 +70,7 @@
 		};
 
 	const
-		DEBUG_DELAY = 1500,
+		DEBUG_DELAY = 0,
 		APP_TRANSITION_DELAY = 1000;
 
 	var loadedScripts = {};
