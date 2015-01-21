@@ -391,7 +391,6 @@ gulp.task('default', [
 	'bower',
 	'tests'
 ], function() {
-
 	// we can start compile only after we do have bower dependencies
 	gulp.start('compile');
 
@@ -417,6 +416,14 @@ gulp.task('default', [
 
 gulp.task('serve', function () {
 	serve();
+});
+
+gulp.task('develop', [
+	'bower',
+	'tests'
+], function() {
+	// we can start compile only after we do have bower dependencies
+	gulp.start('compile');
 });
 
 gulp.task('production', [
