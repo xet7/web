@@ -1,11 +1,19 @@
 window.primaryApplicationName = 'AppLavaboom';
-angular.module(primaryApplicationName, [
+
+
+window.app = angular.module(primaryApplicationName, [
 	'lavaboom.api',
+	//'utils',
+	'ngSanitize',
 	'ui.router',
 	'ui.bootstrap',
 	'ui.select',
-	'pascalprecht.translate'
-	]);
+	'pascalprecht.translate',
+	//'validation.match',
+	'textAngular'
+
+]);
+
 
 window.coJS = require('co');
 

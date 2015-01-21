@@ -1,0 +1,53 @@
+div#left-panel(ng-controller="CtrlNavigation")
+	nav#navigation
+		div#brand
+			a(herf="#")
+				img(src="img/Lavaboom-logo-full.svg")
+		ul.list-unstyled
+			li.compose
+				a(href="#", ui-sref="compose")
+					span.icon-compose
+					span.action(ng-click="composeTest()") Compose
+			li(ui-sref-active="active")
+				a(href="#", ui-sref="in")
+					span.icon-inbox
+					span.action Inbox
+					span.badge(ng-bind="inboxCountBadge")
+			li
+				a(href="#")
+					span.icon-draft
+					span.action Draft
+			li
+				a(href="#")
+					span.icon-outbox
+					span.action Outbox
+			li
+				a(href="#")
+					span.icon-sent
+					span.action Sent
+			li
+				a(href="#")
+					span.icon-star
+					span.action Favorites
+			li
+				a(href="#")
+					span.icon-ban
+					span.action Junk
+			li
+				a(href="#")
+					span.icon-trash
+					span.action Trash
+			li.separator
+			li
+				a(href="#")
+					span.icon-head
+					span.action Contacts
+			li(ui-sref-active="active")
+				a(href="#", ui-sref="settings.preferences")
+					span.icon-cog
+					span.action Settings
+			li.logout
+				small &#169; Lavaboom 2014
+				a(href="#")
+					span.icon-power
+					span.action Logout

@@ -3,4 +3,13 @@
 		"../../bower_components/angular-sanitize/angular-sanitize.js",
 		"../../bower_components/angular-bootstrap/ui-bootstrap.js",
 		"../../bower_components/angular-ui-select/dist/select.js",
+		"../../bower_components/lavaboom/dist/lavaboom-angular.js",
+		"../../bower_components/lavaboom/dist/lavaboom-api.js",
+		"../../bower_components/angular-base64/angular-base64.js",
+		"../../bower_components/file-saver/FileSaver.js",
+		'../../bower_components/rangy/rangy-core.js',
+		'../../bower_components/rangy/rangy-selectionsaverestore.js',
+		'../../bower_components/textAngular/dist/textAngular-sanitize.min.js',
+		'../../bower_components/textAngular/dist/textAngular.min.js',
+		"../../vendor/openpgp.js"
 	]
