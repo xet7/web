@@ -48,7 +48,7 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 			views: {
 				'main-view@': {
 					templateUrl: 'partials/compose.html',
-					controller: 'ComposeController'
+					controller: 'CtrlCompose'
 				}
 			}
 		})
