@@ -1,9 +1,11 @@
 window.primaryApplicationName = 'AppLavaboom';
 angular.module(primaryApplicationName, [
 	'lavaboom.api',
+	'ngSanitize',
 	'ui.router',
 	'ui.bootstrap',
 	'ui.select',
+	'textAngular',
 	'pascalprecht.translate'
 	]);
 

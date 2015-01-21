@@ -309,6 +309,30 @@ form.settings{
 	}
 }
 
+form{
+  tags-input{
+    .tags{
+      border: 0 none;
+      background: transparent;
+      box-shadow: none;
+      &.focused{
+        box-shadow: none;
+      }
+      .tag-item{
+        font-family: inherit;
+        background: transparent !important;
+        border-color: transparent;
+        border-radius: 0;
+        font-weight: @base-font-weight;
+        font-size: 14px;
+        &.selected,&:hover{
+          background-color: @lava-compose-tags-bg;
+        }
+      }
+    }
+  }
+}
+
 
 .disable-styles{
   background: none transparent !important;
