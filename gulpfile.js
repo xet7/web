@@ -357,15 +357,6 @@ gulp.task('bower', function() {
 	return plg.bower();
 });
 
-// Reload gulp on file change
-gulp.task('gulp-reload', function() {
-	if (childProcess)
-		childProcess.kill();
-
-	var target = (args[0] ? args[0] : 'default') + '-reload';
-	childProcess = spawn('gulp', [target], {stdio: 'inherit'});
-});
-
 gulp.task('livereload', ['compile'], function() {
 	return gulp.src(paths.main_html.inputJade)
 		.pipe(plg.livereload());
@@ -414,9 +405,6 @@ gulp.task('default', [
 		gulp.start('livereload');
 	});
 
-	// watch for gulpfile changes
-	gulp.watch('gulpfile.js', ['gulp-reload']);
-
 	// start livereload server
 	plg.livereload.listen({
 		host: config.livereloadListenAddress,
@@ -431,10 +419,6 @@ gulp.task('serve', function () {
 	serve();
 });
 
-gulp.task('default-reload', [
-	'compile'
-]);
-
 gulp.task('production', [
 	'set-production',
 	'bower'
@@ -442,8 +426,3 @@ gulp.task('production', [
 	// we can start compile only after we do have bower dependencies
 	gulp.start('compile');
 });
-
-gulp.task('production-reload', [
-	'set-production',
-	'compile'
-]);
