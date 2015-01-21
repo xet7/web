@@ -421,7 +421,8 @@ gulp.task('serve', function () {
 
 gulp.task('production', [
 	'set-production',
-	'bower'
+	'bower',
+	'tests'
 ], function() {
 	// we can start compile only after we do have bower dependencies
 	gulp.start('compile');
