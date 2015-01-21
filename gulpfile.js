@@ -226,7 +226,6 @@ gulp.task('build:styles', ['clean:dist'], function() {
 		.pipe(plg.minifyCss, {
 			keepSpecialComments: 0
 		});
-		//.pipe(header, config.banner.min, { package : package })
 
 	if (config.isDebugable) {
 		prodPipeline = prodPipeline
@@ -244,7 +243,6 @@ gulp.task('build:styles', ['clean:dist'], function() {
 		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.noop())
 		.pipe(plg.less())
 		.pipe(plg.autoprefixer('last 2 version', '> 1%'))
-		//.pipe(header(config.banner.full, { package : package }))
 		.pipe(config.isDebugable && !config.isProduction ? plg.sourcemaps.write('.', {sourceMappingURLPrefix: '/css/'}) : plg.util.noop())
 		.pipe(!config.isProduction ? gulp.dest(paths.styles.output) : plg.util.noop())
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
@@ -252,8 +250,21 @@ gulp.task('build:styles', ['clean:dist'], function() {
 
 // Copy static files into output folder
 gulp.task('copy:vendor', ['clean:dist'], function() {
-	return gulp.src(paths.vendor.input)
+	return gulp.src(paths.vendor.input, {read: false})
 		.pipe(plg.plumber())
+		.pipe(plg.tap(function (file, t) {
+			if (file.path.indexOf('min.js') < 0) {
+				if (config.isProduction) {
+					try {
+						var minifiedVersion = file.path.replace('.js', '.min.js');
+						file.contents = fs.readFileSync(minifiedVersion);
+					} catch (err) {
+						file.contents = fs.readFileSync(file.path);
+					}
+				} else
+					file.contents = fs.readFileSync(file.path);
+			}
+		}))
 		.pipe(gulp.dest(paths.vendor.output));
 });
 
@@ -357,15 +368,6 @@ gulp.task('bower', function() {
 	return plg.bower();
 });
 
-// Reload gulp on file change
-gulp.task('gulp-reload', function() {
-	if (childProcess)
-		childProcess.kill();
-
-	var target = (args[0] ? args[0] : 'default') + '-reload';
-	childProcess = spawn('gulp', [target], {stdio: 'inherit'});
-});
-
 gulp.task('livereload', ['compile'], function() {
 	return gulp.src(paths.main_html.inputJade)
 		.pipe(plg.livereload());
@@ -400,7 +402,6 @@ gulp.task('default', [
 	'bower',
 	'tests'
 ], function() {
-
 	// we can start compile only after we do have bower dependencies
 	gulp.start('compile');
 
@@ -413,9 +414,6 @@ gulp.task('default', [
 		gulp.start('compile');
 		gulp.start('livereload');
 	});
-
-	// watch for gulpfile changes
-	gulp.watch('gulpfile.js', ['gulp-reload']);
 
 	// start livereload server
 	plg.livereload.listen({
@@ -431,19 +429,19 @@ gulp.task('serve', function () {
 	serve();
 });
 
-gulp.task('default-reload', [
-	'compile'
-]);
-
-gulp.task('production', [
-	'set-production',
-	'bower'
+gulp.task('develop', [
+	'bower',
+	'tests'
 ], function() {
 	// we can start compile only after we do have bower dependencies
 	gulp.start('compile');
 });
 
-gulp.task('production-reload', [
+gulp.task('production', [
 	'set-production',
-	'compile'
-]);
+	'bower',
+	'tests'
+], function() {
+	// we can start compile only after we do have bower dependencies
+	gulp.start('compile');
+});
