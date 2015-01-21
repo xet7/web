@@ -226,7 +226,6 @@ gulp.task('build:styles', ['clean:dist'], function() {
 		.pipe(plg.minifyCss, {
 			keepSpecialComments: 0
 		});
-		//.pipe(header, config.banner.min, { package : package })
 
 	if (config.isDebugable) {
 		prodPipeline = prodPipeline
@@ -244,7 +243,6 @@ gulp.task('build:styles', ['clean:dist'], function() {
 		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.noop())
 		.pipe(plg.less())
 		.pipe(plg.autoprefixer('last 2 version', '> 1%'))
-		//.pipe(header(config.banner.full, { package : package }))
 		.pipe(config.isDebugable && !config.isProduction ? plg.sourcemaps.write('.', {sourceMappingURLPrefix: '/css/'}) : plg.util.noop())
 		.pipe(!config.isProduction ? gulp.dest(paths.styles.output) : plg.util.noop())
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
