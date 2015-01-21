@@ -252,8 +252,21 @@ gulp.task('build:styles', ['clean:dist'], function() {
 
 // Copy static files into output folder
 gulp.task('copy:vendor', ['clean:dist'], function() {
-	return gulp.src(paths.vendor.input)
+	return gulp.src(paths.vendor.input, {read: false})
 		.pipe(plg.plumber())
+		.pipe(plg.tap(function (file, t) {
+			if (file.path.indexOf('min.js') < 0) {
+				if (config.isProduction) {
+					try {
+						var minifiedVersion = file.path.replace('.js', '.min.js');
+						file.contents = fs.readFileSync(minifiedVersion);
+					} catch (err) {
+						file.contents = fs.readFileSync(file.path);
+					}
+				} else
+					file.contents = fs.readFileSync(file.path);
+			}
+		}))
 		.pipe(gulp.dest(paths.vendor.output));
 });
 
