@@ -1,25 +1,22 @@
 window.primaryApplicationName = 'AppLavaboom';
-
-window.app = angular.module(primaryApplicationName, [
+angular.module(primaryApplicationName, [
 	'lavaboom.api',
-	//'utils',
 	'ngSanitize',
 	'ui.router',
 	'ui.bootstrap',
 	'ui.select',
-	'pascalprecht.translate',
-	//'validation.match',
-	
-	'textAngular'
-
-]);
+	'textAngular',
+	'pascalprecht.translate'
+	]);
 
 window.coJS = require('co');
 
 var bulkRequire = require('bulk-require');
 
 bulkRequire(__dirname, [
+	'../runs/*.js',
 	'../configs/*.js',
+	'../directives/*.js',
 	'../services/*.js',
 
 	'./AppLavaboom/configs/*.js',

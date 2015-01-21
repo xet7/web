@@ -1,6 +1,6 @@
 var Buffer = require('buffer/').Buffer;
 
-angular.module(primaryApplicationName).service('user', function($q, $rootScope, $state, $timeout, $window, consts, apiProxy, LavaboomAPI, co, app, crypto) {
+angular.module(primaryApplicationName).service('user', function($q, $rootScope, $state, $timeout, $window, consts, apiProxy, LavaboomAPI, co, app, crypto, loader) {
 	var self = this;
 
 	this.name = '';
@@ -8,7 +8,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 	this.nameEmail = '';
 
 	// information about user from API
-	this.information = {
+	this.settings = {
 
 	};
 
@@ -17,7 +17,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 	var setupUserBasicInformation = (username) => {
 		self.name = username;
-		self.email = `${username}@${consts.rootDomain}`;
+		self.email = `${username}@${consts.ROOT_DOMAIN}`;
 		self.nameEmail = `${self.name} <${self.email}>`;
 	};
 
@@ -35,7 +35,9 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 	this.gatherUserInformation = () => {
 		return co(function * () {
-			var res = yield apiProxy('accounts', 'get', 'me');
+			var res = yield apiProxy(['accounts', 'get'], 'me');
+
+			self.settings = res.body.settings;
 
 			setupUserBasicInformation(res.body.user.name);
 
@@ -48,7 +50,20 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		});
 	};
 
-	this.signIn = (username, password, isRemember) => {
+	this.update = (settings) => {
+		if (settings.firstName)
+			self.settings.firstName = settings.firstName;
+		if (settings.lastName)
+			self.settings.lastName = settings.lastName;
+		if (settings.displayName)
+			self.settings.displayName = settings.displayName;
+
+		return apiProxy(['accounts', 'update'], 'me', {
+			settings: self.settings
+		});
+	};
+
+	this.signIn = (username, password, isRemember, isPrivateComputer) => {
 		setupUserBasicInformation(username);
 
 		crypto.initialize({
@@ -57,7 +72,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 		return co(function * (){
 			try {
-				var res = yield apiProxy('tokens', 'create', {
+				var res = yield apiProxy(['tokens', 'create'], {
 					type: 'auth',
 					username: username,
 					password: self.calculateHash(password)
@@ -68,46 +83,32 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 				persistAuth(isRemember);
 				isAuthenticated = true;
 
-				res = yield apiProxy('keys', 'list', self.name);
+				res = yield apiProxy(['keys', 'list'], self.name);
 				if (!res.body.keys || res.body.keys.length < 1) {
 					$state.go('generateKeys');
 					return;
 				}
 
+				crypto.options.isPrivateComputer = isPrivateComputer;
 				var r = crypto.authenticateDefault(password);
 				console.log(r);
 
 				$rootScope.$broadcast('user-authenticated');
 			} catch (err) {
 				$rootScope.$broadcast('user-authentication-error', err);
+				throw err;
 			}
 		});
 	};
 
-	this.checkAuth = () => {
-		console.log('Checking authentication token...');
+	this.logout = () => {
+		if (localStorage.lavaboomToken)
+			delete localStorage.lavaboomToken;
+		if (sessionStorage.lavaboomToken)
+			delete sessionStorage.lavaboomToken;
 
-		return co(function * () {
-			if (token) {
-				try {
-					yield self.gatherUserInformation();
-
-					if (app.isLoginApplication) {
-						console.log('We are already authenticated with a valid token - going to the main application');
-						$window.location = '/';
-					}
-				} catch (err) {
-					if (app.isLoginApplication)
-						return true;
-					if (app.isInboxApplication)
-						$window.location = consts.loginUrl;
-				}
-			}
-			else if (app.isInboxApplication) {
-				$window.location = consts.loginUrl;
-			}
-		});
+		loader.resetProgress();
+		loader.showLoader(true);
+		loader.loadLoginApplication({lbDone: 'See you soon :)'});
 	};
 });
-
-

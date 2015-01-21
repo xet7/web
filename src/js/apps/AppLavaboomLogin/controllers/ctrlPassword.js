@@ -1,10 +1,10 @@
-angular.module('AppLavaboomLogin').controller('CtrlPassword', function($scope, $state, signUp, crypto) {
+angular.module(primaryApplicationName).controller('CtrlPassword', function($scope, $state, signUp, crypto) {
 	if (!signUp.tokenSignup || !signUp.details)
 		$state.go('login');
 
 	$scope.form = {
-		password: 'ztest007',
-		passwordConfirm: 'ztest007'
+		password: '',
+		passwordConfirm: ''
 	};
 
 	$scope.updatePassword = () => {
@@ -12,6 +12,5 @@ angular.module('AppLavaboomLogin').controller('CtrlPassword', function($scope, $
 			.then(() => {
 				$state.go('generateKeys');
 			});
-		//$state.go('generateKeys');
 	};
 });

@@ -12,9 +12,9 @@ form.steps-form.ng-cloak(name="verify")
 	span.error(ng-bind="currentErrorMessage")
 
 	div.form-group
-		input.form-control.input-lg(type='text', ng-model='form.username', placeholder="{{'GLOBAL.USERNAME' | translate}}", minlength=4, required)
+		input.form-control.input-lg(type='text', ng-model='form.username', placeholder="{{'GLOBAL.USERNAME' | translate}}", minlength=2, required)
 	div.form-group
-		textarea.form-control.input-lg(type='text', ng-model='form.token', placeholder="{{'LOGIN.VERIFY_INVITE.PLC_INVITE_CODE' | translate}}", minlength=16, required)
+		textarea.form-control.input-lg(type='text', ng-model='form.token', placeholder="{{'LOGIN.VERIFY_INVITE.PLC_INVITE_CODE' | translate}}", minlength=8, required)
 
 	hr.spacer
 

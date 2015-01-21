@@ -1,0 +1,32 @@
+#settings-list.list-pane.ng-cloak(ng-controller='CtrlSettings')
+	.filters.row.no-gutter.lava-icon-row
+		label.search-icon.col-xs-3(for='top-search')
+			span.icon-search
+		input#top-search.search.col-xs-13(placeholder='Search Emails')
+		.lava-icon-wrapper.col-xs-8
+			a(href='#')
+				span.icon-arrow-down
+			a(href='#')
+				span.icon-star
+			a(href='#')
+				span.icon-ban
+			a(href='#')
+				span.icon-trash
+	.list-group-icons
+		ul.list-group
+			li.list-group-item(ui-sref-active='active')
+				a(ui-sref='main.settings.preferences')
+					i.icon.icon-cog
+					span Preferences
+			li.list-group-item(ui-sref-active='active')
+				a(ui-sref='main.settings.profile')
+					i.icon.icon-head
+					span Personal Details
+			li.list-group-item(ui-sref-active='active')
+				a(ui-sref='main.settings.security')
+					i.icon.icon-lock
+					span Security
+			li.list-group-item(ui-sref-active='active')
+				a(ui-sref='main.settings.plan')
+					i.icon.icon-lavaboom
+					span My Plan

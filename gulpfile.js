@@ -1,3 +1,18 @@
+var gulp = require('gulp');
+var plg = require('gulp-load-plugins')({
+	pattern: ['gulp-*', 'gulp.*'],
+	replaceString: /\bgulp[\-.]/
+});
+global.plg = plg;
+
+var utils = require('./gulp/utils');
+var config = require('./gulp/config');
+
+if (process.version != config.nodeVersion) {
+	utils.logGulpError('Incompatible node.js version\n', 'gulpfile.js', new Error('This gulpfile requires node.js version ' + config.nodeVersion));
+	return;
+}
+
 // system
 var os = require('os');
 var fs = require('fs');
@@ -10,14 +25,6 @@ var lazypipe = require('lazypipe');
 var exorcist  = require('exorcist');
 var mold = require('mold-source-map');
 var domain = require('domain');
-
-// General
-var gulp = require('gulp');
-var plg = require('gulp-load-plugins')({
-	pattern: ['gulp-*', 'gulp.*'],
-	replaceString: /\bgulp[\-.]/
-});
-global.plg = plg;
 
 // Browserify the mighty one
 var browserify = require('browserify'),
@@ -33,8 +40,8 @@ var serve = require('./serve');
 // Configuration
 var package = require('./package.json');
 var paths = require('./gulp/paths');
-var config = require('./gulp/config');
-var utils = require('./gulp/utils');
+
+var filterTransform = require('filter-transform');
 
 // Global variables
 var childProcess = null;
@@ -46,7 +53,50 @@ require('toml-require').install();
  * Gulp Taks
  */
 
-gulp.task('build:scripts:vendor', ['clean:dist', 'lint:scripts'], function() {
+gulp.task('build:scripts:vendor:min', function() {
+	return gulp.src(paths.scripts.inputDeps)
+		.pipe(plg.plumber())
+		.pipe(plg.tap(function (file, t) {
+			var appConfig = toml.parse(file.contents);
+			var dependencies = [];
+
+			for(var i = 0; i < appConfig.application.dependencies.length; i++) {
+				var resolvedFileOriginal = paths.scripts.inputAppsFolder + appConfig.application.dependencies[i];
+
+				if (fs.existsSync(resolvedFileOriginal)) {
+					var resolvedFile = resolvedFileOriginal.replace('.js', '.min.js');
+
+					if (!fs.existsSync(resolvedFile) && !fs.existsSync(path.resolve(__dirname, paths.scripts.cacheOutput, path.basename(resolvedFileOriginal)))) {
+						dependencies.push(resolvedFileOriginal);
+					}
+				}
+			}
+
+			return gulp.src(dependencies)
+				.pipe(plg.plumber())
+				.pipe(plg.sourcemaps.init())
+				.pipe(plg.ngAnnotate())
+				.pipe(plg.uglify())
+				.pipe(plg.sourcemaps.write('.'))
+				.pipe(gulp.dest(paths.scripts.cacheOutput));
+		}))
+		.pipe(gulp.dest(paths.scripts.output));
+});
+
+gulp.task('build:scripts:core', ['clean:dist'], function() {
+	var prodPipeline = lazypipe()
+		.pipe(plg.uglify);
+
+	return gulp.src(paths.scripts.input)
+		.pipe(plg.plumber())
+		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.noop())
+		.pipe(plg.traceur())
+		.pipe(config.isProduction ? prodPipeline() : plg.util.noop())
+		.pipe(config.isDebugable ? plg.sourcemaps.write('.', {sourceMappingURLPrefix: '/js/'}) : plg.util.noop())
+		.pipe(gulp.dest(paths.scripts.output));
+});
+
+gulp.task('build:scripts:vendor', ['clean:dist', 'build:scripts:vendor:min', 'lint:scripts', 'build:scripts:core'], function() {
 	return gulp.src(paths.scripts.inputDeps)
 		.pipe(plg.plumber())
 		.pipe(plg.tap(function (file, t) {
@@ -59,6 +109,14 @@ gulp.task('build:scripts:vendor', ['clean:dist', 'lint:scripts'], function() {
 				var resolvedFile = '';
 				if (config.isProduction) {
 					resolvedFile = resolvedFileOriginal.replace('.js', '.min.js');
+
+					if (!fs.existsSync(resolvedFile)) {
+						resolvedFile = path.resolve(__dirname, paths.scripts.cacheOutput, path.basename(resolvedFileOriginal));
+
+						if (fs.existsSync(resolvedFile)) {
+							console.log('Took minified version for vendor library from cache: ', resolvedFile);
+						}
+					}
 
 					if (!fs.existsSync(resolvedFile)) {
 						console.log('Cannot find minified version for vendor library: ', appConfig.application.dependencies[i]);
@@ -95,19 +153,34 @@ var browserifyBundle = function(filename) {
 				utils.logGulpError('Browserify compile error:', file.path, err);
 			});
 
+			var uglifyifyTransformed = filterTransform(
+				function(file) {
+					return file.indexOf('traceur-runtime') < 0;
+				},
+				uglifyify);
+
+			var ownCodebaseTransform = function(transform) {
+				return filterTransform(
+					function(file) {
+						return file.indexOf(path.resolve(__dirname, paths.scripts.inputFolder)) > -1;
+					},
+					transform);
+			};
+
 			d.run(function (){
 				var browserifyPipeline = browserify(file.path, {
 					basedir: __dirname,
 					debug: config.isDebugable
 				})
 					.add(es6ify.runtime)
-					.transform(es6ify)
-					.transform(bulkify)
-					.transform(brfs);
+					.transform(ownCodebaseTransform(es6ify))
+					.transform(ownCodebaseTransform(bulkify))
+					.transform(ownCodebaseTransform(brfs));
+
 				if (config.isProduction) {
 					browserifyPipeline = browserifyPipeline
-						.transform(ngminify)
-						.transform(uglifyify);
+						.transform(ownCodebaseTransform(ngminify))
+						.transform(uglifyifyTransformed);
 				}
 
 				file.contents = browserifyPipeline
@@ -157,12 +230,12 @@ gulp.task('build:styles', ['clean:dist'], function() {
 
 	if (config.isDebugable) {
 		prodPipeline = prodPipeline
-			.pipe(plg.rename, { suffix: '.min' })
-			.pipe(plg.sourcemaps.write, '.');
+			.pipe(plg.sourcemaps.write, '.', {sourceMappingURLPrefix: '/css/'});
 	}
 
 	prodPipeline = prodPipeline
 		.pipe(gulp.dest, paths.styles.output)
+		.pipe(plg.ignore.exclude, '*.map')
 		.pipe(plg.gzip)
 		.pipe(gulp.dest, paths.styles.output);
 
@@ -172,8 +245,8 @@ gulp.task('build:styles', ['clean:dist'], function() {
 		.pipe(plg.less())
 		.pipe(plg.autoprefixer('last 2 version', '> 1%'))
 		//.pipe(header(config.banner.full, { package : package }))
-		.pipe(config.isDebugable ? plg.sourcemaps.write('.') : plg.util.noop())
-		.pipe(gulp.dest(paths.styles.output))
+		.pipe(config.isDebugable && !config.isProduction ? plg.sourcemaps.write('.', {sourceMappingURLPrefix: '/css/'}) : plg.util.noop())
+		.pipe(!config.isProduction ? gulp.dest(paths.styles.output) : plg.util.noop())
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
 });
 
@@ -354,14 +427,21 @@ gulp.task('default', [
 	serve();
 });
 
+gulp.task('serve', function () {
+	serve();
+});
+
 gulp.task('default-reload', [
 	'compile'
 ]);
 
 gulp.task('production', [
 	'set-production',
-	'compile'
-]);
+	'bower'
+], function() {
+	// we can start compile only after we do have bower dependencies
+	gulp.start('compile');
+});
 
 gulp.task('production-reload', [
 	'set-production',

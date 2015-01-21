@@ -1,4 +1,4 @@
-#mail-thread.details-pane(ng-controller="CtrlMailDetail")
+#mail-thread.details-pane.ng-cloak(ng-controller="CtrlMailDetail")
 	div(ng-if="!selected")
 		.col-xs-24 no email selected
 	div(ng-if="selected")
@@ -25,14 +25,13 @@
 					.col-xs-21
 						strong Sarah McGormec
 						br
-						| To: j.apple@lavaboom.com
+						| From:
+						span(ng-repeat="from in selected.from", ng-bind="from")
 						br
+						| Subject:
 						span(ng-bind="selected.subject")
 					.col-xs-2.when
-						span
-							| Today
-							br
-							| 7:28am
+						span(ng-bind="selected.date | date")
 					.col-xs-1.secure
 						a.icon-<!--.$secure.-->
 				.mail-content.row.no-gutter

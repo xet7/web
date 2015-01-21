@@ -3,11 +3,11 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	this.emails = [];
 	this.selected = null;
-	this.senders = {};
 	this.totalEmailsCount = 0;
-	this.isInboxLoading = false;
-
-	crypto.initialize();
+	this.decryptingTotal = 0;
+	this.decryptingCurrent = 0;
+	this.isDecrypted = false;
+	this.labels = [];
 
 	var decode = (body, pgpFingerprints, defaultBody = '') => {
 		var deferred = $q.defer();
@@ -20,48 +20,101 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			return crypto.decodeByListedFingerprints(body, pgpFingerprints);
 
 		deferred.resolve(body);
+
 		return deferred.promise;
 	};
 
-	this.requestList = () => {
+	var decodeFinished = () => {
+		self.decryptingCurrent++;
+		$rootScope.$broadcast('inbox-decrypt-status', {current: self.decryptingCurrent, total: self.decryptingTotal});
+	};
+
+	this.requestDelete = (id) => {
+		apiProxy(['emails', 'delete'], id);
+		self.requestList();
+	};
+
+	this.requestStar = (id) => {
+
+	};
+
+
+	this.initialize = () => {
+		return co(function *(){
+			var res = yield apiProxy(['labels', 'list']);
+
+			self.labels = res.body.labels.reduce((a, c) => {
+				a[c.name] = c;
+				return a;
+			}, {});
+
+			$rootScope.$broadcast('inbox-labels', self.labels);
+		});
+	};
+
+	this.requestList = (labelName) => {
+		var labelId = null;
+
+		if (labelName != 'Inbox') {
+			if (!self.labels[labelName]) {
+				console.error('requestList unknown label name', labelName);
+				return;
+			}
+			labelId = self.labels[labelName].id;
+		}
+
 		self.isInboxLoading = true;
+		self.isDecrypted = true;
 
 		return co(function * (){
 			try {
-				var res = yield apiProxy('emails', 'list', {});
+				var res = yield apiProxy(['emails', 'list'], labelId ? {label: labelId} : {});
 
-				self.emails = res.body.emails ? res.body.emails.map(e => {
-					var email = {
-						id: e.id,
-						subject: e.name,
-						date: e.date_created,
-						preview: '',
-						previewState: 'processing',
-						body: '',
-						bodyState: 'processing'
-					};
+				self.decryptingCurrent = 0;
+				if (res.body.emails) {
+					self.decryptingTotal = res.body.emails.length;
 
-					decode(e.preview.raw, e.preview.pgp_fingerprints)
-						.then(value => {
-							email.preview = value;
-							email.previewState = 'ok';
-						})
-						.catch(err => {
-							email.preview = err.message;
-							email.previewState = 'error';
-						});
-					decode(e.body.raw, e.body.pgp_fingerprints)
-						.then(value => {
-							email.body = value;
-							email.bodyState = 'ok';
-						})
-						.catch(err => {
-							email.body = err.message;
-							email.bodyState = 'error';
-						});
+					self.emails = res.body.emails.map(e => {
+						var email = {
+							id: e.id,
+							isEncrypted: e.body.pgp_fingerprints.length > 0 || e.preview.pgp_fingerprints.length > 0,
+							subject: e.name,
+							date: e.date_created,
+							from: e.from,
+							preview: '',
+							previewState: 'processing',
+							body: '',
+							bodyState: 'processing',
+							attachments: e.attachments
+						};
 
-					return email;
-				}) : [];
+						decode(e.preview.raw, e.preview.pgp_fingerprints)
+							.then(value => {
+								email.preview = value;
+								email.previewState = 'ok';
+							})
+							.catch(err => {
+								email.preview = err.message;
+								email.previewState = 'error';
+							})
+							.finally(decodeFinished);
+						decode(e.body.raw, e.body.pgp_fingerprints)
+							.then(value => {
+								email.body = value;
+								email.bodyState = 'ok';
+							})
+							.catch(err => {
+								email.body = err.message;
+								email.bodyState = 'error';
+							})
+							.finally(decodeFinished);
+
+						return email;
+					});
+				} else {
+					self.emails = [];
+					$rootScope.$broadcast('inbox-decrypt-status', {current: 0, total: 0});
+				}
 
 				$rootScope.$broadcast('inbox-emails', self.emails);
 			} finally {
@@ -72,13 +125,13 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	this.send = (to, subject, body) => {
 		return co(function * () {
-			var res = yield apiProxy('keys', 'get', to);
+			var res = yield apiProxy(['keys', 'get'], to);
 			var publicKey = res.body.key;
 			var encryptedMessage = yield crypto.encodeWithKey(to, body, publicKey.key);
 
 			console.log(encryptedMessage, publicKey.id);
 
-			apiProxy('emails', 'create', {
+			apiProxy(['emails', 'create'], {
 				to: [to],
 				subject: subject,
 				body: encryptedMessage,

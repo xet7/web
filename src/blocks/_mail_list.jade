@@ -1,16 +1,16 @@
-#mail-list.list-pane(ng-controller="CtrlMailList")
+#mail-list.list-pane.ng-cloak(ng-controller="CtrlMailList")
 	.filters.row.no-gutter.lava-icon-row
 		label.search-icon.col-xs-3(for="top-search")
 			span.icon-search
 		input#top-search.search.col-xs-13(type="text", placeholder="Search Emails")
-		.lava-icon-wrapper.col-xs-8
+		.lava-icon-wrapper.col-xs-8(ng-show="selected")
 			a(href="#")
 				span.icon-arrow-down
 			a(href="#")
 				span.icon-star
 			a(href="#")
 				span.icon-ban
-			a(href="#")
+			a(href="#", ng-click="delete()")
 				span.icon-trash
 	.mail-list-group
 		div(ng-if="items.length < 1") No emails found
@@ -33,7 +33,7 @@
 						br
 						br
 						.lava-icon-row
-							a
+							a(ng-show="item.attachments && item.attachments.length > 0")
 								span.icon-paper-clip
-							a(href="#")
+							a(ng-show="item.isEncrypted")
 								span.icon-lock
