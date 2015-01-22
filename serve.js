@@ -7,7 +7,6 @@ var path		= require('path'),
 	paths		= require('./gulp/paths');
 
 module.exports = function () {
-
 	var app = express();
 
 	// default index redirect

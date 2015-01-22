@@ -1,0 +1,25 @@
+form.steps-form.ng-cloak
+	p.lead.pack {{'LOGIN.BACKUP_KEY.TITLE' | translate}}
+
+	p.text-center.steps
+		span.icon-unread.active
+		span.icon-unread.active
+		span.icon-unread.active
+		span.icon-unread.active
+		span.icon-unread.active
+		span.icon-unread.active
+
+	div.info
+		span.icon-info
+		div
+			p {{'LOGIN.BACKUP_KEY.INFO1' | translate}}
+			p {{'LOGIN.BACKUP_KEY.INFO2' | translate}}
+			p {{'LOGIN.BACKUP_KEY.INFO3' | translate}}
+			p {{'LOGIN.BACKUP_KEY.INFO4' | translate}}
+			p {{'LOGIN.BACKUP_KEY.INFO5' | translate}}
+
+	hr.blank
+
+	footer
+		button.btn.btn-block.btn-lg.btn-primary(ng-click="backup()") {{'LOGIN.BACKUP_KEY.BTN_BACKUP_NOW' | translate}}
+		button.btn.btn-block.btn-lg.btn(ng-click="skip()") {{'LOGIN.BACKUP_KEY.BTN_BACKUP_LATER' | translate}}

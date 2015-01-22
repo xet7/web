@@ -1,0 +1,43 @@
+.row.settings-panel.ng-cloak(ng-controller="CtrlSettingsSecurity")
+	form.settings.col-xs-12.col-xs-offset-6
+		.form-wrap
+			h4 Password
+			ul.list-group
+				li.list-group-item
+					.text-control
+						label Account Password
+						input.form-control(type='password', ng-model="form.oldPassword")
+				li.list-group-item
+					.text-control
+						label New Password
+						input.form-control(type='password', ng-model="form.password")
+				li.list-group-item
+					.text-control
+						label Confirm Password
+						input.form-control(type='password', ng-model="form.passwordRepeat")
+				li.list-group-item
+					.text-control
+						label Passphrase
+						input.form-control(value='Standard Level 5')
+			div(ng-repeat="key in keys")
+				h4 Key Pair for
+					span.invert.serif ˝
+					span(ng-bind="key.user")
+					span.serif ˝
+				ul.list-group
+					li.list-group-item
+						.text-control
+							label Key ID
+							input.form-control(type='text', disabled, ng-value="key.keyId")
+					li.list-group-item
+						.text-control
+							label Fingerprint
+							textarea.form-control.disable-styles(resizable='false', rows='3', disabled, ng-bind="key.fingerprint")
+					li.list-group-item
+						.text-control
+							label Creation Date
+							input.form-control(type='text', disabled, ng-value="key.created | date")
+					li.list-group-item
+						.text-control
+							label Passphrase
+							input.form-control(type='text', ng-value="key.password")

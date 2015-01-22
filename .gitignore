@@ -1,8 +1,9 @@
 /dist
+/cache
 .DS_Store
 /node_modules
 src/bower_components
-
+*.map
 # Created by https://www.gitignore.io
 
 ### OSX ###
@@ -11,7 +12,8 @@ src/bower_components
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*

@@ -1,3 +1,3 @@
-angular.module('AppLavaboom').controller('SettingsListController', function($scope) {
+angular.module(primaryApplicationName).controller('CtrlSettings', function($scope) {
 
 });

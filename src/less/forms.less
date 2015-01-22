@@ -38,6 +38,25 @@
     transition: all @lava-ease-out-in 0.2s;
 }
 
+.switch + span, .switch + label {
+  padding-left: 1em;
+}
+
+.checkbox-wrapper{
+  display: table;
+  // height: 100%;
+  > *{
+    // height: 100%;
+    vertical-align: top;
+    display: table-cell;
+  }
+
+  .switch{
+    position: relative;
+    top: 5px;
+  }
+}
+
 form.settings{
   position: relative;
   height: 100%;
@@ -288,6 +307,30 @@ form.settings{
 		color: @lava-text;
 		font-weight: 200;
 	}
+}
+
+form{
+  tags-input{
+    .tags{
+      border: 0 none;
+      background: transparent;
+      box-shadow: none;
+      &.focused{
+        box-shadow: none;
+      }
+      .tag-item{
+        font-family: inherit;
+        background: transparent !important;
+        border-color: transparent;
+        border-radius: 0;
+        font-weight: @base-font-weight;
+        font-size: 14px;
+        &.selected,&:hover{
+          background-color: @lava-compose-tags-bg;
+        }
+      }
+    }
+  }
 }
 
 

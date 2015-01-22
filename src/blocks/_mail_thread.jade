@@ -1,0 +1,53 @@
+#mail-thread.details-pane.ng-cloak(ng-controller="CtrlMailDetail")
+	div(ng-if="!selected")
+		.col-xs-24 no email selected
+	div(ng-if="selected")
+		.row.no-gutter.actions.lava-icon-row
+			.col-xs-24
+				.lava-icon-wrapper
+					a(href="#")
+						span.icon-reply
+					a(href="#")
+						span.icon-reply
+					a(href="#")
+						span.icon-arrow-right
+					span.spacer
+					a(href="#")
+						span.icon-star
+					a(href="#")
+						span.icon-ban
+					a(href="#")
+						span.icon-trash
+		// mail-thread-template
+		.row.no-gutter.mail
+			.col-xs-24
+				header.row.no-gutter
+					.col-xs-21
+						strong Sarah McGormec
+						br
+						| From:
+						span(ng-repeat="from in selected.from", ng-bind="from")
+						br
+						| Subject:
+						span(ng-bind="selected.subject")
+					.col-xs-2.when
+						span(ng-bind="selected.date | date")
+					.col-xs-1.secure
+						a.icon-<!--.$secure.-->
+				.mail-content.row.no-gutter
+					.col-xs-22(ng-bind="selected.body")
+				//footer
+					.row.no-gutter
+						.col-xs-8
+							a.attachment(href="test.mov", filetype="mov")
+								span.fileCorner
+								| Very Long Filename...pdf
+								br
+								| 24kb
+						.col-xs-8
+							a.attachment(href="test.mov", filetype="pdf")
+								span.fileCorner
+								| Very Long Filename...pdf
+								br
+								| 24kb
+		// // mail-thread-template

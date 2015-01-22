@@ -1,126 +1,223 @@
-// system
-var fs = require('fs');
-var del = require('del');
-var path = require('path');
-var serve = require('./serve');
-var spawn = require('child_process').spawn;
-
-// General
 var gulp = require('gulp');
-var traceur = require('gulp-traceur');
-var lazypipe = require('lazypipe');
-var plumber = require('gulp-plumber');
-var flatten = require('gulp-flatten');
-var tap = require('gulp-tap');
-var rename = require('gulp-rename');
-var header = require('gulp-header');
-var footer = require('gulp-footer');
-var watch = require('gulp-watch');
-var package = require('./package.json');
 var plg = require('gulp-load-plugins')({
 	pattern: ['gulp-*', 'gulp.*'],
 	replaceString: /\bgulp[\-.]/
 });
+global.plg = plg;
 
-// Scripts and tests
-var ngAnnotate = require('gulp-ng-annotate');
-var jshint = require('gulp-jshint');
-var jshintStylish = require('jshint-stylish');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
-var karma = require('gulp-karma');
-var include = require('gulp-include');
-var less = require('gulp-less');
-
-// SVGs
-var svgmin = require('gulp-svgmin');
-var svgstore = require('gulp-svgstore');
-
-// Docs
-var markdown = require('gulp-markdown');
-var fileinclude = require('gulp-file-include');
-
-
-var paths = require('./gulp/paths');
+var utils = require('./gulp/utils');
 var config = require('./gulp/config');
-var appsCache = {};
-var appsCacheMin = {};
 
+if (process.version != config.nodeVersion) {
+	utils.logGulpError('Incompatible node.js version\n', 'gulpfile.js', new Error('This gulpfile requires node.js version ' + config.nodeVersion));
+	return;
+}
+
+// system
+var os = require('os');
+var fs = require('fs');
+var del = require('del');
+var path = require('path');
+var spawn = require('child_process').spawn;
+var toml = require('toml');
+var source = require('vinyl-source-stream');
+var lazypipe = require('lazypipe');
+var exorcist  = require('exorcist');
+var mold = require('mold-source-map');
+var domain = require('domain');
+
+// Browserify the mighty one
+var browserify = require('browserify'),
+	es6ify = require('es6ify'),
+	ngminify = require('browserify-ngmin'),
+	bulkify = require('bulkify'),
+	uglifyify = require('uglifyify'),
+	brfs = require('brfs');
+
+// Modules
+var serve = require('./serve');
+
+// Configuration
+var package = require('./package.json');
+var paths = require('./gulp/paths');
+
+var filterTransform = require('filter-transform');
+
+// Global variables
 var childProcess = null;
 var args = process.argv.slice(2);
+
+require('toml-require').install();
 
 /**
  * Gulp Taks
  */
 
+gulp.task('build:scripts:vendor:min', function() {
+	return gulp.src(paths.scripts.inputDeps)
+		.pipe(plg.plumber())
+		.pipe(plg.tap(function (file, t) {
+			var appConfig = toml.parse(file.contents);
+			var dependencies = [];
 
-// process angular.js applications without their 3rd party dependencies
-// here we apply such special stuff as ng annotate, traceur - etc
-// i.e. build steps specific to our code
+			for(var i = 0; i < appConfig.application.dependencies.length; i++) {
+				var resolvedFileOriginal = paths.scripts.inputAppsFolder + appConfig.application.dependencies[i];
 
-gulp.task('build:apps', ['clean:dist', 'lint:scripts'], function() {
-	var prodPipeline = lazypipe()
-		.pipe(uglify)
-		.pipe(tap, function (file, t) {
-			appsCacheMin[file.relative] = file.contents;
-		});
+				if (fs.existsSync(resolvedFileOriginal)) {
+					var resolvedFile = resolvedFileOriginal.replace('.js', '.min.js');
 
-	return gulp.src(paths.scripts.inputApps)
-		.pipe(include())
-		.pipe(traceur())
-		.pipe(ngAnnotate())
-		.pipe(tap(function (file, t) {
-			appsCache[file.relative] = file.contents;
-		}))
-		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
-});
-
-gulp.task('build:scripts', ['clean:dist', 'lint:scripts', 'build:apps'], function() {
-	var prodPipeline = lazypipe()
-		.pipe(plg.gzip)
-		.pipe(gulp.dest, paths.scripts.output);
-
-	return gulp.src(paths.scripts.input)
-		.pipe(plumber())
-		.pipe(plg.replace(/require "(.*).js"/g, function(match, p1, p2, p3, offset, string) {
-			var file = p1 + (config.isProduction ? '.min.js' : '.js');
-			var resolvedFile = path.resolve(__dirname, path.dirname(paths.scripts.input), file);
-			if (fs.existsSync(resolvedFile))
-				return 'require "' + file + '"';
-
-			if (config.isProduction) {
-				file = p1 + '.js';
-				resolvedFile = path.resolve(__dirname, path.dirname(paths.scripts.input), file);
-				if (fs.existsSync(resolvedFile))
-					return 'require "' + file + '"';
+					if (!fs.existsSync(resolvedFile) && !fs.existsSync(path.resolve(__dirname, paths.scripts.cacheOutput, path.basename(resolvedFileOriginal)))) {
+						dependencies.push(resolvedFileOriginal);
+					}
+				}
 			}
 
-			return 'console.error("Cannot find angular.js include \\"' + file + '\\"!")';
+			return gulp.src(dependencies)
+				.pipe(plg.plumber())
+				.pipe(plg.sourcemaps.init())
+				.pipe(plg.ngAnnotate())
+				.pipe(plg.uglify())
+				.pipe(plg.sourcemaps.write('.'))
+				.pipe(gulp.dest(paths.scripts.cacheOutput));
 		}))
-		.pipe(include())
-		.pipe(plg.replace(/\/\/\s*=\s*require-application "(.*).js"/g, function(match, p1, p2, p3, offset, string) {
-			var key = p1 + '.js';
-			var cache = config.isProduction ? appsCacheMin : appsCache;
+		.pipe(gulp.dest(paths.scripts.output));
+});
 
-			if (!cache[key])
-				return 'console.error("Cannot find angular.js application \\"' + key + '\\"!")';
-			return cache[key];
+gulp.task('build:scripts:core', ['clean:dist'], function() {
+	var prodPipeline = lazypipe()
+		.pipe(plg.uglify);
+
+	return gulp.src(paths.scripts.input)
+		.pipe(plg.plumber())
+		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.noop())
+		.pipe(plg.traceur())
+		.pipe(config.isProduction ? prodPipeline() : plg.util.noop())
+		.pipe(config.isDebugable ? plg.sourcemaps.write('.', {sourceMappingURLPrefix: '/js/'}) : plg.util.noop())
+		.pipe(gulp.dest(paths.scripts.output));
+});
+
+gulp.task('build:scripts:vendor', ['clean:dist', 'build:scripts:vendor:min', 'lint:scripts', 'build:scripts:core'], function() {
+	return gulp.src(paths.scripts.inputDeps)
+		.pipe(plg.plumber())
+		.pipe(plg.tap(function (file, t) {
+			var appConfig = toml.parse(file.contents);
+			var dependencies = [];
+
+			for(var i = 0; i < appConfig.application.dependencies.length; i++) {
+				var resolvedFileOriginal = paths.scripts.inputAppsFolder + appConfig.application.dependencies[i];
+
+				var resolvedFile = '';
+				if (config.isProduction) {
+					resolvedFile = resolvedFileOriginal.replace('.js', '.min.js');
+
+					if (!fs.existsSync(resolvedFile)) {
+						resolvedFile = path.resolve(__dirname, paths.scripts.cacheOutput, path.basename(resolvedFileOriginal));
+
+						if (fs.existsSync(resolvedFile)) {
+							console.log('Took minified version for vendor library from cache: ', resolvedFile);
+						}
+					}
+
+					if (!fs.existsSync(resolvedFile)) {
+						console.log('Cannot find minified version for vendor library: ', appConfig.application.dependencies[i]);
+						resolvedFile = resolvedFileOriginal;
+					}
+				} else resolvedFile = resolvedFileOriginal;
+
+				if (!fs.existsSync(resolvedFile))
+					throw new Error('Cannot find vendor library: "' + appConfig.application.dependencies[i] + '"');
+
+				dependencies.push(resolvedFile);
+			}
+
+			var newName = file.relative.replace('.toml', '-vendor.js');
+
+			return gulp.src(dependencies)
+				.pipe(plg.plumber())
+				.pipe(plg.sourcemaps.init())
+				.pipe(plg.concat(newName))
+				.pipe(plg.sourcemaps.write('.', {sourceMappingURLPrefix: '/js/'}))
+				.pipe(gulp.dest(paths.scripts.output));
 		}))
-		//.pipe(header(config.banner.full, { package : package }))
-		.pipe(gulp.dest(paths.scripts.output))
-		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
+		.pipe(gulp.dest(paths.scripts.output));
+});
+
+var browserifyBundle = function(filename) {
+	var basename = path.basename(filename);
+
+	return gulp.src(filename, {read: false})
+		.pipe(plg.tap(function (file){
+			var d = domain.create();
+
+			d.on("error", function(err) {
+				utils.logGulpError('Browserify compile error:', file.path, err);
+			});
+
+			var uglifyifyTransformed = filterTransform(
+				function(file) {
+					return file.indexOf('traceur-runtime') < 0;
+				},
+				uglifyify);
+
+			var ownCodebaseTransform = function(transform) {
+				return filterTransform(
+					function(file) {
+						return file.indexOf(path.resolve(__dirname, paths.scripts.inputFolder)) > -1;
+					},
+					transform);
+			};
+
+			d.run(function (){
+				var browserifyPipeline = browserify(file.path, {
+					basedir: __dirname,
+					debug: config.isDebugable
+				})
+					.add(es6ify.runtime)
+					.transform(ownCodebaseTransform(es6ify))
+					.transform(ownCodebaseTransform(bulkify))
+					.transform(ownCodebaseTransform(brfs));
+
+				if (config.isProduction) {
+					browserifyPipeline = browserifyPipeline
+						.transform(ownCodebaseTransform(ngminify))
+						.transform(uglifyifyTransformed);
+				}
+
+				file.contents = browserifyPipeline
+					.bundle();
+			});
+		}))
+		.pipe(plg.streamify(plg.concat(basename)))
+		.pipe(gulp.dest(paths.scripts.output));
+};
+
+var scriptBuildSteps = [];
+
+paths.scripts.inputApps.forEach(function(appScript){
+	var name = 'build:scripts-' + (scriptBuildSteps.length + 1);
+
+	gulp.task(name, ['clean:dist', 'lint:scripts', 'build:translations', 'build:scripts:vendor'], function() {
+		return browserifyBundle(appScript);
+	});
+	scriptBuildSteps.push(name);
 });
 
 // Lint scripts
 gulp.task('lint:scripts', function () {
 	return gulp.src(paths.scripts.inputAll)
-		.pipe(plumber())
-		.pipe(jshint({
-			esnext: true,
-			noyield: true
+		.pipe(plg.plumber())
+		.pipe(plg.cached('lint:scripts'))
+		.pipe(plg.tap(function(file, t){
+			console.log('Linting: "' + file.relative + '" ...');
 		}))
-		.pipe(jshint.reporter(jshintStylish))
-		.pipe(jshint.reporter('fail'));
+		.pipe(plg.jshint({
+			esnext: true,
+			noyield: true,
+			'-W002': false,
+			'-W014': false
+		}))
+		.pipe(plg.jshint.reporter(plg.jshintStylish))
+		.pipe(plg.jshint.reporter('fail'));
 });
 
 // Process, lint, and minify less files
@@ -128,194 +225,152 @@ gulp.task('build:styles', ['clean:dist'], function() {
 	var prodPipeline = lazypipe()
 		.pipe(plg.minifyCss, {
 			keepSpecialComments: 0
-		})
-		//.pipe(header, config.banner.min, { package : package })
-		.pipe(rename, { suffix: '.min' })
+		});
+
+	if (config.isDebugable) {
+		prodPipeline = prodPipeline
+			.pipe(plg.sourcemaps.write, '.', {sourceMappingURLPrefix: '/css/'});
+	}
+
+	prodPipeline = prodPipeline
 		.pipe(gulp.dest, paths.styles.output)
+		.pipe(plg.ignore.exclude, '*.map')
 		.pipe(plg.gzip)
 		.pipe(gulp.dest, paths.styles.output);
 
 	return gulp.src(paths.styles.input)
-		.pipe(plumber())
-		.pipe(less())
-		.pipe(flatten())
+		.pipe(plg.plumber())
+		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.noop())
+		.pipe(plg.less())
 		.pipe(plg.autoprefixer('last 2 version', '> 1%'))
-		//.pipe(header(config.banner.full, { package : package }))
-		.pipe(gulp.dest(paths.styles.output))
+		.pipe(config.isDebugable && !config.isProduction ? plg.sourcemaps.write('.', {sourceMappingURLPrefix: '/css/'}) : plg.util.noop())
+		.pipe(!config.isProduction ? gulp.dest(paths.styles.output) : plg.util.noop())
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
-});
-
-// Generate SVG sprites
-gulp.task('build:svgs', ['clean:dist'], function () {
-	return gulp.src(paths.svgs.input)
-		.pipe(plumber())
-		.pipe(tap(function (file, t) {
-			if ( file.isDirectory() ) {
-				var name = file.relative + '.svg';
-				return gulp.src(file.path + '/*.svg')
-					.pipe(svgmin())
-					.pipe(svgstore({
-						fileName: name,
-						prefix: 'icon-',
-						inlineSvg: true
-					}))
-					.pipe(gulp.dest(paths.svgs.output));
-			}
-		}))
-		.pipe(svgmin())
-		.pipe(svgstore({
-			fileName: 'icons.svg',
-			prefix: 'icon-',
-			inlineSvg: true
-		}))
-		.pipe(gulp.dest(paths.svgs.output));
 });
 
 // Copy static files into output folder
 gulp.task('copy:vendor', ['clean:dist'], function() {
-	return gulp.src(paths.vendor.input)
-		.pipe(plumber())
+	return gulp.src(paths.vendor.input, {read: false})
+		.pipe(plg.plumber())
+		.pipe(plg.tap(function (file, t) {
+			if (file.path.indexOf('min.js') < 0) {
+				if (config.isProduction) {
+					try {
+						var minifiedVersion = file.path.replace('.js', '.min.js');
+						file.contents = fs.readFileSync(minifiedVersion);
+					} catch (err) {
+						file.contents = fs.readFileSync(file.path);
+					}
+				} else
+					file.contents = fs.readFileSync(file.path);
+			}
+		}))
 		.pipe(gulp.dest(paths.vendor.output));
 });
 
 // Copy images into output folder
-gulp.task('copy:imgs', ['clean:dist'], function() {
+gulp.task('copy:images', ['clean:dist'], function() {
 	return gulp.src(paths.img.input)
-		.pipe(plumber())
+		.pipe(plg.plumber())
 		.pipe(gulp.dest(paths.img.output));
 });
 
 // Copy fonts into output folder
 gulp.task('copy:fonts', ['clean:dist'], function() {
 	return gulp.src(paths.fonts.input)
-		.pipe(plumber())
+		.pipe(plg.plumber())
 		.pipe(gulp.dest(paths.fonts.output));
 });
 
 // Copy static files into output folder
 gulp.task('copy:static', ['clean:dist'], function() {
 	return gulp.src(paths.staticFiles)
-		.pipe(plumber())
+		.pipe(plg.plumber())
 		.pipe(gulp.dest(paths.output));
 });
 
-// Remove prexisting content from output and test folders
-gulp.task('clean:dist', function () {
-	del.sync([
-		paths.output + '**/*',
-		paths.test.coverage,
-		paths.test.results
-	]);
+// Build translation files(toml -> json)
+gulp.task('build:translations', ['clean:dist'], function() {
+	return gulp.src(paths.translations.input)
+		.pipe(plg.plumber())
+		.pipe(plg.toml({to: JSON.stringify, ext: '.json'}))
+		.pipe(gulp.dest(paths.translations.output));
 });
 
-// Run unit tests
-gulp.task('test:scripts', function() {
-	return gulp.src([paths.test.input].concat([paths.test.spec]))
-		.pipe(plumber())
-		.pipe(karma({ configFile: paths.test.karma }))
-		.on('error', function(err) { throw err; });
-});
-
-// Generate documentation
-gulp.task('build:docs', ['compile', 'clean:docs'], function() {
-	return gulp.src(paths.docs.input)
-		.pipe(plumber())
-		.pipe(fileinclude({
-			prefix: '@@',
-			basepath: '@file'
-		}))
-		.pipe(tap(function (file, t) {
-			if ( /\.md|\.markdown/.test(file.path) ) {
-				return t.through(markdown);
-			}
-		}))
-		.pipe(header(fs.readFileSync(paths.docs.templates + '/_header.html', 'utf8')))
-		.pipe(footer(fs.readFileSync(paths.docs.templates + '/_footer.html', 'utf8')))
-		.pipe(gulp.dest(paths.docs.output));
-});
-
-// Copy distribution files to docs
-gulp.task('copy:dist', ['compile', 'clean:docs'], function() {
-	return gulp.src(paths.output + '/**')
-		.pipe(plumber())
-		.pipe(gulp.dest(paths.docs.output + '/dist'));
-});
-
-// Copy documentation assets to docs
-gulp.task('copy:assets', ['clean:docs'], function() {
-	return gulp.src(paths.docs.assets)
-		.pipe(plumber())
-		.pipe(gulp.dest(paths.docs.output + '/assets'));
-});
-
-// Remove prexisting content from docs folder
-gulp.task('clean:docs', function () {
-	return del.sync(paths.docs.output);
-});
-
-// Reload gulp on file change
-gulp.task('gulp-reload', function() {
-	if (childProcess)
-		childProcess.kill();
-
-	var target = (args[0] ? args[0] : 'default') + '-reload';
-	childProcess = spawn('gulp', [target], {stdio: 'inherit'});
-});
-
-var createHtmlPipeline = function (input, output) {
-	var prodPipeline =  lazypipe()
+var prodHtmlPipeline  = function (input, output) {
+	return lazypipe()
 		.pipe(plg.minifyHtml, {
 			empty: true
 		})
-		.pipe(rename, { suffix: '.min' })
+		.pipe(plg.rename, { suffix: '.min' })
 		.pipe(gulp.dest, output)
 		.pipe(plg.gzip)
 		.pipe(gulp.dest, output);
+};
 
+var createHtmlPipeline = function (input, output) {
 	return gulp.src(input)
-		.pipe(plumber())
-		.pipe(fileinclude())
+		.pipe(plg.plumber())
+		.pipe(plg.fileInclude())
 		.pipe(gulp.dest(output))
-		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
+		.pipe(config.isProduction ? prodHtmlPipeline(input, output)() : plg.util.noop());
 };
 
 var createJadePipeline = function (input, output) {
-	var prodPipeline =  lazypipe()
-		.pipe(plg.minifyHtml, {
-			empty: true
-		})
-		.pipe(rename, { suffix: '.min' })
-		.pipe(gulp.dest, output)
-		.pipe(plg.gzip)
-		.pipe(gulp.dest, output);
-
 	return gulp.src(input)
-		.pipe(plumber())
+		.pipe(plg.plumber())
+		.pipe(plg.ignore(function(file){
+			var basename = path.basename(file.relative);
+			return basename.indexOf('_') == 0;
+		}))
 		.pipe(plg.jade())
-		.pipe(fileinclude())
 		.pipe(gulp.dest(output))
-		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
+		.pipe(config.isProduction ? prodHtmlPipeline(input, output)() : plg.util.noop());
 };
 
-gulp.task('livereload', ['compile'], function() {
-	return gulp.src(paths.main_html.input)
-		.pipe(plg.livereload());
-});
-
-gulp.task('build:html', function() {
+// Build primary html files
+gulp.task('build:html', ['clean:dist'], function() {
 	return createHtmlPipeline(paths.main_html.input, paths.main_html.output);
 });
 
-gulp.task('build:jade', function() {
+// Build primary jade files
+gulp.task('build:jade', ['clean:dist'], function() {
 	return createJadePipeline(paths.main_html.inputJade, paths.main_html.output);
 });
 
-gulp.task('build:partials', function() {
+// Build partials html files
+gulp.task('build:partials', ['clean:dist'], function() {
 	return createHtmlPipeline(paths.partials.input, paths.partials.output);
 });
 
-gulp.task('build:partials-jade', function() {
+// Build partials jade files
+gulp.task('build:partials-jade', ['clean:dist'], function() {
 	return createJadePipeline(paths.partials.inputJade, paths.partials.output);
+});
+
+// Remove pre-existing content from output and test folders
+gulp.task('clean:dist', function () {
+	del.sync([
+		paths.output + '**/*'
+	]);
+});
+
+// Run some unit tests to check key logic
+gulp.task('tests', function() {
+	return gulp.src(paths.tests.unit.input)
+		.pipe(plg.traceur())
+		.pipe(gulp.dest(os.tmpdir()))
+		.pipe(plg.jasmine());
+});
+
+// Automatically install all bower dependencies
+gulp.task('bower', function() {
+	return plg.bower();
+});
+
+gulp.task('livereload', ['compile'], function() {
+	return gulp.src(paths.main_html.inputJade)
+		.pipe(plg.livereload());
 });
 
 /**
@@ -326,40 +381,30 @@ gulp.task('set-production', function () {
 	config.isProduction = true;
 });
 
-var compileTasks = [
-	'clean:dist',
-	'build:html',
-	'build:jade',
-	'build:partials',
-	'build:partials-jade',
-	'copy:static',
-	'copy:imgs',
-	'copy:fonts',
-	'copy:vendor',
-	'build:scripts',
-	// 'build:svgs',
-	'build:styles'
-];
+var compileSteps = ['clean:dist',
+		'build:html',
+		'build:jade',
+		'build:partials',
+		'build:partials-jade',
+		'build:translations',
+		'copy:static',
+		'copy:images',
+		'copy:fonts',
+		'copy:vendor',
+		'build:styles'
+	]
+	.concat(scriptBuildSteps);
 
 // Compile files
-gulp.task('compile', compileTasks);
-
-// Generate documentation
- gulp.task('docs', [
-// 	'clean:docs',
-// 	'build:docs',
-// 	'copy:dist',
-// 	'copy:assets'
-]);
-
-// Generate documentation
-// gulp.task('tests', [
-// 	'test:scripts'
-// ]);
+gulp.task('compile', compileSteps);
 
 gulp.task('default', [
-	'compile'
+	'bower',
+	'tests'
 ], function() {
+	// we can start compile only after we do have bower dependencies
+	gulp.start('compile');
+
 	// warning:
 	// we do this only once and only in the first gulp process(can be up to 2 due to gulpfile.js reloading)
 	// if we do reload gulp later all watching tasks will be handled by the first process anyway
@@ -369,9 +414,6 @@ gulp.task('default', [
 		gulp.start('compile');
 		gulp.start('livereload');
 	});
-
-	// watch for gulpfile changes
-	gulp.watch('gulpfile.js', ['gulp-reload']);
 
 	// start livereload server
 	plg.livereload.listen({
@@ -383,16 +425,23 @@ gulp.task('default', [
 	serve();
 });
 
-gulp.task('default-reload', [
-	'compile'
-]);
+gulp.task('serve', function () {
+	serve();
+});
+
+gulp.task('develop', [
+	'bower',
+	'tests'
+], function() {
+	// we can start compile only after we do have bower dependencies
+	gulp.start('compile');
+});
 
 gulp.task('production', [
 	'set-production',
-	'compile'
-]);
-
-gulp.task('production-reload', [
-	'set-production',
-	'compile'
-]);
+	'bower',
+	'tests'
+], function() {
+	// we can start compile only after we do have bower dependencies
+	gulp.start('compile');
+});

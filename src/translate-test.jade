@@ -1,0 +1,14 @@
+html(lang="en", ng-app="AppLavaboomLogin")
+	head
+		link(href="css/lavaboom.css", rel="stylesheet")
+		script(src='js/appLavaboomLogin-vendor.js')
+		script(src='js/appLavaboomLogin.js')
+	body
+		div.cryptotest-box(ng-controller="CtrlTestTranslate")
+			div.row
+				div.col-md-6(ng-bind="'TEST.STR' | translate")
+			div.row
+				div.col-md-3
+					a(href="#", ng-click="switchLanguage('en')") language EN
+				div.col-md-3
+					a(href="#", ng-click="switchLanguage('de')") language DE
