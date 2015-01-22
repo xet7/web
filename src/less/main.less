@@ -30,11 +30,14 @@
 		top: 0;
 	}
 	.main-settings-view{
-		padding-top: @filter-height;
+		padding-top: @filter-height + 30px;
 		.pos-rel();
 		height: 100%;
 		> .settings-panel{
+			position: relative;
 			height: 100%;
+			overflow: auto;
+			padding-bottom: @filter-height + 30px 0;
 		}
 	}
 }
