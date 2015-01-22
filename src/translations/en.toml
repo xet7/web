@@ -19,6 +19,15 @@
 	LB_PRIVATE_KEY = "Private Key"
     LB_PUBLIC_KEY = "Public Key"
 
+[LOADER]
+	LB_INITIALIZATION_FAILED = "Initialization failed..."
+	LB_INITIALIZING_OPENPGP = "Initializing openpgp.js..."
+	LB_AUTHENTICATING = "Authenticating..."
+	LB_LOADING_EMAILS = "Loading emails..."
+	LB_DECRYPTING = "Decrypting your inbox..."
+	LB_SUCCESS = "Done!"
+	LB_BYE = "See you soon ;)"
+
 [LOGIN.SECURE_USERNAME]
 	TITLE = "Secure your own Lavaboom username"
     LNK_INVITE_QUESTION = "Got an invite mail already?"
@@ -99,11 +108,6 @@
     BTN_BACKUP_NOW = "Back up my key now"
 	BTN_BACKUP_LATER = "Do Back up later"
 
-[DECRYPTING_INBOX]
-	LB_LOADING = "Loading mailbox..."
-	LB_DECRYPTING = "Decrypting your Inbox..."
-	LB_SUCCESS = "Done..."
-
 [LOGIN.SIGNUP]
 	HEADER = "Get your own secure email account!"
  	LOGIN = "Log In"
@@ -121,3 +125,9 @@
 
 # Specific error message for Lavaboom REST API
 [LAVABOOM.API.ERROR.PATH]
+
+[MAIN.NAV]
+	LB_COMPOSE = "Compose"
+	LB_CONTACTS = "Contacts"
+	LB_SETTINGS = "Settings"
+	LB_LOGOUT = "Logout"

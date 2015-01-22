@@ -7,7 +7,7 @@ div#left-panel.ng-cloak
 			li.compose
 				a(href="#", ui-sref-active="active", ui-sref="main.compose")
 					span.icon-compose
-					span.action Compose
+					span.action {{'MAIN.NAV.LB_COMPOSE' | translate}}
 			li(ui-sref-active="active", ng-repeat="(name, label) in labels track by label.id")
 				a(href="#", ui-sref="main.label({labelName: label.name})")
 					span.icon-inbox
@@ -17,13 +17,13 @@ div#left-panel.ng-cloak
 			li
 				a(href="#")
 					span.icon-head
-					span.action Contacts
+					span.action {{'MAIN.NAV.LB_CONTACTS' | translate}}
 			li(ui-sref-active="active")
 				a(href="#", ui-sref="main.settings.preferences")
 					span.icon-cog
-					span.action Settings
+					span.action {{'MAIN.NAV.LB_SETTINGS' | translate}}
 			li.logout
 				small &#169; Lavaboom 2014
 				a(href="#", ng-click="logout()")
 					span.icon-power
-					span.action Logout
+					span.action {{'MAIN.NAV.LB_LOGOUT' | translate}}
