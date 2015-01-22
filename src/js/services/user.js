@@ -1,7 +1,10 @@
 var Buffer = require('buffer/').Buffer;
 
-angular.module(primaryApplicationName).service('user', function($q, $rootScope, $state, $timeout, $window, consts, apiProxy, LavaboomAPI, co, app, crypto, loader) {
+angular.module(primaryApplicationName).service('user', function($q, $rootScope, $state, $timeout, $window, $translate, consts, apiProxy, LavaboomAPI, co, app, crypto, loader) {
 	var self = this;
+
+	const
+		LB_BYE = $translate.instant('LOADER.LB_BYE');
 
 	this.name = '';
 	this.email = '';
@@ -109,6 +112,6 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 		loader.resetProgress();
 		loader.showLoader(true);
-		loader.loadLoginApplication({lbDone: 'See you soon :)'});
+		loader.loadLoginApplication({lbDone: LB_BYE});
 	};
 });
