@@ -125,3 +125,9 @@
 
 # Specific error message for Lavaboom REST API
 [LAVABOOM.API.ERROR.PATH]
+
+[MAIN.NAV]
+	LB_COMPOSE = "Compose"
+	LB_CONTACTS = "Contacts"
+	LB_SETTINGS = "Settings"
+	LB_LOGOUT = "Logout"
