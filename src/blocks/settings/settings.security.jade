@@ -1,20 +1,21 @@
 .row.settings-panel.ng-cloak(ng-controller="CtrlSettingsSecurity")
 	form.settings.col-xs-12.col-xs-offset-6
 		.form-wrap
-			h4 Password
+			h4 Change Password
 			ul.list-group
 				li.list-group-item
 					.text-control
-						label Account Password
+						label Current Password
 						input.form-control(type='password', ng-model="form.oldPassword")
 				li.list-group-item
 					.text-control
 						label New Password
 						input.form-control(type='password', ng-model="form.password")
-				li.list-group-item
 					.text-control
 						label Confirm Password
 						input.form-control(type='password', ng-model="form.passwordRepeat")
+					.text-control.btn-control
+						.btn.btn-block.btn-primary Confirm
 				li.list-group-item
 					.text-control
 						label Passphrase
