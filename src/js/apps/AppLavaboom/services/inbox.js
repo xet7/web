@@ -43,6 +43,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			var res = yield apiProxy(['labels', 'list']);
 
 			self.labels = res.body.labels.reduce((a, c) => {
+				c.iconClass = `icon-${c.name.toLowerCase()}`;
 				a[c.name] = c;
 				return a;
 			}, {});
