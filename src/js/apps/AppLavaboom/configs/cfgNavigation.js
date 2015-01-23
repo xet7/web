@@ -14,6 +14,10 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 			url: '/'
 		})
 
+		.state('modal', {
+			url: '/modal'
+		})
+
 		.state('main', {
 			abstract: true,
 

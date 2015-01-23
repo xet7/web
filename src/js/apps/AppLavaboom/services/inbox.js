@@ -38,7 +38,6 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	};
 
-
 	this.initialize = () => {
 		return co(function *(){
 			var res = yield apiProxy(['labels', 'list']);
@@ -75,9 +74,11 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 					self.decryptingTotal = res.body.emails.length;
 
 					self.emails = res.body.emails.map(e => {
+						var isPreviewAvailable = !!e.preview;
+
 						var email = {
 							id: e.id,
-							isEncrypted: e.body.pgp_fingerprints.length > 0 || e.preview.pgp_fingerprints.length > 0,
+							isEncrypted: e.body.pgp_fingerprints.length > 0 || (e.preview && e.preview.pgp_fingerprints.length) > 0,
 							subject: e.name,
 							date: e.date_created,
 							from: e.from,
@@ -88,24 +89,36 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 							attachments: e.attachments
 						};
 
-						decode(e.preview.raw, e.preview.pgp_fingerprints)
-							.then(value => {
-								email.preview = value;
-								email.previewState = 'ok';
-							})
-							.catch(err => {
-								email.preview = err.message;
-								email.previewState = 'error';
-							})
-							.finally(decodeFinished);
+						if (isPreviewAvailable)
+							decode(e.preview.raw, e.preview.pgp_fingerprints)
+								.then(value => {
+									email.preview = value;
+									email.previewState = 'ok';
+								})
+								.catch(err => {
+									email.preview = err.message;
+									email.previewState = 'error';
+								})
+								.finally(decodeFinished);
+
 						decode(e.body.raw, e.body.pgp_fingerprints)
 							.then(value => {
 								email.body = value;
 								email.bodyState = 'ok';
+
+								if (!isPreviewAvailable) {
+									email.preview = value;
+									email.previewState = 'ok';
+								}
 							})
 							.catch(err => {
 								email.body = err.message;
 								email.bodyState = 'error';
+
+								if (!isPreviewAvailable) {
+									email.preview = err.message;
+									email.previewState = 'error';
+								}
 							})
 							.finally(decodeFinished);
 
