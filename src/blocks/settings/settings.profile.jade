@@ -1,12 +1,12 @@
 .row.settings-panel.ng-cloak(ng-controller="ctrlSettingsPersonal")
 	form.settings.col-xs-12.col-xs-offset-6
-		h4 Picture
-		.row.settings-row
-			.col-xs-7
-				img.img-responsive(src='img/avatar.svg')
-			.col-xs-17
-				p.profile-description.text-muted
-					| Your picture is only shown in mails to recipents in your contacts. It‘s only purpose is to make your messages more personal. It is not used for anything else.
+		//- h4 Picture
+		//- .row.settings-row
+		//- 	.col-xs-7
+		//- 		img.img-responsive(src='img/avatar.svg')
+		//- 	.col-xs-17
+		//- 		p.profile-description.text-muted
+		//- 			| Your picture is only shown in mails to recipents in your contacts. It‘s only purpose is to make your messages more personal. It is not used for anything else.
 		h4 Name
 		ul.list-group
 			li.list-group-item
@@ -32,55 +32,17 @@
 					label.switch
 						input(type='checkbox', checked='')
 						i
-			li.list-group-item
-				.dropdown-control
-					label Lavaboom (Standard)
-					ui-select(ng-model='items.selected', search-enabled='false')
-						ui-select-match {{$select.selected.name}}
-						ui-select-choices(repeat='item in [{name: "day/month/year"}, {name:"month/date/year"}, {name:"year/month/date"}]')
-							span(ng-click='item.selected=item', ng-bind-html='item.name')
+			
 			li.list-group-item
 				.text-control
 					.signature
-						| Felix von Looz
-						br
-						| 		    				Head of Design, Lavaboom
-						br
-						| 		    				fvl@lavaboom.com
-						br
-						img(src='img/Lavaboom-logo-full.svg')
-						br
-						| 		    				P.s. Still reading? Hurry and get your secure email at lavaboom.com
+						div(text-angular="", ng-model="signature")
 					span.icon-edit
-			ui-select-match {{$select.selected.name}}
-			ui-select-choices(repeat='item in [{name: "day/month/year"}, {name:"month/date/year"}, {name:"year/month/date"}]')
-				span(ng-click='item.selected=item', ng-bind-html='item.name')
-li.list-group-item
-	.text-control
-		.signature
-			| Felix von Looz
-			br
-			|                 Head of Design, Lavaboom
-			br
-			|                 fvl@lavaboom.com
-			br
-			img(src='img/Lavaboom-logo-full.svg')
-			br
-			|                 P.s. Still reading? Hurry and get your secure email at lavaboom.com
-		span.icon-edit
-h4 Newsletter
-ul.list-group
-	li.list-group-item
-		label Send me News about Lavaboom
-		.control
-			label.switch
-				input(type='checkbox')
-				i
-h4 Newsletter
-ul.list-group
-	li.list-group-item
-		label Send me News about Lavaboom
-		.control
-			label.switch
-				input(type='checkbox')
-				i
+			h4 Newsletter
+			ul.list-group
+				li.list-group-item
+					label Send me News about Lavaboom
+					.control
+						label.switch
+							input(type='checkbox')
+							i

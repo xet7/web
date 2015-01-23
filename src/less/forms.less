@@ -60,6 +60,12 @@
 form.settings{
   position: relative;
   height: 100%;
+
+  .switch{
+    position: relative;
+    top: 13px;
+  }
+
   .form-wrap{
      position: relative;
 
@@ -120,6 +126,9 @@ form.settings{
     .text-control{
       margin: -10px -15px;
       .pos-rel();
+      &.btn-control{
+        padding: 10px;
+      }
       label{
         .pos-abs();
         .z1();
@@ -160,7 +169,20 @@ form.settings{
       }
     }
     .signature{
-      padding: 10px 45px 10px 15px;
+      // padding: 10px 45px 10px 15px;
+      .ta-toolbar{
+        display:none;
+      }
+      .ta-bind{
+        box-shadow: none;
+        border: 0;
+        height: 200px;
+      }
+
+      .ta-scroll-window.form-control{
+        box-shadow: none;
+        border: 0;
+      }
     }
     .dropdown-control{
       margin: -10px -15px;
@@ -206,9 +228,9 @@ form.settings{
         height: auto;
         width: auto;
         .pos-rel();
-        left: -9px;
-        top: -1px;
-        font-size: 25px;
+        left: -3px;
+        top: 3px;
+        font-size: 20px;
         line-height: 28px;
         &:before{
           content: "\76";
@@ -252,6 +274,10 @@ form.settings{
         padding-left: 50%;
         min-height: 42px;
         line-height: 42px;
+      }
+
+      .ta-toolbar{
+        display:none;
       }
 
       .ui-select-bootstrap > .ui-select-choices{
@@ -306,6 +332,7 @@ form.settings{
 		padding-left: 16px;
 		color: @lava-text;
 		font-weight: 200;
+    margin-top: 2em;
 	}
 }
 
