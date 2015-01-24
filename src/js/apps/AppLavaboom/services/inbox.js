@@ -56,16 +56,24 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 				return a;
 			}, {});
 
-			self.threadsByLabel = yield Object.keys(self.labels).reduce((a, labelName) => {
-				a[labelName] = co(function *(){
-					return (yield apiProxy(['threads', 'list'], {label: self.labels[labelName].id})).body.threads;
-				});
+			self.threadsByLabel = yield co.reduceKeys(self.labels, function *(a, label) {
+				var threads = (yield apiProxy(['threads', 'list'], {label: label.id})).body.threads;
+
+				a[label.name] = yield co.reduce(threads, function *(a, thread) {
+					thread.headerEmail = (yield apiProxy(['emails', 'get'], thread.emails[0])).body.email;
+					a[thread.id] = thread;
+					return a;
+				}, {});
+
 				return a;
 			}, {});
+
+			console.log('self.threadsByLabel', self.threadsByLabel);
 
 			$rootScope.$broadcast('inbox-labels', self.labels);
 		});
 	};
+
 
 	this.requestList = (labelName) => {
 		var labelId = null;
