@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, co, apiProxy, crypto, cryptoKeys) {
+angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, $timeout, co, apiProxy, LavaboomAPI, crypto, cryptoKeys) {
 	var self = this;
 
 	this.emails = [];
@@ -8,6 +8,19 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.decryptingCurrent = 0;
 	this.isDecrypted = false;
 	this.labels = [];
+	this.threadsByLabel = {
+
+	};
+
+	$timeout(() => {
+		LavaboomAPI.subscribe('receipt', (msg) => {
+			console.log('receipt', msg);
+		});
+
+		LavaboomAPI.subscribe('delivery', (msg) => {
+			console.log('delivery', msg);
+		});
+	}, 3000);
 
 	var decode = (body, pgpFingerprints, defaultBody = '') => {
 		var deferred = $q.defer();
@@ -42,9 +55,16 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		return co(function *(){
 			var res = yield apiProxy(['labels', 'list']);
 
-			self.labels = res.body.labels.reduce((a, c) => {
-				c.iconClass = `icon-${c.name.toLowerCase()}`;
-				a[c.name] = c;
+			self.labels = res.body.labels.reduce((a, label) => {
+				label.iconClass = `icon-${label.name.toLowerCase()}`;
+				a[label.name] = label;
+				return a;
+			}, {});
+
+			self.threadsByLabel = yield Object.keys(self.labels).reduce((a, labelName) => {
+				a[labelName] = co(function *(){
+					return (yield apiProxy(['threads', 'list'], {label: self.labels[labelName].id})).body.threads;
+				});
 				return a;
 			}, {});
 

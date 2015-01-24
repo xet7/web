@@ -180,30 +180,30 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 	this.decodeByListedFingerprints = (message, fingerprints) => {
 		var deferred = $q.defer();
 
-		console.log('decode', message, 'with', fingerprints);
+		//console.log('decode', message, 'with', fingerprints);
 
 		try {
 			var pgpMessage = openpgp.message.readArmored(message);
 
 			var privateKey = fingerprints.reduce((a, fingerprint) => {
 				var privateKey = keyring.privateKeys.findByFingerprint(fingerprint);
-				console.log('pk1', privateKey ? privateKey.primaryKey.isDecrypted : 'false');
+				//console.log('pk1', privateKey ? privateKey.primaryKey.isDecrypted : 'false');
 
 				if (!privateKey || !privateKey.primaryKey.isDecrypted)
 					privateKey = sessionKeyring.privateKeys.findByFingerprint(fingerprint);
 
-				console.log('pk2', privateKey ? privateKey.primaryKey.isDecrypted : 'false');
+				//console.log('pk2', privateKey ? privateKey.primaryKey.isDecrypted : 'false');
 
 				if (!privateKey || !privateKey.primaryKey.isDecrypted)
 					privateKey = localKeyring.privateKeys.findByFingerprint(fingerprint);
 
-				console.log('pk3', privateKey ? privateKey.primaryKey.isDecrypted : 'false');
+				//console.log('pk3', privateKey ? privateKey.primaryKey.isDecrypted : 'false');
 
 				if (privateKey && privateKey.primaryKey.isDecrypted)
 					return privateKey;
 			}, {});
 
-			console.log('pk found', privateKey);
+			//console.log('pk found', privateKey);
 
 			if (!privateKey)
 				deferred.reject(new Error('No decrypted private key found!'));
