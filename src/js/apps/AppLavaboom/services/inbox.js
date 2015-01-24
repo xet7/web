@@ -22,20 +22,15 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		});
 	}, 3000);
 
-	var decode = (body, pgpFingerprints, defaultBody = '') => {
-		var deferred = $q.defer();
+	var decode = (body, pgpFingerprints, defaultBody = '') => co(function *(){
+		if (!body)
+			return defaultBody;
 
-		if (!body) {
-			deferred.resolve(defaultBody);
-			return deferred.promise;
-		}
 		if (pgpFingerprints.length > 0)
-			return crypto.decodeByListedFingerprints(body, pgpFingerprints);
+			return (yield crypto.decodeByListedFingerprints(body, pgpFingerprints));
 
-		deferred.resolve(body);
-
-		return deferred.promise;
-	};
+		return body;
+	});
 
 	var decodeFinished = () => {
 		self.decryptingCurrent++;

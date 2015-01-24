@@ -1,4 +1,6 @@
-angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $scope, $state, $translate, crypto, cryptoKeys, user, inbox, loader) {
+var chan = require('chan');
+
+angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $scope, $state, $translate, co, crypto, cryptoKeys, user, inbox, loader) {
 	var
 		beforeDecryptingProgress;
 
@@ -12,8 +14,7 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 
 	$scope.isInitialized = false;
 
-	$scope.initializeApplication = () => {
-		var deferred = $q.defer();
+	$scope.initializeApplication = () => co(function *(){
 		try {
 			loader.incProgress(LB_INITIALIZING_OPENPGP, 1);
 
@@ -21,17 +22,17 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 
 			loader.incProgress(LB_AUTHENTICATING, 5);
 
-			user.gatherUserInformation()
-				.then(() => {
-					loader.incProgress(LB_LOADING_EMAILS, 5);
+			yield user.gatherUserInformation();
 
-					inbox.initialize();
-					inbox.requestList('Inbox');
-					cryptoKeys.syncKeys();
+			loader.incProgress(LB_LOADING_EMAILS, 5);
 
-					beforeDecryptingProgress = loader.getProgress();
-				})
-				.catch(error => deferred.reject({message: LB_INITIALIZATION_FAILED, error: error}));
+			inbox.initialize();
+			inbox.requestList('Inbox');
+			cryptoKeys.syncKeys();
+
+			beforeDecryptingProgress = loader.getProgress();
+
+			var decrypted = chan();
 
 			var inboxDecryptStatusListener = $scope.$on('inbox-decrypt-status', (e, status) => {
 				if (status.current < status.total)
@@ -39,18 +40,22 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 				else {
 					inboxDecryptStatusListener();
 
-					$state.go('main.label', {labelName: 'Inbox'}, {reload: true})
-						.then(() => {
-							$scope.isInitialized = true;
-							deferred.resolve({lbDone: LB_SUCCESS});
-						})
-						.catch(error => deferred.reject({message: LB_INITIALIZATION_FAILED, error: error}));
+					try {
+						decrypted($state.go('main.label', {labelName: 'Inbox'}, {reload: true}));
+					} catch (err) {
+						decrypted(err);
+					}
 				}
 			});
-		} catch (error) {
-			deferred.reject({message: LB_INITIALIZATION_FAILED, error: error});
-		}
 
-		return deferred.promise;
-	};
+			var promise = yield decrypted;
+			if (angular.isFunction(promise))
+				yield promise;
+
+			$scope.isInitialized = true;
+			return {lbDone: LB_SUCCESS};
+		} catch (error) {
+			throw {message: LB_INITIALIZATION_FAILED, error: error};
+		}
+	});
 });

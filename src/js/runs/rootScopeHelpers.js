@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).run(($rootScope, $translate, router) => {
+angular.module(primaryApplicationName).run(($rootScope, $translate, router, co) => {
 	$rootScope.$bind = (bindName, bindHandler) => {
 		$rootScope.$on(bindName, bindHandler);
 		bindHandler();

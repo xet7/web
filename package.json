@@ -21,6 +21,7 @@
     "buffer": "^3.0.1",
     "bulk-require": "^0.2.1",
     "bulkify": "^1.0.2",
+    "chan": "^0.6.1",
     "co": "^4.1.0",
     "connect-gzip-static": "^1.0.0",
     "connect-livereload": "^0.5.2",
