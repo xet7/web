@@ -27,7 +27,7 @@
 					.col-xs-16.pack
 						h5(ng-bind="item.sender")
 						p.subject(ng-bind="item.subject")
-						p.summary(ng-bind="item.preview ? item.preview : 'INBOX.NO_PREVIEW_AVAILABLE' | translate")
+						p.summary(ng-bind-html="item.preview ? item.preview : 'INBOX.NO_PREVIEW_AVAILABLE' | translate")
 					.col-xs-5.when
 						span.date.lava-icon-row(ng-bind="item.date | date")
 						br

@@ -1,7 +1,7 @@
-angular.module('AppLavaboom').controller('CtrlCompose', function($scope, contacts) {
-	$scope.$bind('contacts-changed', () => {
-		console.log('compose: contacts-changed, myself', contacts.myself);
+angular.module('AppLavaboom').controller('CtrlCompose', function($scope, contacts, inbox) {
+	$scope.disabled = false;
 
+	$scope.$bind('contacts-changed', () => {
 		$scope.people = contacts.people.concat([contacts.myself]);
 
 		$scope.form = {
@@ -23,17 +23,17 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, contact
 	$scope.clearCC = () => $scope.form.selected.cc = [];
 	$scope.clearBCC = () => $scope.form.selected.bcc = [];
 
+	$scope.send = () => {
+		inbox.send($scope.form.selected.to.map(e => e.email), $scope.form.subject, $scope.form.body);
+	};
+
 	$scope.tagTransform = function (newTag) {
-		var item = {
+		return  {
 			name: newTag,
 			email: newTag.toLowerCase() + '@email.com',
 			sec: 'unknown'
 		};
-
-		return item;
 	};
-
-	$scope.disabled = false;
 
 	$scope.enable = function() {
 		$scope.disabled = false;

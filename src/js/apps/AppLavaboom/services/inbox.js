@@ -146,7 +146,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			console.log(encryptedMessage, publicKey.id);
 
 			apiProxy(['emails', 'create'], {
-				to: [to],
+				to: to,
 				subject: subject,
 				body: encryptedMessage,
 				pgp_fingerprints: [publicKey.id]
