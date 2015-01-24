@@ -7,8 +7,8 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.decryptingTotal = 0;
 	this.decryptingCurrent = 0;
 	this.isDecrypted = false;
-	this.labels = [];
-	this.threadsByLabel = {
+	this.labelsByName = [];
+	this.threadsByLabelName = {
 
 	};
 
@@ -46,34 +46,32 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	};
 
-	this.initialize = () => {
-		return co(function *(){
-			var res = yield apiProxy(['labels', 'list']);
+	this.initialize = () => co(function *(){
+		var labels = (yield apiProxy(['labels', 'list'])).body.labels;
 
-			self.labels = res.body.labels.reduce((a, label) => {
-				label.iconClass = `icon-${label.name.toLowerCase()}`;
-				a[label.name] = label;
+		self.labelsByName = labels.reduce((a, label) => {
+			label.iconClass = `icon-${label.name.toLowerCase()}`;
+			a[label.name] = label;
+			return a;
+		}, {});
+
+		self.threadsByLabelName = yield co.reduce(self.labelsByName, function *(a, label) {
+			var threads = (yield apiProxy(['threads', 'list'], {label: label.id})).body.threads;
+
+			a[label.name] = yield co.reduce(threads, function *(a, thread) {
+				thread.headerEmail = (yield apiProxy(['emails', 'get'], thread.emails[0])).body.email;
+				a[thread.id] = thread;
 				return a;
 			}, {});
 
-			self.threadsByLabel = yield co.reduceKeys(self.labels, function *(a, label) {
-				var threads = (yield apiProxy(['threads', 'list'], {label: label.id})).body.threads;
+			return a;
+		}, {});
 
-				a[label.name] = yield co.reduce(threads, function *(a, thread) {
-					thread.headerEmail = (yield apiProxy(['emails', 'get'], thread.emails[0])).body.email;
-					a[thread.id] = thread;
-					return a;
-				}, {});
+		console.log('self.threadsByLabel', self.threadsByLabelName);
 
-				return a;
-			}, {});
 
-			console.log('self.threadsByLabel', self.threadsByLabel);
-
-			$rootScope.$broadcast('inbox-labels', self.labels);
-		});
-	};
-
+		$rootScope.$broadcast('inbox-labels', self.labels);
+	});
 
 	this.requestList = (labelName) => {
 		var labelId = null;

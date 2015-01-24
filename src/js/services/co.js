@@ -1,7 +1,7 @@
 angular.module(primaryApplicationName).factory('co', function($q, $rootScope, $exceptionHandler) {
 	var createGeneratorProxy = (gen) => function *() {
 		try {
-			return (yield gen);
+			return yield gen;
 		} catch (err) {
 			$exceptionHandler(err);
 
@@ -11,7 +11,7 @@ angular.module(primaryApplicationName).factory('co', function($q, $rootScope, $e
 		}
 	};
 
-	var coWrapper = function (gen) {
+	var co = function (gen) {
 		var deferred = $q.defer();
 
 		coJS(createGeneratorProxy(gen))
@@ -25,37 +25,52 @@ angular.module(primaryApplicationName).factory('co', function($q, $rootScope, $e
 		return deferred.promise;
 	};
 
-	coWrapper.transform = function (gen, transform) {
-		return coWrapper(function *(){
+	co.transform = function (gen, transform) {
+		return co(function *(){
 			return transform(yield gen);
 		});
 	};
 
-	coWrapper.reduce = function (array, reduceGen, init) {
-		if (!array)
-			return init;
-
-		return coWrapper(function *() {
-			for (let i in array) {
-				init = yield reduceGen(init, array[i], i, array);
-			}
-			return init;
-		});
-	};
-
-	coWrapper.reduceKeys = function (object, reduceGen, init) {
+	co.map = function (object, mapGen, init) {
 		if (!object)
 			return init;
 
-		return coWrapper(function *() {
-			for (let i of Object.keys(object)) {
-				init = yield reduceGen(init, object[i], i, object);
+		return co(function *() {
+			var r;
+			if (angular.isArray(object)) {
+				r = [];
+				for (var i = 0; i < object.length; i++) {
+					r[i] = yield mapGen(object[i], i, object);
+				}
+			} else if (angular.isObject(object)) {
+				r = {};
+				for (var k of Object.keys(object)) {
+					r[k] = yield mapGen(object[k], k, object);
+				}
+			}
+			return r;
+		});
+	};
+
+	co.reduce = function (object, reduceGen, init) {
+		if (!object)
+			return init;
+
+		return co(function *() {
+			if (angular.isArray(object)) {
+				for (var i = 0; i < object.length; i++) {
+					init = yield reduceGen(init, object[i], i, object);
+				}
+			} else if (angular.isObject(object)) {
+				for (var k of Object.keys(object)) {
+					init = yield reduceGen(init, object[k], k, object);
+				}
 			}
 			return init;
 		});
 	};
 
-	coWrapper.wrap = function (gen) {
+	co.wrap = function (gen) {
 		var coFn = coJS.wrap(createGeneratorProxy(gen));
 
 		return function () {
@@ -72,5 +87,5 @@ angular.module(primaryApplicationName).factory('co', function($q, $rootScope, $e
 		};
 	};
 
-	return coWrapper;
+	return co;
 });
