@@ -131,3 +131,13 @@
 	LB_CONTACTS = "Contacts"
 	LB_SETTINGS = "Settings"
 	LB_LOGOUT = "Logout"
+
+[MAIN.COMPOSE]
+	LB_TO = "to"
+	LB_CC = "cc"
+	LB_BCC = "bcc"
+	LB_FROM = "from"
+	TITLE_PERSON = "Choose a person"
+	PLC_SELECT_PERSON = "Select person..."
+	LB_EMAIL = "email"
+	LB_SUBJECT = "Subject"
