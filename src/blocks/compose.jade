@@ -22,7 +22,7 @@ div#compose-wrapper
 							small
 								| {{'MAIN.COMPOSE.LB_EMAIL' | translate}}: {{person.email}}
 								span(class="icon-lock sec-{{person.sec}}")
-					span.icon-close.pull-right
+					span.icon-close.pull-right(ng-click="clearTo()")
 			.table-list
 				.cell.label
 					label {{'MAIN.COMPOSE.LB_CC' | translate}}:
@@ -37,7 +37,7 @@ div#compose-wrapper
 							small
 								| {{'MAIN.COMPOSE.LB_EMAIL' | translate}}: {{person.email}}
 								span(class="icon-lock sec-{{person.sec}}")
-					span.icon-close.pull-right
+					span.icon-close.pull-right(ng-click="clearCC()")
 			.table-list
 				.cell.label
 					label {{'MAIN.COMPOSE.LB_BCC' | translate}}:
@@ -52,14 +52,14 @@ div#compose-wrapper
 							small
 								| {{'MAIN.COMPOSE.LB_EMAIL' | translate}}: {{person.email}}
 								span(class="icon-lock sec-{{person.sec}}")
-					span.icon-close.pull-right
+					span.icon-close.pull-right(ng-click="clearBCC()")
 			.table-list
 				.cell.label
 					label {{'MAIN.COMPOSE.LB_FROM' | translate}}:
 				.dropdown-control.cell
 					ui-select(ng-model='form.selected.from', search-enabled='false', style="width: 50%;")
 						ui-select-match {{$select.selected.email}}
-						ui-select-choices(repeat='item in fromEmails')
+						ui-select-choices(repeat='item in form.fromEmails')
 							span(ng-click='item.selected=item', ng-bind-html='item.email')
 			.table-list
 				.cell.label
