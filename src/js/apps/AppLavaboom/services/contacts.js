@@ -22,6 +22,8 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 	    new Contact({id: 11, name: 'Petyr Baelish', email: 'petyr@baelishindustries.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Do not trust anyone.'})
   	];
 
+  	this.sortedPeople = $scope.sortedcontacts = _.groupBy(this.people, function(item) {return item.fname[0]; });
+
 	// contact list, usually would be a separate database
  
 
