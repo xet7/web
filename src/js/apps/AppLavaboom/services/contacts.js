@@ -20,6 +20,13 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 		new Contact({name: 'Nicolas',   email: 'nicolas@email.com'})
 	];
 
+	this.getContactByEmail = (email) => {
+		for(let c of self.people)
+			if (c.email == email)
+				return c;
+		return {};
+	};
+
 	this.myself = null;
 
 	var addContact = (contact) => {

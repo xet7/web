@@ -38,9 +38,8 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 				}
 			});
 
-			var initializePromise = inbox.initialize(decodeChan);
+			yield inbox.initialize(decodeChan);
 
-			yield initializePromise;
 			yield cryptoKeys.syncKeys();
 
 			yield $state.go('main.label', {labelName: 'Inbox'}, {reload: true});
