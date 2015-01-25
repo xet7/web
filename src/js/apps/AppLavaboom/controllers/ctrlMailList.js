@@ -11,12 +11,6 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 		inbox.requestStar($scope.selected.id);
 	};
 
-	$scope.$on('inbox-emails', () => {
-		$scope.items = inbox.emails;
-	});
-
-	$scope.items = inbox.emails;
-
 	$scope.selected = null;
 
 	$scope.$watch('selected', () => {
@@ -24,7 +18,10 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 	});
 
 	if ($scope.isInitialized) {
-		console.log('$stateParams.labelName', $stateParams.labelName);
 		inbox.requestList($stateParams.labelName);
 	}
+
+	$scope.$bind('inbox-threads', () => {
+		$scope.threads = inbox.threads;
+	});
 });

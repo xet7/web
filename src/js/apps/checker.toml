@@ -1,5 +1,6 @@
 [application]
 	dependencies = [
 		"../../bower_components/lodash/dist/lodash.underscore.js",
-		"../../bower_components/lavaboom/dist/lavaboom-api.js"
+		"../../bower_components/lavaboom/dist/lavaboom-api.js",
+		"../../../node_modules/setimmediate/setImmediate.js"
 	]

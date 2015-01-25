@@ -1,4 +1,5 @@
 window.primaryApplicationName = 'AppLavaboom';
+
 angular.module(primaryApplicationName, [
 	'lavaboom.api',
 	'ngSanitize',
@@ -6,8 +7,9 @@ angular.module(primaryApplicationName, [
 	'ui.bootstrap',
 	'ui.select',
 	'textAngular',
-	'pascalprecht.translate'
-	]);
+	'pascalprecht.translate',
+	'angular-co'
+]);
 
 window.coJS = require('co');
 

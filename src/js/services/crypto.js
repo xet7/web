@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).service('crypto', function($q, $rootScope, consts) {
+angular.module(primaryApplicationName).service('crypto', function($q, $rootScope, consts, co) {
 	var self = this;
 
 	var wrapOpenpgpKeyring = (keyring) => {
@@ -88,29 +88,24 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 
 		console.log('generating keys', nameEmail, password, numBits);
 
-		var deferred = $q.defer();
-		openpgp.generateKeyPair({numBits: numBits, userId: nameEmail, passphrase: password})
-			.then(freshKeys => {
-				keyring.publicKeys.importKey(freshKeys.publicKeyArmored);
-				keyring.privateKeys.importKey(freshKeys.privateKeyArmored);
-				keyring.store();
+		return co(function *(){
+			var freshKeys = yield openpgp.generateKeyPair({numBits: numBits, userId: nameEmail, passphrase: password});
 
-				var pub = openpgp.key.readArmored(freshKeys.publicKeyArmored).keys[0],
-					prv = openpgp.key.readArmored(freshKeys.privateKeyArmored).keys[0];
+			keyring.publicKeys.importKey(freshKeys.publicKeyArmored);
+			keyring.privateKeys.importKey(freshKeys.privateKeyArmored);
+			keyring.store();
 
-				$rootScope.$broadcast('crypto-dst-emails-updated', self.getAvailableDestinationEmails());
-				$rootScope.$broadcast('crypto-src-emails-updated', self.getAvailableSourceEmails());
+			var pub = openpgp.key.readArmored(freshKeys.publicKeyArmored).keys[0],
+				prv = openpgp.key.readArmored(freshKeys.privateKeyArmored).keys[0];
 
-				deferred.resolve({
-					pub: pub,
-					prv: prv
-				});
-			})
-			.catch(error =>{
-				deferred.reject(error);
-			});
+			$rootScope.$broadcast('crypto-dst-emails-updated', self.getAvailableDestinationEmails());
+			$rootScope.$broadcast('crypto-src-emails-updated', self.getAvailableSourceEmails());
 
-		return deferred.promise;
+			return {
+				pub: pub,
+				prv: prv
+			};
+		});
 	};
 
 	var persistKey = (privateKey, storage = 'local', isDecrypted = false) => {
@@ -178,58 +173,43 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 	};
 
 	this.decodeByListedFingerprints = (message, fingerprints) => {
-		var deferred = $q.defer();
+		//console.log('decode', message, 'with', fingerprints);
 
-		try {
+		return co(function *(){
 			var pgpMessage = openpgp.message.readArmored(message);
 
 			var privateKey = fingerprints.reduce((a, fingerprint) => {
 				var privateKey = keyring.privateKeys.findByFingerprint(fingerprint);
+				//console.log('pk1', privateKey ? privateKey.primaryKey.isDecrypted : 'false');
 
 				if (!privateKey || !privateKey.primaryKey.isDecrypted)
 					privateKey = sessionKeyring.privateKeys.findByFingerprint(fingerprint);
 
+				//console.log('pk2', privateKey ? privateKey.primaryKey.isDecrypted : 'false');
+
 				if (!privateKey || !privateKey.primaryKey.isDecrypted)
 					privateKey = localKeyring.privateKeys.findByFingerprint(fingerprint);
+
+				//console.log('pk3', privateKey ? privateKey.primaryKey.isDecrypted : 'false');
 
 				if (privateKey && privateKey.primaryKey.isDecrypted)
 					return privateKey;
 			}, {});
 
+			//console.log('pk found', privateKey);
+
 			if (!privateKey)
-				deferred.reject(new Error('No decrypted private key found!'));
+				throw new Error('No decrypted private key found!');
 
-			openpgp.decryptMessage(privateKey, pgpMessage)
-				.then(plainText => {
-					deferred.resolve(plainText);
-				})
-				.catch(error => {
-					deferred.reject(error);
-				});
-		} catch (catchedError) {
-			deferred.reject(catchedError);
-		}
-
-		return deferred.promise;
+			return yield openpgp.decryptMessage(privateKey, pgpMessage);
+		});
 	};
 
 	this.encodeWithKey = (email, message, publicKey) => {
-		var deferred = $q.defer();
-
-		try {
+		return co(function *(){
 			publicKey = openpgp.key.readArmored(publicKey).keys[0];
 
-			openpgp.encryptMessage(publicKey, message)
-				.then(pgpMessage => {
-					deferred.resolve(pgpMessage);
-				})
-				.catch(error => {
-					deferred.reject(error);
-				});
-		} catch (catchedError) {
-			deferred.reject(catchedError);
-		}
-
-		return deferred.promise;
+			return yield openpgp.encryptMessage(publicKey, message);
+		});
 	};
 });
