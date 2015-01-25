@@ -31,10 +31,12 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	});
 
 	var decodeFinished = (decodeChan) => {
-		self.decryptingCurrent++;
-		decodeChan({current: self.decryptingCurrent, total: self.decryptingTotal});
-		if (self.decryptingCurrent >= self.decryptingTotal)
-			decodeChan.close();
+		co(function*(){
+			self.decryptingCurrent++;
+			yield decodeChan({current: self.decryptingCurrent, total: self.decryptingTotal});
+			if (self.decryptingCurrent >= self.decryptingTotal)
+				decodeChan.close();
+		});
 	};
 
 	this.requestDelete = (id) => {
@@ -60,8 +62,10 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 				return a;
 			}, {});
 		} else {
-			if (decodeChan)
+			if (decodeChan) {
+				yield decodeChan({current: 0, total: 0});
 				decodeChan.close();
+			}
 			return [];
 		}
 	};

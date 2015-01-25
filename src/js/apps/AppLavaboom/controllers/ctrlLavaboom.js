@@ -1,5 +1,4 @@
 var chan = require('chan');
-var sleep = require('chan');
 
 angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $scope, $state, $translate, co, crypto, cryptoKeys, user, inbox, loader) {
 	var
@@ -28,24 +27,18 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 			loader.incProgress(LB_LOADING_EMAILS, 5);
 
 			var decodeChan = chan();
-			var initializePromise = inbox.initialize(decodeChan);
-
 			co(function *() {
-				var status;
-				while (true) {
-					status = yield decodeChan;
-					if (!status)
-						break;
-
-					console.log('status', status);
-
-					yield sleep(1000);
+				while (!decodeChan.done()) {
+					var status = yield decodeChan;
 
 					if (status.current < status.total)
 						loader.setProgress(LB_DECRYPTING, beforeDecryptingProgress + (status.current / status.total) * (95 - beforeDecryptingProgress));
+					else
+						loader.setProgress(LB_DECRYPTING, 95);
 				}
-				console.log('decode ended?', status);
 			});
+
+			var initializePromise = inbox.initialize(decodeChan);
 
 			yield initializePromise;
 			yield cryptoKeys.syncKeys();
