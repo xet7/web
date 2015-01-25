@@ -142,22 +142,21 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		$rootScope.$broadcast('inbox-threads', self.threads);
 	});
 
-	this.send = (to, subject, body) => {
-		return co(function * () {
-			var res = yield apiProxy(['keys', 'get'], to);
-			var publicKey = res.body.key;
-			var encryptedMessage = yield crypto.encodeWithKey(to, body, publicKey.key);
+	this.send = (to, cc, bcc, subject, body, thread_id = null) => co(function * () {
+		var res = yield apiProxy(['keys', 'get'], to);
+		var publicKey = res.body.key;
+		var encryptedMessage = yield crypto.encodeWithKey(to, body, publicKey.key);
 
-			console.log(encryptedMessage, publicKey.id);
-
-			apiProxy(['emails', 'create'], {
-				to: to,
-				subject: subject,
-				body: encryptedMessage,
-				pgp_fingerprints: [publicKey.id]
-			});
+		yield apiProxy(['emails', 'create'], {
+			to: to,
+			cc: cc,
+			bcc: bcc,
+			subject: subject,
+			body: encryptedMessage,
+			pgp_fingerprints: [publicKey.id],
+			thread_id: thread_id
 		});
-	};
+	});
 
 	this.scroll = () => {
 		self.isInboxLoading = true;

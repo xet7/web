@@ -40,6 +40,6 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 			email: user.email,
 			isSecured: true
 		});
-		$rootScope.$broadcast('contacts-changed', self.people);
+		addContact(self.myself);
 	});
 });
