@@ -38,6 +38,15 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 			}
 		},
 
+		'main.contacts' : {
+			url: '/contacts',
+			views: {
+				'main-view@': {
+					templateUrl: 'partials/contacts.html'
+				}
+			}
+		},
+
 		'main.settings' : {
 			url: '/settings',
 			views: {
