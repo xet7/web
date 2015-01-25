@@ -3,33 +3,32 @@ var Buffer = require('buffer/').Buffer;
 angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $rootScope, $filter, co, apiProxy, crypto, user) {
 	var self = this;
 
-	this.syncKeys = () => {
-		co(function *(){
-			var res = yield apiProxy(['keys', 'list'], user.name);
+	this.syncKeys = () => co(function *(){
+		var res = yield apiProxy(['keys', 'list'], user.name);
 
-			var keysByFingerprint = res.body.keys ? res.body.keys.reduce((a, k) => {
-				a[k.id] = k;
-				return a;
-			}, {}) : {};
+		var keysByFingerprint = res.body.keys ? res.body.keys.reduce((a, k) => {
+			a[k.id] = k;
+			return a;
+		}, {}) : {};
 
-			var publicKeys = crypto.getAvailablePublicKeysForSourceEmails();
+		var publicKeys = crypto.getAvailablePublicKeysForSourceEmails();
 
-			var keysCreationPromises = [];
-			Object.keys(publicKeys).forEach(email => {
-				var keysForEmail = publicKeys[email];
-				keysForEmail.forEach(key => {
-					if (!keysByFingerprint[key.primaryKey.fingerprint]) {
-						console.log(`Importing key with fingerprint '${key.primaryKey.fingerprint}' to the server...`);
+		var keysCreationPromises = [];
 
-						keysCreationPromises.push(apiProxy(['keys', 'create'], key.armor()));
-					} else
-						console.log(`Key with fingerprint '${key.primaryKey.fingerprint}' already imported...`);
-				});
+		Object.keys(publicKeys).forEach(email => {
+			var keysForEmail = publicKeys[email];
+			keysForEmail.forEach(key => {
+				if (!keysByFingerprint[key.primaryKey.fingerprint]) {
+					console.log(`Importing key with fingerprint '${key.primaryKey.fingerprint}' to the server...`);
+
+					keysCreationPromises.push(apiProxy(['keys', 'create'], key.armor()));
+				} else
+					console.log(`Key with fingerprint '${key.primaryKey.fingerprint}' already imported...`);
 			});
-
-			yield keysCreationPromises;
 		});
-	};
+
+		yield keysCreationPromises;
+	});
 
 	this.importKeys = (jsonBackup) => {
 		var importObj = null;

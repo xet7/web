@@ -31,6 +31,20 @@ angular.module(primaryApplicationName).factory('co', function($q, $rootScope, $e
 		});
 	};
 
+	co.each = function (object, mapGen) {
+		return co(function *() {
+			if (angular.isArray(object)) {
+				for (var i = 0; i < object.length; i++) {
+					yield mapGen(object[i], i, object);
+				}
+			} else if (angular.isObject(object)) {
+				for (var k of Object.keys(object)) {
+					yield mapGen(object[k], k, object);
+				}
+			}
+		});
+	};
+
 	co.map = function (object, mapGen, init) {
 		if (!object)
 			return init;

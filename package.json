@@ -23,6 +23,7 @@
     "bulkify": "^1.0.2",
     "chan": "^0.6.1",
     "co": "^4.1.0",
+    "co-sleep": "0.0.1",
     "connect-gzip-static": "^1.0.0",
     "connect-livereload": "^0.5.2",
     "del": "^0.1.3",

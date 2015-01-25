@@ -1,4 +1,5 @@
 var chan = require('chan');
+var sleep = require('chan');
 
 angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $scope, $state, $translate, co, crypto, cryptoKeys, user, inbox, loader) {
 	var
@@ -26,31 +27,30 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 
 			loader.incProgress(LB_LOADING_EMAILS, 5);
 
-			inbox.initialize();
-			inbox.requestList('Inbox');
-			cryptoKeys.syncKeys();
+			var decodeChan = chan();
+			var initializePromise = inbox.initialize(decodeChan);
 
-			beforeDecryptingProgress = loader.getProgress();
+			co(function *() {
+				var status;
+				while (true) {
+					status = yield decodeChan;
+					if (!status)
+						break;
 
-			var decrypted = chan();
+					console.log('status', status);
 
-			var inboxDecryptStatusListener = $scope.$on('inbox-decrypt-status', (e, status) => {
-				if (status.current < status.total)
-					loader.setProgress(LB_DECRYPTING, beforeDecryptingProgress + (status.current / status.total) * (100 - beforeDecryptingProgress));
-				else {
-					inboxDecryptStatusListener();
+					yield sleep(1000);
 
-					try {
-						decrypted($state.go('main.label', {labelName: 'Inbox'}, {reload: true}));
-					} catch (err) {
-						decrypted(err);
-					}
+					if (status.current < status.total)
+						loader.setProgress(LB_DECRYPTING, beforeDecryptingProgress + (status.current / status.total) * (95 - beforeDecryptingProgress));
 				}
+				console.log('decode ended?', status);
 			});
 
-			var promise = yield decrypted;
-			if (angular.isFunction(promise))
-				yield promise;
+			yield initializePromise;
+			yield cryptoKeys.syncKeys();
+
+			yield $state.go('main.label', {labelName: 'Inbox'}, {reload: true});
 
 			$scope.isInitialized = true;
 			return {lbDone: LB_SUCCESS};

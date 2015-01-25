@@ -13,8 +13,8 @@
 			a(href="#", ng-click="delete()")
 				span.icon-trash
 	.mail-list-group
-		div(ng-if="items.length < 1") No emails found
-		div(ng-repeat="item in items track by item.id", ng-class="{active: selected==item}", ng-click="choose(item)")
+		div(ng-if="threads.length < 1") No emails found
+		div(ng-repeat="item in threads track by item.id", ng-class="{active: selected==item}", ng-click="choose(item)")
 			.mail-list-item(class="{{item.active}}", href="#")
 				.row.no-gutter
 					.col-xs-3.clear.buttons
@@ -25,15 +25,15 @@
 						a(href="#")
 							span.icon-arrow-right
 					.col-xs-16.pack
-						h5(ng-bind="item.sender")
-						p.subject(ng-bind="item.subject")
-						p.summary(ng-bind-html="item.preview ? item.preview : 'INBOX.NO_PREVIEW_AVAILABLE' | translate")
+						h5(ng-bind="item.headerEmail.sender")
+						p.subject(ng-bind="item.headerEmail.subject")
+						p.summary(ng-bind-html="item.headerEmail.preview ? item.headerEmail.preview : 'INBOX.NO_PREVIEW_AVAILABLE' | translate")
 					.col-xs-5.when
-						span.date.lava-icon-row(ng-bind="item.date | date")
+						span.date.lava-icon-row(ng-bind="item.headerEmail.date | date")
 						br
 						br
 						.lava-icon-row
-							a(ng-show="item.attachments && item.attachments.length > 0")
+							a(ng-show="item.headerEmail.attachments && item.headerEmail.attachments.length > 0")
 								span.icon-paper-clip
-							a(ng-show="item.isEncrypted")
+							a(ng-show="item.headerEmail.isEncrypted")
 								span.icon-lock

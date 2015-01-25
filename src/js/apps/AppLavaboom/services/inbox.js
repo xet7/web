@@ -6,11 +6,9 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.totalEmailsCount = 0;
 	this.decryptingTotal = 0;
 	this.decryptingCurrent = 0;
-	this.isDecrypted = false;
-	this.labelsByName = [];
-	this.threadsByLabelName = {
 
-	};
+	this.labelsByName = [];
+	this.threads = [];
 
 	$timeout(() => {
 		LavaboomAPI.subscribe('receipt', (msg) => {
@@ -32,9 +30,11 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		return body;
 	});
 
-	var decodeFinished = () => {
+	var decodeFinished = (decodeChan) => {
 		self.decryptingCurrent++;
-		$rootScope.$broadcast('inbox-decrypt-status', {current: self.decryptingCurrent, total: self.decryptingTotal});
+		decodeChan({current: self.decryptingCurrent, total: self.decryptingTotal});
+		if (self.decryptingCurrent >= self.decryptingTotal)
+			decodeChan.close();
 	};
 
 	this.requestDelete = (id) => {
@@ -46,7 +46,27 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	};
 
-	this.initialize = () => co(function *(){
+	this.getThreadsByLabelName = function *(labelName, decodeChan) {
+		var label = self.labelsByName[labelName];
+		var threads = (yield apiProxy(['threads', 'list'], {label: label.id})).body.threads;
+
+		self.decryptingCurrent = 0;
+		if (threads) {
+			self.decryptingTotal = threads.length;
+
+			return yield co.reduce(threads, function *(a, thread) {
+				thread.headerEmail = createEmail((yield apiProxy(['emails', 'get'], thread.emails[0])).body.email, decodeChan);
+				a[thread.id] = thread;
+				return a;
+			}, {});
+		} else {
+			if (decodeChan)
+				decodeChan.close();
+			return [];
+		}
+	};
+
+	this.initialize = (decodeChan) => co(function *(){
 		var labels = (yield apiProxy(['labels', 'list'])).body.labels;
 
 		self.labelsByName = labels.reduce((a, label) => {
@@ -55,108 +75,78 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			return a;
 		}, {});
 
-		self.threadsByLabelName = yield co.reduce(self.labelsByName, function *(a, label) {
-			var threads = (yield apiProxy(['threads', 'list'], {label: label.id})).body.threads;
-
-			a[label.name] = yield co.reduce(threads, function *(a, thread) {
-				thread.headerEmail = (yield apiProxy(['emails', 'get'], thread.emails[0])).body.email;
-				a[thread.id] = thread;
-				return a;
-			}, {});
-
-			return a;
-		}, {});
-
-		console.log('self.threadsByLabel', self.threadsByLabelName);
-
-
 		$rootScope.$broadcast('inbox-labels', self.labels);
+
+		yield self.requestList('Inbox', decodeChan);
+
+		console.log(self.threads);
 	});
 
-	this.requestList = (labelName) => {
-		var labelId = null;
+	var createEmail = (e, decodeChan) => {
+		var isPreviewAvailable = !!e.preview;
 
-		if (labelName != 'Inbox') {
-			if (!self.labels[labelName]) {
-				console.error('requestList unknown label name', labelName);
-				return;
-			}
-			labelId = self.labels[labelName].id;
-		}
+		console.log('CREATE EMAIL FROM', e);
 
-		self.isInboxLoading = true;
-		self.isDecrypted = true;
+		var email = {
+			id: e.id,
+			isEncrypted: e.body.pgp_fingerprints.length > 0 || (e.preview && e.preview.pgp_fingerprints.length) > 0,
+			subject: e.name,
+			date: e.date_created,
+			from: e.from,
+			preview: '',
+			previewState: 'processing',
+			body: '',
+			bodyState: 'processing',
+			attachments: e.attachments
+		};
 
-		return co(function * (){
-			try {
-				var res = yield apiProxy(['emails', 'list'], labelId ? {label: labelId} : {});
+		if (isPreviewAvailable)
+			decode(e.preview.raw, e.preview.pgp_fingerprints)
+				.then(value => {
+					email.preview = value;
+					email.previewState = 'ok';
+				})
+				.catch(err => {
+					email.preview = err.message;
+					email.previewState = 'error';
+				})
+				.finally(() => {
+					if (decodeChan)
+						decodeFinished(decodeChan);
+				});
 
-				self.decryptingCurrent = 0;
-				if (res.body.emails) {
-					self.decryptingTotal = res.body.emails.length;
+		decode(e.body.raw, e.body.pgp_fingerprints)
+			.then(value => {
+				email.body = value;
+				email.bodyState = 'ok';
 
-					self.emails = res.body.emails.map(e => {
-						var isPreviewAvailable = !!e.preview;
-
-						var email = {
-							id: e.id,
-							isEncrypted: e.body.pgp_fingerprints.length > 0 || (e.preview && e.preview.pgp_fingerprints.length) > 0,
-							subject: e.name,
-							date: e.date_created,
-							from: e.from,
-							preview: '',
-							previewState: 'processing',
-							body: '',
-							bodyState: 'processing',
-							attachments: e.attachments
-						};
-
-						if (isPreviewAvailable)
-							decode(e.preview.raw, e.preview.pgp_fingerprints)
-								.then(value => {
-									email.preview = value;
-									email.previewState = 'ok';
-								})
-								.catch(err => {
-									email.preview = err.message;
-									email.previewState = 'error';
-								})
-								.finally(decodeFinished);
-
-						decode(e.body.raw, e.body.pgp_fingerprints)
-							.then(value => {
-								email.body = value;
-								email.bodyState = 'ok';
-
-								if (!isPreviewAvailable) {
-									email.preview = value;
-									email.previewState = 'ok';
-								}
-							})
-							.catch(err => {
-								email.body = err.message;
-								email.bodyState = 'error';
-
-								if (!isPreviewAvailable) {
-									email.preview = err.message;
-									email.previewState = 'error';
-								}
-							})
-							.finally(decodeFinished);
-
-						return email;
-					});
-				} else {
-					self.emails = [];
-					$rootScope.$broadcast('inbox-decrypt-status', {current: 0, total: 0});
+				if (!isPreviewAvailable) {
+					email.preview = value;
+					email.previewState = 'ok';
 				}
+			})
+			.catch(err => {
+				email.body = err.message;
+				email.bodyState = 'error';
 
-				$rootScope.$broadcast('inbox-emails', self.emails);
-			} finally {
-				self.isInboxLoading = false;
-			}
-		});
+				if (!isPreviewAvailable) {
+					email.preview = err.message;
+					email.previewState = 'error';
+				}
+			})
+			.finally(() => {
+				if (decodeChan)
+					decodeFinished(decodeChan);
+			});
+
+		return email;
 	};
+
+	this.requestList = (labelName, decodeChan = null) => co(function * (){
+		self.threads = yield self.getThreadsByLabelName(labelName, decodeChan);
+
+		$rootScope.$broadcast('inbox-threads', self.threads);
+	});
 
 	this.send = (to, subject, body) => {
 		return co(function * () {

@@ -8,7 +8,7 @@ div#left-panel.ng-cloak
 				a(href="#", ui-sref-active="active", ng-click="showPopup('compose')")
 					span.icon-compose
 					span.action {{'MAIN.NAV.LB_COMPOSE' | translate}}
-			li(ui-sref-active="active", ng-repeat="(name, label) in labels track by label.id")
+			li(ui-sref-active="active", ng-repeat="(name, label) in labelsByName track by label.id")
 				a(href="#", ui-sref="main.label({labelName: label.name})")
 					span(ng-class="label.iconClass")
 					span.action(ng-bind="label.name")
