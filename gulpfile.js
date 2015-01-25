@@ -32,6 +32,7 @@ var browserify = require('browserify'),
 	ngminify = require('browserify-ngmin'),
 	bulkify = require('bulkify'),
 	uglifyify = require('uglifyify'),
+	stripify = require('stripify'),
 	brfs = require('brfs');
 
 // Modules
@@ -91,6 +92,7 @@ gulp.task('build:scripts:core', ['clean:dist'], function() {
 		.pipe(plg.plumber())
 		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.noop())
 		.pipe(plg.traceur())
+		.pipe(config.isLogs ? plg.noop() : plg.stripDebug())
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop())
 		.pipe(config.isDebugable ? plg.sourcemaps.write('.', {sourceMappingURLPrefix: '/js/'}) : plg.util.noop())
 		.pipe(gulp.dest(paths.scripts.output));
@@ -176,6 +178,11 @@ var browserifyBundle = function(filename) {
 					.transform(ownCodebaseTransform(es6ify))
 					.transform(ownCodebaseTransform(bulkify))
 					.transform(ownCodebaseTransform(brfs));
+
+				if (!config.isLogs) {
+					browserifyPipeline = browserifyPipeline
+						.transform(stripify);
+				}
 
 				if (config.isProduction) {
 					browserifyPipeline = browserifyPipeline

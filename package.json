@@ -87,6 +87,7 @@
     "mold-source-map": "^0.3.0",
     "node-fs": "^0.1.7",
     "setimmediate": "^1.0.2",
+    "stripify": "^2.0.0",
     "toml": "^2.1.1",
     "toml-require": "^1.0.1",
     "traceur": "0.0.81",
