@@ -78,8 +78,8 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 
 	var popupStates = {
 		'compose': function () {
-			this.url =  '/compose';
-			this.onEnter = ($state, $modal, router) => {
+			this.url =  '/compose/:threadId';
+			this.onEnter = ($state, $stateParams, $modal, router) => {
 				router.currentModal = $modal.open({
 					templateUrl: 'partials/compose.html',
 					controller: 'CtrlCompose',

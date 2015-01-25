@@ -1,5 +1,9 @@
-angular.module('AppLavaboom').controller('CtrlCompose', function($scope, contacts, inbox) {
+angular.module('AppLavaboom').controller('CtrlCompose', function($scope, contacts, inbox, $stateParams) {
 	$scope.disabled = false;
+
+	var threadId = $stateParams.threadId;
+
+	console.log('Compose wow, thread id: ', threadId);
 
 	$scope.$bind('contacts-changed', () => {
 		$scope.people = contacts.people.concat([contacts.myself]);
