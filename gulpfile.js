@@ -26,9 +26,11 @@ var exorcist  = require('exorcist');
 var mold = require('mold-source-map');
 var domain = require('domain');
 
+var to5 = require('gulp-6to5');
+
 // Browserify the mighty one
 var browserify = require('browserify'),
-	es6ify = require('es6ify'),
+	to5ify = require('6to5ify'),
 	ngminify = require('browserify-ngmin'),
 	bulkify = require('bulkify'),
 	uglifyify = require('uglifyify'),
@@ -91,10 +93,10 @@ gulp.task('build:scripts:core', ['clean:dist'], function() {
 	return gulp.src(paths.scripts.input)
 		.pipe(plg.plumber())
 		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.noop())
-		.pipe(plg.traceur())
-		.pipe(config.isLogs ? plg.noop() : plg.stripDebug())
+		.pipe(to5())
+		.pipe(config.isLogs ? plg.util.noop() : plg.stripDebug())
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop())
-		.pipe(config.isDebugable ? plg.sourcemaps.write('.', {sourceMappingURLPrefix: '/js/'}) : plg.util.noop())
+		.pipe(config.isDebugable ? plg.sourcemaps.write('.') : plg.util.noop())
 		.pipe(gulp.dest(paths.scripts.output));
 });
 
@@ -109,7 +111,7 @@ gulp.task('build:scripts:vendor', ['clean:dist', 'build:scripts:vendor:min', 'li
 				var resolvedFileOriginal = paths.scripts.inputAppsFolder + appConfig.application.dependencies[i];
 
 				var resolvedFile = '';
-				if (config.isProduction) {
+				if (config.isProduction && resolvedFileOriginal.indexOf('browser-polyfill.js') < 0) {
 					resolvedFile = resolvedFileOriginal.replace('.js', '.min.js');
 
 					if (!fs.existsSync(resolvedFile)) {
@@ -138,7 +140,7 @@ gulp.task('build:scripts:vendor', ['clean:dist', 'build:scripts:vendor:min', 'li
 				.pipe(plg.plumber())
 				.pipe(plg.sourcemaps.init())
 				.pipe(plg.concat(newName))
-				.pipe(plg.sourcemaps.write('.', {sourceMappingURLPrefix: '/js/'}))
+				.pipe(plg.sourcemaps.write('.'))
 				.pipe(gulp.dest(paths.scripts.output));
 		}))
 		.pipe(gulp.dest(paths.scripts.output));
@@ -155,12 +157,6 @@ var browserifyBundle = function(filename) {
 				utils.logGulpError('Browserify compile error:', file.path, err);
 			});
 
-			var uglifyifyTransformed = filterTransform(
-				function(file) {
-					return file.indexOf('traceur-runtime') < 0;
-				},
-				uglifyify);
-
 			var ownCodebaseTransform = function(transform) {
 				return filterTransform(
 					function(file) {
@@ -174,8 +170,7 @@ var browserifyBundle = function(filename) {
 					basedir: __dirname,
 					debug: config.isDebugable
 				})
-					.add(es6ify.runtime)
-					.transform(ownCodebaseTransform(es6ify))
+					.transform(ownCodebaseTransform(to5ify))
 					.transform(ownCodebaseTransform(bulkify))
 					.transform(ownCodebaseTransform(brfs));
 
@@ -187,7 +182,7 @@ var browserifyBundle = function(filename) {
 				if (config.isProduction) {
 					browserifyPipeline = browserifyPipeline
 						.transform(ownCodebaseTransform(ngminify))
-						.transform(uglifyifyTransformed);
+						.transform(uglifyify);
 				}
 
 				file.contents = browserifyPipeline
@@ -236,7 +231,7 @@ gulp.task('build:styles', ['clean:dist'], function() {
 
 	if (config.isDebugable) {
 		prodPipeline = prodPipeline
-			.pipe(plg.sourcemaps.write, '.', {sourceMappingURLPrefix: '/css/'});
+			.pipe(plg.sourcemaps.write, '.');
 	}
 
 	prodPipeline = prodPipeline
@@ -250,7 +245,7 @@ gulp.task('build:styles', ['clean:dist'], function() {
 		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.noop())
 		.pipe(plg.less())
 		.pipe(plg.autoprefixer('last 2 version', '> 1%'))
-		.pipe(config.isDebugable && !config.isProduction ? plg.sourcemaps.write('.', {sourceMappingURLPrefix: '/css/'}) : plg.util.noop())
+		.pipe(config.isDebugable && !config.isProduction ? plg.sourcemaps.write('.') : plg.util.noop())
 		.pipe(!config.isProduction ? gulp.dest(paths.styles.output) : plg.util.noop())
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
 });
@@ -358,14 +353,15 @@ gulp.task('build:partials-jade', ['clean:dist'], function() {
 // Remove pre-existing content from output and test folders
 gulp.task('clean:dist', function () {
 	del.sync([
-		paths.output + '**/*'
+		paths.output + '**/*',
+		paths.cache
 	]);
 });
 
 // Run some unit tests to check key logic
 gulp.task('tests', function() {
 	return gulp.src(paths.tests.unit.input)
-		.pipe(plg.traceur())
+		.pipe(to5())
 		.pipe(gulp.dest(os.tmpdir()))
 		.pipe(plg.jasmine());
 });

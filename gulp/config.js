@@ -1,7 +1,7 @@
 module.exports = {
 	isProduction: false,
 	isDebugable: true,
-	isLogs: false,
+	isLogs: true,
 	livereloadListenAddress: '0.0.0.0',
 	livereloadListenPort: 35729,
 	listenAddress: '0.0.0.0',
