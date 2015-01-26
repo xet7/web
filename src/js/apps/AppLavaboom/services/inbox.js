@@ -147,8 +147,9 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	this.requestList = (labelName, decodeChan = null) => co(function * (){
 		self.threads = yield self.getThreadsByLabelName(labelName, decodeChan);
-
 		$rootScope.$broadcast('inbox-threads', self.threads);
+
+		return self.threads;
 	});
 
 	this.send = (to, cc, bcc, subject, body, thread_id = null) => co(function * () {

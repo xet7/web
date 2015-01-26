@@ -13,8 +13,9 @@
 			a(href="#", ng-click="delete()")
 				span.icon-trash
 	.mail-list-group
-		div(ng-if="threads.length < 1") No emails found
-		div(ng-repeat="item in threads track by item.id", ng-class="{active: selected==item}", ng-click="choose(item)")
+		div(ng-show="isLoading") Loading...
+		div(ng-show="!isLoading && threads.length < 1") No emails found
+		div(ng-show="!isLoading", ng-repeat="item in threads track by item.id", ng-class="{active: selected==item}", ng-click="choose(item)")
 			.mail-list-item(class="{{item.active}}", href="#")
 				.row.no-gutter
 					.col-xs-3.clear.buttons
