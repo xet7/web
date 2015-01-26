@@ -16,6 +16,7 @@ var bulkRequire = require('bulk-require');
 
 bulkRequire(__dirname, [
 	'../runs/*.js',
+	'../decorators/*.js',
 	'../configs/*.js',
 	'../directives/*.js',
 	'../services/*.js',
