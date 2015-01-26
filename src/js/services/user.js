@@ -105,6 +105,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 		loader.resetProgress();
 		loader.showLoader(true);
+		console.log('logout', {lbDone: LB_BYE});
 		loader.loadLoginApplication({lbDone: LB_BYE});
 	};
 });

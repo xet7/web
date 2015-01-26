@@ -267,7 +267,7 @@ var __Promise = function () {
 			rootScope.$apply(() => {
 				rootScope.initializeApplication()
 					.then(r => {
-						showContainer(app, r && r.lbDone ? r.lbDone : opts.lbDone)
+						showContainer(app, opts.lbDone ? opts.lbDone : (r && r.lbDone ? r.lbDone : null))
 							.then(() => {
 								if (rootScope.onApplicationReady)
 									rootScope.$apply(() => {
