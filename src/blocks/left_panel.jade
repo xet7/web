@@ -14,8 +14,8 @@ div#left-panel.ng-cloak
 					span.action(ng-bind="label.name")
 					span.badge
 			li.separator
-			li
-				a(href="#")
+			li(ui-sref-active="active")
+				a(href="#", ui-sref="main.contacts")
 					span.icon-head
 					span.action {{'MAIN.NAV.LB_CONTACTS' | translate}}
 			li(ui-sref-active="active")
