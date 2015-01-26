@@ -2,7 +2,7 @@
 	.filters.row.no-gutter.lava-icon-row
 		label.search-icon.col-xs-3(for='top-search')
 			span.icon-search
-		input#top-search.search.col-xs-13(placeholder='Search Contacts')
+		input#top-search.search.col-xs-13(placeholder='Search Contacts', ng-model="searchText")
 		.lava-icon-wrapper.col-xs-8
 			a(href='#')
 				span.icon-close
@@ -12,4 +12,10 @@
 				span.icon-compose
 	.list-group-icons
 		ul.list-group
-			contact.list-group-item(ng-repeat="(k,v) in sortedcontacts | filter: searchText ")
+			section(data-ng-repeat="(alpha, contacts) in sortedPeople")
+				li.separator.list-group-item(ng-if="contacts") {{alpha}}
+				li.list-group-item(data-ng-repeat="contact in contacts | filter: searchText")
+					a(class="sec-{{contact.sec}}", ui-sref='main.contacts.profile')
+						span {{ contact.name }}
+						span.icon-lock(ng-if="contact.sec")
+

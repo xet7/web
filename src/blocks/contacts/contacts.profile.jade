@@ -1,0 +1,88 @@
+.row.settings-panel.ng-cloak
+	form.settings.col-md-12.col-md-offset-6.col-xs-22.col-xs-offset-1
+		h4 Ned Stark
+		.row
+			.col-md-12.col-xs-24
+				img.thumbnail.img-responsive(src="http://lorempixel.com/output/business-q-g-360-360-5.jpg")
+			.col-md-12.col-xs-24
+				ul.list-group
+					li.list-group-item
+						.text-control.block
+							input.form-control(type='text', placeholder='First Name')
+					li.list-group-item
+						.text-control.block
+							input.form-control(type='text', placeholder="Last Name")
+					li.list-group-item
+						.text-control.block
+							input.form-control(type='text', placeholder="Company Name")
+
+		h4 Date / Time
+		ul.list-group
+				
+			li.list-group-item
+				div.input-group
+					input.form-control(type="text")
+					div.input-group-btn
+						a.btn
+							span.icon-starred
+						a.btn
+							span.icon-lock
+					<!-- Button and dropdown menu -->
+					
+				</div>
+			li.list-group-item
+				.dropdown-control
+					label Date / Time
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match {{$select.selected.name}}
+						ui-select-choices(repeat='item in [{name: "day/month/year"}, {name:"month/date/year"}, {name:"year/month/date"}]')
+							span(ng-click='item.selected=item', ng-bind-html='item.name')
+			li.list-group-item
+				.dropdown-control
+					label Time Format
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match {{$select.selected.name}}
+						ui-select-choices(repeat='item in [{name: "24-hours"}, {name:"12-hours"}]')
+							span(ng-click='item.selected=item', ng-bind-html='item.name')
+		h4 User Interface
+		ul.list-group
+			li.list-group-item
+				.dropdown-control
+					label Language
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match {{$select.selected.name}}
+						ui-select-choices(repeat='item in [{name: "English (UK)"}, {name:"English (US)"}]')
+							span(ng-click='item.selected=item', ng-bind-html='item.name')
+			li.list-group-item
+				.dropdown-control
+					label Font Size
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match {{$select.selected.name}}
+						ui-select-choices(repeat='item in [{name: "medium"}, {name:"English (US)"}]')
+							span(ng-click='item.selected=item', ng-bind-html='item.name')
+		h4 Mail Behaviour
+		ul.list-group
+			li.list-group-item
+				.dropdown-control
+					label Composed Mails
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match
+							| {{$select.selected.name}}
+							span(ng-class='item.icon')
+						ui-select-choices(repeat='item in [{name: "English (UK)", icon: "icon-draft"}, {name:"English (US)", icon: "icon-inbox"}]')
+							span(ng-click='item.selected=item', ng-bind-html='item.name')
+							span.dropdown-icon(ng-class='item.icon')
+			li.list-group-item
+				.dropdown-control
+					label Marked as Spam
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match {{$select.selected.name}}
+						ui-select-choices(repeat='item in [{name: "Move to Spam Folder"}, {name:"English (US)"}]')
+							span(ng-click='item.selected=item', ng-bind-html='item.name')
+			li.list-group-item
+				.dropdown-control
+					label Deleted Emails
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match {{$select.selected.name}}
+						ui-select-choices(repeat='item in [{name: "Move to Spam Folder"}, {name:"English (US)"}]')
+							span(ng-click='item.selected=item', ng-bind-html='item.name')
