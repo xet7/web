@@ -42,7 +42,7 @@
 	}
 }
 
-.list-group-icons{
+.list-group-wrapper{
 	padding-top: @filter-height;
 	.list-group-item {
 		&:first-child{
@@ -63,16 +63,15 @@
 				width: 2em;
 				text-align: center;
 			}
-			span{
-				position: relative;
-				top: -3px;
-			}
 		}
 		&.active, &:active, &:focus {
 			background-color: @lava;
 			border-color: #4CBCDD;
 			a{
 				color: #FFF;
+				.sec-icon{
+					color: #FFF;
+				}
 			}
 		}
 		&.separator{
@@ -80,6 +79,20 @@
 			padding-bottom: .3em;
 			background-color: @lava-gray-light;
 			color: @lava-gray-dark;
+		}
+	}
+	&.list-group-icons > li > a > span{
+		position: relative;
+		top: -3px;
+	}
+
+	.sec-icon{
+		float: right;
+		display: inline-block;
+		font-size: 1.3em;
+		color: @lava-warning;
+		&.icon-lock{
+			color: @lava;
 		}
 	}
 }
@@ -110,6 +123,12 @@
 			}
 		}
 	}
+}
+
+.scrollable{
+	.pos-rel();
+	height: 100%;
+	overflow: auto;
 }
 
 .scrollbars{
