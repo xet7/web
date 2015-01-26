@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).run(($rootScope, $translate, router, co) => {
+angular.module(primaryApplicationName).run(($rootScope, $translate, co) => {
 	$rootScope.$bind = (bindName, bindHandler) => {
 		$rootScope.$on(bindName, bindHandler);
 		bindHandler();
@@ -7,12 +7,6 @@ angular.module(primaryApplicationName).run(($rootScope, $translate, router, co) 
 	$rootScope.trustedHtml = (html) => {
 		return $sce.trustAsHtml(html);
 	};
-
-	$rootScope.showPopup = router.showPopup;
-
-	$rootScope.hidePopup = router.hidePopup;
-
-	$rootScope.isPopupState = router.isPopupState;
 
 	$rootScope.switchLanguage = (langKey) => {
 		localStorage.lang = langKey;

@@ -11,9 +11,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 	this.nameEmail = '';
 
 	// information about user from API
-	this.settings = {
-
-	};
+	this.settings = {};
 
 	var token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
 	var isAuthenticated = false;
@@ -40,7 +38,8 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		return co(function * () {
 			var res = yield apiProxy(['accounts', 'get'], 'me');
 
-			self.settings = res.body.settings;
+			self.settings = res.body.user.settings;
+			$rootScope.$broadcast('user-settings');
 
 			setupUserBasicInformation(res.body.user.name);
 
@@ -54,13 +53,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 	};
 
 	this.update = (settings) => {
-		if (settings.firstName)
-			self.settings.firstName = settings.firstName;
-		if (settings.lastName)
-			self.settings.lastName = settings.lastName;
-		if (settings.displayName)
-			self.settings.displayName = settings.displayName;
-
+		angular.extend(self.settings, settings);
 		return apiProxy(['accounts', 'update'], 'me', {
 			settings: self.settings
 		});
@@ -112,6 +105,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 		loader.resetProgress();
 		loader.showLoader(true);
+		console.log('logout', {lbDone: LB_BYE});
 		loader.loadLoginApplication({lbDone: LB_BYE});
 	};
 });

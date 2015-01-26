@@ -1,4 +1,4 @@
-.row.settings-panel.ng-cloak(ng-controller="ctrlSettingsPersonal")
+.row.settings-panel.ng-cloak(ng-controller="CtrlSettingsPersonal")
 	form.settings.col-xs-12.col-xs-offset-6
 		//- h4 Picture
 		//- .row.settings-row
@@ -12,17 +12,22 @@
 			li.list-group-item
 				.text-control
 					label Username
-					input.icon-field.form-control(disabled='', ng-bind="username")
+					input.icon-field.form-control(disabled='', ng-model="name")
 					span.icon-lock
 			li.list-group-item
 				.text-control
 					label First Name
-					input.icon-field.form-control(ng-model="information.firstName")
+					input.icon-field.form-control(ng-model="settings.firstName")
 					span.icon-edit
 			li.list-group-item
 				.text-control
 					label Last Name
-					input.icon-field.icon-edit.form-control(ng-model="information.lastName")
+					input.icon-field.icon-edit.form-control(ng-model="settings.lastName")
+					span.icon-edit
+			li.list-group-item
+				.text-control
+					label Display Name
+					input.icon-field.icon-edit.form-control(ng-model="settings.displayName")
 					span.icon-edit
 		h4 Signature
 		ul.list-group
@@ -30,19 +35,22 @@
 				label Signature Enabled
 				.control
 					label.switch
-						input(type='checkbox', checked='')
+						input(type='checkbox', ng-model="settings.isSignatureEnabled")
 						i
-			
 			li.list-group-item
 				.text-control
 					.signature
-						div(text-angular="", ng-model="signature")
+						div(text-angular="", ng-model="settings.signatureHtml")
 					span.icon-edit
-			h4 Newsletter
-			ul.list-group
-				li.list-group-item
-					label Send me News about Lavaboom
-					.control
-						label.switch
-							input(type='checkbox')
-							i
+		h4 Newsletter
+		ul.list-group
+			li.list-group-item
+				label Send me News about Lavaboom
+				.control
+					label.switch
+						input(type='checkbox', ng-model="settings.isSubscribedToNews")
+						i
+		br
+		ul.list-group(ng-show="status")
+			li.list-group-item
+				label(ng-bind="status")

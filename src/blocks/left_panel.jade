@@ -18,7 +18,7 @@ div#left-panel.ng-cloak
 				a(href="#", ui-sref="main.contacts")
 					span.icon-head
 					span.action {{'MAIN.NAV.LB_CONTACTS' | translate}}
-			li(ui-sref-active="active")
+			li(ng-class="{ active: $state.includes('main.settings') }")
 				a(href="#", ui-sref="main.settings.preferences")
 					span.icon-cog
 					span.action {{'MAIN.NAV.LB_SETTINGS' | translate}}

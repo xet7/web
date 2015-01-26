@@ -1,4 +1,92 @@
-(() => {
+/* jshint ignore:start */
+var __Promise = function () {
+	var result,
+		completed,
+		thenFn,
+		catchFn = function (err) { console.log(err); return err; },
+		finallyFn = function () { },
+		me;
+
+	function then(fn) {
+		var prevThen = thenFn || function (o, fn) { fn && fn(o); };
+
+		thenFn = function (o, then) {
+			prevThen(o, function (res) {
+				try {
+					result = fn(res);
+
+					if (!then) {
+						completed = true;
+						finallyFn(result);
+					} else if (result && result.then) {
+						result.then(then).catch(function (err) {
+							reject(err);
+						});
+					} else {
+						then(result);
+					}
+				} catch (err) {
+					reject(err);
+				}
+			});
+		};
+
+		completed && resolve(result);
+
+		return result && result.then ? result : me;
+	}
+
+	function _catch (fn) {
+		catchFn = fn;
+		return me;
+	}
+
+	function _finally (fn) {
+		finallyFn = fn;
+		completed && fn(result);
+		return me;
+	}
+
+	function resolve (obj) {
+		result = obj;
+
+		if (!(completed = (thenFn === undefined))) {
+			var fn = thenFn;
+			thenFn = undefined;
+			fn(obj);
+		} else {
+			finallyFn(result);
+		}
+	}
+
+	function reject (err) {
+		result = err;
+		then = function () { return this; };
+		result = catchFn(result);
+		finallyFn(result);
+
+		function callInstantly(fn) {
+			fn(result);
+			return this;
+		}
+
+		me.catch = me.finally = function (fn) {
+			result = fn(result);
+			return this;
+		}
+	}
+
+	return me = {
+		'catch': _catch,
+		'finally': _finally,
+		then: then,
+		reject: reject,
+		resolve: resolve
+	}
+};
+/* jshint ignore:end */
+
+((Promise) => {
 	const
 		SRC_APP_LAVABOOM_LOGIN_VENDOR = '/js/appLavaboomLogin-vendor.js',
 		SRC_APP_LAVABOOM_MAIN_VENDOR = '/js/appLavaboom-vendor.js',
@@ -127,6 +215,8 @@
 			progress;
 
 		var showContainer = (e, lbDone, isImmediate = false) => {
+			var p = new Promise();
+
 			if (e.container != LOADER.container)
 				self.setProgress(lbDone ? lbDone : LB_DONE, 100);
 
@@ -134,10 +224,15 @@
 				for (let c of containers)
 					c.className = 'hidden';
 				e.container.className = '';
-			}, isImmediate ? 0 :APP_TRANSITION_DELAY);
+				p.resolve();
+			}, isImmediate ? 0 : APP_TRANSITION_DELAY);
+
+			return p;
 		};
 
-		var loadScripts = (opts, onFinished) => {
+		var loadScripts = (opts) => {
+			var p = new Promise();
+
 			var total = opts.scripts.length;
 			var load = (loaded = 0) => {
 				var script = opts.scripts.splice(0, 1)[0];
@@ -150,13 +245,14 @@
 						progress = opts.afterProgressValue;
 						self.setProgress(opts.afterProgressText, opts.afterProgressValue);
 
-						if (onFinished)
-							onFinished();
+						p.resolve();
 					}
 				});
 			};
 
 			load();
+
+			return p;
 		};
 
 		var initializeApplication = (app, opts) => {
@@ -167,11 +263,17 @@
 			if (!opts)
 				opts = {};
 
-			var scope = angular.element(app.container).scope();
-			scope.$apply(() => {
-				scope.initializeApplication()
+			var rootScope = angular.element(app.container).scope();
+			rootScope.$apply(() => {
+				rootScope.initializeApplication()
 					.then(r => {
-						showContainer(app, r && r.lbDone ? r.lbDone : opts.lbDone);
+						showContainer(app, opts.lbDone ? opts.lbDone : (r && r.lbDone ? r.lbDone : null))
+							.then(() => {
+								if (rootScope.onApplicationReady)
+									rootScope.$apply(() => {
+										rootScope.onApplicationReady();
+									});
+							});
 					})
 					.catch(err => {
 						self.setProgressText(err.message);
@@ -181,20 +283,25 @@
 			});
 		};
 
-		var loadApplication = (app, opts, onFinished) => {
+		var loadApplication = (app, opts) => {
 			console.log('loader: loading application', app.appName);
+
+			var p = new Promise();
 
 			isMainApp = app.container == APP_LAVABOOM_MAIN.container;
 
-			loadScripts(app, () => {
-				angular.element(app.container).ready(() => {
-					angular.bootstrap(app.container, [app.appName]);
+			loadScripts(app)
+				.then(() => {
+					angular.element(app.container).ready(() => {
+						angular.bootstrap(app.container, [app.appName]);
 
-					initializeApplication(app, opts);
+						initializeApplication(app, opts);
 
-					onFinished();
+						p.resolve();
+					});
 				});
-			});
+
+			return p;
 		};
 
 		this.setProgressText = (text) => {
@@ -230,9 +337,10 @@
 
 		this.initialize = () => {
 			progress = 10;
-			loadScripts(CHECKER, () => {
-				window.checker.check();
-			});
+			loadScripts(CHECKER)
+				.then(() => {
+					window.checker.check();
+				});
 		};
 
 		this.loadLoginApplication = (opts) => {
@@ -240,12 +348,15 @@
 				opts = {};
 
 			isError = false;
-			if (isLoginAppLoaded)
-				return initializeApplication(APP_LAVABOOM_LOGIN, opts);
+			if (isLoginAppLoaded) {
+				initializeApplication(APP_LAVABOOM_LOGIN, opts);
+				return;
+			}
 
-			loadApplication(APP_LAVABOOM_LOGIN, opts, () => {
-				isLoginAppLoaded = true;
-			});
+			loadApplication(APP_LAVABOOM_LOGIN, opts)
+				.then(() => {
+					isLoginAppLoaded = true;
+				});
 		};
 
 		this.loadMainApplication = (opts) => {
@@ -253,12 +364,15 @@
 				opts = {};
 
 			isError = false;
-			if (isMainAppLoaded)
-				return initializeApplication(APP_LAVABOOM_MAIN, opts);
+			if (isMainAppLoaded) {
+				initializeApplication(APP_LAVABOOM_MAIN, opts);
+				return;
+			}
 
-			loadApplication(APP_LAVABOOM_MAIN, opts, () => {
-				isMainAppLoaded = true;
-			});
+			loadApplication(APP_LAVABOOM_MAIN, opts)
+				.then(() => {
+					isMainAppLoaded = true;
+				});
 		};
 
 		this.isMainApplication = () => isMainApp;
@@ -270,4 +384,4 @@
 
 	window.loader = new Loader();
 	window.loader.initialize();
-})();
+})(__Promise);

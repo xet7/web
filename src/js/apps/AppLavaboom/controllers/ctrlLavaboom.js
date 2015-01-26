@@ -1,6 +1,6 @@
 var chan = require('chan');
 
-angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $scope, $state, $translate, co, crypto, cryptoKeys, user, inbox, loader) {
+angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $rootScope, $timeout, $scope, $state, $translate, co, crypto, cryptoKeys, user, inbox, loader, router) {
 	var
 		beforeDecryptingProgress;
 
@@ -26,7 +26,7 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 
 			loader.incProgress(LB_LOADING_EMAILS, 5);
 
-			var decodeChan = chan();
+			/*var decodeChan = chan();
 			co(function *() {
 				while (!decodeChan.done()) {
 					var status = yield decodeChan;
@@ -36,14 +36,14 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 					else
 						loader.setProgress(LB_DECRYPTING, 95);
 				}
-			});
+			});*/
 
-			var initializePromise = inbox.initialize(decodeChan);
+			yield inbox.initialize();
 
-			yield initializePromise;
 			yield cryptoKeys.syncKeys();
 
-			yield $state.go('main.label', {labelName: 'Inbox'}, {reload: true});
+			if ($state.current.name == 'empty')
+				yield $state.go('main.label', {labelName: 'Inbox'}, {reload: true});
 
 			$scope.isInitialized = true;
 			return {lbDone: LB_SUCCESS};
@@ -51,4 +51,8 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 			throw {message: LB_INITIALIZATION_FAILED, error: error};
 		}
 	});
+
+	$scope.onApplicationReady = () => {
+		$rootScope.$broadcast('initialization-completed');
+	};
 });

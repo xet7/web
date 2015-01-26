@@ -24,8 +24,12 @@ angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, 
 		});
 	};
 
-	this.verifyInvite = (form) => {
-		self.tokenSignup = form;
+	this.verifyInvite = (username, token, isNews) => {
+		self.tokenSignup = {
+			username: username,
+			token: token,
+			isNews: isNews
+		};
 
 		return co(function * (){
 			var res = yield apiProxy(['accounts', 'create', 'verify'], {
@@ -48,7 +52,12 @@ angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, 
 
 			yield user.signIn(self.tokenSignup.username, password, true);
 
-			yield user.update(self.details);
+			var settings = angular.extend({},
+				self.details, {
+					isSubscribedToNews: (self.reserve ? self.reserve.isNews : false) || self.tokenSignup.isNews
+				});
+
+			yield user.update(settings);
 		});
 	};
 });

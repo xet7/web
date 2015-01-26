@@ -124,7 +124,8 @@
 	403 = "Wrong username or password!"
 
 # Specific error message for Lavaboom REST API
-[LAVABOOM.API.ERROR.PATH]
+[LAVABOOM.API.ERROR.ACCOUNTS.UPDATE]
+	403 = "Wrong old password specified"
 
 [MAIN.NAV]
 	LB_COMPOSE = "Compose"
@@ -141,3 +142,18 @@
 	PLC_SELECT_PERSON = "Select person..."
 	LB_EMAIL = "email"
 	LB_SUBJECT = "Subject"
+
+[MAIN.SETTINGS.SECURITY]
+	TITLE_CHANGE_PASSWORD = "Change Password"
+	TITLE_KEYS_MANAGEMENT = "Manage your keys"
+	LB_CURRENT_PASSWORD = "Current password"
+    LB_NEW_PASSWORD = "New password"
+    LB_CONFIRM_PASSWORD = "Confirm password"
+    BTN_CONFIRM = "Confirm"
+	LB_KEY_PAIR_FOR = "Key Pair for"
+	LB_KEY_ID = "Key ID"
+	LB_FINGERPRINT = "Fingerprint"
+	LB_CREATION_DATE = "Creation Date"
+	LB_PASSPHRASE = "Passphrase"
+	BTN_EXPORT_KEYS = "Export keys"
+	BTN_IMPORT_KEYS = "Import keys"

@@ -8,6 +8,7 @@ angular.module(primaryApplicationName, [
 	'ui.select',
 	'textAngular',
 	'pascalprecht.translate',
+	'validation.match',
 	'angular-co'
 ]);
 
@@ -17,10 +18,12 @@ var bulkRequire = require('bulk-require');
 
 bulkRequire(__dirname, [
 	'../runs/*.js',
+	'../decorators/*.js',
 	'../configs/*.js',
 	'../directives/*.js',
 	'../services/*.js',
 
+	'./AppLavaboom/runs/*.js',
 	'./AppLavaboom/filters/*.js',
 	'./AppLavaboom/configs/*.js',
 	'./AppLavaboom/directives/*.js',

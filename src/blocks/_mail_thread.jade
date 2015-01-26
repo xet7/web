@@ -19,23 +19,24 @@
 					a(href="#")
 						span.icon-trash
 		// mail-thread-template
-		.row.no-gutter.mail
+		.row.no-gutter.mail(ng-show="isLoading") Loading...
+		.row.no-gutter.mail(ng-repeat="email in emails")
 			.col-xs-24
 				header.row.no-gutter
 					.col-xs-21
-						strong Sarah McGormec
+						strong(ng-bind="email.fromName")
 						br
 						| From:
-						span(ng-repeat="from in selected.from", ng-bind="from")
+						span(ng-repeat="from in email.from", ng-bind="from")
 						br
 						| Subject:
-						span(ng-bind="selected.subject")
+						span(ng-bind="email.subject")
 					.col-xs-2.when
-						span(ng-bind="selected.date | date")
+						span(ng-bind="email.date | date")
 					.col-xs-1.secure
 						a.icon-<!--.$secure.-->
 				.mail-content.row.no-gutter
-					.col-xs-22(ng-bind-html="selected.body")
+					.col-xs-22(ng-bind-html="email.body.text")
 				//footer
 					.row.no-gutter
 						.col-xs-8

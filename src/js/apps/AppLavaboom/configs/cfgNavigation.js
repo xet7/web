@@ -92,21 +92,14 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 
 	var popupStates = {
 		'compose': function () {
-			this.url =  '/compose';
-			this.onEnter = ($state, $modal, router) => {
-				router.currentModal = $modal.open({
+			this.url =  '/compose/:threadId';
+			this.onEnter = ($state, $stateParams, router) => {
+				router.createPopup({
 					templateUrl: 'partials/compose.html',
 					controller: 'CtrlCompose',
 					backdrop: true,
 					size: 'lg'
 				});
-				router.currentModal.result
-					.then(() => {
-						router.hidePopup();
-					})
-					.catch(() => {
-						router.hidePopup();
-					});
 			};
 			this.onExit = (router) => {
 				router.hidePopup();

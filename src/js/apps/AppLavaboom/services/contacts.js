@@ -29,6 +29,13 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 	// contact list, usually would be a separate database
  
 
+	this.getContactByEmail = (email) => {
+		for(let c of self.people)
+			if (c.email == email)
+				return c;
+		return {};
+	};
+
 	this.myself = null;
 
 	var addContact = (contact) => {
@@ -42,6 +49,6 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 			email: user.email,
 			isSecured: true
 		});
-		$rootScope.$broadcast('contacts-changed', self.people);
+		addContact(self.myself);
 	});
 });
