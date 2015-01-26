@@ -1,6 +1,6 @@
 var chan = require('chan');
 
-angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $scope, $state, $translate, co, crypto, cryptoKeys, user, inbox, loader) {
+angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $rootScope, $timeout, $scope, $state, $translate, co, crypto, cryptoKeys, user, inbox, loader, router) {
 	var
 		beforeDecryptingProgress;
 
@@ -42,10 +42,16 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 
 			yield cryptoKeys.syncKeys();
 
+			//yield $state.go('main.label', {labelName: 'Inbox'}, {reload: true});
+
 			$scope.isInitialized = true;
 			return {lbDone: LB_SUCCESS};
 		} catch (error) {
 			throw {message: LB_INITIALIZATION_FAILED, error: error};
 		}
 	});
+
+	$scope.onApplicationReady = () => {
+		$rootScope.$broadcast('initialization-completed');
+	};
 });

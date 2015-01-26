@@ -94,14 +94,25 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		}
 	};
 
-	this.initialize = (decodeChan) => co(function *(){
+	this.getLabels = () => co(function *() {
 		var labels = (yield apiProxy(['labels', 'list'])).body.labels;
 
-		self.labelsByName = labels.reduce((a, label) => {
+		return labels.reduce((a, label) => {
 			label.iconClass = `icon-${label.name.toLowerCase()}`;
 			a[label.name] = label;
 			return a;
 		}, {});
+	});
+
+	this.initialize = (decodeChan) => co(function *(){
+		var labels = yield self.getLabels();
+
+		if (!labels.Drafts) {
+			yield apiProxy(['labels', 'create'], {name: 'Drafts'});
+			labels = yield self.getLabels();
+		}
+
+		self.labelsByName = labels;
 
 		$rootScope.$broadcast('inbox-labels', self.labels);
 
@@ -112,8 +123,6 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	var createEmail = (e, decodeChan) => {
 		var isPreviewAvailable = !!e.preview;
-
-		console.log('CREATE EMAIL FROM', e);
 
 		var ch = chan();
 		return {
