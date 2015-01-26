@@ -42,6 +42,13 @@
 	}
 }
 
+.alert{
+	border: 0;
+	&.alert-danger{
+		background: fadeout(@brand-danger, 80%);
+		color: lighten(@brand-danger, 40%);
+	}
+}
 .list-group-wrapper{
 	padding-top: @filter-height;
 	.list-group-item {

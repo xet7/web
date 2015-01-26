@@ -9,7 +9,7 @@ form.steps-form.ng-cloak(name="details")
 		span.icon-unread
 		span.icon-unread
 
-	span.error(ng-bind="")
+	div.alert.alert-danger(ng-if="currentErrorMessage", ng-bind="currentErrorMessage")
 	div.info 
 		span.icon-info
 		p {{'LOGIN.DETAILS.SUB_TITLE' | translate}}
