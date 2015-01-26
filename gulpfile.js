@@ -31,7 +31,7 @@ var to5 = require('gulp-6to5');
 // Browserify the mighty one
 var browserify = require('browserify'),
 	to5ify = require('6to5ify'),
-	ngminify = require('browserify-ngmin'),
+	browserifyNgAnnotate = require('browserify-ngannotate'),
 	bulkify = require('bulkify'),
 	uglifyify = require('uglifyify'),
 	stripify = require('stripify'),
@@ -181,7 +181,7 @@ var browserifyBundle = function(filename) {
 
 				if (config.isProduction) {
 					browserifyPipeline = browserifyPipeline
-						.transform(ownCodebaseTransform(ngminify))
+						.transform(ownCodebaseTransform(browserifyNgAnnotate))
 						.transform(uglifyify);
 				}
 

@@ -13,12 +13,12 @@
     "url": "http://github.com/cferdinandi/Plugin"
   },
   "devDependencies": {
+    "6to5": "^2.13.7",
     "6to5ify": "^3.1.2",
     "angular-validation": "^1.2.6",
     "brfs": "^1.2.0",
     "browserify": "^8.1.0",
-    "browserify-ngannotate": "^0.5.0",
-    "browserify-ngmin": "^0.1.0",
+    "browserify-ngannotate": "^0.6.0",
     "buffer": "^3.0.1",
     "bulk-require": "^0.2.1",
     "bulkify": "^1.0.2",
@@ -72,7 +72,6 @@
     "gulp-svgstore": "^2.0.0",
     "gulp-tap": "^0.1.1",
     "gulp-toml": "https://github.com/let4be/gulp-toml/archive/master.tar.gz",
-    "gulp-traceur": "^0.15.0",
     "gulp-uglify": "^0.3.0",
     "gulp-util": "^3.0.1",
     "http-static-gzip-regexp": "0.0.2",
@@ -92,7 +91,6 @@
     "stripify": "^2.0.0",
     "toml": "^2.1.1",
     "toml-require": "^1.0.1",
-    "traceur": "0.0.81",
     "uglify": "^0.1.1",
     "uglifyify": "^2.6.0",
     "vinyl-source-stream": "^1.0.0"
