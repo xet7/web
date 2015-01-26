@@ -1,4 +1,4 @@
-angular.module('AppLavaboom').controller('CtrlCompose', function($scope, contacts, inbox, $stateParams) {
+angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateParams, user, contacts, inbox) {
 	$scope.disabled = false;
 
 	var threadId = $stateParams.threadId;
@@ -34,8 +34,12 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, contact
 				},
 				fromEmails: [contacts.myself],
 				subject: 'Test subject',
-				body: '<p>Dear Orwell</p><p>Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Sed porttitor lectus nibh. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec sollicitudin molestie malesuada. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec rutrum congue leo eget malesuada. Sed porttitor lectus nibh. Curabitur aliquet quam id dui posuere blandit. Nulla porttitor accumsan tincidunt.</p><blockquote><p>See, there never was actually any spoon. It was just lying around the production set.</p></blockquote><p>Sincerely</p><p>Al Coholic<br/>C.E.O<br/>Starship Enterprise(s)</p>'
+				body: '<p>Dear Orwell</p><p>Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Sed porttitor lectus nibh. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec sollicitudin molestie malesuada. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec rutrum congue leo eget malesuada. Sed porttitor lectus nibh. Curabitur aliquet quam id dui posuere blandit. Nulla porttitor accumsan tincidunt.</p><blockquote><p>See, there never was actually any spoon. It was just lying around the production set.</p></blockquote>'
 			};
+
+		console.log(user.settings);
+		if (user.settings.isSignatureEnabled && user.settings.signatureHtml)
+			$scope.form.body = $scope.form.body + user.settings.signatureHtml;
 	});
 
 	$scope.clearTo = () => $scope.form.selected.to = [];
