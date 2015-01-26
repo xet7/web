@@ -29,11 +29,11 @@
 	.actions{
 		top: 0;
 	}
-	.main-settings-view{
+	.main-settings-view, .main-view{
 		padding-top: @filter-height + 30px;
 		.pos-rel();
 		height: 100%;
-		> .settings-panel{
+		> .settings-panel, .main-panel{
 			position: relative;
 			height: 100%;
 			overflow: auto;
@@ -77,8 +77,8 @@
 		&.separator{
 			padding-top: .3em;
 			padding-bottom: .3em;
-			background-color: @lava-gray-light;
-			color: @lava-gray-dark;
+			background-color: @lava-gray-lighter;
+			color: @lava-gray;
 		}
 	}
 	&.list-group-icons > li > a > span{
