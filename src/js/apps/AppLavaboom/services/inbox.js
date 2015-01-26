@@ -57,7 +57,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	});
 
 	this.requestDelete = (id) => {
-		apiProxy(['emails', 'delete'], id);
+		apiProxy(['threads', 'delete'], id);
 		self.requestList();
 	};
 

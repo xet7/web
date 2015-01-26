@@ -17,9 +17,9 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 		$rootScope.$broadcast('inbox-selection-changed', $scope.selected);
 	});
 
-	if ($scope.isInitialized) {
+	$rootScope.$on('initialization-completed', () => {
 		inbox.requestList($stateParams.labelName);
-	}
+	});
 
 	$scope.$bind('inbox-threads', () => {
 		$scope.threads = inbox.threads;
