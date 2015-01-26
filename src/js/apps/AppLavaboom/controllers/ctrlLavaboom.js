@@ -26,7 +26,7 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 
 			loader.incProgress(LB_LOADING_EMAILS, 5);
 
-			var decodeChan = chan();
+			/*var decodeChan = chan();
 			co(function *() {
 				while (!decodeChan.done()) {
 					var status = yield decodeChan;
@@ -36,13 +36,11 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 					else
 						loader.setProgress(LB_DECRYPTING, 95);
 				}
-			});
+			});*/
 
-			yield inbox.initialize(decodeChan);
+			yield inbox.initialize();
 
 			yield cryptoKeys.syncKeys();
-
-			yield $state.go('main.label', {labelName: 'Inbox'}, {reload: true});
 
 			$scope.isInitialized = true;
 			return {lbDone: LB_SUCCESS};
