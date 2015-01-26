@@ -1,4 +1,4 @@
-angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateParams, user, contacts, inbox) {
+angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateParams, user, contacts, inbox, router) {
 	$scope.disabled = false;
 
 	var threadId = $stateParams.threadId;
@@ -54,7 +54,13 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateP
 			$scope.form.subject,
 			$scope.form.body,
 			threadId
-		);
+		)
+			.then(() => {
+				router.hidePopup();
+			})
+			.catch(err => {
+
+			});
 	};
 
 	$scope.tagTransform = function (newTag) {
