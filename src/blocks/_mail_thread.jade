@@ -19,6 +19,7 @@
 					a(href="#")
 						span.icon-trash
 		// mail-thread-template
+		.row.no-gutter.mail(ng-show="isLoading") Loading...
 		.row.no-gutter.mail(ng-repeat="email in emails")
 			.col-xs-24
 				header.row.no-gutter
