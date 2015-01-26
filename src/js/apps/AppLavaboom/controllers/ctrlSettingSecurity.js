@@ -1,10 +1,10 @@
 var Buffer = require('buffer/').Buffer;
 
-angular.module(primaryApplicationName).controller('CtrlSettingsSecurity', function($scope, utils, user, crypto) {
+angular.module(primaryApplicationName).controller('CtrlSettingsSecurity', function($scope, $timeout, utils, user, crypto, apiProxy) {
 	$scope.email = user.email;
 
 	$scope.form = {
-		oldPassword: '********',
+		oldPassword: '',
 		password: '',
 		passwordRepeat: ''
 	};
@@ -18,5 +18,23 @@ angular.module(primaryApplicationName).controller('CtrlSettingsSecurity', functi
 		};
 	});
 
-	console.log('$scope.keys', $scope.keys);
+	$scope.isProcessing = false;
+	$scope.passwordUpdateStatus = '';
+
+	$scope.changePassword = () => {
+		$scope.isProcessing = true;
+		apiProxy(['accounts', 'update'], 'me', {
+			current_password: user.calculateHash($scope.form.oldPassword),
+			new_password: user.calculateHash($scope.form.password)
+		})
+			.then(() => {
+				$scope.passwordUpdateStatus = 'saved!';
+			})
+			.catch(err => {
+				$scope.passwordUpdateStatus = err.message;
+			})
+			.finally(() => {
+				$scope.isProcessing = false;
+			});
+	};
 });

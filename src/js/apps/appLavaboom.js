@@ -8,6 +8,7 @@ angular.module(primaryApplicationName, [
 	'ui.select',
 	'textAngular',
 	'pascalprecht.translate',
+	'validation.match',
 	'angular-co'
 ]);
 

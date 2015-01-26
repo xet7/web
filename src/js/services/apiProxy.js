@@ -53,14 +53,14 @@ angular.module(primaryApplicationName).factory('apiProxy', function($q, $rootSco
 
 				return res;
 			} catch (err) {
-				LavaboomAPI.formatError(callName, err)
-					.then(formattedError => {
-						$rootScope.currentErrorMessage = formattedError;
-					});
+				var formattedError = yield LavaboomAPI.formatError(callName, err);
+				$rootScope.currentErrorMessage = formattedError;
 
 				console.error(`${callName} error: `, err);
 
-				throw err;
+				var error =  new Error(formattedError);
+				error.original = err;
+				throw error;
 			}
 		});
 	};
