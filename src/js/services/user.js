@@ -38,7 +38,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		return co(function * () {
 			var res = yield apiProxy(['accounts', 'get'], 'me');
 
-			self.settings = res.body.user.settings;
+			self.settings = res.body.user.settings ? res.body.user.settings : {};
 			$rootScope.$broadcast('user-settings');
 
 			setupUserBasicInformation(res.body.user.name);
