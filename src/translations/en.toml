@@ -145,6 +145,7 @@
 
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
+	TITLE_KEYS_MANAGEMENT = "Manage your keys"
 	LB_CURRENT_PASSWORD = "Current password"
     LB_NEW_PASSWORD = "New password"
     LB_CONFIRM_PASSWORD = "Confirm password"
@@ -154,3 +155,5 @@
 	LB_FINGERPRINT = "Fingerprint"
 	LB_CREATION_DATE = "Creation Date"
 	LB_PASSPHRASE = "Passphrase"
+	BTN_EXPORT_KEYS = "Export keys"
+	BTN_IMPORT_KEYS = "Import keys"

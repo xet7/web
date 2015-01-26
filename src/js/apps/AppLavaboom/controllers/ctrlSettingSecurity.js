@@ -1,6 +1,6 @@
 var Buffer = require('buffer/').Buffer;
 
-angular.module(primaryApplicationName).controller('CtrlSettingsSecurity', function($scope, $timeout, utils, user, crypto, apiProxy) {
+angular.module(primaryApplicationName).controller('CtrlSettingsSecurity', function($scope, $timeout, utils, user, crypto, cryptoKeys, apiProxy, fileReader) {
 	$scope.email = user.email;
 
 	$scope.form = {
@@ -36,5 +36,30 @@ angular.module(primaryApplicationName).controller('CtrlSettingsSecurity', functi
 			.finally(() => {
 				$scope.isProcessing = false;
 			});
+	};
+
+	$scope.getFile = function(file) {
+		fileReader.readAsText(file, $scope)
+			.then(jsonBackup => {
+				try {
+					var statuses = cryptoKeys.importKeys(jsonBackup);
+					alert(statuses.join('\n'));
+				} catch (error) {
+					console.error(error);
+				}
+			})
+			.catch(error => {
+				console.error(error);
+			});
+	};
+
+	$scope.exportKeys = () => {
+		var keysBackup = cryptoKeys.exportKeys();
+		var blob = new Blob([keysBackup], {type: "text/json;charset=utf-8"});
+		saveAs(blob, cryptoKeys.getExportFilename(keysBackup));
+	};
+
+	$scope.importKeys = () => {
+		document.getElementById('import-btn').click();
 	};
 });
