@@ -22,8 +22,6 @@ var spawn = require('child_process').spawn;
 var toml = require('toml');
 var source = require('vinyl-source-stream');
 var lazypipe = require('lazypipe');
-var exorcist  = require('exorcist');
-var mold = require('mold-source-map');
 var domain = require('domain');
 
 var to5 = require('gulp-6to5');
@@ -41,7 +39,6 @@ var browserify = require('browserify'),
 var serve = require('./serve');
 
 // Configuration
-var package = require('./package.json');
 var paths = require('./gulp/paths');
 
 var filterTransform = require('filter-transform');
@@ -51,6 +48,46 @@ var childProcess = null;
 var args = process.argv.slice(2);
 
 require('toml-require').install();
+
+/**
+ * Reused pipelines
+ */
+
+var livereloadPipeline  = function (isForce) {
+	if (!isForce)
+		isForce = false;
+
+	return config.isProduction || (!isForce && !isLivereloadBuild)
+		? lazypipe()
+			.pipe(plg.util.noop)
+		: lazypipe()
+			.pipe(plg.ignore.exclude, '*.map')
+			.pipe(plg.livereload);
+};
+
+var prodHtmlPipeline  = function (input, output) {
+	return lazypipe()
+		.pipe(plg.minifyHtml, {
+			empty: true
+		})
+		.pipe(plg.rename, { suffix: '.min' })
+		.pipe(gulp.dest, output)
+		.pipe(plg.gzip)
+		.pipe(gulp.dest, output);
+};
+
+var createJadePipeline = function (input, output) {
+	return gulp.src(input)
+		.pipe(plg.plumber())
+		.pipe(plg.ignore(function(file){
+			var basename = path.basename(file.relative);
+			return basename.indexOf('_') == 0;
+		}))
+		.pipe(plg.jade())
+		.pipe(gulp.dest(output))
+		.pipe(livereloadPipeline()())
+		.pipe(config.isProduction ? prodHtmlPipeline(input, output)() : plg.util.noop());
+};
 
 /**
  * Gulp Taks
@@ -86,7 +123,7 @@ gulp.task('build:scripts:vendor:min', function() {
 		.pipe(gulp.dest(paths.scripts.output));
 });
 
-gulp.task('build:scripts:core', ['clean:dist'], function() {
+gulp.task('build:scripts:core', function() {
 	var prodPipeline = lazypipe()
 		.pipe(plg.uglify);
 
@@ -100,7 +137,7 @@ gulp.task('build:scripts:core', ['clean:dist'], function() {
 		.pipe(gulp.dest(paths.scripts.output));
 });
 
-gulp.task('build:scripts:vendor', ['clean:dist', 'build:scripts:vendor:min', 'lint:scripts', 'build:scripts:core'], function() {
+gulp.task('build:scripts:vendor', ['build:scripts:vendor:min', 'lint:scripts', 'build:scripts:core'], function() {
 	return gulp.src(paths.scripts.inputDeps)
 		.pipe(plg.plumber())
 		.pipe(plg.tap(function (file, t) {
@@ -198,7 +235,7 @@ var scriptBuildSteps = [];
 paths.scripts.inputApps.forEach(function(appScript){
 	var name = 'build:scripts-' + (scriptBuildSteps.length + 1);
 
-	gulp.task(name, ['clean:dist', 'lint:scripts', 'build:translations', 'build:scripts:vendor'], function() {
+	gulp.task(name, ['lint:scripts', 'build:translations', 'build:scripts:vendor'], function() {
 		return browserifyBundle(appScript);
 	});
 	scriptBuildSteps.push(name);
@@ -223,7 +260,7 @@ gulp.task('lint:scripts', function () {
 });
 
 // Process, lint, and minify less files
-gulp.task('build:styles', ['clean:dist'], function() {
+gulp.task('build:styles', function() {
 	var prodPipeline = lazypipe()
 		.pipe(plg.minifyCss, {
 			keepSpecialComments: 0
@@ -247,11 +284,12 @@ gulp.task('build:styles', ['clean:dist'], function() {
 		.pipe(plg.autoprefixer('last 2 version', '> 1%'))
 		.pipe(config.isDebugable && !config.isProduction ? plg.sourcemaps.write('.') : plg.util.noop())
 		.pipe(!config.isProduction ? gulp.dest(paths.styles.output) : plg.util.noop())
-		.pipe(config.isProduction ? prodPipeline() : plg.util.noop());
+		.pipe(config.isProduction ? prodPipeline() : plg.util.noop())
+		.pipe(livereloadPipeline()());
 });
 
 // Copy static files into output folder
-gulp.task('copy:vendor', ['clean:dist'], function() {
+gulp.task('copy:vendor', function() {
 	return gulp.src(paths.vendor.input, {read: false})
 		.pipe(plg.plumber())
 		.pipe(plg.tap(function (file, t) {
@@ -271,90 +309,49 @@ gulp.task('copy:vendor', ['clean:dist'], function() {
 });
 
 // Copy images into output folder
-gulp.task('copy:images', ['clean:dist'], function() {
+gulp.task('copy:images', function() {
 	return gulp.src(paths.img.input)
 		.pipe(plg.plumber())
 		.pipe(gulp.dest(paths.img.output));
 });
 
 // Copy fonts into output folder
-gulp.task('copy:fonts', ['clean:dist'], function() {
+gulp.task('copy:fonts', function() {
 	return gulp.src(paths.fonts.input)
 		.pipe(plg.plumber())
 		.pipe(gulp.dest(paths.fonts.output));
 });
 
 // Copy static files into output folder
-gulp.task('copy:static', ['clean:dist'], function() {
+gulp.task('copy:static', function() {
 	return gulp.src(paths.staticFiles)
 		.pipe(plg.plumber())
 		.pipe(gulp.dest(paths.output));
 });
 
 // Build translation files(toml -> json)
-gulp.task('build:translations', ['clean:dist'], function() {
+gulp.task('build:translations', function() {
 	return gulp.src(paths.translations.input)
 		.pipe(plg.plumber())
 		.pipe(plg.toml({to: JSON.stringify, ext: '.json'}))
 		.pipe(gulp.dest(paths.translations.output));
 });
 
-var prodHtmlPipeline  = function (input, output) {
-	return lazypipe()
-		.pipe(plg.minifyHtml, {
-			empty: true
-		})
-		.pipe(plg.rename, { suffix: '.min' })
-		.pipe(gulp.dest, output)
-		.pipe(plg.gzip)
-		.pipe(gulp.dest, output);
-};
-
-var createHtmlPipeline = function (input, output) {
-	return gulp.src(input)
-		.pipe(plg.plumber())
-		.pipe(plg.fileInclude())
-		.pipe(gulp.dest(output))
-		.pipe(config.isProduction ? prodHtmlPipeline(input, output)() : plg.util.noop());
-};
-
-var createJadePipeline = function (input, output) {
-	return gulp.src(input)
-		.pipe(plg.plumber())
-		.pipe(plg.ignore(function(file){
-			var basename = path.basename(file.relative);
-			return basename.indexOf('_') == 0;
-		}))
-		.pipe(plg.jade())
-		.pipe(gulp.dest(output))
-		.pipe(config.isProduction ? prodHtmlPipeline(input, output)() : plg.util.noop());
-};
-
-// Build primary html files
-gulp.task('build:html', ['clean:dist'], function() {
-	return createHtmlPipeline(paths.main_html.input, paths.main_html.output);
+// Build primary markup jade files
+gulp.task('build:jade', function() {
+	return createJadePipeline(paths.markup.input, paths.markup.output);
 });
 
-// Build primary jade files
-gulp.task('build:jade', ['clean:dist'], function() {
-	return createJadePipeline(paths.main_html.inputJade, paths.main_html.output);
-});
-
-// Build partials html files
-gulp.task('build:partials', ['clean:dist'], function() {
-	return createHtmlPipeline(paths.partials.input, paths.partials.output);
-});
-
-// Build partials jade files
-gulp.task('build:partials-jade', ['clean:dist'], function() {
-	return createJadePipeline(paths.partials.inputJade, paths.partials.output);
+// Build partials markup jade files
+gulp.task('build:partials-jade', function() {
+	return createJadePipeline(paths.partials.input, paths.partials.output);
 });
 
 // Remove pre-existing content from output and test folders
-gulp.task('clean:dist', function () {
+gulp.task('clean', function () {
 	del.sync([
 		paths.output + '**/*',
-		paths.cache
+		paths.cache + '**/*'
 	]);
 });
 
@@ -371,11 +368,6 @@ gulp.task('bower', function() {
 	return plg.bower();
 });
 
-gulp.task('livereload', ['compile'], function() {
-	return gulp.src(paths.main_html.inputJade)
-		.pipe(plg.livereload());
-});
-
 /**
  * Task Runners
  */
@@ -384,10 +376,8 @@ gulp.task('set-production', function () {
 	config.isProduction = true;
 });
 
-var compileSteps = ['clean:dist',
-		'build:html',
+var compileSteps = [
 		'build:jade',
-		'build:partials',
 		'build:partials-jade',
 		'build:translations',
 		'copy:static',
@@ -398,24 +388,74 @@ var compileSteps = ['clean:dist',
 	]
 	.concat(scriptBuildSteps);
 
+gulp.task('compile:finished', compileSteps, function() {
+	if (!isFirstBuild) {
+		return gulp.src(paths.markup.input)
+			.pipe(livereloadPipeline(true)());
+	}
+	isFirstBuild = false;
+});
+
 // Compile files
-gulp.task('compile', compileSteps);
+gulp.task('compile', ['clean'], function() {
+	gulp.start(compileSteps.concat(['compile:finished']));
+});
+
+// black magic to fix multiple and inconsistent live reloads, the simplest possible way
+var scheduledTimeout = null;
+var isLivereloadBuild = false;
+var isFirstBuild = true;
+var scheduleLiveReloadBuildTaskStart = function (taskName, timeout) {
+	if (!timeout)
+		timeout = 500;
+	isLivereloadBuild = true;
+
+	console.warn('live reload build scheduled for ' + taskName + ' in ' + timeout + 'ms.');
+	if (scheduledTimeout) {
+		clearTimeout(scheduledTimeout);
+		taskName = 'compile';
+		isLivereloadBuild = false;
+		console.warn('live reload conflict - perform full rebuild');
+	}
+	scheduledTimeout = setTimeout(function (){
+		scheduledTimeout = null;
+		console.warn('perform live reload build for ' + taskName);
+		gulp.start(taskName);
+	}, timeout);
+};
 
 gulp.task('default', [
 	'bower',
 	'tests'
-], function() {
+], function(cb) {
 	// we can start compile only after we do have bower dependencies
-	gulp.start('compile');
-
-	// warning:
-	// we do this only once and only in the first gulp process(can be up to 2 due to gulpfile.js reloading)
-	// if we do reload gulp later all watching tasks will be handled by the first process anyway
-
-	// watch for source changes
-	gulp.watch(paths.input).on('change', function(file) {
+	gulp.start('compile', function (err) {
+		console.log('compile is done!');
+		if (err) return cb(err);
+		callback();
+	});
+	
+	// watch for source changes and rebuild the whole project with _exceptions_
+	gulp.watch([paths.input, '!' + paths.styles.inputAll, '!' + paths.markup.input, '!' + paths.partials.input]).on('change', function(file) {
+		isLivereloadBuild = false;
 		gulp.start('compile');
-		gulp.start('livereload');
+	});
+	
+	// _exceptions_
+	
+	// partial live-reload for style changes
+	gulp.watch(paths.styles.inputAll).on('change', function(file) {
+		scheduleLiveReloadBuildTaskStart('build:styles');
+	});
+
+	// partial live-reload for primary jade files
+	gulp.watch(paths.markup.input).on('change', function(file) {
+		scheduleLiveReloadBuildTaskStart('build:jade');
+	});
+
+	// partial live-reload for partials jade files
+	gulp.watch(paths.partials.input).on('change', function(file) {
+		scheduleLiveReloadBuildTaskStart('build:partials-jade');
 	});
 
 	// start livereload server
