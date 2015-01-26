@@ -42,7 +42,8 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 
 			yield cryptoKeys.syncKeys();
 
-			//yield $state.go('main.label', {labelName: 'Inbox'}, {reload: true});
+			if ($state.current.name == 'empty')
+				yield $state.go('main.label', {labelName: 'Inbox'}, {reload: true});
 
 			$scope.isInitialized = true;
 			return {lbDone: LB_SUCCESS};

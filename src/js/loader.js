@@ -230,7 +230,9 @@ var __Promise = function () {
 			return p;
 		};
 
-		var loadScripts = (opts, onFinished) => {
+		var loadScripts = (opts) => {
+			var p = new Promise();
+
 			var total = opts.scripts.length;
 			var load = (loaded = 0) => {
 				var script = opts.scripts.splice(0, 1)[0];
@@ -243,13 +245,14 @@ var __Promise = function () {
 						progress = opts.afterProgressValue;
 						self.setProgress(opts.afterProgressText, opts.afterProgressValue);
 
-						if (onFinished)
-							onFinished();
+						p.resolve();
 					}
 				});
 			};
 
 			load();
+
+			return p;
 		};
 
 		var initializeApplication = (app, opts) => {
@@ -280,20 +283,25 @@ var __Promise = function () {
 			});
 		};
 
-		var loadApplication = (app, opts, onFinished) => {
+		var loadApplication = (app, opts) => {
 			console.log('loader: loading application', app.appName);
+
+			var p = new Promise();
 
 			isMainApp = app.container == APP_LAVABOOM_MAIN.container;
 
-			loadScripts(app, () => {
-				angular.element(app.container).ready(() => {
-					angular.bootstrap(app.container, [app.appName]);
+			loadScripts(app)
+				.then(() => {
+					angular.element(app.container).ready(() => {
+						angular.bootstrap(app.container, [app.appName]);
 
-					initializeApplication(app, opts);
+						initializeApplication(app, opts);
 
-					onFinished();
+						p.resolve();
+					});
 				});
-			});
+
+			return p;
 		};
 
 		this.setProgressText = (text) => {
@@ -329,9 +337,10 @@ var __Promise = function () {
 
 		this.initialize = () => {
 			progress = 10;
-			loadScripts(CHECKER, () => {
-				window.checker.check();
-			});
+			loadScripts(CHECKER)
+				.then(() => {
+					window.checker.check();
+				});
 		};
 
 		this.loadLoginApplication = (opts) => {
@@ -339,12 +348,15 @@ var __Promise = function () {
 				opts = {};
 
 			isError = false;
-			if (isLoginAppLoaded)
-				return initializeApplication(APP_LAVABOOM_LOGIN, opts);
+			if (isLoginAppLoaded) {
+				initializeApplication(APP_LAVABOOM_LOGIN, opts);
+				return;
+			}
 
-			loadApplication(APP_LAVABOOM_LOGIN, opts, () => {
-				isLoginAppLoaded = true;
-			});
+			loadApplication(APP_LAVABOOM_LOGIN, opts)
+				.then(() => {
+					isLoginAppLoaded = true;
+				});
 		};
 
 		this.loadMainApplication = (opts) => {
@@ -352,12 +364,15 @@ var __Promise = function () {
 				opts = {};
 
 			isError = false;
-			if (isMainAppLoaded)
-				return initializeApplication(APP_LAVABOOM_MAIN, opts);
+			if (isMainAppLoaded) {
+				initializeApplication(APP_LAVABOOM_MAIN, opts);
+				return;
+			}
 
-			loadApplication(APP_LAVABOOM_MAIN, opts, () => {
-				isMainAppLoaded = true;
-			});
+			loadApplication(APP_LAVABOOM_MAIN, opts)
+				.then(() => {
+					isMainAppLoaded = true;
+				});
 		};
 
 		this.isMainApplication = () => isMainApp;

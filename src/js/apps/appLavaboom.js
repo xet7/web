@@ -23,6 +23,7 @@ bulkRequire(__dirname, [
 	'../directives/*.js',
 	'../services/*.js',
 
+	'./AppLavaboom/runs/*.js',
 	'./AppLavaboom/filters/*.js',
 	'./AppLavaboom/configs/*.js',
 	'./AppLavaboom/directives/*.js',

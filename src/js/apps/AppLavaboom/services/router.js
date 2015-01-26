@@ -5,7 +5,6 @@ angular.module(primaryApplicationName).service('router', function ($rootScope, $
 	var delayedPopup = null;
 
 	$rootScope.$on('initialization-completed', () => {
-		console.log('got initialization-completed event', delayedPopup);
 		isInitialized = true;
 		if (delayedPopup) {
 			delayedPopup.windowClass = 'no-animation-modal';
