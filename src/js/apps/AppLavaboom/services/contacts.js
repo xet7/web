@@ -110,7 +110,7 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 
 	this.myself = null;
 
-	$rootScope.$bind('user-authenticated', () => {
+	$rootScope.$on('user-authenticated', () => {
 		self.myself = new Contact({
 			name: user.name,
 			data: {
