@@ -7,36 +7,63 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 		this.sec = opt.isSecured ? 1 : 0;
 	};
 
+	var createContactEnvelope = (name, contact) => co(function *() {
+		var envelope = yield crypto.encodeEnvelopeWithKeys({
+			data: contact,
+			encoding: 'json'
+		}, [user.key.key], 'data');
+		envelope.name = name;
+
+		return envelope;
+	});
+
 	this.list = () => co(function *() {
 		var contacts = (yield apiProxy(['contacts', 'list'])).body.contacts;
 		return contacts
 			? co.map(contacts, function *(contactEnvelope) {
-				var data = yield crypto.decodeEnvelope(contactEnvelope, 'data');
+				var data;
+
+				try {
+					data = yield crypto.decodeEnvelope(contactEnvelope, 'data');
+				} catch (error) {
+					console.error(error);
+					data = null;
+				}
+
 				switch (data.majorVersion) {
 					default:
-						return angular.extend({}, data.data, {
+						return {
+							data: data.data,
+							id: contactEnvelope.id,
 							name: contactEnvelope.name,
 							dateCreated: contactEnvelope.date_created,
 							dateModified: contactEnvelope.date_modified
-						});
+						};
 				}
 			})
 			: [];
 	});
 
 	this.createContact = (name, contact) => co(function *() {
-		var envelope = yield crypto.encodeEnvelopeWithKeys({
-			data: contact,
-			encoding: 'json'
-		}, [user.key.key], 'data');
-		envelope.name = name;
+		var envelope = yield createContactEnvelope(name, contact);
 		return yield apiProxy(['contacts', 'create'], envelope);
+	});
+
+	this.updateContact = (id, name, contact) => co(function *() {
+		var envelope = yield createContactEnvelope(name, contact);
+		return yield apiProxy(['contacts', 'update'], id, envelope);
+	});
+
+	this.deleteContact = (id) => co(function *() {
+		return yield apiProxy(['contacts', 'delete'], id);
 	});
 
 	$rootScope.$on('initialization-completed', () => {
 		self.list()
 			.then(contacts => {
 				console.log('contacts: ', contacts);
+
+				contacts.forEach(c => self.deleteContact(c.id));
 			});
 
 		/*self.createContact('wub', {
