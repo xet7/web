@@ -10,7 +10,7 @@ var config = require('./gulp/config');
 var semver = require('semver');
 
 if (!semver.satisfies(process.version, config.nodeVersion)) {
-	utils.logGulpError('Incompatible node.js version\n', 'gulpfile.js', new Error('This gulpfile requires node.js version ' + config.nodeVersion));
+	utils.logGulpError('Incompatible node.js version\n', 'gulpfile.js', new Error('This gulpfile requires node.js version ' + config.nodeVersion + '. ' + process.version + ' is currently used.'));
 	return;
 }
 
