@@ -1,14 +1,10 @@
 angular.module(primaryApplicationName).controller('CtrlContacts', function($scope, contacts) {
-	$scope.singleModel = 1;
-	$scope.singleModel2 = 0;
-
 	$scope.searchText = '';
 
-	$scope.people = contacts.people;
+	$scope.$bind('contacts-changed', () => {
+		$scope.people = contacts.people;
+		$scope.sortedPeople = _.groupBy(contacts.people, contact => contact.name[0]);
+	});
 
-	$scope.isCollapsed = 1;
-
-	$scope.sortedPeople = contacts.sortedPeople;
-	$scope.selectedPeople = contacts.people[0];
-
+	$scope.selectedPeople = null;
 });
