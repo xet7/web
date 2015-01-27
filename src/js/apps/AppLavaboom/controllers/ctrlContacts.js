@@ -1,4 +1,4 @@
-angular.module('AppLavaboom').controller('CtrlContacts', function($scope, contacts) {
+angular.module(primaryApplicationName).controller('CtrlContacts', function($scope, contacts) {
 	$scope.singleModel = 1;
 	$scope.singleModel2 = 0;
 
