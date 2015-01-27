@@ -1,4 +1,4 @@
-form.ng-cloak(name="secure")
+form.ng-cloak(name="secure", ng-class="{'errors': currentErrorMessage}")
 	h1 {{'LOGIN.SECURE_USERNAME.TITLE' | translate}}
 	div.alert.alert-danger(ng-if="currentErrorMessage", ng-bind="currentErrorMessage")
 	p.text-center
