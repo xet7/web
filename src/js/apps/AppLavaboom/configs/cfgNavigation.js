@@ -48,7 +48,7 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 		},
 
 		'main.contacts.profile': {
-			url: '/profile/:profileId',
+			url: '/profile/:contactId',
 			templateUrl: 'partials/contacts/contacts.profile.html'
 		},
 

@@ -1,6 +1,6 @@
 var chan = require('chan');
 
-angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $rootScope, $timeout, $scope, $state, $translate, co, crypto, cryptoKeys, user, inbox, loader, router) {
+angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $rootScope, $timeout, $scope, $state, $translate, co, crypto, cryptoKeys, user, inbox, contacts, loader, router) {
 	var
 		beforeDecryptingProgress;
 
@@ -9,6 +9,7 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 		LB_AUTHENTICATING = $translate.instant('LOADER.LB_AUTHENTICATING'),
 		LB_DECRYPTING = $translate.instant('LOADER.LB_DECRYPTING'),
 		LB_LOADING_EMAILS = $translate.instant('LOADER.LB_LOADING_EMAILS'),
+		LB_LOADING_CONTACTS = $translate.instant('LOADER.LB_LOADING_CONTACTS'),
 		LB_INITIALIZATION_FAILED = $translate.instant('LOADER.LB_INITIALIZATION_FAILED'),
 		LB_SUCCESS = $translate.instant('LOADER.LB_SUCCESS');
 
@@ -39,6 +40,10 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 			});*/
 
 			yield inbox.initialize();
+
+			loader.incProgress(LB_LOADING_CONTACTS, 5);
+
+			yield contacts.initialize();
 
 			if ($state.current.name == 'empty')
 				yield $state.go('main.label', {labelName: 'Inbox'}, {reload: true});

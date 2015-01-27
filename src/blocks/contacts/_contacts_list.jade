@@ -13,7 +13,7 @@
 			section(data-ng-repeat="(alpha, contacts) in sortedPeople")
 				li.separator.list-group-item(ng-show="contacts", ng-bind="alpha")
 				li.list-group-item(data-ng-repeat="contact in contacts | filter: searchText")
-					a(ng-class="'sec-' + contact.sec", ui-sref="main.contacts.profile")
+					a(ng-class="'sec-' + contact.sec", ui-sref="main.contacts.profile({contactId: contact.id})")
 						span(ng-bind="contact.name")
 						span.sec-icon.icon-lock(ng-show="contact.sec")
 						span.sec-icon.icon-unlock(ng-show="!contact.sec")
