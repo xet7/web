@@ -7,8 +7,9 @@ global.plg = plg;
 
 var utils = require('./gulp/utils');
 var config = require('./gulp/config');
+var semver = require('semver');
 
-if (process.version != config.nodeVersion) {
+if (!semver.satisfies(process.version, config.nodeVersion)) {
 	utils.logGulpError('Incompatible node.js version\n', 'gulpfile.js', new Error('This gulpfile requires node.js version ' + config.nodeVersion));
 	return;
 }
