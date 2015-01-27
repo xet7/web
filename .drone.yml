@@ -1,6 +1,6 @@
 image: registry.lavaboom.io/lavaboom/wrapper-web
 script:
-  - sudo npm install -g gulp
+  - npm install -g gulp
   - npm install
   - gulp develop
   - "if [ \"$DRONE_BRANCH\" = \"master\" ]; then export CONTAINER_NAME=web-master; export CONTAINER_PORT=10000; fi"
