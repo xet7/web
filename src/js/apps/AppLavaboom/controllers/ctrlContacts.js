@@ -1,7 +1,6 @@
-angular.module(primaryApplicationName).controller('CtrlContacts', function($rootScope, $scope, $stateParams, contacts) {
+angular.module(primaryApplicationName).controller('CtrlContacts', function($rootScope, $scope, $state, $stateParams, contacts) {
 	$scope.$bind('$stateChangeSuccess', () => {
 		$scope.selectedContactId = $stateParams.contactId;
-		console.log('$scope.selectedContactId', $scope.selectedContactId);
 	});
 
 	$scope.searchText = '';

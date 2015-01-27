@@ -15,5 +15,5 @@
 				li.list-group-item(ng-repeat="contact in contacts | filter: searchText", ng-class="{active: selectedContactId && selectedContactId == contact.id}")
 					a(ng-class="'sec-' + contact.sec", ui-sref="main.contacts.profile({contactId: contact.id})")
 						span(ng-bind="contact.name")
-						span.sec-icon.icon-lock(ng-show="contact.sec")
-						span.sec-icon.icon-unlock(ng-show="!contact.sec")
+						span.sec-icon.icon-lock(ng-show="contact.isSecured")
+						span.sec-icon.icon-unlock(ng-show="!contact.isSecured")

@@ -26,18 +26,18 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 		yield contacts.map(c => self.deleteContact(c));
 
 		var testContacts = [
-			new Contact({name: 'Ned Stark', data: {email: 'ned@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Winter is coming.'}, isSecured: true}),
-			new Contact({name: 'Theon Greyjoy', data: {email: 'tgreyjoy@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Reluctant to pay iron price.'}, isSecured: true}),
-			new Contact({name: 'Samwell Tarly', data: {email: 'starly@castleblack.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Loyal brother of the watch.'}}),
-			new Contact({name: 'Jon Snow', data: {email: 'jsnow@castleblack.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Knows nothing.'}}),
-			new Contact({name: 'Arya Stark', data: {email: 'waterdancer@winterfell.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Has a list of names.'}}),
-			new Contact({name: 'Jora Mormont', data: {email: 'khaleesifan100@gmail.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Lost in the friend-zone.'}}),
-			new Contact({name: 'Tyrion Lannister', data: {email: 'tyrion@lannister.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Currently drunk.'}}),
-			new Contact({name: 'Stannis Baratheon', data: {email: 'onetrueking@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Nobody expects the Stannish inquisition.'}, isSecured: true}),
-			new Contact({name: 'Hodor', data: {email: 'hodor@hodor.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Hodor? Hodor... Hodor!'}}),
-			new Contact({name: 'Margaery Tyrell', data: {email: 'mtyrell@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Keeper of kings.'}, isSecured: true}),
-			new Contact({name: 'Brienne of Tarth', data: {email: 'oathkeeper@gmail.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Do not cross her.'}}),
-			new Contact({name: 'Petyr Baelish', data: {email: 'petyr@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Do not trust anyone.'}, isSecured: true})
+			new Contact({name: 'Ned Stark', email: 'ned@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Winter is coming.', isSecured: true}),
+			new Contact({name: 'Theon Greyjoy', email: 'tgreyjoy@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Reluctant to pay iron price.', isSecured: true}),
+			new Contact({name: 'Samwell Tarly', email: 'starly@castleblack.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Loyal brother of the watch.'}),
+			new Contact({name: 'Jon Snow', email: 'jsnow@castleblack.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Knows nothing.'}),
+			new Contact({name: 'Arya Stark', email: 'waterdancer@winterfell.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Has a list of names.'}),
+			new Contact({name: 'Jora Mormont', email: 'khaleesifan100@gmail.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Lost in the friend-zone.'}),
+			new Contact({name: 'Tyrion Lannister', email: 'tyrion@lannister.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Currently drunk.'}),
+			new Contact({name: 'Stannis Baratheon', email: 'onetrueking@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Nobody expects the Stannish inquisition.', isSecured: true}),
+			new Contact({name: 'Hodor', email: 'hodor@hodor.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Hodor? Hodor... Hodor!'}),
+			new Contact({name: 'Margaery Tyrell', email: 'mtyrell@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Keeper of kings.', isSecured: true}),
+			new Contact({name: 'Brienne of Tarth', email: 'oathkeeper@gmail.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Do not cross her.'}),
+			new Contact({name: 'Petyr Baelish', email: 'petyr@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Do not trust anyone.', isSecured: true})
 		];
 		yield testContacts.map(c => self.createContact(c));
 
@@ -66,9 +66,7 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 	$rootScope.$on('user-authenticated', () => {
 		self.myself = new Contact({
 			name: user.name,
-			data: {
-				email: user.email
-			},
+			email: user.email,
 			isSecured: true
 		});
 		self.people.push(self.myself);

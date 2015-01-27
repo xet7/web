@@ -1,12 +1,16 @@
 angular.module(primaryApplicationName).factory('Contact', function(co, user, crypto) {
 	var Contact = function(opt) {
+		if (opt.isSecured === undefined)
+			opt.isSecured = false;
 		angular.extend(this, opt);
 		this.sec = opt.isSecured ? 1 : 0;
 	};
 
+	var secureFields = ['email', 'phone', 'url', 'notes', 'isSecured'];
+
 	Contact.toEnvelope = (contact) => co(function *() {
 		var envelope = yield crypto.encodeEnvelopeWithKeys({
-			data: ['email', 'phone', 'url', 'notes'].reduce((a, field) => {
+			data: secureFields.reduce((a, field) => {
 				a[field] = contact[field];
 				return a;
 			}, {}),
