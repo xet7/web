@@ -40,8 +40,6 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 
 			yield inbox.initialize();
 
-			yield cryptoKeys.syncKeys();
-
 			if ($state.current.name == 'empty')
 				yield $state.go('main.label', {labelName: 'Inbox'}, {reload: true});
 

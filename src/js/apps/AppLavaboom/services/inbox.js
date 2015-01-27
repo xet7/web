@@ -155,7 +155,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.send = (to, cc, bcc, subject, body, thread_id = null) => co(function * () {
 		var res = yield apiProxy(['keys', 'get'], to);
 		var publicKey = res.body.key;
-		var encryptedMessage = yield crypto.encodeWithKey(to, body, publicKey.key);
+		var encryptedMessage = yield crypto.encodeWithKey(body, publicKey.key);
 
 		yield apiProxy(['emails', 'create'], {
 			to: to,

@@ -1,6 +1,6 @@
 var Buffer = require('buffer/').Buffer;
 
-angular.module(primaryApplicationName).service('user', function($q, $rootScope, $state, $timeout, $window, $translate, consts, apiProxy, LavaboomAPI, co, app, crypto, loader) {
+angular.module(primaryApplicationName).service('user', function($q, $rootScope, $state, $timeout, $window, $translate, consts, apiProxy, LavaboomAPI, co, app, crypto, cryptoKeys, loader) {
 	var self = this;
 
 	const
@@ -12,6 +12,9 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 	// information about user from API
 	this.settings = {};
+
+	// primary key
+	this.key = null;
 
 	var token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
 	var isAuthenticated = false;
@@ -34,23 +37,53 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 	this.isAuthenticated = () => token && isAuthenticated;
 
-	this.gatherUserInformation = () => {
-		return co(function * () {
-			var res = yield apiProxy(['accounts', 'get'], 'me');
+	var syncKeys = () => co(function *(){
+		var res = yield apiProxy(['keys', 'list'], self.name);
 
-			self.settings = res.body.user.settings ? res.body.user.settings : {};
-			$rootScope.$broadcast('user-settings');
+		var keysByFingerprint = res.body.keys ? res.body.keys.reduce((a, k) => {
+			a[k.id] = k;
+			return a;
+		}, {}) : {};
 
-			setupUserBasicInformation(res.body.user.name);
+		var publicKeys = crypto.getAvailablePublicKeysForSourceEmails();
 
-			if (!isAuthenticated) {
-				isAuthenticated = true;
-				$rootScope.$broadcast('user-authenticated');
-			}
+		var keysCreationPromises = [];
 
-			return res.body;
+		Object.keys(publicKeys).forEach(email => {
+			var keysForEmail = publicKeys[email];
+			keysForEmail.forEach(key => {
+				if (!keysByFingerprint[key.primaryKey.fingerprint]) {
+					console.log(`Importing key with fingerprint '${key.primaryKey.fingerprint}' to the server...`);
+
+					keysCreationPromises.push(apiProxy(['keys', 'create'], key.armor()));
+				} else
+					console.log(`Key with fingerprint '${key.primaryKey.fingerprint}' already imported...`);
+			});
 		});
-	};
+
+		yield keysCreationPromises;
+	});
+
+	this.gatherUserInformation = () => co(function * () {
+		var res = yield apiProxy(['accounts', 'get'], 'me');
+
+		self.settings = res.body.user.settings ? res.body.user.settings : {};
+		$rootScope.$broadcast('user-settings');
+
+		setupUserBasicInformation(res.body.user.name);
+
+		yield syncKeys();
+
+		res = yield apiProxy(['keys', 'get'], self.email);
+		self.key = res.body.key;
+
+		if (!isAuthenticated) {
+			isAuthenticated = true;
+			$rootScope.$broadcast('user-authenticated');
+		}
+
+		return res.body;
+	});
 
 	this.update = (settings) => {
 		angular.extend(self.settings, settings);
@@ -86,8 +119,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 				}
 
 				crypto.options.isPrivateComputer = isPrivateComputer;
-				var r = crypto.authenticateDefault(password);
-				console.log(r);
+				crypto.authenticateDefault(password);
 
 				$rootScope.$broadcast('user-authenticated');
 			} catch (err) {
@@ -105,7 +137,6 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 		loader.resetProgress();
 		loader.showLoader(true);
-		console.log('logout', {lbDone: LB_BYE});
 		loader.loadLoginApplication({lbDone: LB_BYE});
 	};
 });

@@ -1,4 +1,6 @@
-angular.module(primaryApplicationName).controller('CtrlContactsProfile', function($scope, contacts) {
+angular.module(primaryApplicationName).controller('CtrlContactsProfile', function($scope, $stateParams, contacts) {
+	var profileId = $stateParams.profileId;
+
 	$scope.details = {
 		firstName: 'Eddard',
 		lastName: 'Stark',

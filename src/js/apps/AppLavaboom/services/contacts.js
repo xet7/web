@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).service('contacts', function($q, $rootScope, user) {
+angular.module(primaryApplicationName).service('contacts', function($q, $rootScope, co, user, crypto, apiProxy) {
 	var self = this;
 
 	var Contact = function(opt) {
@@ -6,6 +6,45 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 		this.email = opt.email;
 		this.sec = opt.isSecured ? 1 : 0;
 	};
+
+	this.list = () => co(function *() {
+		var contacts = (yield apiProxy(['contacts', 'list'])).body.contacts;
+		return contacts
+			? co.map(contacts, function *(contactEnvelope) {
+				var data = yield crypto.decodeEnvelope(contactEnvelope, 'data');
+				switch (data.majorVersion) {
+					default:
+						return angular.extend({}, data.data, {
+							name: contactEnvelope.name,
+							dateCreated: contactEnvelope.date_created,
+							dateModified: contactEnvelope.date_modified
+						});
+				}
+			})
+			: [];
+	});
+
+	this.createContact = (name, contact) => co(function *() {
+		var envelope = yield crypto.encodeEnvelopeWithKeys({
+			data: contact,
+			encoding: 'json'
+		}, [user.key.key], 'data');
+		envelope.name = name;
+		return yield apiProxy(['contacts', 'create'], envelope);
+	});
+
+	$rootScope.$on('initialization-completed', () => {
+		self.list()
+			.then(contacts => {
+				console.log('contacts: ', contacts);
+			});
+
+		/*self.createContact('wub', {
+			firstName: 'wub',
+			lastName: 'wubber',
+			displayName: 'super knob'
+		});*/
+	});
 
 	this.people = [
 	    new Contact({id: 0, name: 'Ned Stark', email: 'ned@winterfell.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Winter is coming.', isSecured: 'asd'}),
@@ -23,7 +62,7 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
   	];
 
   	
-  	this.sortedPeople = _.groupBy(this.people, function(contact) {return contact.name[0]; });
+  	this.sortedPeople = _.groupBy(self.people, contact => contact.name[0]);
 
 
 	// contact list, usually would be a separate database
