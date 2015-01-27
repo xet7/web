@@ -1,65 +1,18 @@
-angular.module(primaryApplicationName).service('contacts', function($q, $rootScope, co, user, crypto, apiProxy) {
+angular.module(primaryApplicationName).service('contacts', function($q, $rootScope, co, user, crypto, apiProxy, Contact) {
 	var self = this;
-
-	var Contact = function(opt) {		
-		this.id = opt.id;
-		this.name = opt.name;		
-		this.sec = opt.isSecured ? 1 : 0;
-		this.dateCreated = opt.dateCreated;
-		this.dateModified = opt.dateModified;
-
-		this.__payloadFieldNames = Object.keys(opt.data);
-		angular.extend(this, opt.data);
-	};
-
-	var createContactEnvelope = (name, contact) => co(function *() {
-		var envelope = yield crypto.encodeEnvelopeWithKeys({
-			data: contact.__payloadFieldNames.reduce((a, field) => {
-				a[field] = contact[field];
-				return a;
-			}, {}),
-			encoding: 'json'
-		}, [user.key.key], 'data');
-		envelope.name = name;
-
-		return envelope;
-	});
 
 	this.list = () => co(function *() {
 		var contacts = (yield apiProxy(['contacts', 'list'])).body.contacts;
-		return contacts
-			? co.map(contacts, function *(contactEnvelope) {
-				var data;
-
-				try {
-					data = yield crypto.decodeEnvelope(contactEnvelope, 'data');
-				} catch (error) {
-					console.error(error);
-					data = null;
-				}
-
-				switch (data.majorVersion) {
-					default:
-						return new Contact({							
-							id: contactEnvelope.id,
-							name: contactEnvelope.name,
-							isSecured: true,
-							dateCreated: contactEnvelope.date_created,
-							dateModified: contactEnvelope.date_modified,
-							data: data.data
-						});
-				}
-			})
-			: [];
+		return contacts ? co.map(contacts, Contact.fromEnvelope) : [];
 	});
 
 	this.createContact = (contact) => co(function *() {
-		var envelope = yield createContactEnvelope(contact.name, contact);
+		var envelope = yield Contact.toEnvelope(contact);
 		return yield apiProxy(['contacts', 'create'], envelope);
 	});
 
 	this.updateContact = (contact) => co(function *() {
-		var envelope = yield createContactEnvelope(contact.name, contact);
+		var envelope = yield Contact.toEnvelope(contact);
 		return yield apiProxy(['contacts', 'update'], contact.id, envelope);
 	});
 
@@ -68,7 +21,7 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 	});
 
 	this.initialize = () => co(function*(){
-		/*var contacts = yield self.list();
+		var contacts = yield self.list();
 		console.log('contacts: ', contacts);
 		yield contacts.map(c => self.deleteContact(c));
 
@@ -86,7 +39,7 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 			new Contact({name: 'Brienne of Tarth', data: {email: 'oathkeeper@gmail.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Do not cross her.'}}),
 			new Contact({name: 'Petyr Baelish', data: {email: 'petyr@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Do not trust anyone.'}, isSecured: true})
 		];
-		yield testContacts.map(c => self.createContact(c));*/
+		yield testContacts.map(c => self.createContact(c));
 
 		self.people = self.people.concat(yield self.list());
 	});
