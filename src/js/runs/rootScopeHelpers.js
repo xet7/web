@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).run(($rootScope, $translate, co) => {
+angular.module(primaryApplicationName).run(($rootScope, $translate, translate) => {
 	$rootScope.$bind = (bindName, bindHandler) => {
 		$rootScope.$on(bindName, bindHandler);
 		bindHandler();
@@ -9,7 +9,6 @@ angular.module(primaryApplicationName).run(($rootScope, $translate, co) => {
 	};
 
 	$rootScope.switchLanguage = (langKey) => {
-		localStorage.lang = langKey;
-		$translate.use(langKey);
+		translate.switchLanguage(langKey);
 	};
 });
