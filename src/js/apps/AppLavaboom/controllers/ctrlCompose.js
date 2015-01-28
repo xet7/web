@@ -1,5 +1,5 @@
 angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateParams, user, contacts, inbox, router) {
-	$scope.disabled = false;
+	$scope.isXCC = false;
 
 	var threadId = $stateParams.threadId;
 
