@@ -89,5 +89,11 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 			url: '/backupKeys',
 			templateUrl: 'partials/login/backupKey.html',
 			controller: 'CtrlBackup'
+		})
+
+		.state('importKeys', {
+			url: '/importKeys',
+			templateUrl: 'partials/login/importKey.html',
+			controller: 'CtrlImport'
 		});
 });

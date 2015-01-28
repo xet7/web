@@ -117,10 +117,10 @@
 
 [LOGIN.IMPORT_KEY]
 	TITLE = "Please Upload Key"
-	INFO1 = "We couldn't find your private key in the browser cache."
-	INFO2 = "This happens when you are using Lavaboom for the first time with this browser or if your browser cache has been cleared."
-	INFO3 = "Just upload the key you saved to your hard drive when you signed up with us and you're good to go."
-	BTN_UPLOAD = "Upload your key"
+	LB_INFO1 = "We couldn't find your private key in the browser cache."
+	LB_INFO2 = "This happens when you are using Lavaboom for the first time with this browser or if your browser cache has been cleared."
+	LB_INFO3 = "Just upload the key you saved to your hard drive when you signed up with us and you're good to go."
+	BTN_UPLOAD_KEY = "Upload your key"
 
 [LOGIN.SIGNUP]
 	HEADER = "Get your own secure email account!"
