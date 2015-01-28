@@ -1,6 +1,9 @@
 [TEST]
 	STR = "Hello! Im Test-String in English"
 
+[LANG]
+	CODE = "en"
+
 [INBOX]
 	NO_PREVIEW_AVAILABLE = "No preview available"
 

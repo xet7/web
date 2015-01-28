@@ -2,7 +2,8 @@ angular.module(primaryApplicationName).service('translate', function($rootScope,
 	var self = this;
 
 	this.settings = {};
-	var defaultLangKey = 'en';
+
+	this.defaultLangCode = 'en';
 
 	this.initialize = () => co(function *(){
 		var res = yield $http.get('/translations/index.json');
@@ -11,7 +12,7 @@ angular.module(primaryApplicationName).service('translate', function($rootScope,
 	});
 
 	this.getCurrentLangCode = () => {
-		return localStorage.lang ? localStorage.lang : defaultLangKey;
+		return localStorage.lang ? localStorage.lang : self.defaultLangCode;
 	};
 
 	this.switchLanguage = (langKey) => {
