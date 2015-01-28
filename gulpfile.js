@@ -19,7 +19,6 @@ var os = require('os');
 var fs = require('fs');
 var del = require('del');
 var path = require('path');
-var spawn = require('child_process').spawn;
 var toml = require('toml');
 var source = require('vinyl-source-stream');
 var lazypipe = require('lazypipe');
