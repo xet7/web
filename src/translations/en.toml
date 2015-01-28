@@ -115,6 +115,13 @@
     BTN_BACKUP_NOW = "Back up my key now"
 	BTN_BACKUP_LATER = "Do Back up later"
 
+[LOGIN.IMPORT_KEY]
+	TITLE = "Please Upload Key"
+	INFO1 = "We couldn't find your private key in the browser cache."
+	INFO2 = "This happens when you are using Lavaboom for the first time with this browser or if your browser cache has been cleared."
+	INFO3 = "Just upload the key you saved to your hard drive when you signed up with us and you're good to go."
+	BTN_UPLOAD = "Upload your key"
+
 [LOGIN.SIGNUP]
 	HEADER = "Get your own secure email account!"
  	LOGIN = "Log In"

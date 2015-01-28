@@ -1,0 +1,9 @@
+form.ng-cloak(ng-class="{'errors': currentErrorMessage}")
+	p.lead.pack {{'LOGIN.IMPORT_KEY.TITLE' | translate}}
+
+	div.login-alert.alert
+		p.big.xtra {{'LOGIN.IMPORT_KEY.INFO1' | translate}}
+		p.big.xtra {{'LOGIN.IMPORT_KEY.INFO2' | translate}}
+		p.big.xtra {{'LOGIN.IMPORT_KEY.INFO3' | translate}}
+	footer
+		button.btn.btn-block.btn-lg.btn-primary(ui-sref="choosePassword") {{'LOGIN.IMPORT_KEY.UPLOAD_KEY' | translate}}
