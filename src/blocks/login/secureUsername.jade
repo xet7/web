@@ -1,6 +1,6 @@
-form.ng-cloak(name="secure")
+form.ng-cloak(name="secure", ng-class="{'errors': currentErrorMessage}")
 	h1 {{'LOGIN.SECURE_USERNAME.TITLE' | translate}}
-	span.error(ng-bind="currentErrorMessage")
+	div.alert.alert-danger(ng-if="currentErrorMessage", ng-bind="currentErrorMessage")
 	p.text-center
 		a(ui-sref="verifyInvite") {{'LOGIN.SECURE_USERNAME.LNK_INVITE_QUESTION' | translate}}
 	div.form-group
