@@ -1,2 +1,11 @@
 [TEST]
 	STR = "Hallo! Im Test-String in Englisch"
+
+[LANG]
+	CODE = "de"
+
+[MAIN.NAV]
+   	LB_COMPOSE = "Compose(de)"
+   	LB_CONTACTS = "Contacts(de)"
+   	LB_SETTINGS = "Settings(de)"
+   	LB_LOGOUT = "Logout(de)"

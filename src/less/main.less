@@ -10,6 +10,14 @@
 	@media (max-width: @screen-md-max) {
 		width: @mail-list-width-sm;
 	}
+	.list-group{
+		.list-group-item{
+			padding: 0;
+			> a{
+				padding: 10px 15px;
+			}
+		}
+	}
 }
 .details-pane{
 	width: @mail-thread-width;
@@ -30,18 +38,27 @@
 		top: 0;
 	}
 	.main-settings-view, .main-view{
-		padding-top: @filter-height + 30px;
 		.pos-rel();
 		height: 100%;
+		padding: 10px;
+		padding-top: @filter-height + 25px;
 		> .settings-panel, .main-panel{
 			position: relative;
 			height: 100%;
 			overflow: auto;
-			padding-bottom: @filter-height + 30px 0;
+			padding-bottom: @filter-height + 25px;
 		}
 	}
 }
 
+.alert{
+	border: 0;
+	&.alert-danger{
+		background: transparent;
+		.text-center();
+		color: @lava-red;
+	}
+}
 .list-group-wrapper{
 	padding-top: @filter-height;
 	.list-group-item {
@@ -51,8 +68,6 @@
 		border-left: 0; border-right: 0;
 		border-radius: 0;
 		> a{
-			// line-height: 3em;
-			// font-size: 1.5em;
 			display: block;
 			color: @lava-text;
 			text-decoration: none !important;
@@ -75,10 +90,10 @@
 			}
 		}
 		&.separator{
-			padding-top: .3em;
-			padding-bottom: .3em;
 			background-color: @lava-gray-lighter;
 			color: @lava-gray;
+			padding: .3em 15px;
+			text-transform: uppercase;
 		}
 	}
 	&.list-group-icons > li > a > span{

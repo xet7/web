@@ -7,9 +7,10 @@ global.plg = plg;
 
 var utils = require('./gulp/utils');
 var config = require('./gulp/config');
+var semver = require('semver');
 
-if (process.version != config.nodeVersion) {
-	utils.logGulpError('Incompatible node.js version\n', 'gulpfile.js', new Error('This gulpfile requires node.js version ' + config.nodeVersion));
+if (!semver.satisfies(process.version, config.nodeVersion)) {
+	utils.logGulpError('Incompatible node.js version\n', 'gulpfile.js', new Error('This gulpfile requires node.js version ' + config.nodeVersion + '. ' + process.version + ' is currently used.'));
 	return;
 }
 
@@ -137,7 +138,7 @@ gulp.task('build:scripts:core', function() {
 		.pipe(gulp.dest(paths.scripts.output));
 });
 
-gulp.task('build:scripts:vendor', ['build:scripts:vendor:min', 'lint:scripts', 'build:scripts:core'], function() {
+gulp.task('build:scripts:vendor', ['build:scripts:vendor:min', 'build:scripts:core'], function() {
 	return gulp.src(paths.scripts.inputDeps)
 		.pipe(plg.plumber())
 		.pipe(plg.tap(function (file, t) {
@@ -235,7 +236,7 @@ var scriptBuildSteps = [];
 paths.scripts.inputApps.forEach(function(appScript){
 	var name = 'build:scripts-' + (scriptBuildSteps.length + 1);
 
-	gulp.task(name, ['lint:scripts', 'build:translations', 'build:scripts:vendor'], function() {
+	gulp.task(name, ['build:translations', 'build:scripts:vendor'], function() {
 		return browserifyBundle(appScript);
 	});
 	scriptBuildSteps.push(name);
@@ -426,7 +427,8 @@ var scheduleLiveReloadBuildTaskStart = function (taskName, timeout) {
 
 gulp.task('default', [
 	'bower',
-	'tests'
+	'tests',
+	'lint:scripts'
 ], function(cb) {
 	// we can start compile only after we do have bower dependencies
 	gulp.start('compile', function (err) {
@@ -474,7 +476,8 @@ gulp.task('serve', function () {
 
 gulp.task('develop', [
 	'bower',
-	'tests'
+	'tests',
+	'lint:scripts'
 ], function() {
 	// we can start compile only after we do have bower dependencies
 	gulp.start('compile');

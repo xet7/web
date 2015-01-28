@@ -39,6 +39,29 @@
 		&.success{
 			background: @lava-login-gray-dark url('/img/check.svg') 96% center no-repeat;
 		}
+		&.error{
+			background: @lava-login-error-bg;
+			color: @lava-login-gray-lightest;
+		}
+	}
+
+	form.errors{
+		input[type=text], input[type=email], input[type=password], textarea, .btn, .checkbox label:before{
+			&.ng-invalid-required{
+				background: @lava-login-error-bg;
+			}
+		}
+
+		.form-control::-moz-placeholder {
+			color: @lava-login-gray-light;
+		  	opacity: 1;
+		}
+		.form-control:-ms-input-placeholder {
+		  	color: @lava-login-gray-light;
+		}
+		.form-control::-webkit-input-placeholder {
+		  	color: @lava-login-gray-light;
+		}
 	}
 
 	input[type=checkbox] {  
@@ -49,12 +72,14 @@
 		content: "";  
 	    display: inline-block;  
 	  
-	    width: 24px;  
-	    height: 20px;  
+	    width: 22px;  
+	    height: 22px;  
+	    padding-right: 2px;
 	  
 	    margin-right: 20px;  
 	    position: absolute;  
-	    left: 0;  
+	    left: 0;
+	    top: -2px;
 	    
 	}
 
@@ -65,10 +90,14 @@
 	input[type=checkbox]:checked + label:before {
 		font-family: 'lavaboom';
 	    content: "7";  
-	    line-height: 20px;
-	    font-size: 20px;
+	    line-height: 22px;
+	    font-size: 17px;
 	    text-align: center;
-	}  
+	}
+
+	.radio + .radio, .checkbox + .checkbox {
+		margin-top: -2px;
+	}
 
 	.form-control::-moz-placeholder {
 		color: @lava-login-gray;
@@ -168,8 +197,10 @@
 		}
 	}
 
-	.error{
-		.alert();
+	.alert{
+		padding: .25em;
+		margin-bottom: .5em;
+		font-size: 1.2em;
 	}
 
 	hr.blank{

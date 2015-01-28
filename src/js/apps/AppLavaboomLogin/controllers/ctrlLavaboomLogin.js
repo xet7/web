@@ -1,25 +1,39 @@
-angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function($q, $rootScope, $state, $scope, $translate, co, crypto, loader) {
-	var isInitialized = false;
+angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function($q, $rootScope, $state, $scope, $translate, translate, co, crypto, loader) {
+	var translations = {};
+	var translationsCh = chan();
 
-	const
-		LB_INITIALIZING_OPENPGP = $translate.instant('LOADER.LB_INITIALIZING_OPENPGP'),
-		LB_INITIALIZATION_FAILED = $translate.instant('LOADER.LB_INITIALIZATION_FAILED'),
-		LB_SUCCESS = $translate.instant('LOADER.LB_SUCCESS');
+	$rootScope.$bind('$translateChangeSuccess', () => {
+		translations.LB_INITIALIZING_I18N = $translate.instant('LOADER.LB_INITIALIZING_I18N');
+		translations.LB_INITIALIZING_OPENPGP = $translate.instant('LOADER.LB_INITIALIZING_OPENPGP');
+		translations.LB_INITIALIZATION_FAILED = $translate.instant('LOADER.LB_INITIALIZATION_FAILED');
+		translations.LB_SUCCESS = $translate.instant('LOADER.LB_SUCCESS');
+
+		if ($translate.instant('LANG.CODE') === translate.getCurrentLangCode())
+			translationsCh(true);
+	});
+
+	$scope.isInitialized = false;
 
 	$scope.initializeApplication = () => co(function *(){
 		try {
-			loader.incProgress(LB_INITIALIZING_OPENPGP, 5);
+			yield translationsCh;
+
+			loader.incProgress(translations.LB_INITIALIZING_I18N, 1);
+
+			translate.initialize();
+
+			loader.incProgress(translations.LB_INITIALIZING_OPENPGP, 5);
 
 			crypto.initialize();
 
-			if (isInitialized) {
+			if ($scope.isInitialized) {
 				yield $state.go('login', {}, {reload: true});
 			} else {
-				isInitialized = true;
-				return {lbDone: LB_SUCCESS};
+				$scope.isInitialized = true;
+				return {lbDone: translations.LB_SUCCESS};
 			}
 		} catch (error) {
-			throw {message: LB_INITIALIZATION_FAILED, error: error};
+			throw {message: translations.LB_INITIALIZATION_FAILED, error: error};
 		}
 	});
 });
