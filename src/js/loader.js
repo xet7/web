@@ -13,6 +13,10 @@ var __Promise = (function (func, obj) {
 		handler = function pendingHandler(resolved, rejected, value, queue, then, i) {
 			queue = pendingHandler.q;
 
+			function valueHandler(resolved) {
+				return function (value) { then && (then = 0, pendingHandler(is, resolved, value)); };
+			}
+
 			// Case 1) handle a .then(resolved, rejected) call
 			if (resolved != is) {
 				return Promise(function (resolve, reject) {
@@ -32,9 +36,6 @@ var __Promise = (function (func, obj) {
 			}
 			// If the value is a promise, take over its state
 			if (is(func, then)) {
-				function valueHandler(resolved) {
-					return function (value) { then && (then = 0, pendingHandler(is, resolved, value)); };
-				}
 				try { then.call(value, valueHandler(1), rejected = valueHandler(0)); }
 				catch (reason) { rejected(reason); }
 			}
@@ -293,7 +294,7 @@ var __Promise = (function (func, obj) {
 					})
 					.catch(e => {
 						reject(e);
-					})
+					});
 			};
 
 			load();
