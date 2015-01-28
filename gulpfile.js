@@ -45,8 +45,18 @@ var paths = require('./gulp/paths');
 var filterTransform = require('filter-transform');
 
 // Global variables
-var childProcess = null;
 var args = process.argv.slice(2);
+
+var plumber = null;
+if (args.length > 0) {
+	plumber = plg.util.noop;
+	if (args[0] === 'production') {
+		console.log('Making a production build...');
+		config.isProduction = true;
+	}
+} else {
+	plumber = plg.plumber;
+}
 
 require('toml-require').install();
 
@@ -79,7 +89,7 @@ var prodHtmlPipeline  = function (input, output) {
 
 var createJadePipeline = function (input, output) {
 	return gulp.src(input)
-		.pipe(plg.plumber())
+		.pipe(plumber())
 		.pipe(plg.ignore(function(file){
 			var basename = path.basename(file.relative);
 			return basename.indexOf('_') == 0;
@@ -96,7 +106,7 @@ var createJadePipeline = function (input, output) {
 
 gulp.task('build:scripts:vendor:min', function() {
 	return gulp.src(paths.scripts.inputDeps)
-		.pipe(plg.plumber())
+		.pipe(plumber())
 		.pipe(plg.tap(function (file, t) {
 			var appConfig = toml.parse(file.contents);
 			var dependencies = [];
@@ -114,7 +124,7 @@ gulp.task('build:scripts:vendor:min', function() {
 			}
 
 			return gulp.src(dependencies)
-				.pipe(plg.plumber())
+				.pipe(plumber())
 				.pipe(plg.sourcemaps.init())
 				.pipe(plg.ngAnnotate())
 				.pipe(plg.uglify())
@@ -129,7 +139,7 @@ gulp.task('build:scripts:core', function() {
 		.pipe(plg.uglify);
 
 	return gulp.src(paths.scripts.input)
-		.pipe(plg.plumber())
+		.pipe(plumber())
 		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.noop())
 		.pipe(to5())
 		.pipe(config.isLogs ? plg.util.noop() : plg.stripDebug())
@@ -140,7 +150,7 @@ gulp.task('build:scripts:core', function() {
 
 gulp.task('build:scripts:vendor', ['build:scripts:vendor:min', 'build:scripts:core'], function() {
 	return gulp.src(paths.scripts.inputDeps)
-		.pipe(plg.plumber())
+		.pipe(plumber())
 		.pipe(plg.tap(function (file, t) {
 			var appConfig = toml.parse(file.contents);
 			var dependencies = [];
@@ -175,7 +185,7 @@ gulp.task('build:scripts:vendor', ['build:scripts:vendor:min', 'build:scripts:co
 			var newName = file.relative.replace('.toml', '-vendor.js');
 
 			return gulp.src(dependencies)
-				.pipe(plg.plumber())
+				.pipe(plumber())
 				.pipe(plg.sourcemaps.init())
 				.pipe(plg.concat(newName))
 				.pipe(plg.sourcemaps.write('.'))
@@ -245,7 +255,7 @@ paths.scripts.inputApps.forEach(function(appScript){
 // Lint scripts
 gulp.task('lint:scripts', function () {
 	return gulp.src(paths.scripts.inputAll)
-		.pipe(plg.plumber())
+		.pipe(plumber())
 		.pipe(plg.cached('lint:scripts'))
 		.pipe(plg.tap(function(file, t){
 			console.log('Linting: "' + file.relative + '" ...');
@@ -259,6 +269,7 @@ gulp.task('lint:scripts', function () {
 		.pipe(plg.jshint.reporter(plg.jshintStylish))
 		.pipe(plg.jshint.reporter('fail'));
 });
+
 
 // Process, lint, and minify less files
 gulp.task('build:styles', function() {
@@ -279,7 +290,7 @@ gulp.task('build:styles', function() {
 		.pipe(gulp.dest, paths.styles.output);
 
 	return gulp.src(paths.styles.input)
-		.pipe(plg.plumber())
+		.pipe(plumber())
 		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.noop())
 		.pipe(plg.less())
 		.pipe(plg.autoprefixer('last 2 version', '> 1%'))
@@ -292,7 +303,7 @@ gulp.task('build:styles', function() {
 // Copy static files into output folder
 gulp.task('copy:vendor', function() {
 	return gulp.src(paths.vendor.input, {read: false})
-		.pipe(plg.plumber())
+		.pipe(plumber())
 		.pipe(plg.tap(function (file, t) {
 			if (file.path.indexOf('min.js') < 0) {
 				if (config.isProduction) {
@@ -312,28 +323,28 @@ gulp.task('copy:vendor', function() {
 // Copy images into output folder
 gulp.task('copy:images', function() {
 	return gulp.src(paths.img.input)
-		.pipe(plg.plumber())
+		.pipe(plumber())
 		.pipe(gulp.dest(paths.img.output));
 });
 
 // Copy fonts into output folder
 gulp.task('copy:fonts', function() {
 	return gulp.src(paths.fonts.input)
-		.pipe(plg.plumber())
+		.pipe(plumber())
 		.pipe(gulp.dest(paths.fonts.output));
 });
 
 // Copy static files into output folder
 gulp.task('copy:static', function() {
 	return gulp.src(paths.staticFiles)
-		.pipe(plg.plumber())
+		.pipe(plumber())
 		.pipe(gulp.dest(paths.output));
 });
 
 // Build translation files(toml -> json)
 gulp.task('build:translations', function() {
 	return gulp.src(paths.translations.input)
-		.pipe(plg.plumber())
+		.pipe(plumber())
 		.pipe(plg.toml({to: JSON.stringify, ext: '.json'}))
 		.pipe(gulp.dest(paths.translations.output));
 });
@@ -359,6 +370,7 @@ gulp.task('clean', function () {
 // Run some unit tests to check key logic
 gulp.task('tests', function() {
 	return gulp.src(paths.tests.unit.input)
+		.pipe(plumber())
 		.pipe(to5())
 		.pipe(gulp.dest(os.tmpdir()))
 		.pipe(plg.jasmine());
@@ -372,10 +384,6 @@ gulp.task('bower', function() {
 /**
  * Task Runners
  */
-
-gulp.task('set-production', function () {
-	config.isProduction = true;
-});
 
 var compileSteps = [
 		'build:jade',
@@ -398,7 +406,7 @@ gulp.task('compile:finished', compileSteps, function() {
 });
 
 // Compile files
-gulp.task('compile', ['clean'], function() {
+gulp.task('compile', ['clean', 'tests', 'lint:scripts'], function() {
 	gulp.start(compileSteps.concat(['compile:finished']));
 });
 
@@ -426,16 +434,10 @@ var scheduleLiveReloadBuildTaskStart = function (taskName, timeout) {
 };
 
 gulp.task('default', [
-	'bower',
-	'tests',
-	'lint:scripts'
+	'bower'
 ], function(cb) {
 	// we can start compile only after we do have bower dependencies
-	gulp.start('compile', function (err) {
-		console.log('compile is done!');
-		if (err) return cb(err);
-		callback();
-	});
+	gulp.start('compile');
 	
 	// watch for source changes and rebuild the whole project with _exceptions_
 	gulp.watch([paths.input, '!' + paths.styles.inputAll, '!' + paths.markup.input, '!' + paths.partials.input]).on('change', function(file) {
@@ -475,18 +477,14 @@ gulp.task('serve', function () {
 });
 
 gulp.task('develop', [
-	'bower',
-	'tests',
-	'lint:scripts'
+	'bower'
 ], function() {
 	// we can start compile only after we do have bower dependencies
 	gulp.start('compile');
 });
 
 gulp.task('production', [
-	'set-production',
-	'bower',
-	'tests'
+	'bower'
 ], function() {
 	// we can start compile only after we do have bower dependencies
 	gulp.start('compile');

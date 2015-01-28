@@ -293,7 +293,7 @@ var __Promise = (function (func, obj) {
 					})
 					.catch(e => {
 						reject(e);
-					})
+					});
 			};
 
 			load();
