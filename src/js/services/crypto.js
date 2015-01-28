@@ -237,10 +237,15 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 			prefixName = `${prefixName}_`;
 
 		var pgpData = envelope.raw;
-		var message = yield self.decodeByListedFingerprints(pgpData, envelope.pgp_fingerprints);
+		var message = null;
+		try {
+			message = yield self.decodeByListedFingerprints(pgpData, envelope.pgp_fingerprints);
 
-		if (envelope.encoding == 'json')
-			message = JSON.parse(message);
+			if (envelope.encoding == 'json')
+				message = JSON.parse(message);
+		} catch (error) {
+			console.error('decodeEnvelope', error);
+		}
 
 		return {
 			data: message,

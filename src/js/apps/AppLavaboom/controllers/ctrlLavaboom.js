@@ -1,8 +1,11 @@
 var chan = require('chan');
 
-angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $rootScope, $timeout, $scope, $state, $translate, co, crypto, cryptoKeys, user, inbox, contacts, loader) {
+angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $rootScope, $timeout, $scope, $state, $translate, co, translate, crypto, cryptoKeys, user, inbox, contacts, loader) {
 	var translations = {};
+	var translationsCh = chan();
+
 	$rootScope.$bind('$translateChangeSuccess', () => {
+		translations.LB_INITIALIZING_I18N = $translate.instant('LOADER.LB_INITIALIZING_I18N');
 		translations.LB_INITIALIZING_OPENPGP = $translate.instant('LOADER.LB_INITIALIZING_OPENPGP');
 		translations.LB_AUTHENTICATING = $translate.instant('LOADER.LB_AUTHENTICATING');
 		translations.LB_DECRYPTING = $translate.instant('LOADER.LB_DECRYPTING');
@@ -10,12 +13,21 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 		translations.LB_LOADING_CONTACTS = $translate.instant('LOADER.LB_LOADING_CONTACTS');
 		translations.LB_INITIALIZATION_FAILED = $translate.instant('LOADER.LB_INITIALIZATION_FAILED');
 		translations.LB_SUCCESS = $translate.instant('LOADER.LB_SUCCESS');
+
+		if ($translate.instant('LANG.CODE') === translate.getCurrentLangCode())
+			translationsCh(true);
 	});
 
 	$scope.isInitialized = false;
 
 	$scope.initializeApplication = () => co(function *(){
 		try {
+			yield translationsCh;
+
+			loader.incProgress(translations.LB_INITIALIZING_I18N, 1);
+
+			translate.initialize();
+
 			loader.incProgress(translations.LB_INITIALIZING_OPENPGP, 1);
 
 			crypto.initialize();

@@ -22,14 +22,7 @@ angular.module(primaryApplicationName).factory('Contact', function(co, user, cry
 	});
 
 	Contact.fromEnvelope = (envelope) => co(function *() {
-		var data;
-
-		try {
-			data = yield crypto.decodeEnvelope(envelope, 'data');
-		} catch (error) {
-			console.error(error);
-			data = null;
-		}
+		var data = yield crypto.decodeEnvelope(envelope, 'data');
 
 		switch (data.majorVersion) {
 			default:
