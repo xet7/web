@@ -1,14 +1,12 @@
-angular.module('AppLavaboom').controller('CtrlContacts', function($scope, contacts) {
-	$scope.singleModel = 1;
-	$scope.singleModel2 = 0;
+angular.module(primaryApplicationName).controller('CtrlContacts', function($rootScope, $scope, $state, $stateParams, contacts) {
+	$scope.$bind('$stateChangeSuccess', () => {
+		$scope.selectedContactId = $stateParams.contactId;
+	});
 
 	$scope.searchText = '';
 
-	$scope.people = contacts.people;
-
-	$scope.isCollapsed = 1;
-
-	$scope.sortedPeople = contacts.sortedPeople;
-	$scope.selectedPeople = contacts.people[0];
-
+	$scope.$bind('initialization-completed', () => {
+		$scope.people = contacts.people;
+		$scope.sortedPeople = _.groupBy(contacts.people, contact => contact.name[0]);
+	});
 });

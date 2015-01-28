@@ -13,6 +13,7 @@
 	PLC_FIRST_NAME = "First Name"
 	PLC_LAST_NAME = "Last Name"
 	PLC_DISPLAY_NAME = "Display Name"
+	PLC_COMPANY_NAME = "Company Name"
 	LB_DISPLAY_NAME = "This is the name under which you will appear when sending emails. You can use your real name or a pseudonym to stay anonymous."
 	PLC_CHOOSE_PASSWORD = "Choose password"
 	PLC_RETYPE_PASSWORD = "Retype password"
@@ -24,6 +25,7 @@
 	LB_INITIALIZING_OPENPGP = "Initializing openpgp.js..."
 	LB_AUTHENTICATING = "Authenticating..."
 	LB_LOADING_EMAILS = "Loading emails..."
+	LB_LOADING_CONTACTS = "Loading contacts..."
 	LB_DECRYPTING = "Decrypting your inbox..."
 	LB_SUCCESS = "Done!"
 	LB_BYE = "See you soon ;)"
@@ -96,6 +98,7 @@
 	LABEL_GENERATING = "Generating your Keys"
 	LABEL_GENERATED = "Your keys are ready!"
 	LABEL_REACHED = "Our hamsters are running extra hard, just be a bit more patient..."
+	LABEL_ERROR = "Cannot generate keys, make sure you use up-to-date browser and try again!"
 	LABEL_DO_NOT_CLOSE = "Do not close this window!"
 
 [LOGIN.BACKUP_KEY]
@@ -157,3 +160,13 @@
 	LB_PASSPHRASE = "Passphrase"
 	BTN_EXPORT_KEYS = "Export keys"
 	BTN_IMPORT_KEYS = "Import keys"
+
+[MAIN.CONTACTS]
+	PLC_SEARCH_CONTACTS = "Search Contacts"
+	TITLE_PRIVATE_EMAIL = "Private Email"
+	TITLE_BUSINESS_EMAIL = "Business Email"
+	LB_KEY_ID = "Key ID"
+	LB_LENGTH = "Length"
+	LB_ALGORITHMS = "Algorithms"
+	LB_PUBLIC_KEY = "Public Key"
+	LB_DOWNLOAD_PUBLIC_KEY = "Download Public Key"

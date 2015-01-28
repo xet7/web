@@ -1,33 +1,58 @@
-angular.module(primaryApplicationName).service('contacts', function($q, $rootScope, user) {
+angular.module(primaryApplicationName).service('contacts', function($q, $rootScope, co, user, crypto, apiProxy, Contact) {
 	var self = this;
 
-	var Contact = function(opt) {
-		this.name = opt.name;
-		this.email = opt.email;
-		this.sec = opt.isSecured ? 1 : 0;
+	this.list = () => co(function *() {
+		var contacts = (yield apiProxy(['contacts', 'list'])).body.contacts;
+		return contacts ? co.map(contacts, Contact.fromEnvelope) : [];
+	});
+
+	this.createContact = (contact) => co(function *() {
+		var envelope = yield Contact.toEnvelope(contact);
+		return yield apiProxy(['contacts', 'create'], envelope);
+	});
+
+	this.updateContact = (contact) => co(function *() {
+		var envelope = yield Contact.toEnvelope(contact);
+		return yield apiProxy(['contacts', 'update'], contact.id, envelope);
+	});
+
+	this.deleteContact = (contact) => co(function *() {
+		return yield apiProxy(['contacts', 'delete'], contact.id);
+	});
+
+	this.initialize = () => co(function*(){
+		var contacts = yield self.list();
+		console.log('contacts: ', contacts);
+		yield contacts.map(c => self.deleteContact(c));
+
+		var testContacts = [
+			new Contact({name: 'Ned Stark', email: 'ned@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Winter is coming.', isSecured: true}),
+			new Contact({name: 'Theon Greyjoy', email: 'tgreyjoy@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Reluctant to pay iron price.', isSecured: true}),
+			new Contact({name: 'Samwell Tarly', email: 'starly@castleblack.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Loyal brother of the watch.'}),
+			new Contact({name: 'Jon Snow', email: 'jsnow@castleblack.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Knows nothing.'}),
+			new Contact({name: 'Arya Stark', email: 'waterdancer@winterfell.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Has a list of names.'}),
+			new Contact({name: 'Jora Mormont', email: 'khaleesifan100@gmail.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Lost in the friend-zone.'}),
+			new Contact({name: 'Tyrion Lannister', email: 'tyrion@lannister.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Currently drunk.'}),
+			new Contact({name: 'Stannis Baratheon', email: 'onetrueking@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Nobody expects the Stannish inquisition.', isSecured: true}),
+			new Contact({name: 'Hodor', email: 'hodor@hodor.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Hodor? Hodor... Hodor!'}),
+			new Contact({name: 'Margaery Tyrell', email: 'mtyrell@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Keeper of kings.', isSecured: true}),
+			new Contact({name: 'Brienne of Tarth', email: 'oathkeeper@gmail.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Do not cross her.'}),
+			new Contact({name: 'Petyr Baelish', email: 'petyr@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Do not trust anyone.', isSecured: true})
+		];
+		yield testContacts.map(c => self.createContact(c));
+
+		self.people = self.people.concat(yield self.list());
+	});
+
+	this.people = [];
+
+	this.getContactById = (id) => {
+		for(let c of self.people) {
+			if (c.id == id)
+				return c;
+		}
+		return {};
 	};
-
-	this.people = [
-	    new Contact({id: 0, name: 'Ned Stark', email: 'ned@winterfell.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Winter is coming.', isSecured: 'asd'}),
-	    new Contact({id: 1, name: 'Theon Greyjoy', email: 'tgreyjoy@winterfell.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Reluctant to pay iron price.', isSecured: 'asd'}),
-	    new Contact({id: 2, name: 'Samwell Tarly', email: 'starly@castleblack.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Loyal brother of the watch.', sec: 1}),
-	    new Contact({id: 3, name: 'Jon Snow', email: 'jsnow@castleblack.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Knows nothing.'}),
-	    new Contact({id: 4, name: 'Arya Stark', email: 'waterdancer@winterfell.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Has a list of names.'}),
-	    new Contact({id: 5, name: 'Jora Mormont', email: 'khaleesifan100@gmail.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Lost in the friend-zone.'}),
-	    new Contact({id: 6, name: 'Tyrion Lannister', email: 'tyrion@lannister.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Currently drunk.'}),
-	    new Contact({id: 7, name: 'Stannis Baratheon', email: 'onetrueking@dragonstone.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Nobody expects the Stannish inquisition.', isSecured: 'asd'}),
-	    new Contact({id: 8, name: 'Hodor', email: 'hodor@hodor.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Hodor? Hodor... Hodor!'}),
-	    new Contact({id: 9, name: 'Margaery Tyrell', email: 'mtyrell@highgarden.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Keeper of kings.', isSecured: 'asd'}),
-	    new Contact({id: 10, name: 'Brienne of Tarth', email: 'oathkeeper@gmail.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Do not cross her.'}),
-	    new Contact({id: 11, name: 'Petyr Baelish', email: 'petyr@baelishindustries.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Do not trust anyone.', sec: 1, isSecured: 'asd'})
-  	];
-
-  	
-  	this.sortedPeople = _.groupBy(this.people, function(contact) {return contact.name[0]; });
-
-
-	// contact list, usually would be a separate database
- 
 
 	this.getContactByEmail = (email) => {
 		for(let c of self.people)
@@ -38,17 +63,13 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 
 	this.myself = null;
 
-	var addContact = (contact) => {
-		self.people.push(contact);
-		$rootScope.$broadcast('contacts-changed', self.people);
-	};
-
-	$rootScope.$bind('user-authenticated', () => {
+	$rootScope.$on('user-authenticated', () => {
 		self.myself = new Contact({
 			name: user.name,
 			email: user.email,
 			isSecured: true
 		});
-		addContact(self.myself);
+		self.people.push(self.myself);
+		$rootScope.$broadcast('contacts-changed', self.people);
 	});
 });

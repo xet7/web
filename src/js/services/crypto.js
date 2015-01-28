@@ -172,44 +172,80 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		return true;
 	};
 
-	this.decodeByListedFingerprints = (message, fingerprints) => {
-		//console.log('decode', message, 'with', fingerprints);
+	this.decodeByListedFingerprints = (message, fingerprints) => co(function *(){
+		var pgpMessage = openpgp.message.readArmored(message);
 
-		return co(function *(){
-			var pgpMessage = openpgp.message.readArmored(message);
+		var privateKey = fingerprints.reduce((a, fingerprint) => {
+			var privateKey = keyring.privateKeys.findByFingerprint(fingerprint);
 
-			var privateKey = fingerprints.reduce((a, fingerprint) => {
-				var privateKey = keyring.privateKeys.findByFingerprint(fingerprint);
-				//console.log('pk1', privateKey ? privateKey.primaryKey.isDecrypted : 'false');
+			if (!privateKey || !privateKey.primaryKey.isDecrypted)
+				privateKey = sessionKeyring.privateKeys.findByFingerprint(fingerprint);
 
-				if (!privateKey || !privateKey.primaryKey.isDecrypted)
-					privateKey = sessionKeyring.privateKeys.findByFingerprint(fingerprint);
+			if (!privateKey || !privateKey.primaryKey.isDecrypted)
+				privateKey = localKeyring.privateKeys.findByFingerprint(fingerprint);
 
-				//console.log('pk2', privateKey ? privateKey.primaryKey.isDecrypted : 'false');
+			if (privateKey && privateKey.primaryKey.isDecrypted)
+				return privateKey;
+		}, {});
 
-				if (!privateKey || !privateKey.primaryKey.isDecrypted)
-					privateKey = localKeyring.privateKeys.findByFingerprint(fingerprint);
+		if (!privateKey)
+			throw new Error('No decrypted private key found!');
 
-				//console.log('pk3', privateKey ? privateKey.primaryKey.isDecrypted : 'false');
+		return yield openpgp.decryptMessage(privateKey, pgpMessage);
+	});
 
-				if (privateKey && privateKey.primaryKey.isDecrypted)
-					return privateKey;
-			}, {});
+	this.encodeWithKey = (message, publicKey) => co(function *(){
+		publicKey = openpgp.key.readArmored(publicKey).keys[0];
 
-			//console.log('pk found', privateKey);
+		return yield openpgp.encryptMessage(publicKey, message);
+	});
 
-			if (!privateKey)
-				throw new Error('No decrypted private key found!');
+	this.encodeEnvelopeWithKeys = (data, publicKeys, dataFieldName = 'data', prefixName = '') => co(function *(){
+		if (!data.encoding)
+			data.encoding = 'raw';
+		if (!data.majorVersion)
+			data.majorVersion = consts.ENVELOPE_DEFAULT_MAJOR_VERSION;
+		if (!data.minorVersion)
+			data.minorVersion = consts.ENVELOPE_DEFAULT_MINOR_VERSION;
 
-			return yield openpgp.decryptMessage(privateKey, pgpMessage);
-		});
-	};
+		if (prefixName)
+			prefixName = `${prefixName}_`;
 
-	this.encodeWithKey = (email, message, publicKey) => {
-		return co(function *(){
-			publicKey = openpgp.key.readArmored(publicKey).keys[0];
+		var mergedPublicKeys = publicKeys.reduce((a, k) => {
+			a = a.concat(openpgp.key.readArmored(k).keys);
+			return a;
+		}, []);
 
-			return yield openpgp.encryptMessage(publicKey, message);
-		});
-	};
+		var dataObj = data.encoding == 'json' ? JSON.stringify(data.data) : data.data;
+		var pgpData = yield openpgp.encryptMessage(mergedPublicKeys, dataObj);
+
+		var envelope = {
+			pgp_fingerprints: mergedPublicKeys.map(k => k.primaryKey.fingerprint),
+			encoding: data.encoding
+		};
+
+		envelope[dataFieldName] = pgpData;
+
+		envelope[`${prefixName}version_major`] = data.majorVersion;
+		envelope[`${prefixName}version_minor`] = data.minorVersion;
+
+		return envelope;
+	});
+
+	this.decodeEnvelope = (envelope, prefixName = '') => co(function *(){
+		if (prefixName)
+			prefixName = `${prefixName}_`;
+
+		var pgpData = envelope.raw;
+		var message = yield self.decodeByListedFingerprints(pgpData, envelope.pgp_fingerprints);
+
+		if (envelope.encoding == 'json')
+			message = JSON.parse(message);
+
+		return {
+			data: message,
+			majorVersion: envelope[`${prefixName}version_major`],
+			minorVersion: envelope[`${prefixName}version_minor`]
+		};
+	});
 });
