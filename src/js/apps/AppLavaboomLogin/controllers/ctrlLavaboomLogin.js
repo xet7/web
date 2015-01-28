@@ -1,3 +1,5 @@
+var chan = require('chan');
+
 angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function($q, $rootScope, $state, $scope, $translate, translate, co, crypto, loader) {
 	var translations = {};
 	var translationsCh = chan();
