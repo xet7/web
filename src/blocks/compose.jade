@@ -2,6 +2,8 @@ div#compose-wrapper
 	form#compose
 		.filters.row.no-gutter.lava-icon-row
 			.lava-icon-wrapper.pull-right
+				a(href="#", ng-click="isXCC = !isXCC")
+					span.icon-tick
 				a(href="#", ng-click="send()")
 					span.icon-sent
 				a(href="#", ng-click="hidePopup()")
@@ -12,7 +14,7 @@ div#compose-wrapper
 				.cell.label
 					label {{'MAIN.COMPOSE.LB_TO' | translate}}:
 				.cell.fields
-					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="form.selected.to", theme="bootstrap", ng-disabled="disabled", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}")
+					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="form.selected.to", theme="bootstrap", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}")
 						ui-select-match(placeholder="{{'MAIN.COMPOSE.PLC_SELECT_PERSON' | translate}}", ng-class="$item.name")
 							| {{$item.name}} &#60;{{$item.email}}&#62;
 							span(class="icon-lock sec-{{$item.sec}}")
@@ -23,11 +25,11 @@ div#compose-wrapper
 								| {{'MAIN.COMPOSE.LB_EMAIL' | translate}}: {{person.email}}
 								span(class="icon-lock sec-{{person.sec}}")
 					span.icon-close.pull-right(ng-click="clearTo()")
-			.table-list
+			.table-list(ng-show="isXCC")
 				.cell.label
 					label {{'MAIN.COMPOSE.LB_CC' | translate}}:
 				.cell.fields
-					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="form.selected.cc", theme="bootstrap", ng-disabled="disabled", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}")
+					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="form.selected.cc", theme="bootstrap", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}")
 						ui-select-match(placeholder="{{'MAIN.COMPOSE.PLC_SELECT_PERSON' | translate}}", ng-class="$item.name")
 							| {{$item.name}} &#60;{{$item.email}}&#62;
 							span(class="icon-lock sec-{{$item.sec}}")
@@ -38,11 +40,11 @@ div#compose-wrapper
 								| {{'MAIN.COMPOSE.LB_EMAIL' | translate}}: {{person.email}}
 								span(class="icon-lock sec-{{person.sec}}")
 					span.icon-close.pull-right(ng-click="clearCC()")
-			.table-list
+			.table-list(ng-show="isXCC")
 				.cell.label
 					label {{'MAIN.COMPOSE.LB_BCC' | translate}}:
 				.cell.fields
-					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="from.selected.bcc", theme="bootstrap", ng-disabled="disabled", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}")
+					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="from.selected.bcc", theme="bootstrap", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}")
 						ui-select-match(placeholder="{{'MAIN.COMPOSE.PLC_SELECT_PERSON' | translate}}", ng-class="$item.name")
 							| {{$item.name}} &#60;{{$item.email}}&#62;
 							span(class="icon-lock sec-{{$item.sec}}")
