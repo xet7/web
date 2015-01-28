@@ -1,6 +1,4 @@
 #!/bin/bash
-set -e
-
 ensure_loop(){
   num="$1"
   dev="/dev/loop$num"
@@ -24,6 +22,8 @@ LOOP_B=$(expr $LOOP_A + 1)
 
 ensure_loop $LOOP_A
 ensure_loop $LOOP_B
+
+set -e
 
 wrapdocker &  
 sleep 5
