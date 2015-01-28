@@ -1,4 +1,4 @@
-form.steps-form.ng-cloak(name="details")
+form.steps-form.ng-cloak(name="details", ng-class="{'errors': currentErrorMessage}")
 	p.lead.pack {{'LOGIN.DETAILS.TITLE' | translate}}
 
 	p.text-center.steps
@@ -9,7 +9,7 @@ form.steps-form.ng-cloak(name="details")
 		span.icon-unread
 		span.icon-unread
 
-	span.error(ng-bind="")
+	div.alert.alert-danger(ng-if="currentErrorMessage", ng-bind="currentErrorMessage")
 	div.info 
 		span.icon-info
 		p {{'LOGIN.DETAILS.SUB_TITLE' | translate}}

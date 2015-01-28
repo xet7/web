@@ -1,4 +1,10 @@
 angular.module(primaryApplicationName).controller('CtrlMailList', function($rootScope, $scope, $interval, $stateParams, user, inbox, cryptoKeys) {
+	$scope.$bind('inbox-threads', () => {
+		$scope.threads = inbox.threads;
+	});
+	$scope.isLoading = false;
+	$scope.selected = null;
+
 	$scope.choose = function(item) {
 		$scope.selected = item;
 	};
@@ -11,20 +17,24 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 		inbox.requestStar($scope.selected.id);
 	};
 
-	$scope.$on('inbox-emails', () => {
-		$scope.items = inbox.emails;
-	});
+	var requestList = () => {
+		$scope.threads = [];
+		$scope.isLoading = true;
+		inbox.requestList($stateParams.labelName)
+			.finally(() => {
+				$scope.isLoading = false;
+			});
+	};
 
-	$scope.items = inbox.emails;
-
-	$scope.selected = null;
+	if ($scope.isInitialized) {
+		requestList();
+	}
+	else
+		$rootScope.$on('initialization-completed', () => {
+			requestList();
+		});
 
 	$scope.$watch('selected', () => {
 		$rootScope.$broadcast('inbox-selection-changed', $scope.selected);
 	});
-
-	if ($scope.isInitialized) {
-		console.log('$stateParams.labelName', $stateParams.labelName);
-		inbox.requestList($stateParams.labelName);
-	}
 });

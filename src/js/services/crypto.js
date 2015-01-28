@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).service('crypto', function($q, $rootScope, consts) {
+angular.module(primaryApplicationName).service('crypto', function($q, $rootScope, consts, co) {
 	var self = this;
 
 	var wrapOpenpgpKeyring = (keyring) => {
@@ -88,29 +88,24 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 
 		console.log('generating keys', nameEmail, password, numBits);
 
-		var deferred = $q.defer();
-		openpgp.generateKeyPair({numBits: numBits, userId: nameEmail, passphrase: password})
-			.then(freshKeys => {
-				keyring.publicKeys.importKey(freshKeys.publicKeyArmored);
-				keyring.privateKeys.importKey(freshKeys.privateKeyArmored);
-				keyring.store();
+		return co(function *(){
+			var freshKeys = yield openpgp.generateKeyPair({numBits: numBits, userId: nameEmail, passphrase: password});
 
-				var pub = openpgp.key.readArmored(freshKeys.publicKeyArmored).keys[0],
-					prv = openpgp.key.readArmored(freshKeys.privateKeyArmored).keys[0];
+			keyring.publicKeys.importKey(freshKeys.publicKeyArmored);
+			keyring.privateKeys.importKey(freshKeys.privateKeyArmored);
+			keyring.store();
 
-				$rootScope.$broadcast('crypto-dst-emails-updated', self.getAvailableDestinationEmails());
-				$rootScope.$broadcast('crypto-src-emails-updated', self.getAvailableSourceEmails());
+			var pub = openpgp.key.readArmored(freshKeys.publicKeyArmored).keys[0],
+				prv = openpgp.key.readArmored(freshKeys.privateKeyArmored).keys[0];
 
-				deferred.resolve({
-					pub: pub,
-					prv: prv
-				});
-			})
-			.catch(error =>{
-				deferred.reject(error);
-			});
+			$rootScope.$broadcast('crypto-dst-emails-updated', self.getAvailableDestinationEmails());
+			$rootScope.$broadcast('crypto-src-emails-updated', self.getAvailableSourceEmails());
 
-		return deferred.promise;
+			return {
+				pub: pub,
+				prv: prv
+			};
+		});
 	};
 
 	var persistKey = (privateKey, storage = 'local', isDecrypted = false) => {
@@ -177,59 +172,85 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		return true;
 	};
 
-	this.decodeByListedFingerprints = (message, fingerprints) => {
-		var deferred = $q.defer();
+	this.decodeByListedFingerprints = (message, fingerprints) => co(function *(){
+		var pgpMessage = openpgp.message.readArmored(message);
 
+		var privateKey = fingerprints.reduce((a, fingerprint) => {
+			var privateKey = keyring.privateKeys.findByFingerprint(fingerprint);
+
+			if (!privateKey || !privateKey.primaryKey.isDecrypted)
+				privateKey = sessionKeyring.privateKeys.findByFingerprint(fingerprint);
+
+			if (!privateKey || !privateKey.primaryKey.isDecrypted)
+				privateKey = localKeyring.privateKeys.findByFingerprint(fingerprint);
+
+			if (privateKey && privateKey.primaryKey.isDecrypted)
+				return privateKey;
+		}, {});
+
+		if (!privateKey)
+			throw new Error('No decrypted private key found!');
+
+		return yield openpgp.decryptMessage(privateKey, pgpMessage);
+	});
+
+	this.encodeWithKey = (message, publicKey) => co(function *(){
+		publicKey = openpgp.key.readArmored(publicKey).keys[0];
+
+		return yield openpgp.encryptMessage(publicKey, message);
+	});
+
+	this.encodeEnvelopeWithKeys = (data, publicKeys, dataFieldName = 'data', prefixName = '') => co(function *(){
+		if (!data.encoding)
+			data.encoding = 'raw';
+		if (!data.majorVersion)
+			data.majorVersion = consts.ENVELOPE_DEFAULT_MAJOR_VERSION;
+		if (!data.minorVersion)
+			data.minorVersion = consts.ENVELOPE_DEFAULT_MINOR_VERSION;
+
+		if (prefixName)
+			prefixName = `${prefixName}_`;
+
+		var mergedPublicKeys = publicKeys.reduce((a, k) => {
+			a = a.concat(openpgp.key.readArmored(k).keys);
+			return a;
+		}, []);
+
+		var dataObj = data.encoding == 'json' ? JSON.stringify(data.data) : data.data;
+		var pgpData = yield openpgp.encryptMessage(mergedPublicKeys, dataObj);
+
+		var envelope = {
+			pgp_fingerprints: mergedPublicKeys.map(k => k.primaryKey.fingerprint),
+			encoding: data.encoding
+		};
+
+		envelope[dataFieldName] = pgpData;
+
+		envelope[`${prefixName}version_major`] = data.majorVersion;
+		envelope[`${prefixName}version_minor`] = data.minorVersion;
+
+		return envelope;
+	});
+
+	this.decodeEnvelope = (envelope, prefixName = '') => co(function *(){
+		if (prefixName)
+			prefixName = `${prefixName}_`;
+
+		var pgpData = envelope.raw;
+		var message = null;
 		try {
-			var pgpMessage = openpgp.message.readArmored(message);
+			message = yield self.decodeByListedFingerprints(pgpData, envelope.pgp_fingerprints);
 
-			var privateKey = fingerprints.reduce((a, fingerprint) => {
-				var privateKey = keyring.privateKeys.findByFingerprint(fingerprint);
-
-				if (!privateKey || !privateKey.primaryKey.isDecrypted)
-					privateKey = sessionKeyring.privateKeys.findByFingerprint(fingerprint);
-
-				if (!privateKey || !privateKey.primaryKey.isDecrypted)
-					privateKey = localKeyring.privateKeys.findByFingerprint(fingerprint);
-
-				if (privateKey && privateKey.primaryKey.isDecrypted)
-					return privateKey;
-			}, {});
-
-			if (!privateKey)
-				deferred.reject(new Error('No decrypted private key found!'));
-
-			openpgp.decryptMessage(privateKey, pgpMessage)
-				.then(plainText => {
-					deferred.resolve(plainText);
-				})
-				.catch(error => {
-					deferred.reject(error);
-				});
-		} catch (catchedError) {
-			deferred.reject(catchedError);
+			if (envelope.encoding == 'json')
+				message = JSON.parse(message);
+		} catch (error) {
+			console.error('decodeEnvelope', error);
 		}
 
-		return deferred.promise;
-	};
-
-	this.encodeWithKey = (email, message, publicKey) => {
-		var deferred = $q.defer();
-
-		try {
-			publicKey = openpgp.key.readArmored(publicKey).keys[0];
-
-			openpgp.encryptMessage(publicKey, message)
-				.then(pgpMessage => {
-					deferred.resolve(pgpMessage);
-				})
-				.catch(error => {
-					deferred.reject(error);
-				});
-		} catch (catchedError) {
-			deferred.reject(catchedError);
-		}
-
-		return deferred.promise;
-	};
+		return {
+			data: message,
+			majorVersion: envelope[`${prefixName}version_major`],
+			minorVersion: envelope[`${prefixName}version_minor`]
+		};
+	});
 });

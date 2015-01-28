@@ -1,73 +1,81 @@
-angular.module('AppLavaboom').controller('CtrlCompose', function($scope) {
+angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateParams, user, contacts, inbox, router) {
+	$scope.isXCC = false;
 
-      $scope.disabled = undefined;
-	  $scope.searchEnabled = undefined;
+	var threadId = $stateParams.threadId;
 
-	  $scope.enable = function() {
-	    $scope.disabled = false;
-	  };
+	console.log('Compose wow, thread id: ', threadId);
 
-	  $scope.disable = function() {
-	    $scope.disabled = true;
-	  };
+	$scope.$bind('contacts-changed', () => {
+		$scope.people = contacts.people;
 
-	  $scope.enableSearch = function() {
-	    $scope.searchEnabled = true;
-	  };
+		var thread = inbox.threads[threadId];
+		if (thread) {
+			console.log('thread if', thread.headerEmail.from, thread.headerEmail.from.map(e => contacts.getContactByEmail(e)));
+			$scope.form = {
+				person: {},
+				selected: {
+					to: thread.headerEmail.from.map(e => contacts.getContactByEmail(e)),
+					cc: [],
+					bcc: [],
+					from: contacts.myself
+				},
+				fromEmails: [contacts.myself],
+				subject: `Re: ${thread.headerEmail.subject}`,
+				body: ''
+			};
+		} else
+			$scope.form = {
+				person: {},
+				selected: {
+					to: [contacts.myself],
+					cc: [],
+					bcc: [],
+					from: contacts.myself
+				},
+				fromEmails: [contacts.myself],
+				subject: 'Test subject',
+				body: '<p>Dear Orwell</p><p>Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Sed porttitor lectus nibh. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec sollicitudin molestie malesuada. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec rutrum congue leo eget malesuada. Sed porttitor lectus nibh. Curabitur aliquet quam id dui posuere blandit. Nulla porttitor accumsan tincidunt.</p><blockquote><p>See, there never was actually any spoon. It was just lying around the production set.</p></blockquote>'
+			};
 
-	  $scope.disableSearch = function() {
-	    $scope.searchEnabled = false;
-	  };
+		console.log(user.settings);
+		if (user.settings.isSignatureEnabled && user.settings.signatureHtml)
+			$scope.form.body = $scope.form.body + user.settings.signatureHtml;
+	});
 
-	  $scope.clear = function() {
-	    $scope.person.selected = undefined;
-	    $scope.address.selected = undefined;
-	    // $scope.country.selected = undefined;
-	  };
+	$scope.clearTo = () => $scope.form.selected.to = [];
+	$scope.clearCC = () => $scope.form.selected.cc = [];
+	$scope.clearBCC = () => $scope.form.selected.bcc = [];
 
+	$scope.send = () => {
+		inbox.send(
+			$scope.form.selected.to.map(e => e.email),
+			$scope.form.selected.cc.map(e => e.email),
+			$scope.form.selected.bcc.map(e => e.email),
+			$scope.form.subject,
+			$scope.form.body,
+			threadId
+		)
+			.then(() => {
+				router.hidePopup();
+			})
+			.catch(err => {
 
+			});
+	};
 
+	$scope.tagTransform = function (newTag) {
+		return  {
+			name: newTag,
+			email: newTag.toLowerCase() + '@email.com',
+			sec: 'unknown'
+		};
+	};
 
+	$scope.enable = function() {
+		$scope.disabled = false;
+	};
 
-
-	  $scope.tagTransform = function (newTag) {
-	    var item = {
-	        name: newTag,
-	        email: newTag.toLowerCase()+'@email.com',
-	        sec: 'unknown'
-	    };
-
-	    return item;
-	  };
-
-	  $scope.person = {};
-
-	  $scope.people = [
-	    { name: 'Adam',      email: 'adam@email.com',      sec: 1},
-	    { name: 'Amalie',    email: 'amalie@email.com',    sec: 0},
-	    { name: 'Estefania', email: 'estefania@email.com', sec: 0},
-	    { name: 'Adrian',    email: 'adrian@email.com',    sec: 1},
-	    { name: 'Wladimir',  email: 'wladimir@email.com',  sec: 1},
-	    { name: 'Samantha',  email: 'samantha@email.com',  sec: 0},
-	    { name: 'Nicole',    email: 'nicole@email.com',    sec: 1},
-	    { name: 'Natasha',   email: 'natasha@email.com',   sec: 1},
-	    { name: 'Michael',   email: 'michael@email.com',   sec: 0},
-	    { name: 'Nicolas',   email: 'nicolas@email.com',    sec: 0}
-	  ];
-
-	  
-
-	  $scope.composeSelected = {};
-	  
-	  $scope.composeSelected.to = [$scope.people[5], $scope.people[4]];
-	  $scope.composeSelected.cc = [];
-	  $scope.composeSelected.bcc = [];
-
-	  $scope.htmlVariable = '<p>Dear Orwell</p><p>Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Sed porttitor lectus nibh. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec sollicitudin molestie malesuada. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec rutrum congue leo eget malesuada. Sed porttitor lectus nibh. Curabitur aliquet quam id dui posuere blandit. Nulla porttitor accumsan tincidunt.</p><blockquote><p>See, there never was actually any spoon. It was just lying around the production set.</p></blockquote><p>Sincerely</p><p>Al Coholic<br/>C.E.O<br/>Starship Enterprise(s)</p>';
-
-
-	  $scope.fromEmails = [{mail: "piggyslasher@lavaboom.com"}, {mail:"bubba@shrimp.com"}, {name:"wholet@dog.out"}];
-	  $scope.fromEmails.selected = {mail: "piggyslasher@lavaboom.com"};
-
-	
+	$scope.disable = function() {
+		$scope.disabled = true;
+	};
 });

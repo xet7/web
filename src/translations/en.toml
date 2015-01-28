@@ -1,6 +1,9 @@
 [TEST]
 	STR = "Hello! Im Test-String in English"
 
+[LANG]
+	CODE = "en"
+
 [INBOX]
 	NO_PREVIEW_AVAILABLE = "No preview available"
 
@@ -13,6 +16,7 @@
 	PLC_FIRST_NAME = "First Name"
 	PLC_LAST_NAME = "Last Name"
 	PLC_DISPLAY_NAME = "Display Name"
+	PLC_COMPANY_NAME = "Company Name"
 	LB_DISPLAY_NAME = "This is the name under which you will appear when sending emails. You can use your real name or a pseudonym to stay anonymous."
 	PLC_CHOOSE_PASSWORD = "Choose password"
 	PLC_RETYPE_PASSWORD = "Retype password"
@@ -21,9 +25,11 @@
 
 [LOADER]
 	LB_INITIALIZATION_FAILED = "Initialization failed..."
+	LB_INITIALIZING_I18N = "Loading internationalization support..."
 	LB_INITIALIZING_OPENPGP = "Initializing openpgp.js..."
 	LB_AUTHENTICATING = "Authenticating..."
 	LB_LOADING_EMAILS = "Loading emails..."
+	LB_LOADING_CONTACTS = "Loading contacts..."
 	LB_DECRYPTING = "Decrypting your inbox..."
 	LB_SUCCESS = "Done!"
 	LB_BYE = "See you soon ;)"
@@ -96,6 +102,7 @@
 	LABEL_GENERATING = "Generating your Keys"
 	LABEL_GENERATED = "Your keys are ready!"
 	LABEL_REACHED = "Our hamsters are running extra hard, just be a bit more patient..."
+	LABEL_ERROR = "Cannot generate keys, make sure you use up-to-date browser and try again!"
 	LABEL_DO_NOT_CLOSE = "Do not close this window!"
 
 [LOGIN.BACKUP_KEY]
@@ -124,10 +131,46 @@
 	403 = "Wrong username or password!"
 
 # Specific error message for Lavaboom REST API
-[LAVABOOM.API.ERROR.PATH]
+[LAVABOOM.API.ERROR.ACCOUNTS.UPDATE]
+	403 = "Wrong old password specified"
 
 [MAIN.NAV]
 	LB_COMPOSE = "Compose"
 	LB_CONTACTS = "Contacts"
 	LB_SETTINGS = "Settings"
 	LB_LOGOUT = "Logout"
+
+[MAIN.COMPOSE]
+	LB_TO = "to"
+	LB_CC = "cc"
+	LB_BCC = "bcc"
+	LB_FROM = "from"
+	TITLE_PERSON = "Choose a person"
+	PLC_SELECT_PERSON = "Select person..."
+	LB_EMAIL = "email"
+	LB_SUBJECT = "Subject"
+
+[MAIN.SETTINGS.SECURITY]
+	TITLE_CHANGE_PASSWORD = "Change Password"
+	TITLE_KEYS_MANAGEMENT = "Manage your keys"
+	LB_CURRENT_PASSWORD = "Current password"
+    LB_NEW_PASSWORD = "New password"
+    LB_CONFIRM_PASSWORD = "Confirm password"
+    BTN_CONFIRM = "Confirm"
+	LB_KEY_PAIR_FOR = "Key Pair for"
+	LB_KEY_ID = "Key ID"
+	LB_FINGERPRINT = "Fingerprint"
+	LB_CREATION_DATE = "Creation Date"
+	LB_PASSPHRASE = "Passphrase"
+	BTN_EXPORT_KEYS = "Export keys"
+	BTN_IMPORT_KEYS = "Import keys"
+
+[MAIN.CONTACTS]
+	PLC_SEARCH_CONTACTS = "Search Contacts"
+	TITLE_PRIVATE_EMAIL = "Private Email"
+	TITLE_BUSINESS_EMAIL = "Business Email"
+	LB_KEY_ID = "Key ID"
+	LB_LENGTH = "Length"
+	LB_ALGORITHMS = "Algorithms"
+	LB_PUBLIC_KEY = "Public Key"
+	LB_DOWNLOAD_PUBLIC_KEY = "Download Public Key"

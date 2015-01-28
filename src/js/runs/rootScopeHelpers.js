@@ -1,10 +1,14 @@
-angular.module(primaryApplicationName).run(($rootScope, $translate) => {
-	$rootScope.trustedHtml = function(html) {
+angular.module(primaryApplicationName).run(($rootScope, $translate, translate) => {
+	$rootScope.$bind = (bindName, bindHandler) => {
+		$rootScope.$on(bindName, bindHandler);
+		bindHandler();
+	};
+
+	$rootScope.trustedHtml = (html) => {
 		return $sce.trustAsHtml(html);
 	};
 
 	$rootScope.switchLanguage = (langKey) => {
-		localStorage.lang = langKey;
-		$translate.use(langKey);
+		translate.switchLanguage(langKey);
 	};
 });

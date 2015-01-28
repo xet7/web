@@ -1,35 +1,7 @@
 var Buffer = require('buffer/').Buffer;
 
-angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $rootScope, $filter, co, apiProxy, crypto, user) {
+angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $rootScope, $filter, co, apiProxy, crypto) {
 	var self = this;
-
-	this.syncKeys = () => {
-		co(function *(){
-			var res = yield apiProxy(['keys', 'list'], user.name);
-
-			var keysByFingerprint = res.body.keys ? res.body.keys.reduce((a, k) => {
-				a[k.id] = k;
-				return a;
-			}, {}) : {};
-
-			var publicKeys = crypto.getAvailablePublicKeysForSourceEmails();
-
-			var keysCreationPromises = [];
-			Object.keys(publicKeys).forEach(email => {
-				var keysForEmail = publicKeys[email];
-				keysForEmail.forEach(key => {
-					if (!keysByFingerprint[key.primaryKey.fingerprint]) {
-						console.log(`Importing key with fingerprint '${key.primaryKey.fingerprint}' to the server...`);
-
-						keysCreationPromises.push(apiProxy(['keys', 'create'], key.armor()));
-					} else
-						console.log(`Key with fingerprint '${key.primaryKey.fingerprint}' already imported...`);
-				});
-			});
-
-			yield keysCreationPromises;
-		});
-	};
 
 	this.importKeys = (jsonBackup) => {
 		var importObj = null;
@@ -102,8 +74,8 @@ angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $root
 		}, null, 4);
 	};
 
-	this.getExportFilename = (backup) => {
+	this.getExportFilename = (backup, userName = 'test') => {
 		var hashPostfix = (new Buffer(openpgp.crypto.hash.md5(backup), 'binary')).toString('hex').substr(0, 8);
-		return `${user.name}-${hashPostfix}.json`;
+		return `${userName}-${hashPostfix}.json`;
 	};
 });

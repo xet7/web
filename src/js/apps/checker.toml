@@ -1,5 +1,7 @@
 [application]
 	dependencies = [
+		"../../../node_modules/6to5/browser-polyfill.js",
 		"../../bower_components/lodash/dist/lodash.underscore.js",
-		"../../bower_components/lavaboom/dist/lavaboom-api.js"
+		"../../bower_components/lavaboom/dist/lavaboom-api.js",
+		"../../../node_modules/setimmediate/setImmediate.js"
 	]

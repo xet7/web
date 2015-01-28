@@ -1,7 +1,7 @@
-form.ng-cloak
+form.ng-cloak(ng-class="{'errors': currentErrorMessage}")
 	img.login-logo(src="img/Lavaboom-logo.svg")
 	p.lead {{'LOGIN.SIGNUP.LOGIN' | translate}}
-	span.error(ng-bind="currentErrorMessage")
+	div.alert.alert-danger(ng-if="currentErrorMessage", ng-bind="currentErrorMessage")
 	div.form-group
 		input.form-control.input-lg(type='text', ng-model='form.username', placeholder="{{'GLOBAL.PLC_USERNAME_OR_EMAIL' | translate}}", required)
 

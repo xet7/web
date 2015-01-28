@@ -1,43 +1,55 @@
 .row.settings-panel.ng-cloak(ng-controller="CtrlSettingsSecurity")
-	form.settings.col-xs-12.col-xs-offset-6
+	form.settings.col-xs-12.col-xs-offset-6(name="updatePass")
 		.form-wrap
-			h4 Password
+			h4 {{'MAIN.SETTINGS.SECURITY.TITLE_CHANGE_PASSWORD' | translate}}
 			ul.list-group
 				li.list-group-item
 					.text-control
-						label Account Password
-						input.form-control(type='password', ng-model="form.oldPassword")
+						label {{'MAIN.SETTINGS.SECURITY.LB_CURRENT_PASSWORD' | translate}}
+						input.form-control(type='password', ng-model="form.oldPassword", required)
 				li.list-group-item
 					.text-control
-						label New Password
-						input.form-control(type='password', ng-model="form.password")
-				li.list-group-item
+						label {{'MAIN.SETTINGS.SECURITY.LB_NEW_PASSWORD' | translate}}
+						input.form-control(type='password', ng-model="form.password", required)
 					.text-control
-						label Confirm Password
-						input.form-control(type='password', ng-model="form.passwordRepeat")
-				li.list-group-item
+						label {{'MAIN.SETTINGS.SECURITY.LB_CONFIRM_PASSWORD' | translate}}
+						input.form-control(type='password', ng-model="form.passwordRepeat", required, match="form.password")
+					.text-control.btn-control
+						.btn.btn-block.btn-primary(ng-disabled="updatePass.$invalid || isProcessing", ng-click="changePassword()") {{'MAIN.SETTINGS.SECURITY.BTN_CONFIRM' | translate}}
+				//li.list-group-item
 					.text-control
 						label Passphrase
 						input.form-control(value='Standard Level 5')
+				li.list-group-item(ng-show="passwordUpdateStatus")
+					.text-control
+						label(ng-bind="passwordUpdateStatus")
+						input.form-control
 			div(ng-repeat="key in keys")
-				h4 Key Pair for
+				h4 {{'MAIN.SETTINGS.SECURITY.LB_KEY_PAIR_FOR' | translate}}
 					span.invert.serif ˝
 					span(ng-bind="key.user")
 					span.serif ˝
 				ul.list-group
 					li.list-group-item
 						.text-control
-							label Key ID
+							label {{'MAIN.SETTINGS.SECURITY.LB_KEY_ID' | translate}}
 							input.form-control(type='text', disabled, ng-value="key.keyId")
 					li.list-group-item
 						.text-control
-							label Fingerprint
+							label {{'MAIN.SETTINGS.SECURITY.LB_FINGERPRINT' | translate}}
 							textarea.form-control.disable-styles(resizable='false', rows='3', disabled, ng-bind="key.fingerprint")
 					li.list-group-item
 						.text-control
-							label Creation Date
+							label {{'MAIN.SETTINGS.SECURITY.LB_CREATION_DATE' | translate}}
 							input.form-control(type='text', disabled, ng-value="key.created | date")
-					li.list-group-item
+					//li.list-group-item
 						.text-control
-							label Passphrase
+							label {{'MAIN.SETTINGS.SECURITY.LB_PASSPHRASE' | translate}}
 							input.form-control(type='text', ng-value="key.password")
+			h4 {{'MAIN.SETTINGS.SECURITY.TITLE_KEYS_MANAGEMENT' | translate}}
+			input.hidden(type="file", file-select, get-file="getFile(file)", id="import-btn")
+			ul.list-group
+				li.list-group-item
+					.text-control.btn-control
+						.btn.btn-block.btn-primary(ng-click="exportKeys()") {{'MAIN.SETTINGS.SECURITY.BTN_EXPORT_KEYS' | translate}}
+						.btn.btn-block.btn-primary(ng-click="importKeys()") {{'MAIN.SETTINGS.SECURITY.BTN_IMPORT_KEYS' | translate}}

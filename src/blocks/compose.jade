@@ -2,71 +2,73 @@ div#compose-wrapper
 	form#compose
 		.filters.row.no-gutter.lava-icon-row
 			.lava-icon-wrapper.pull-right
-				a(href="#")
+				a(href="#", ng-click="isXCC = !isXCC")
+					span.icon-tick
+				a(href="#", ng-click="send()")
 					span.icon-sent
-				a(href="#")
+				a(href="#", ng-click="hidePopup()")
 					span.icon-close
 
 		header#compose-header
 			.table-list
 				.cell.label
-					label to:
+					label {{'MAIN.COMPOSE.LB_TO' | translate}}:
 				.cell.fields
-					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="composeSelected.to", theme="bootstrap", ng-disabled="disabled", style="width: 100%;", title="Choose a person")
-						ui-select-match(placeholder="Select person...", ng-class="{{$item.name}}")
+					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="form.selected.to", theme="bootstrap", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}")
+						ui-select-match(placeholder="{{'MAIN.COMPOSE.PLC_SELECT_PERSON' | translate}}", ng-class="$item.name")
 							| {{$item.name}} &#60;{{$item.email}}&#62;
 							span(class="icon-lock sec-{{$item.sec}}")
 						ui-select-choices(repeat="person in people | propsFilter: {name: $select.search, email: $select.search}")
 							div(ng-if="person.isTag", ng-bind-html="person.name + ' ' + $select.taggingLabel | highlight: $select.search")
 							div(ng-if="!person.isTag", ng-bind-html="person.name| highlight: $select.search")
 							small
-								| email: {{person.email}}
+								| {{'MAIN.COMPOSE.LB_EMAIL' | translate}}: {{person.email}}
 								span(class="icon-lock sec-{{person.sec}}")
-					span.icon-close.pull-right
-			.table-list
+					span.icon-close.pull-right(ng-click="clearTo()")
+			.table-list(ng-show="isXCC")
 				.cell.label
-					label CC:
+					label {{'MAIN.COMPOSE.LB_CC' | translate}}:
 				.cell.fields
-					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="composeSelected.cc", theme="bootstrap", ng-disabled="disabled", style="width: 100%;", title="Choose a person")
-						ui-select-match(placeholder="Select person...", ng-class="{{$item.name}}")
+					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="form.selected.cc", theme="bootstrap", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}")
+						ui-select-match(placeholder="{{'MAIN.COMPOSE.PLC_SELECT_PERSON' | translate}}", ng-class="$item.name")
 							| {{$item.name}} &#60;{{$item.email}}&#62;
 							span(class="icon-lock sec-{{$item.sec}}")
 						ui-select-choices(repeat="person in people | propsFilter: {name: $select.search, email: $select.search}")
 							div(ng-if="person.isTag", ng-bind-html="person.name + ' ' + $select.taggingLabel | highlight: $select.search")
 							div(ng-if="!person.isTag", ng-bind-html="person.name| highlight: $select.search")
 							small
-								| email: {{person.email}}
+								| {{'MAIN.COMPOSE.LB_EMAIL' | translate}}: {{person.email}}
 								span(class="icon-lock sec-{{person.sec}}")
-					span.icon-close.pull-right
-			.table-list
+					span.icon-close.pull-right(ng-click="clearCC()")
+			.table-list(ng-show="isXCC")
 				.cell.label
-					label BCC:
+					label {{'MAIN.COMPOSE.LB_BCC' | translate}}:
 				.cell.fields
-					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="composeSelected.bcc", theme="bootstrap", ng-disabled="disabled", style="width: 100%;", title="Choose a person")
-						ui-select-match(placeholder="Select person...", ng-class="{{$item.name}}")
+					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="from.selected.bcc", theme="bootstrap", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}")
+						ui-select-match(placeholder="{{'MAIN.COMPOSE.PLC_SELECT_PERSON' | translate}}", ng-class="$item.name")
 							| {{$item.name}} &#60;{{$item.email}}&#62;
 							span(class="icon-lock sec-{{$item.sec}}")
 						ui-select-choices(repeat="person in people | propsFilter: {name: $select.search, email: $select.search}")
 							div(ng-if="person.isTag", ng-bind-html="person.name + ' ' + $select.taggingLabel | highlight: $select.search")
 							div(ng-if="!person.isTag", ng-bind-html="person.name| highlight: $select.search")
 							small
-								| email: {{person.email}}
+								| {{'MAIN.COMPOSE.LB_EMAIL' | translate}}: {{person.email}}
 								span(class="icon-lock sec-{{person.sec}}")
-					span.icon-close.pull-right
+					span.icon-close.pull-right(ng-click="clearBCC()")
 			.table-list
 				.cell.label
-					label from:
+					label {{'MAIN.COMPOSE.LB_FROM' | translate}}:
 				.dropdown-control.cell
-					ui-select(ng-model='fromEmails.selected', search-enabled='false', style="width: 50%;")
-						ui-select-match {{$select.selected.mail}}
-						ui-select-choices(repeat='item in fromEmails')
-							span(ng-click='item.selected=item', ng-bind-html='item.mail')
+					ui-select(ng-model='form.selected.from', search-enabled='false', style="width: 50%;")
+						ui-select-match {{$select.selected.email}}
+						ui-select-choices(repeat='item in form.fromEmails')
+							span(ng-click='item.selected=item', ng-bind-html='item.email')
 			.table-list
 				.cell.label
-					label.text-primary Subject:
+					label.text-primary {{'MAIN.COMPOSE.LB_SUBJECT' | translate}}:
 				.cell.fields
-					input#subject.form-control.text-primary.col-xs-24(type="text", name="subject", auto-complete="off", value="Re: there never was any spoon").text-primary
+					input#subject.form-control.text-primary.col-xs-24(type="text", name="subject", auto-complete="off", ng-model="form.subject").text-primary
 					
 
 		article#compose-body
-			div(text-angular="", ng-model="htmlVariable")
+			div(text-angular="", ng-model="form.body")

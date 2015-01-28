@@ -10,6 +10,14 @@
 	@media (max-width: @screen-md-max) {
 		width: @mail-list-width-sm;
 	}
+	.list-group{
+		.list-group-item{
+			padding: 0;
+			> a{
+				padding: 10px 15px;
+			}
+		}
+	}
 }
 .details-pane{
 	width: @mail-thread-width;
@@ -29,17 +37,29 @@
 	.actions{
 		top: 0;
 	}
-	.main-settings-view{
-		padding-top: @filter-height;
+	.main-settings-view, .main-view{
 		.pos-rel();
 		height: 100%;
-		> .settings-panel{
+		padding: 10px;
+		padding-top: @filter-height + 25px;
+		> .settings-panel, .main-panel{
+			position: relative;
 			height: 100%;
+			overflow: auto;
+			padding-bottom: @filter-height + 25px;
 		}
 	}
 }
 
-.list-group-icons{
+.alert{
+	border: 0;
+	&.alert-danger{
+		background: transparent;
+		.text-center();
+		color: @lava-red;
+	}
+}
+.list-group-wrapper{
 	padding-top: @filter-height;
 	.list-group-item {
 		&:first-child{
@@ -48,8 +68,6 @@
 		border-left: 0; border-right: 0;
 		border-radius: 0;
 		> a{
-			// line-height: 3em;
-			// font-size: 1.5em;
 			display: block;
 			color: @lava-text;
 			text-decoration: none !important;
@@ -60,19 +78,38 @@
 				width: 2em;
 				text-align: center;
 			}
-			span{
-				position: relative;
-				top: -3px;
-			}
 		}
 		&.active, &:active, &:focus {
 			background-color: @lava;
 			border-color: #4CBCDD;
 			a{
 				color: #FFF;
+				.sec-icon{
+					color: #FFF;
+				}
 			}
 		}
-	} 
+		&.separator{
+			background-color: @lava-gray-lighter;
+			color: @lava-gray;
+			padding: .3em 15px;
+			text-transform: uppercase;
+		}
+	}
+	&.list-group-icons > li > a > span{
+		position: relative;
+		top: -3px;
+	}
+
+	.sec-icon{
+		float: right;
+		display: inline-block;
+		font-size: 1.3em;
+		color: @lava-warning;
+		&.icon-lock{
+			color: @lava;
+		}
+	}
 }
 
 #guide{
@@ -101,6 +138,12 @@
 			}
 		}
 	}
+}
+
+.scrollable{
+	.pos-rel();
+	height: 100%;
+	overflow: auto;
 }
 
 .scrollbars{

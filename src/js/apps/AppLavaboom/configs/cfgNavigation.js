@@ -9,12 +9,16 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 		return '/label/Inbox';
 	});
 
-	$stateProvider
-		.state('empty', {
+	var primaryStates = {
+		'empty': {
 			url: '/'
-		})
+		},
 
-		.state('main', {
+		'modal' : {
+			url: '/modal'
+		},
+
+		'main': {
 			abstract: true,
 
 			views: {
@@ -23,53 +27,97 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 					controller: 'CtrlNavigation'
 				}
 			}
-		})
+		},
 
-		.state('main.label', {
+		'main.label': {
 			url: '/label/:labelName',
 			views: {
 				'main-view@': {
 					templateUrl: 'partials/inbox.html'
 				}
 			}
-		})
+		},
 
-		.state('main.settings', {
+		'main.contacts' : {
+			url: '/contacts',
+			views: {
+				'main-view@': {
+					templateUrl: 'partials/contacts.html'
+				}
+			}
+		},
+
+		'main.contacts.profile': {
+			url: '/profile/:contactId',
+			templateUrl: 'partials/contacts/contacts.profile.html'
+		},
+
+		'main.settings' : {
 			url: '/settings',
 			views: {
 				'main-view@': {
 					templateUrl: 'partials/settings.html'
 				}
 			}
-		})
+		},
 
-		.state('main.compose', {
-			url: '/compose',
-			views: {
-				'main-view@': {
-					templateUrl: 'partials/compose.html',
-					controller: 'CtrlCompose'
-				}
-			}
-		})
-
-		.state('main.settings.preferences', {
+		'main.settings.preferences': {
 			url: '/preferences',
 			templateUrl: 'partials/settings/settings.preferences.html'
-		})
+		},
 
-		.state('main.settings.profile', {
+		'main.settings.profile': {
 			url: '/profile',
 			templateUrl: 'partials/settings/settings.profile.html'
-		})
+		},
 
-		.state('main.settings.security', {
+		'main.settings.security': {
 			url: '/security',
 			templateUrl: 'partials/settings/settings.security.html'
-		})
+		},
 
-		.state('main.settings.plan', {
+		'main.settings.plan': {
 			url: '/plan',
 			templateUrl: 'partials/settings/settings.plan.html'
-		});
+		}
+	};
+
+	var PopupAbstractState = function () {
+		this.abstract = true;
+		this.data = {
+			settings: {
+			}
+		};
+	};
+
+	var popupStates = {
+		'compose': function () {
+			this.url =  '/compose/:threadId';
+			this.onEnter = ($state, $stateParams, router) => {
+				router.createPopup({
+					templateUrl: 'partials/compose.html',
+					controller: 'CtrlCompose',
+					backdrop: true,
+					size: 'lg'
+				});
+			};
+			this.onExit = (router) => {
+				router.hidePopup();
+			};
+		}
+	};
+
+	var declareState = (name, state) => {
+		console.log('creating state ', name);
+		$stateProvider.state(name, state);
+	};
+
+	for(let stateName in primaryStates) {
+		declareState(stateName, primaryStates[stateName]);
+		declareState(`${stateName}.popup`, new PopupAbstractState());
+		for(let popupStateName in popupStates)
+			if (stateName.indexOf('main.') === 0) {
+				declareState(`${stateName}.popup.${popupStateName}`, new popupStates[popupStateName]());
+			}
+	}
 });

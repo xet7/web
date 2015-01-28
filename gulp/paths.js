@@ -2,6 +2,7 @@ var output = 'dist/';
 
 module.exports = {
 	input: 'src/**/*',
+	cache : 'cache/',
 	output: output,
 	scripts: {
 		cacheOutput: './cache/',
@@ -30,14 +31,12 @@ module.exports = {
 		input: 'src/fonts/*',
 		output: output + 'css/fonts/'
 	},
-	main_html: {
-		input: 'src/*.html',
-		inputJade: 'src/*.jade',
+	markup: {
+		input: 'src/*.jade',
 		output: output
 	},
 	partials: {
-		input: 'src/blocks/**/*.html',
-		inputJade: 'src/blocks/**/*.jade',
+		input: 'src/blocks/**/*.jade',
 		output: output + 'partials/'
 	},
 	staticFiles: 'src/static/**',

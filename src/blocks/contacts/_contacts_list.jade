@@ -1,0 +1,19 @@
+#contacts-list.list-pane.ng-cloak(ng-controller="CtrlContacts")
+	.filters.row.no-gutter.lava-icon-row.z2
+		label.search-icon.col-xs-3(for="top-search")
+			span.icon-search
+		input#top-search.search.col-xs-13(placeholder="{{'MAIN.CONTACTS.PLC_SEARCH_CONTACTS' | translate}}", ng-model="searchText")
+		.lava-icon-wrapper.col-xs-8.text-right
+			a(href="#")
+				span.icon-plus
+			a(href="#")
+				span.icon-star
+	.list-group-wrapper.scrollable.z1
+		ul.list-group
+			section(ng-repeat="(alpha, contacts) in sortedPeople")
+				li.separator.list-group-item(ng-show="contacts", ng-bind="alpha")
+				li.list-group-item(ng-repeat="contact in contacts | filter: searchText", ng-class="{active: selectedContactId && selectedContactId == contact.id}")
+					a(ng-class="'sec-' + contact.sec", ui-sref="main.contacts.profile({contactId: contact.id})")
+						span(ng-bind="contact.name")
+						span.sec-icon.icon-lock(ng-show="contact.isSecured")
+						span.sec-icon.icon-unlock(ng-show="!contact.isSecured")

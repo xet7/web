@@ -1,16 +1,5 @@
 include settings/_settings_list.jade
 .details-pane
 	.filters.row.no-gutter.lava-icon-row
-		label.search-icon.col-xs-3(for='top-search')
-			span.icon-search
-		input#top-search.search.col-xs-13(placeholder='Search Emails')
-		.lava-icon-wrapper.col-xs-8
-			a(href='#')
-				span.icon-arrow-down
-			a(href='#')
-				span.icon-star
-			a(href='#')
-				span.icon-ban
-			a(href='#')
-				span.icon-trash
+		
 	.main-settings-view(ui-view='')

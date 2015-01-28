@@ -42,10 +42,11 @@ html(lang="en")
 			.login-app.login
 				.container.main-container
 					.row
-						.main-content.col-md-8.col-xs-22.col-md-offset-8.col-xs-offset-1(ui-view="")
+						.main-content.col-md-8.col-xs-22.col-md-offset-8.col-xs-offset-1(ui-view="", autoscroll="false")
 
 		#main-app-container.hidden(ng-controller="CtrlLavaboom")
-			#leftPanel(ui-view="left-view")
-			#content(ui-view="main-view")
+			#leftPanel(ui-view="left-view", autoscroll="false")
+			#content(ui-view="main-view", autoscroll="false")
+			#modal(ui-view="modal-view", autoscroll="false")
 
 		script(src='js/loader.js')

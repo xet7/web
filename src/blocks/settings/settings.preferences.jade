@@ -1,13 +1,5 @@
-.row.settings-panel.ng-cloak
+.row.settings-panel.ng-cloak(ng-controller="CtrlSettingsPreferences")
 	form.settings.col-xs-12.col-xs-offset-6
-		h4 Accounts
-		ul.list-group
-			li.list-group-item
-				label Account Enabled
-				.control
-					label.switch
-						input(type='checkbox', checked='')
-						i
 		h4 Storage Space
 		ul.list-group.suppress-borders
 			li.list-group-item
@@ -28,37 +20,37 @@
 					ui-select(ng-model='items.selected', search-enabled='false')
 						ui-select-match {{$select.selected.name}}
 						ui-select-choices(repeat='item in [{name: "UTC+1"}, {name:"UTC+2"}, {name:"UTC+3"}, {name:"UTC+4"}]')
-							span(ng-click='item.selected=item', ng-bind-html='item.name')
+							span(ng-click='item.selected=item', ng-bind='item.name')
 			li.list-group-item
 				.dropdown-control
 					label Date / Time
 					ui-select(ng-model='items.selected', search-enabled='false')
 						ui-select-match {{$select.selected.name}}
 						ui-select-choices(repeat='item in [{name: "day/month/year"}, {name:"month/date/year"}, {name:"year/month/date"}]')
-							span(ng-click='item.selected=item', ng-bind-html='item.name')
+							span(ng-click='item.selected=item', ng-bind='item.name')
 			li.list-group-item
 				.dropdown-control
 					label Time Format
 					ui-select(ng-model='items.selected', search-enabled='false')
 						ui-select-match {{$select.selected.name}}
 						ui-select-choices(repeat='item in [{name: "24-hours"}, {name:"12-hours"}]')
-							span(ng-click='item.selected=item', ng-bind-html='item.name')
+							span(ng-click='item.selected=item', ng-bind='item.name')
 		h4 User Interface
 		ul.list-group
 			li.list-group-item
 				.dropdown-control
 					label Language
-					ui-select(ng-model='items.selected', search-enabled='false')
+					ui-select(ng-model='form.selectedLanguage', search-enabled='false')
 						ui-select-match {{$select.selected.name}}
-						ui-select-choices(repeat='item in [{name: "English (UK)"}, {name:"English (US)"}]')
-							span(ng-click='item.selected=item', ng-bind-html='item.name')
+						ui-select-choices(repeat='item in languages')
+							span(ng-bind='item.name')
 			li.list-group-item
 				.dropdown-control
 					label Font Size
 					ui-select(ng-model='items.selected', search-enabled='false')
 						ui-select-match {{$select.selected.name}}
 						ui-select-choices(repeat='item in [{name: "medium"}, {name:"English (US)"}]')
-							span(ng-click='item.selected=item', ng-bind-html='item.name')
+							span(ng-click='item.selected=item', ng-bind='item.name')
 		h4 Mail Behaviour
 		ul.list-group
 			li.list-group-item
@@ -69,7 +61,7 @@
 							| {{$select.selected.name}}
 							span(ng-class='item.icon')
 						ui-select-choices(repeat='item in [{name: "English (UK)", icon: "icon-draft"}, {name:"English (US)", icon: "icon-inbox"}]')
-							span(ng-click='item.selected=item', ng-bind-html='item.name')
+							span(ng-click='item.selected=item', ng-bind='item.name')
 							span.dropdown-icon(ng-class='item.icon')
 			li.list-group-item
 				.dropdown-control
@@ -77,11 +69,11 @@
 					ui-select(ng-model='items.selected', search-enabled='false')
 						ui-select-match {{$select.selected.name}}
 						ui-select-choices(repeat='item in [{name: "Move to Spam Folder"}, {name:"English (US)"}]')
-							span(ng-click='item.selected=item', ng-bind-html='item.name')
+							span(ng-click='item.selected=item', ng-bind='item.name')
 			li.list-group-item
 				.dropdown-control
 					label Deleted Emails
 					ui-select(ng-model='items.selected', search-enabled='false')
 						ui-select-match {{$select.selected.name}}
 						ui-select-choices(repeat='item in [{name: "Move to Spam Folder"}, {name:"English (US)"}]')
-							span(ng-click='item.selected=item', ng-bind-html='item.name')
+							span(ng-click='item.selected=item', ng-bind='item.name')
