@@ -2,22 +2,35 @@ angular.module(primaryApplicationName).factory('apiProxy', function($q, $rootSco
 	LavaboomAPI.formatError = (callName, error) => {
 		callName = callName.toUpperCase();
 
+		var translate = (name) => co(function *(){
+			var r = yield $translate(name);
+			if (r == name)
+				throw new Error(`Translation '${name}' not found!`);
+			return r;
+		});
+
 		return co(function *(){
 			try {
 				if (error.body && error.body.message == 'Unexpected end of input')
-					return yield $translate(`LAVABOOM.API.ERROR.DOWN`);
+					return yield translate(`LAVABOOM.API.ERROR.DOWN`);
 
-				return yield $translate(`LAVABOOM.API.ERROR.${callName}.${error.status}`);
+				return yield translate(`LAVABOOM.API.ERROR.${callName}.${error.status}`);
 			} catch (err) {
+				var def = '';
 				try {
-					return yield $translate(`LAVABOOM.API.ERROR.${error.status}`);
+					def = yield translate(`LAVABOOM.API.ERROR.${callName}.DEFAULT`);
+				} catch (e) {}
+
+				try {
+					var genericReason = yield translate(`LAVABOOM.API.ERROR.${error.status}`);
+					return def ? `${def} (${genericReason})` : genericReason;
 				} catch (err) {
 					if (error.body && error.body.message)
 						return error.body.message;
 
 					// huh? wtf!
 					try {
-						return yield $translate(`LAVABOOM.API.ERROR.UNKNOWN`);
+						return yield translate(`LAVABOOM.API.ERROR.UNKNOWN`);
 					} catch (err) {
 						// srsly? wtf!
 						return 'unknown error';
