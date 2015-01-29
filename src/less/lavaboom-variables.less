@@ -25,7 +25,7 @@
 @lava-login-gray: #4C535C;				//medium grey (defaut text in fields) #4C535C
 @lava-login-gray-dark: #33373C;			//dark grey (Input field) #33373C
 @lava-login-gray-darker: #282B2F;		//very dark grey (background) #282B2F
-@lava-login-box-shadow: 0px 0px 6px 6px rgba(0, 0, 0, 0.15);
+@lava-login-box-shadow: 0px 0px 6px 6px rgba(0, 0, 0, 0.1);
 @lava-login-error-bg: #4A3936;
 
 
@@ -47,7 +47,7 @@
 @font-family-monospace:   Menlo, Monaco, Consolas, "Courier New", monospace;
 @font-family-base:        @font-family-sans-serif;
 
-@light-font-weight: 200;
+@light-font-weight: 100;
 @base-font-weight: 300;
 
 @border-radius-base:        3px;
@@ -180,6 +180,14 @@ body{
 		height: @line-height-base;
 		background: linear-gradient(to right, rgba(255, 255, 255, 0), white 100%);
 		pointer-events: none;
+	}
+}
+
+.lava-font{
+	font-weight: @base-font-weight !important;
+	@media (-webkit-min-device-pixel-ratio: 2), 
+		(min-resolution: 192dpi) { 
+		font-weight: @light-font-weight !important;
 	}
 }
 
