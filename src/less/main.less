@@ -79,7 +79,18 @@
 				text-align: center;
 			}
 		}
-		&.active, &:active, &:focus {
+		&:hover{
+			background-color: @lava-gray-light;
+			transition: .3s all;
+			a{
+				color: @lava-gray-gark;
+				.sec-icon{
+					// color: #FFF;
+				}
+			}
+
+		}
+		&.active {
 			background-color: @lava;
 			border-color: #4CBCDD;
 			a{
