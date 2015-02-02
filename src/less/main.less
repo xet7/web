@@ -40,8 +40,8 @@
 	.main-settings-view, .main-view{
 		.pos-rel();
 		height: 100%;
-		padding: 10px;
-		padding-top: @filter-height + 25px;
+		// padding: 10px;
+		padding-top: @filter-height;
 		> .settings-panel, .main-panel{
 			position: relative;
 			height: 100%;
@@ -49,6 +49,16 @@
 			padding-bottom: @filter-height + 25px;
 		}
 	}
+}
+
+.pane-status{
+	.lead();
+	.text-muted();
+	.pos-abs();
+	width: 100%;
+	top: 50%;
+	transform: translateY(-50%);
+	.text-center();
 }
 
 .alert{
