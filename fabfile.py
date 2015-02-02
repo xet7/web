@@ -23,5 +23,3 @@ def deploy():
 			run('./web-' + branch + '.sh')
 
 	run('rm -r ' + tmp_dir)
-
-put('testdirectory', '/home/frodo/tmp')
