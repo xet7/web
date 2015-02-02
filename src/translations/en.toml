@@ -171,6 +171,7 @@
 	LB_PASSPHRASE = "Passphrase"
 	BTN_EXPORT_KEYS = "Export keys"
 	BTN_IMPORT_KEYS = "Import keys"
+	LB_DECRYPTED = "Decrypted"
 
 [MAIN.CONTACTS]
 	PLC_SEARCH_CONTACTS = "Search Contacts"

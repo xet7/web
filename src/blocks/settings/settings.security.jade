@@ -42,10 +42,11 @@
 						.text-control
 							label {{'MAIN.SETTINGS.SECURITY.LB_CREATION_DATE' | translate}}
 							input.form-control(type='text', disabled, ng-value="key.created | date")
-					//li.list-group-item
+					li.list-group-item
 						.text-control
-							label {{'MAIN.SETTINGS.SECURITY.LB_PASSPHRASE' | translate}}
-							input.form-control(type='text', ng-value="key.password")
+							label(ng-show="key.isDecrypted") {{'MAIN.SETTINGS.SECURITY.LB_DECRYPTED' | translate}}
+							label(ng-show="!key.isDecrypted") {{'MAIN.SETTINGS.SECURITY.LB_PASSPHRASE' | translate}}
+							input.form-control(type='password', ng-disabled="key.isDecrypted", ng-model="key.decryptPassword", ng-controller="CtrlSettingsSecurityKey")
 			h4 {{'MAIN.SETTINGS.SECURITY.TITLE_KEYS_MANAGEMENT' | translate}}
 			input.hidden(type="file", file-select, get-file="getFile(file)", id="import-btn")
 			ul.list-group
