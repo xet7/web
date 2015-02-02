@@ -33,6 +33,7 @@ var browserify = require('browserify'),
 	bulkify = require('bulkify'),
 	uglifyify = require('uglifyify'),
 	stripify = require('stripify'),
+	envify = require('envify'),
 	brfs = require('brfs');
 
 // Modules
@@ -47,6 +48,7 @@ var filterTransform = require('filter-transform');
 var args = process.argv.slice(2);
 
 var plumber = null;
+var isServe = false;
 if (args.length > 0) {
 	plumber = plg.util.noop;
 	if (args[0] === 'production') {
@@ -55,6 +57,7 @@ if (args.length > 0) {
 	}
 } else {
 	plumber = plg.plumber;
+	isServe = true;
 }
 
 require('toml-require').install();
@@ -219,6 +222,7 @@ var browserifyBundle = function(filename) {
 				})
 					.transform(ownCodebaseTransform(to5ify))
 					.transform(ownCodebaseTransform(bulkify))
+					.transform(ownCodebaseTransform(envify))
 					.transform(ownCodebaseTransform(brfs));
 
 				if (!config.isLogs) {
@@ -406,6 +410,10 @@ gulp.task('compile:finished', compileSteps, function() {
 
 // Compile files
 gulp.task('compile', ['clean', 'tests', 'lint:scripts'], function() {
+	// start local http server
+	if (isServe)
+		serve();
+	
 	gulp.start(compileSteps.concat(['compile:finished']));
 });
 
@@ -434,7 +442,7 @@ var scheduleLiveReloadBuildTaskStart = function (taskName, timeout) {
 
 gulp.task('default', [
 	'bower'
-], function(cb) {
+], function() {
 	// we can start compile only after we do have bower dependencies
 	gulp.start('compile');
 	
@@ -466,9 +474,6 @@ gulp.task('default', [
 		host: config.livereloadListenAddress,
 		port: config.livereloadListenPort
 	});
-
-	// start local http server
-	serve();
 });
 
 gulp.task('serve', function () {
