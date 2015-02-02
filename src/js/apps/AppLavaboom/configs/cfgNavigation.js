@@ -96,7 +96,6 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 
 			// @ngInject
 			this.onEnter = ($state, $stateParams, router) => {
-				console.log('on enter...');
 				router.createPopup({
 					templateUrl: 'partials/compose.html',
 					controller: 'CtrlCompose',
