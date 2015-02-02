@@ -1,9 +1,11 @@
 var gulp = require('gulp');
+var gulp = require('gulp');
 var plg = require('gulp-load-plugins')({
 	pattern: ['gulp-*', 'gulp.*'],
 	replaceString: /\bgulp[\-.]/
 });
 global.plg = plg;
+var s = require('underscore.string');
 
 var utils = require('./gulp/utils');
 var config = require('./gulp/config');
@@ -161,7 +163,8 @@ gulp.task('build:scripts:vendor', ['build:scripts:vendor:min', 'build:scripts:co
 				var resolvedFileOriginal = paths.scripts.inputAppsFolder + appConfig.application.dependencies[i];
 
 				var resolvedFile = '';
-				if (config.isProduction && resolvedFileOriginal.indexOf('browser-polyfill.js') < 0) {
+
+				if (config.isProduction && resolvedFileOriginal.indexOf('browser-polyfill.js') < 0 && !s(resolvedFileOriginal).endsWith('min.js')) {
 					resolvedFile = resolvedFileOriginal.replace('.js', '.min.js');
 
 					if (!fs.existsSync(resolvedFile)) {
