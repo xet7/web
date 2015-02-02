@@ -157,6 +157,12 @@
 	LB_EMAIL = "email"
 	LB_SUBJECT = "Subject"
 
+[MAIN.SETTINGS.MENU]
+	KEYS = "Keys"
+	GENERAL = "General"
+	PROFILE = "Profile"
+	SUBSCRIPTION = "Subscription"
+
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
 	TITLE_KEYS_MANAGEMENT = "Manage your keys"

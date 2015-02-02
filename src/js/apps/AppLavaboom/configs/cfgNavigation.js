@@ -93,7 +93,10 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 	var popupStates = {
 		'compose': function () {
 			this.url =  '/compose/:threadId';
+
+			// @ngInject
 			this.onEnter = ($state, $stateParams, router) => {
+				console.log('on enter...');
 				router.createPopup({
 					templateUrl: 'partials/compose.html',
 					controller: 'CtrlCompose',
@@ -101,6 +104,8 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 					size: 'lg'
 				});
 			};
+
+			// @ngInject
 			this.onExit = (router) => {
 				router.hidePopup();
 			};

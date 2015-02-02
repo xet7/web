@@ -4,6 +4,7 @@
 @lava-gray: #3A4045;
 @lava-gray-light: #BCBBC0;
 @lava-gray-lighter: #D9D9D9;
+@lava-gray-lightest: lighten(@lava-gray-lighter, 5%);
 @lava-gray-dark: #61666F;
 @lava-red: #E74F2F;
 @lava-blue: #3388BF;
@@ -170,17 +171,17 @@ body{
 	height: 0em + (@line-height-base * @lines);
 	overflow: hidden;
 
-	&:after {
-		content: "";
-		text-align: right;
-		position: absolute;
-		bottom: 0;
-		right: 0;
-		width: 70%;
-		height: @line-height-base;
-		background: linear-gradient(to right, rgba(255, 255, 255, 0), white 100%);
-		pointer-events: none;
-	}
+	// &:after {
+	// 	content: "";
+	// 	text-align: right;
+	// 	position: absolute;
+	// 	bottom: 0;
+	// 	right: 0;
+	// 	width: 70%;
+	// 	height: @line-height-base;
+	// 	background: linear-gradient(to right, rgba(255, 255, 255, 0), white 100%);
+	// 	pointer-events: none;
+	// }
 }
 
 .lava-font{
