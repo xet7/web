@@ -3,9 +3,9 @@ script:
   - pip install fabric
   - npm install -g gulp
   - npm install
-  - "if [ \"$DRONE_BRANCH\" = \"master\" ]; export API_URI=\"https://api.lavaboom.com\"; fi"
-  - "if [ \"$DRONE_BRANCH\" = \"staging\" ]; export API_URI=\"https://api.lavaboom.io\"; fi"
-  - "if [ \"$DRONE_BRANCH\" = \"develop\" ]; export API_URI=\"https://api.lavaboom.co\"; fi"
+  - "if [ \"$DRONE_BRANCH\" = \"master\" ]; then export API_URI=\"https://api.lavaboom.com\"; fi"
+  - "if [ \"$DRONE_BRANCH\" = \"staging\" ]; then export API_URI=\"https://api.lavaboom.io\"; fi"
+  - "if [ \"$DRONE_BRANCH\" = \"develop\" ]; then export API_URI=\"https://api.lavaboom.co\"; fi"
   - gulp develop
   - "if [ \"$DRONE_BRANCH\" = \"master\" ]; then fab -H marge.lavaboom.io:36104 deploy; fi"
   - "if [ \"$DRONE_BRANCH\" = \"staging\" ]; then fab -H lisa.lavaboom.io:36412 deploy; fi"
