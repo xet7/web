@@ -1,9 +1,11 @@
 var gulp = require('gulp');
+var gulp = require('gulp');
 var plg = require('gulp-load-plugins')({
 	pattern: ['gulp-*', 'gulp.*'],
 	replaceString: /\bgulp[\-.]/
 });
 global.plg = plg;
+var s = require('underscore.string');
 
 var utils = require('./gulp/utils');
 var config = require('./gulp/config');
@@ -33,6 +35,7 @@ var browserify = require('browserify'),
 	bulkify = require('bulkify'),
 	uglifyify = require('uglifyify'),
 	stripify = require('stripify'),
+	envify = require('envify'),
 	brfs = require('brfs');
 
 // Modules
@@ -47,6 +50,7 @@ var filterTransform = require('filter-transform');
 var args = process.argv.slice(2);
 
 var plumber = null;
+var isServe = false;
 if (args.length > 0) {
 	plumber = plg.util.noop;
 	if (args[0] === 'production') {
@@ -55,6 +59,7 @@ if (args.length > 0) {
 	}
 } else {
 	plumber = plg.plumber;
+	isServe = true;
 }
 
 require('toml-require').install();
@@ -158,7 +163,8 @@ gulp.task('build:scripts:vendor', ['build:scripts:vendor:min', 'build:scripts:co
 				var resolvedFileOriginal = paths.scripts.inputAppsFolder + appConfig.application.dependencies[i];
 
 				var resolvedFile = '';
-				if (config.isProduction && resolvedFileOriginal.indexOf('browser-polyfill.js') < 0) {
+
+				if (config.isProduction && resolvedFileOriginal.indexOf('browser-polyfill.js') < 0 && !s(resolvedFileOriginal).endsWith('min.js')) {
 					resolvedFile = resolvedFileOriginal.replace('.js', '.min.js');
 
 					if (!fs.existsSync(resolvedFile)) {
@@ -219,6 +225,7 @@ var browserifyBundle = function(filename) {
 				})
 					.transform(ownCodebaseTransform(to5ify))
 					.transform(ownCodebaseTransform(bulkify))
+					.transform(ownCodebaseTransform(envify))
 					.transform(ownCodebaseTransform(brfs));
 
 				if (!config.isLogs) {
@@ -406,6 +413,12 @@ gulp.task('compile:finished', compileSteps, function() {
 
 // Compile files
 gulp.task('compile', ['clean', 'tests', 'lint:scripts'], function() {
+	// start local http server
+	if (isServe) {
+		serve();
+		isServe = false;
+	}
+
 	gulp.start(compileSteps.concat(['compile:finished']));
 });
 
@@ -434,7 +447,7 @@ var scheduleLiveReloadBuildTaskStart = function (taskName, timeout) {
 
 gulp.task('default', [
 	'bower'
-], function(cb) {
+], function() {
 	// we can start compile only after we do have bower dependencies
 	gulp.start('compile');
 	
@@ -466,9 +479,6 @@ gulp.task('default', [
 		host: config.livereloadListenAddress,
 		port: config.livereloadListenPort
 	});
-
-	// start local http server
-	serve();
 });
 
 gulp.task('serve', function () {
