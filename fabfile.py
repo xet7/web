@@ -1,5 +1,5 @@
 import os, random, string
-from fabric.api import run, env, cd, settings
+from fabric.api import run, env, cd, settings, put
 
 env.key_filename = os.getenv('HOME', '/root') + '/.ssh/id_rsa'
 
