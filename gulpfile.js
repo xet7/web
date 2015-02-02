@@ -411,9 +411,11 @@ gulp.task('compile:finished', compileSteps, function() {
 // Compile files
 gulp.task('compile', ['clean', 'tests', 'lint:scripts'], function() {
 	// start local http server
-	if (isServe)
+	if (isServe) {
 		serve();
-	
+		isServe = false;
+	}
+
 	gulp.start(compileSteps.concat(['compile:finished']));
 });
 
