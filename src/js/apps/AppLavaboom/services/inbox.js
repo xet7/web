@@ -57,10 +57,26 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		}
 	});
 
-	this.requestDelete = (id) => {
-		apiProxy(['threads', 'delete'], id);
-		self.requestList();
-	};
+	this.requestDelete = (threadId) => co(function *() {
+		var thread = self.threads[threadId];
+		var trashLabelId = self.labelsByName.Trash.id;
+
+		var r;
+		if (thread.labels.indexOf(trashLabelId) > -1)
+			r = yield apiProxy(['threads', 'delete'], threadId);
+		else
+			r = yield self.requestSetLabel(threadId, 'Trash');
+
+		delete self.threads[threadId];
+		$rootScope.$broadcast('inbox-threads', self.threads);
+
+		return r;
+	});
+
+	this.requestSetLabel = (threadId, labelName) => co(function *() {
+		var labelId = self.labelsByName[labelName].id;
+		return yield apiProxy(['threads', 'update'], threadId, {labels: [labelId]});
+	});
 
 	this.requestAddLabel = (threadId, labelName) => co(function *() {
 		var labelId = self.labelsByName[labelName].id;
