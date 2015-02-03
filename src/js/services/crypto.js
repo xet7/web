@@ -43,9 +43,17 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		return a;
 	}, {}));
 
-	this.getAvailablePrivateKeys = () => keyring.privateKeys;
+	this.getPrivateKeyByFingerprint = (fingerprint) => {
+		var k = localKeyring.privateKeys.findByFingerprint(fingerprint);
+		if (k)
+			return k;
 
-	this.getAvailablePrivateDecryptedKeys = () => sessionKeyring.privateKeys;
+		k = sessionKeyring.privateKeys.findByFingerprint(fingerprint);
+		if (k)
+			return k;
+
+		return keyring.privateKeys.findByFingerprint(fingerprint);
+	};
 
 	this.getAvailableDestinationEmails = () => getAvailableEmails(keyring.publicKeys);
 

@@ -6,7 +6,7 @@ angular.module(primaryApplicationName, [
 	'utils',
 	'ui.router',
 	'pascalprecht.translate',
-	'validation.match',
+	'ngMessages',
 	'angular-co'
 ]);
 
