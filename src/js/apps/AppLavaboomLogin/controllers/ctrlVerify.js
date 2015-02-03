@@ -8,9 +8,13 @@ angular.module(primaryApplicationName).controller('VerifyController', function($
 	$scope.isProcessing = false;
 
 	$scope.requestVerify = () => {
+		$scope.isProcessing = true;
 		signUp.verifyInvite($scope.form.username, $scope.form.token, $scope.form.isNews)
 			.then(() => {
 				$state.go('plan');
+			})
+			.finally(() => {
+				$scope.isProcessing = false;
 			});
 	};
 });
