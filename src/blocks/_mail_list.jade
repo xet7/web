@@ -6,11 +6,11 @@
 		.lava-icon-wrapper.col-xs-8(ng-show="selected")
 			a(href="#")
 				span.icon-arrow-down
-			a(href="#")
+			a(href="#", ng-click="starThread()")
 				span.icon-star
 			a(href="#")
 				span.icon-ban
-			a(href="#", ng-click="delete()")
+			a(href="#", ng-click="deleteThread()")
 				span.icon-trash
 	.mail-list-group
 		div.pane-status(ng-show="isLoading") Loading...

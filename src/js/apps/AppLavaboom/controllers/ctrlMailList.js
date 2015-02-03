@@ -9,12 +9,12 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 		$scope.selected = item;
 	};
 
-	$scope.delete = () => {
+	$scope.deleteThread = () => {
 		inbox.requestDelete($scope.selected.id);
 	};
 
-	$scope.star = () => {
-		inbox.requestStar($scope.selected.id);
+	$scope.starThread = () => {
+		inbox.requestAddLabel($scope.selected.id, 'Starred');
 	};
 
 	var requestList = () => {

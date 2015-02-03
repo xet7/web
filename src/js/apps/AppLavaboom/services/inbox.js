@@ -9,6 +9,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.decryptingTotal = 0;
 	this.decryptingCurrent = 0;
 
+	this.labelName = '';
 	this.labelsByName = [];
 	this.threads = [];
 
@@ -61,9 +62,11 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		self.requestList();
 	};
 
-	this.requestStar = (id) => {
-
-	};
+	this.requestAddLabel = (threadId, labelName) => co(function *() {
+		var labelId = self.labelsByName[labelName].id;
+		var thread = self.threads[threadId];
+		return yield apiProxy(['threads', 'update'], threadId, {labels: _.union(thread.labels, [labelId])});
+	});
 
 	this.getEmailsByThreadId = (threadId, decodeChan) => co(function *() {
 		var emails = (yield apiProxy(['emails', 'list'], {thread: threadId})).body.emails;
@@ -106,6 +109,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	this.initialize = (decodeChan) => co(function *(){
 		var labels = yield self.getLabels();
+		console.log('LABELS', labels);
 
 		if (!labels.Drafts) {
 			yield apiProxy(['labels', 'create'], {name: 'Drafts'});
@@ -146,7 +150,12 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	};
 
 	this.requestList = (labelName, decodeChan = null) => co(function * (){
+		self.labelName = labelName;
 		self.threads = yield self.getThreadsByLabelName(labelName, decodeChan);
+
+		if (self.labelName != labelName)
+			throw new Error('cancelled');
+
 		$rootScope.$broadcast('inbox-threads', self.threads);
 
 		return self.threads;
