@@ -1,5 +1,6 @@
 angular.module(primaryApplicationName).controller('CtrlSettingsSecurityKey', function($scope, $timeout, consts, crypto) {
 	var decodeTimeout = null;
+	var cryptoKey = crypto.getPrivateKeyByFingerprint($scope.key.fingerprint);
 
 	console.log('CtrlSettingsSecurityKey instantiated with key', $scope.key);
 
@@ -8,13 +9,10 @@ angular.module(primaryApplicationName).controller('CtrlSettingsSecurityKey', fun
 
 		if ($scope.key) {
 			decodeTimeout = $timeout.schedule(decodeTimeout, () => {
-				var key = crypto.keyring.privateKeys.findByFingerprint($scope.key.fingerprint);
-				console.log('key found', key);
-
 				var r = false;
-				if (key) {
-					r = crypto.authenticate(key, $scope.key.decryptPassword);
-					console.log('decrypt result', r);
+				if (cryptoKey) {
+					r = crypto.authenticate(cryptoKey, $scope.key.decryptPassword);
+
 					if (r)
 						$scope.key.isDecrypted = true;
 				}
