@@ -23,6 +23,10 @@
 	LB_PRIVATE_KEY = "Private Key"
     LB_PUBLIC_KEY = "Public Key"
 
+[DATES]
+	TODAY = "Today"
+	YESTERDAY = "Yesterday"
+
 [VALIDATION]
 	LB_REQUIRED = "required"
 	LB_MIN = "too small"

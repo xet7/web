@@ -30,7 +30,7 @@
 						p.subject(ng-bind="item.headerEmail.subject")
 						p.summary(ng-bind-html="item.headerEmail.preview ? item.headerEmail.preview.text : 'INBOX.NO_PREVIEW_AVAILABLE' | translate")
 					.col-xs-5.when
-						span.date.lava-icon-row(ng-bind="item.headerEmail.date | date")
+						span.date.lava-icon-row(ng-bind="item.headerEmail.date | humanDate")
 						br
 						br
 						.lava-icon-row
