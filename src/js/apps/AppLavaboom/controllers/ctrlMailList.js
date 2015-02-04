@@ -18,6 +18,7 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 	$scope.selectedTid = null;
 
 	$scope.choose = function(tid) {
+		console.log('$scope.selectedTid', tid);
 		$scope.selectedTid = tid;
 	};
 
