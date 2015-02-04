@@ -12,7 +12,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.labelName = '';
 	this.labelsByName = [];
 	this.threads = {};
-	this.threadIdsList = [];
+	this.threadsList = [];
 
 	$timeout(() => {
 		LavaboomAPI.subscribe('receipt', (msg) => {
@@ -27,7 +27,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	var deleteThreadLocally = (threadId) => {
 		if (self.threads[threadId]) {
 			delete self.threads[threadId];
-			self.threadIdsList.splice(self.threadIdsList.findIndex(id => id == threadId), 1);
+			self.threadsList.splice(self.threadsList.findIndex(thread => thread.id == threadId), 1);
 		}
 	};
 
@@ -48,7 +48,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			self.offset += threads.length;
 
 		var result = {
-			ids: [],
+			list: [],
 			map: {}
 		};
 
@@ -56,7 +56,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			result = Object.keys(threads).reduce((a, i) => {
 				var thread = new Thread(threads[i]);
 				a.map[thread.id] = thread;
-				a.ids.push(thread.id);
+				a.list.push(thread);
 				return a;
 			}, result);
 		}
@@ -142,7 +142,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		if (self.labelName != labelName) {
 			self.offset = 0;
 			self.threads = {};
-			self.threadIdsList = [];
+			self.threadsList = [];
 		}
 
 		self.labelName = labelName;
@@ -151,7 +151,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			var e = yield getThreadsByLabelName(labelName, decodeChan);
 
 			self.threads = angular.extend(self.threads, e.map);
-			self.threadIdsList = self.threadIdsList.concat(e.ids);
+			self.threadsList = self.threadsList.concat(e.list);
 
 			return e;
 		}));

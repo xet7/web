@@ -1,17 +1,25 @@
 angular.module(primaryApplicationName).controller('CtrlMailList', function($rootScope, $document, $scope, $timeout, $interval, $stateParams, user, inbox, cryptoKeys) {
 	$scope.labelName = $stateParams.labelName;
+	$scope.searchText = '';
+
+	$scope.searchFilter = (thread) => {
+		var searchText = $scope.searchText.toLowerCase();
+		return thread.subject.toLowerCase().indexOf(searchText) > -1 || thread.members.some(m => m.toLowerCase().indexOf(searchText) > -1);
+	};
 
 	$scope.$bind(`inbox-threads[${$scope.labelName}]`, () => {
-		var selectedIndex = $scope.threadIdsList && $scope.selectedTid !== null
-			? $scope.threadIdsList.findIndex(threadId => threadId == $scope.selectedTid)
+		var selectedIndex = $scope.threadsList && $scope.selectedTid !== null
+			? $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid)
 			: -1;
 
 		$scope.threads = angular.copy(inbox.threads);
-		$scope.threadIdsList = angular.copy(inbox.threadIdsList);
+		$scope.threadsList = angular.copy(inbox.threadsList);
 
-		if ($scope.selectedTid !== null) {
-			selectedIndex = Math.min(Math.max(selectedIndex, 0), $scope.threadIdsList.length - 1);
-			$scope.selectedTid = $scope.threadIdsList[selectedIndex];
+		console.log('$scope.selectedTid', $scope.selectedTid);
+
+		if ($scope.selectedTid !== null && $scope.threadsList.length > 0) {
+			selectedIndex = Math.min(Math.max(selectedIndex, 0), $scope.threadsList.length - 1);
+			$scope.selectedTid = $scope.threadsList[selectedIndex].id;
 		}
 
 		$scope.isLoading = false;
@@ -29,13 +37,13 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 			delta = +1;
 
 		if (delta) {
-			var selectedIndex = $scope.threadIdsList && $scope.selectedTid !== null
-				? $scope.threadIdsList.findIndex(threadId => threadId == $scope.selectedTid)
+			var selectedIndex = $scope.threadsList && $scope.selectedTid !== null
+				? $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid)
 				: -1;
 
 			if ($scope.selectedTid !== null) {
-				selectedIndex = Math.min(Math.max(selectedIndex + delta, 0), $scope.threadIdsList.length - 1);
-				$scope.selectedTid = $scope.threadIdsList[selectedIndex];
+				selectedIndex = Math.min(Math.max(selectedIndex + delta, 0), $scope.threadsList.length - 1);
+				$scope.selectedTid = $scope.threadsList[selectedIndex].id;
 			}
 
 			event.preventDefault();
@@ -70,7 +78,7 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 		$scope.isLoading = true;
 		inbox.requestList($scope.labelName)
 			.then((e) => {
-				$scope.isDisabled = e.ids.length < 1;
+				$scope.isDisabled = e.list.length < 1;
 			});
 	};
 
