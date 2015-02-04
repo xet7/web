@@ -8,7 +8,7 @@
 				span.icon-arrow-down
 			a(href="#", ng-click="starThread()")
 				span.icon-star
-			a(href="#", ng-click="spamThread()")
+			a(href="#", ng-click="spamThread()", ng-show="labelName != 'Spam'")
 				span.icon-ban
 			a(href="#", ng-click="deleteThread()")
 				span.icon-trash
