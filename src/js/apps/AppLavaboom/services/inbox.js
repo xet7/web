@@ -49,9 +49,10 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		};
 
 		if (threads) {
-			result = Object.keys(threads).reduce((a, tid) => {
-				a.map[tid] = new Thread(threads[tid]);
-				a.ids.push(tid);
+			result = Object.keys(threads).reduce((a, i) => {
+				var thread = new Thread(threads[i]);
+				a.map[thread.id] = thread;
+				a.ids.push(thread.id);
 				return a;
 			}, result);
 

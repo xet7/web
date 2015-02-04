@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlMailList', function($rootScope, $scope, $interval, $stateParams, user, inbox, cryptoKeys) {
+angular.module(primaryApplicationName).controller('CtrlMailList', function($rootScope, $document, $scope, $interval, $stateParams, user, inbox, cryptoKeys) {
 	$scope.labelName = $stateParams.labelName;
 
 	$scope.$bind(`inbox-threads[${$scope.labelName}]`, () => {
@@ -16,6 +16,23 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 	});
 	$scope.isLoading = false;
 	$scope.selectedTid = null;
+
+	$document.bind("keydown", (event) => $rootScope.$apply(() => {
+		var delta = 0;
+		if (event.keyIdentifier == 'Up')
+			delta = -1;
+		else if (event.keyIdentifier == 'Down')
+			delta = +1;
+
+		var selectedIndex = $scope.threadIdsList && $scope.selectedTid !== null
+			? $scope.threadIdsList.findIndex(threadId => threadId == $scope.selectedTid)
+			: -1;
+
+		if ($scope.selectedTid !== null) {
+			selectedIndex = Math.min(Math.max(selectedIndex + delta, 0), $scope.threadIdsList.length - 1);
+			$scope.selectedTid = $scope.threadIdsList[selectedIndex];
+		}
+	}));
 
 	$scope.choose = function(tid) {
 		console.log('$scope.selectedTid', tid);
