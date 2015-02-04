@@ -39,7 +39,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		return r;
 	});
 
-	var getThreadsByLabelName = function *(labelName, decodeChan) {
+	var getThreadsByLabelName = function *(labelName) {
 		var label = self.labelsByName[labelName];
 		var threads = (yield apiProxy(['threads', 'list'], {label: label.id})).body.threads;
 
@@ -61,6 +61,12 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 		return result;
 	};
+
+	this.getThreadById = (threadId) => co(function *() {
+		var thread = (yield apiProxy(['threads', 'get'], threadId)).body.thread;
+
+		return thread ? new Thread(thread) : null;
+	});
 
 	this.requestDelete = (threadId) => performsThreadsOperation(co(function *() {
 		var thread = self.threads[threadId];

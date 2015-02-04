@@ -1,4 +1,4 @@
-angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateParams, user, contacts, inbox, router) {
+angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateParams, co, user, contacts, inbox, router) {
 	$scope.isXCC = false;
 
 	var threadId = $stateParams.threadId;
@@ -8,21 +8,31 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateP
 	$scope.$bind('contacts-changed', () => {
 		$scope.people = contacts.people;
 
-		var thread = inbox.threads[threadId];
-		if (thread) {
-			$scope.form = {
-				person: {},
-				selected: {
-					to: thread.members[0],
-					cc: [],
-					bcc: [],
-					from: contacts.myself
-				},
-				fromEmails: [contacts.myself],
-				subject: `Re: ${thread.subject}`,
-				body: ''
-			};
-		} else
+		var bindUserSignature = () => {
+			if (user.settings.isSignatureEnabled && user.settings.signatureHtml)
+				$scope.form.body = $scope.form.body + user.settings.signatureHtml;
+		};
+
+		if (threadId) {
+			co(function *(){
+				var thread = yield inbox.getThreadById(threadId);
+
+				$scope.form = {
+					person: {},
+					selected: {
+						to: thread.members[0],
+						cc: [],
+						bcc: [],
+						from: contacts.myself
+					},
+					fromEmails: [contacts.myself],
+					subject: `Re: ${thread.subject}`,
+					body: ''
+				};
+
+				bindUserSignature();
+			});
+		} else {
 			$scope.form = {
 				person: {},
 				selected: {
@@ -35,10 +45,8 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateP
 				subject: 'Test subject',
 				body: '<p>Dear Orwell</p><p>Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Sed porttitor lectus nibh. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec sollicitudin molestie malesuada. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec rutrum congue leo eget malesuada. Sed porttitor lectus nibh. Curabitur aliquet quam id dui posuere blandit. Nulla porttitor accumsan tincidunt.</p><blockquote><p>See, there never was actually any spoon. It was just lying around the production set.</p></blockquote>'
 			};
-
-		console.log(user.settings);
-		if (user.settings.isSignatureEnabled && user.settings.signatureHtml)
-			$scope.form.body = $scope.form.body + user.settings.signatureHtml;
+			bindUserSignature();
+		}
 	});
 
 	$scope.clearTo = () => $scope.form.selected.to = [];
