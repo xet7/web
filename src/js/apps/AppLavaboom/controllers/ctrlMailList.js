@@ -28,13 +28,17 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 		else if (event.keyIdentifier == 'Down')
 			delta = +1;
 
-		var selectedIndex = $scope.threadIdsList && $scope.selectedTid !== null
-			? $scope.threadIdsList.findIndex(threadId => threadId == $scope.selectedTid)
-			: -1;
+		if (delta) {
+			var selectedIndex = $scope.threadIdsList && $scope.selectedTid !== null
+				? $scope.threadIdsList.findIndex(threadId => threadId == $scope.selectedTid)
+				: -1;
 
-		if ($scope.selectedTid !== null) {
-			selectedIndex = Math.min(Math.max(selectedIndex + delta, 0), $scope.threadIdsList.length - 1);
-			$scope.selectedTid = $scope.threadIdsList[selectedIndex];
+			if ($scope.selectedTid !== null) {
+				selectedIndex = Math.min(Math.max(selectedIndex + delta, 0), $scope.threadIdsList.length - 1);
+				$scope.selectedTid = $scope.threadIdsList[selectedIndex];
+			}
+
+			event.preventDefault();
 		}
 	}));
 
