@@ -49,7 +49,7 @@
 					label Font Size
 					ui-select(ng-model='items.selected', search-enabled='false')
 						ui-select-match {{$select.selected.name}}
-						ui-select-choices(repeat='item in [{name: "medium"}, {name:"English (US)"}]')
+						ui-select-choices(repeat='item in [{name: "Not implemented"}]')
 							span(ng-click='item.selected=item', ng-bind='item.name')
 		h4 Mail Behaviour
 		ul.list-group
@@ -60,7 +60,7 @@
 						ui-select-match
 							| {{$select.selected.name}}
 							span(ng-class='item.icon')
-						ui-select-choices(repeat='item in [{name: "English (UK)", icon: "icon-draft"}, {name:"English (US)", icon: "icon-inbox"}]')
+						ui-select-choices(repeat='item in [{name: "Not implemented"}]')
 							span(ng-click='item.selected=item', ng-bind='item.name')
 							span.dropdown-icon(ng-class='item.icon')
 			li.list-group-item
@@ -68,12 +68,12 @@
 					label Marked as Spam
 					ui-select(ng-model='items.selected', search-enabled='false')
 						ui-select-match {{$select.selected.name}}
-						ui-select-choices(repeat='item in [{name: "Move to Spam Folder"}, {name:"English (US)"}]')
+						ui-select-choices(repeat='item in [{name: "Not implemented"}]')
 							span(ng-click='item.selected=item', ng-bind='item.name')
 			li.list-group-item
 				.dropdown-control
 					label Deleted Emails
 					ui-select(ng-model='items.selected', search-enabled='false')
 						ui-select-match {{$select.selected.name}}
-						ui-select-choices(repeat='item in [{name: "Move to Spam Folder"}, {name:"English (US)"}]')
+						ui-select-choices(repeat='item in [{name: "Not implemented"}]')
 							span(ng-click='item.selected=item', ng-bind='item.name')
