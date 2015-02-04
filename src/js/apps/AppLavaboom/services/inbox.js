@@ -23,8 +23,10 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	}, 3000);
 
 	var deleteThreadLocally = (threadId) => {
-		delete self.threads[threadId];
-		self.threadIdsList.splice(self.threadIdsList.findIndex(id => id == threadId), 1);
+		if (self.threads[threadId]) {
+			delete self.threads[threadId];
+			self.threadIdsList.splice(self.threadIdsList.findIndex(id => id == threadId), 1);
+		}
 	};
 
 	var performsThreadsOperation = (operation) => co(function *() {
@@ -60,8 +62,6 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			}, result);
 
 			result.map = yield result.map;
-
-			console.log('result.map', result.map);
 		}
 
 		return result;
@@ -70,9 +70,11 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.requestDelete = (threadId) => performsThreadsOperation(co(function *() {
 		var thread = self.threads[threadId];
 		var trashLabelId = self.labelsByName.Trash.id;
+		var spamLabelId = self.labelsByName.Spam.id;
+		var draftsLabelId = self.labelsByName.Drafts.id;
 
 		var r;
-		if (thread.labels.indexOf(trashLabelId) > -1)
+		if (thread.labels.indexOf(trashLabelId) > -1 || thread.labels.indexOf(spamLabelId) > -1 || thread.labels.indexOf(draftsLabelId) > -1)
 			r = yield apiProxy(['threads', 'delete'], threadId);
 		else
 			r = yield self.requestSetLabel(threadId, 'Trash');
@@ -97,13 +99,14 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.requestAddLabel = (threadId, labelName) => performsThreadsOperation(co(function *() {
 		var labelId = self.labelsByName[labelName].id;
 		var thread = self.threads[threadId];
+
 		return yield apiProxy(['threads', 'update'], threadId, {labels: _.union(thread.labels, [labelId])});
 	}));
 
 	this.getEmailsByThreadId = (threadId, decodeChan) => co(function *() {
 		var emails = (yield apiProxy(['emails', 'list'], {thread: threadId})).body.emails;
 
-		return yield emails.map(e => Email.fromEnvelope(e));
+		return yield (emails ? emails : []).map(e => Email.fromEnvelope(e));
 	});
 
 	this.getLabels = () => co(function *() {
