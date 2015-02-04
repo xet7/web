@@ -41,7 +41,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	var getThreadsByLabelName = function *(labelName) {
 		var label = self.labelsByName[labelName];
-		var threads = (yield apiProxy(['threads', 'list'], {label: label.id})).body.threads;
+		var threads = (yield apiProxy(['threads', 'list'], {label: label.id, sort: '-date_modified'})).body.threads;
 
 		var result = {
 			ids: [],
