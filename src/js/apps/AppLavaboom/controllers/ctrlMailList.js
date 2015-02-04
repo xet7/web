@@ -1,26 +1,42 @@
 angular.module(primaryApplicationName).controller('CtrlMailList', function($rootScope, $scope, $interval, $stateParams, user, inbox, cryptoKeys) {
-	$scope.$bind('inbox-threads', () => {
-		$scope.threads = inbox.threads;
+	$scope.labelName = $stateParams.labelName;
+
+	$scope.$bind(`inbox-threads[${$scope.labelName}]`, () => {
+		var selectedIndex = $scope.threadIdsList && $scope.selectedTid !== null
+			? $scope.threadIdsList.findIndex(threadId => threadId == $scope.selectedTid)
+			: -1;
+
+		$scope.threads = angular.copy(inbox.threads);
+		$scope.threadIdsList = angular.copy(inbox.threadIdsList);
+
+		if ($scope.selectedTid !== null) {
+			selectedIndex = Math.min(Math.max(selectedIndex, 0), $scope.threadIdsList.length - 1);
+			$scope.selectedTid = $scope.threadIdsList[selectedIndex];
+		}
 	});
 	$scope.isLoading = false;
-	$scope.selected = null;
+	$scope.selectedTid = null;
 
-	$scope.choose = function(item) {
-		$scope.selected = item;
+	$scope.choose = function(tid) {
+		$scope.selectedTid = tid;
+	};
+
+	$scope.spamThread = () => {
+		inbox.requestSetLabel($scope.selectedTid, 'Spam');
 	};
 
 	$scope.deleteThread = () => {
-		inbox.requestDelete($scope.selected.id);
+		inbox.requestDelete($scope.selectedTid);
 	};
 
 	$scope.starThread = () => {
-		inbox.requestAddLabel($scope.selected.id, 'Starred');
+		inbox.requestAddLabel($scope.selectedTid, 'Starred');
 	};
 
 	var requestList = () => {
 		$scope.threads = [];
 		$scope.isLoading = true;
-		inbox.requestList($stateParams.labelName)
+		inbox.requestList($scope.labelName)
 			.finally(() => {
 				$scope.isLoading = false;
 			});
@@ -34,7 +50,7 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 			requestList();
 		});
 
-	$scope.$watch('selected', () => {
-		$rootScope.$broadcast('inbox-selection-changed', $scope.selected);
+	$scope.$watch('selectedTid', () => {
+		$rootScope.$broadcast('inbox-selection-changed', $scope.selectedTid);
 	});
 });

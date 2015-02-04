@@ -1,17 +1,16 @@
 var chan = require('chan');
 
-angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, $timeout, co, apiProxy, LavaboomAPI, crypto, contacts, cryptoKeys) {
+angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, $timeout, co, apiProxy, LavaboomAPI, crypto, contacts, Email) {
 	var self = this;
 
 	this.emails = [];
 	this.selected = null;
 	this.totalEmailsCount = 0;
-	this.decryptingTotal = 0;
-	this.decryptingCurrent = 0;
 
 	this.labelName = '';
 	this.labelsByName = [];
-	this.threads = [];
+	this.threads = {};
+	this.threadIdsList = [];
 
 	$timeout(() => {
 		LavaboomAPI.subscribe('receipt', (msg) => {
@@ -23,41 +22,52 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		});
 	}, 3000);
 
-	var decode = (body, pgpFingerprints, decodeChan, defaultBody = '') => co(function *(){
-		try {
-			if (!body)
-				return {
-					text: defaultBody,
-					state: 'ok'
-				};
+	var deleteThreadLocally = (threadId) => {
+		delete self.threads[threadId];
+		self.threadIdsList.splice(self.threadIdsList.findIndex(id => id == threadId), 1);
+	};
 
-			if (pgpFingerprints.length > 0)
-				return {
-					text: yield crypto.decodeByListedFingerprints(body, pgpFingerprints),
-					state: 'ok'
-				};
+	var performsThreadsOperation = (operation) => co(function *() {
+		var currentLabelName = self.labelName;
 
-			return {
-				text: body,
-				state: 'ok'
-			};
-		} catch (error) {
-			return {
-				text: error.message,
-				state: 'error'
-			};
-		} finally {
-			self.decryptingCurrent++;
+		var r = yield operation;
 
-			if (decodeChan) {
-				yield decodeChan({current: self.decryptingCurrent, total: self.decryptingTotal});
-				if (self.decryptingCurrent >= self.decryptingTotal)
-					decodeChan.close();
-			}
-		}
+		$rootScope.$broadcast(`inbox-threads[${currentLabelName}]`);
+
+		return r;
 	});
 
-	this.requestDelete = (threadId) => co(function *() {
+	var getThreadsByLabelName = function *(labelName, decodeChan) {
+		var label = self.labelsByName[labelName];
+		var threads = (yield apiProxy(['threads', 'list'], {label: label.id})).body.threads;
+
+		var result = {
+			ids: [],
+			map: {}
+		};
+
+		if (threads) {
+			result = Object.keys(threads).reduce((a, tid) => {
+				var thread = threads[tid];
+
+				a.map[thread.id] = co(function *() {
+					var r = yield apiProxy(['emails', 'get'], thread.emails[0]);
+					thread.headerEmail = yield Email.fromEnvelope(r.body.email);
+					return thread;
+				});
+				a.ids.push(thread.id);
+				return a;
+			}, result);
+
+			result.map = yield result.map;
+
+			console.log('result.map', result.map);
+		}
+
+		return result;
+	};
+
+	this.requestDelete = (threadId) => performsThreadsOperation(co(function *() {
 		var thread = self.threads[threadId];
 		var trashLabelId = self.labelsByName.Trash.id;
 
@@ -67,51 +77,34 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		else
 			r = yield self.requestSetLabel(threadId, 'Trash');
 
-		delete self.threads[threadId];
-		$rootScope.$broadcast('inbox-threads', self.threads);
+		deleteThreadLocally(threadId);
 
 		return r;
-	});
+	}));
 
-	this.requestSetLabel = (threadId, labelName) => co(function *() {
+	this.requestSetLabel = (threadId, labelName) => performsThreadsOperation(co(function *() {
+		var currentLabelName = self.labelName;
+
 		var labelId = self.labelsByName[labelName].id;
-		return yield apiProxy(['threads', 'update'], threadId, {labels: [labelId]});
-	});
+		var r =  yield apiProxy(['threads', 'update'], threadId, {labels: [labelId]});
 
-	this.requestAddLabel = (threadId, labelName) => co(function *() {
+		if (labelName != currentLabelName)
+			deleteThreadLocally(threadId);
+
+		return r;
+	}));
+
+	this.requestAddLabel = (threadId, labelName) => performsThreadsOperation(co(function *() {
 		var labelId = self.labelsByName[labelName].id;
 		var thread = self.threads[threadId];
 		return yield apiProxy(['threads', 'update'], threadId, {labels: _.union(thread.labels, [labelId])});
-	});
+	}));
 
 	this.getEmailsByThreadId = (threadId, decodeChan) => co(function *() {
 		var emails = (yield apiProxy(['emails', 'list'], {thread: threadId})).body.emails;
 
-		return yield emails.map(e => createEmail(e, decodeChan));
+		return yield emails.map(e => Email.fromEnvelope(e));
 	});
-
-	this.getThreadsByLabelName = function *(labelName, decodeChan) {
-		var label = self.labelsByName[labelName];
-		var threads = (yield apiProxy(['threads', 'list'], {label: label.id})).body.threads;
-
-		self.decryptingCurrent = 0;
-		if (threads) {
-			self.decryptingTotal = threads.length;
-
-			return yield co.reduce(threads, function *(a, thread) {
-				thread.headerEmail = yield createEmail((yield apiProxy(['emails', 'get'], thread.emails[0])).body.email, decodeChan);
-				console.log('THREAD HEADER EMAIL IS', thread.headerEmail);
-				a[thread.id] = thread;
-				return a;
-			}, {});
-		} else {
-			if (decodeChan) {
-				yield decodeChan({current: 0, total: 0});
-				decodeChan.close();
-			}
-			return [];
-		}
-	};
 
 	this.getLabels = () => co(function *() {
 		var labels = (yield apiProxy(['labels', 'list'])).body.labels;
@@ -141,41 +134,17 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		console.log(self.threads);
 	});
 
-	var createEmail = (e, decodeChan) => {
-		var isPreviewAvailable = !!e.preview;
-
-		var ch = chan();
-		return {
-			id: e.id,
-			isEncrypted: e.body.pgp_fingerprints.length > 0 || (e.preview && e.preview.pgp_fingerprints.length) > 0,
-			subject: e.name,
-			date: e.date_created,
-			from: e.from,
-			fromName: contacts.getContactByEmail(e.from).name,
-			preview: isPreviewAvailable ? decode(e.preview.raw, e.preview.pgp_fingerprints, decodeChan) : co(function *(){
-				return yield ch;
-			}),
-			body: co(function *(){
-				var r = yield decode(e.body.raw, e.body.pgp_fingerprints, decodeChan);
-				if (!isPreviewAvailable)
-					ch(r);
-				return r;
-			}),
-			attachments: e.attachments
-		};
-	};
-
-	this.requestList = (labelName, decodeChan = null) => co(function * (){
+	this.requestList = (labelName, decodeChan = null) => {
 		self.labelName = labelName;
-		self.threads = yield self.getThreadsByLabelName(labelName, decodeChan);
 
-		if (self.labelName != labelName)
-			throw new Error('cancelled');
+		return performsThreadsOperation(co(function * (){
+			var e = yield getThreadsByLabelName(labelName, decodeChan);
+			self.threads = e.map;
+			self.threadIdsList = e.ids;
 
-		$rootScope.$broadcast('inbox-threads', self.threads);
-
-		return self.threads;
-	});
+			return e;
+		}));
+	};
 
 	this.send = (to, cc, bcc, subject, body, thread_id = null) => co(function * () {
 		var res = yield apiProxy(['keys', 'get'], to);
