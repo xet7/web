@@ -1,6 +1,6 @@
 var chan = require('chan');
 
-angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, $timeout, co, apiProxy, LavaboomAPI, crypto, contacts, Email) {
+angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, $timeout, co, apiProxy, LavaboomAPI, crypto, contacts, Email, Thread) {
 	var self = this;
 
 	this.emails = [];
@@ -50,18 +50,12 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 		if (threads) {
 			result = Object.keys(threads).reduce((a, tid) => {
-				var thread = threads[tid];
-
-				a.map[thread.id] = co(function *() {
-					var r = yield apiProxy(['emails', 'get'], thread.emails[0]);
-					thread.headerEmail = yield Email.fromEnvelope(r.body.email);
-					return thread;
-				});
-				a.ids.push(thread.id);
+				a.map[tid] = new Thread(threads[tid]);
+				a.ids.push(tid);
 				return a;
 			}, result);
 
-			result.map = yield result.map;
+			console.log('result', result);
 		}
 
 		return result;

@@ -6,6 +6,11 @@
 
 [INBOX]
 	NO_PREVIEW_AVAILABLE = "No preview available"
+	LOADING = "Loading..."
+	DECRYPTING = "Decrypting..."
+	LB_AND_ONE_OTHER = "and one other"
+	LB_AND_TWO_OTHERS = "and two others"
+	LB_AND_OTHERS = "and others"
 
 [GLOBAL]
 	USERNAME = "username"

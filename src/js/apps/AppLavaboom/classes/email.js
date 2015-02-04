@@ -31,8 +31,8 @@ angular.module(primaryApplicationName).factory('Email', function(co, contacts, c
 			default:
 				return new Email(angular.extend({}, envelope, {
 					isEncrypted: envelope.body.pgp_fingerprints.length > 0 || (envelope.preview && envelope.preview.pgp_fingerprints.length) > 0,
-					body: bodyData.data,
-					preview: previewData.data
+					body: bodyData,
+					preview: previewData
 				}));
 		}
 

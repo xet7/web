@@ -26,15 +26,15 @@
 						a(href="#")
 							span.icon-arrow-right
 					.col-xs-16.pack
-						h5(ng-bind="threads[tid].headerEmail.sender")
-						p.subject(ng-bind="threads[tid].headerEmail.subject")
-						p.summary(ng-bind-html="threads[tid].headerEmail.preview ? threads[tid].headerEmail.preview.text : 'INBOX.NO_PREVIEW_AVAILABLE' | translate")
+						h5(ng-bind="threads[tid].membersString")
+						p.subject(ng-bind="threads[tid].subject")
+						//p.summary(ng-bind-html="threads[tid].headerEmail.preview ? threads[tid].headerEmail.preview.data.text : 'INBOX.NO_PREVIEW_AVAILABLE' | translate")
 					.col-xs-5.when
-						span.date.lava-icon-row(ng-bind="threads[tid].headerEmail.date | humanDate")
+						span.date.lava-icon-row(ng-bind="threads[tid].modified | humanDate")
 						br
 						br
 						.lava-icon-row
-							a(ng-show="threads[tid].headerEmail.attachments && threads[tid].headerEmail.attachments.length > 0")
+							a(ng-show="threads[tid].attachmentsCount > 0")
 								span.icon-paper-clip
-							a(ng-show="threads[tid].headerEmail.isEncrypted")
+							a(ng-show="threads[tid].isEncrypted")
 								span.icon-lock
