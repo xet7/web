@@ -2,7 +2,7 @@
 	.filters.row.no-gutter.lava-icon-row
 		label.search-icon.col-xs-3(for="top-search")
 			span.icon-search
-		input#top-search.search.col-xs-13(type="text", placeholder="Search Emails")
+		input#top-search.search.col-xs-13(type="text", placeholder="Search Emails", ng-model="searchText")
 		.lava-icon-wrapper.col-xs-8(ng-show="selectedTid !== null")
 			a(href="#")
 				span.icon-arrow-down
@@ -13,8 +13,8 @@
 			a(href="#", ng-click="deleteThread()")
 				span.icon-trash
 	.mail-list-group
-		//div.pane-status(ng-show="isLoading") Loading...
-		//div.pane-status(ng-show="!isLoading && threadIdsList.length < 1") No emails found
+		div.pane-status(ng-show="isLoading") Loading...
+		div.pane-status(ng-show="!isLoading && threadIdsList.length < 1") No emails found
 		div(infinite-scroll="scroll()", infinite-scroll-disabled="isLoading || isDisabled", infinite-scroll-parent="true")
 			div(ng-repeat="tid in threadIdsList track by tid", ng-class="{active: selectedTid == tid}", ng-click="choose(tid)")
 				.mail-list-item(class="{{threads[tid].active}}", href="#")
