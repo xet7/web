@@ -178,6 +178,15 @@
 	PROFILE = "Profile"
 	SUBSCRIPTION = "Subscription"
 
+[MAIN.SETTINGS.GENERAL]
+	TITLE_USER_INTERFACE = "User Interface"
+	LB_LANGUAGE = "Language"
+    LB_FONT_SIZE = "Font size"
+	TITLE_MAIL_BEHAVIOUR = "Mail Behaviour"
+	LB_COMPOSED_MAILS = "Composed Mails"
+	LB_MARKED_AS_SPAM = "Marked as Spam"
+	LB_DELETED_EMAILS = "Deleted Emails"
+
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
 	TITLE_KEYS_MANAGEMENT = "Manage your keys"
