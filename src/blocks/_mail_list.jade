@@ -26,7 +26,7 @@
 						a(href="#")
 							span.icon-arrow-right
 					.col-xs-16.pack
-						h5(ng-bind="threads[tid].membersString")
+						h5(ng-bind="threads[tid].members | members")
 						p.subject(ng-bind="threads[tid].subject")
 						//p.summary(ng-bind-html="threads[tid].headerEmail.preview ? threads[tid].headerEmail.preview.data.text : 'INBOX.NO_PREVIEW_AVAILABLE' | translate")
 					.col-xs-5.when
