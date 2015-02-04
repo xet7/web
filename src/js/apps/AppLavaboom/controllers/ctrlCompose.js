@@ -10,17 +10,16 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateP
 
 		var thread = inbox.threads[threadId];
 		if (thread) {
-			console.log('thread if', thread.headerEmail.from, thread.headerEmail.from.map(e => contacts.getContactByEmail(e)));
 			$scope.form = {
 				person: {},
 				selected: {
-					to: thread.headerEmail.from.map(e => contacts.getContactByEmail(e)),
+					to: thread.members[0],
 					cc: [],
 					bcc: [],
 					from: contacts.myself
 				},
 				fromEmails: [contacts.myself],
-				subject: `Re: ${thread.headerEmail.subject}`,
+				subject: `Re: ${thread.subject}`,
 				body: ''
 			};
 		} else
