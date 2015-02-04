@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlMailList', function($rootScope, $document, $scope, $interval, $stateParams, user, inbox, cryptoKeys) {
+angular.module(primaryApplicationName).controller('CtrlMailList', function($rootScope, $document, $scope, $timeout, $interval, $stateParams, user, inbox, cryptoKeys) {
 	$scope.labelName = $stateParams.labelName;
 
 	$scope.$bind(`inbox-threads[${$scope.labelName}]`, () => {
@@ -6,15 +6,21 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 			? $scope.threadIdsList.findIndex(threadId => threadId == $scope.selectedTid)
 			: -1;
 
-		$scope.threads = angular.copy(inbox.threads);
-		$scope.threadIdsList = angular.copy(inbox.threadIdsList);
+		$scope.threads = inbox.threads;
+		$scope.threadIdsList = inbox.threadIdsList;
+
+		console.log(`inbox-threads[${$scope.labelName}]`, $scope.threads, $scope.threadIdsList);
 
 		if ($scope.selectedTid !== null) {
 			selectedIndex = Math.min(Math.max(selectedIndex, 0), $scope.threadIdsList.length - 1);
 			$scope.selectedTid = $scope.threadIdsList[selectedIndex];
 		}
+
+		$scope.isLoading = false;
 	});
-	$scope.isLoading = false;
+
+	$scope.isLoading = true;
+	$scope.isDisabled = false;
 	$scope.selectedTid = null;
 
 	$document.bind("keydown", (event) => $rootScope.$apply(() => {
@@ -34,7 +40,16 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 		}
 	}));
 
-	$scope.choose = function(tid) {
+	$scope.scroll = () => {
+		if ($scope.isLoading || $scope.isDisabled)
+			return;
+
+		console.log('scroll!');
+
+		requestList();
+	};
+
+	$scope.choose = (tid) => {
 		console.log('$scope.selectedTid', tid);
 		$scope.selectedTid = tid;
 	};
@@ -52,11 +67,10 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 	};
 
 	var requestList = () => {
-		$scope.threads = [];
 		$scope.isLoading = true;
 		inbox.requestList($scope.labelName)
-			.finally(() => {
-				$scope.isLoading = false;
+			.then((e) => {
+				$scope.isDisabled = e.ids.length < 1;
 			});
 	};
 
