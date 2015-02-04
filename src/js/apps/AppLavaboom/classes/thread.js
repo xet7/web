@@ -13,6 +13,7 @@ angular.module(primaryApplicationName).factory('Thread', function($rootScope, co
 		this.created = opt.date_created;
 		this.modified = opt.date_modified;
 		this.members = opt.members;
+		this.labels = opt.labels;
 
 		this.isRead = opt.is_read;
 		this.isEncrypted = true;

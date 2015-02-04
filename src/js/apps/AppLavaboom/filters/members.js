@@ -8,10 +8,12 @@ angular.module(primaryApplicationName).filter('members', ($rootScope, $translate
 	});
 
 	return (membersList) => {
-		var members = membersList.map(email => {
-			var contact = contacts.getContactByEmail(email);
-			return contact ? contact.name : email;
-		});
+		var members = membersList
+			? membersList.map(email => {
+				var contact = contacts.getContactByEmail(email);
+				return contact ? contact.name : email;
+			})
+			: [];
 
 		var membersString = members.slice(0, 2).join(',');
 		if (members.length == 3)
