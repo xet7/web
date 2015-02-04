@@ -27,6 +27,7 @@
 	PLC_RETYPE_PASSWORD = "Retype password"
 	LB_PRIVATE_KEY = "Private Key"
     LB_PUBLIC_KEY = "Public Key"
+    LB_NOT_IMPLEMENTED = "Not yet implemented"
 
 [DATES]
 	TODAY = "Today"

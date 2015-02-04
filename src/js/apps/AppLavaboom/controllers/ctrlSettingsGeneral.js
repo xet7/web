@@ -1,8 +1,16 @@
-angular.module(primaryApplicationName).controller('CtrlSettingsPreferences', function($rootScope, $scope, $interval, translate) {
+angular.module(primaryApplicationName).controller('CtrlSettingsGeneral', function($rootScope, $scope, $interval, $translate, translate) {
 	$scope.form = {
 		selectedLanguage: null
 	};
 	$scope.languages = [];
+
+	var translations = {};
+
+	$rootScope.$bind('$translateChangeSuccess', () => {
+		translations.LB_NOT_IMPLEMENTED = $translate.instant('GLOBAL.LB_NOT_IMPLEMENTED');
+
+		$scope.notImplemented = [{name: translations.LB_NOT_IMPLEMENTED}];
+	});
 
 	$rootScope.$on('initialization-completed', () => {
 		$scope.languages = Object.keys(translate.settings.TRANSLATIONS).reduce((a, langCode) => {
