@@ -132,7 +132,6 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	this.initialize = (decodeChan) => co(function *(){
 		var labels = yield self.getLabels();
-		console.log('LABELS', labels);
 
 		if (!labels.Drafts) {
 			yield apiProxy(['labels', 'create'], {name: 'Drafts'});
