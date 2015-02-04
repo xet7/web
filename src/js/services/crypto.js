@@ -244,7 +244,7 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		if (prefixName)
 			prefixName = `${prefixName}_`;
 
-		var pgpData = envelope.raw;
+		var pgpData = envelope.data;
 		var message = null;
 		var state = 'ok';
 

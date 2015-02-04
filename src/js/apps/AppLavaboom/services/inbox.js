@@ -3,6 +3,8 @@ var chan = require('chan');
 angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, $timeout, co, apiProxy, LavaboomAPI, crypto, contacts, Email, Thread) {
 	var self = this;
 
+	this.offset = 0;
+	this.limit = 15;
 	this.emails = [];
 	this.selected = null;
 	this.totalEmailsCount = 0;
@@ -41,7 +43,9 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	var getThreadsByLabelName = function *(labelName) {
 		var label = self.labelsByName[labelName];
-		var threads = (yield apiProxy(['threads', 'list'], {label: label.id, sort: '-date_modified'})).body.threads;
+		var threads = (yield apiProxy(['threads', 'list'], {label: label.id, sort: '-date_modified', offset: self.offset, limit: self.limit})).body.threads;
+		if (threads)
+			self.offset += threads.length;
 
 		var result = {
 			ids: [],
@@ -55,8 +59,6 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 				a.ids.push(thread.id);
 				return a;
 			}, result);
-
-			console.log('result', result);
 		}
 
 		return result;
@@ -134,17 +136,22 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		$rootScope.$broadcast('inbox-labels', self.labels);
 
 		yield self.requestList('Inbox', decodeChan);
-
-		console.log(self.threads);
 	});
 
 	this.requestList = (labelName, decodeChan = null) => {
+		if (self.labelName != labelName) {
+			self.offset = 0;
+			self.threads = {};
+			self.threadIdsList = [];
+		}
+
 		self.labelName = labelName;
 
 		return performsThreadsOperation(co(function * (){
 			var e = yield getThreadsByLabelName(labelName, decodeChan);
-			self.threads = e.map;
-			self.threadIdsList = e.ids;
+
+			self.threads = angular.extend(self.threads, e.map);
+			self.threadIdsList = self.threadIdsList.concat(e.ids);
 
 			return e;
 		}));

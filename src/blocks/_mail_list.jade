@@ -13,28 +13,29 @@
 			a(href="#", ng-click="deleteThread()")
 				span.icon-trash
 	.mail-list-group
-		div.pane-status(ng-show="isLoading") Loading...
-		div.pane-status(ng-show="!isLoading && threadIdsList.length < 1") No emails found
-		div(ng-show="!isLoading", ng-repeat="i in threadIdsList", ng-class="{active: selectedTid == threads[i].id}", ng-click="choose(threads[i].id)")
-			.mail-list-item(class="{{threads[i].active}}", href="#")
-				.row.no-gutter
-					.col-xs-3.clear.buttons
-						a(href="#")
-							span.icon-star
-						a(ui-sref=".popup.compose({threadId: threads[i].id})")
-							span.icon-reply
-						a(href="#")
-							span.icon-arrow-right
-					.col-xs-16.pack
-						h5(ng-bind="threads[i].members | members")
-						p.subject(ng-bind="threads[i].subject")
-						//p.summary(ng-bind-html="threads[i].headerEmail.preview ? threads[i].headerEmail.preview.data.text : 'INBOX.NO_PREVIEW_AVAILABLE' | translate")
-					.col-xs-5.when
-						span.date.lava-icon-row(ng-bind="threads[i].modified | humanDate")
-						br
-						br
-						.lava-icon-row
-							a(ng-show="threads[i].attachmentsCount > 0")
-								span.icon-paper-clip
-							a(ng-show="threads[i].isEncrypted")
-								span.icon-lock
+		//div.pane-status(ng-show="isLoading") Loading...
+		//div.pane-status(ng-show="!isLoading && threadIdsList.length < 1") No emails found
+		div(infinite-scroll="scroll()", infinite-scroll-disabled="isLoading || isDisabled", infinite-scroll-parent="true")
+			div(ng-repeat="tid in threadIdsList track by tid", ng-class="{active: selectedTid == tid}", ng-click="choose(tid)")
+				.mail-list-item(class="{{threads[tid].active}}", href="#")
+					.row.no-gutter
+						.col-xs-3.clear.buttons
+							a(href="#")
+								span.icon-star
+							a(ui-sref=".popup.compose({threadId: tid})")
+								span.icon-reply
+							a(href="#")
+								span.icon-arrow-right
+						.col-xs-16.pack
+							h5(ng-bind="threads[tid].members | members")
+							p.subject(ng-bind="threads[tid].subject")
+							//p.summary(ng-bind-html="threads[tid].headerEmail.preview ? threads[tid].headerEmail.preview.data.text : 'INBOX.NO_PREVIEW_AVAILABLE' | translate")
+						.col-xs-5.when
+							span.date.lava-icon-row(ng-bind="threads[tid].modified | humanDate")
+							br
+							br
+							.lava-icon-row
+								a(ng-show="threads[tid].attachmentsCount > 0")
+									span.icon-paper-clip
+								a(ng-show="threads[tid].isEncrypted")
+									span.icon-lock
