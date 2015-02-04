@@ -6,10 +6,8 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 			? $scope.threadIdsList.findIndex(threadId => threadId == $scope.selectedTid)
 			: -1;
 
-		$scope.threads = inbox.threads;
-		$scope.threadIdsList = inbox.threadIdsList;
-
-		console.log(`inbox-threads[${$scope.labelName}]`, $scope.threads, $scope.threadIdsList);
+		$scope.threads = angular.copy(inbox.threads);
+		$scope.threadIdsList = angular.copy(inbox.threadIdsList);
 
 		if ($scope.selectedTid !== null) {
 			selectedIndex = Math.min(Math.max(selectedIndex, 0), $scope.threadIdsList.length - 1);
@@ -43,8 +41,6 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 	$scope.scroll = () => {
 		if ($scope.isLoading || $scope.isDisabled)
 			return;
-
-		console.log('scroll!');
 
 		requestList();
 	};
