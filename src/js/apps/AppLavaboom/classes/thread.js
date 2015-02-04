@@ -14,10 +14,10 @@ angular.module(primaryApplicationName).factory('Thread', function($rootScope, co
 		this.modified = opt.date_modified;
 		this.members = opt.members;
 		this.labels = opt.labels;
+		this.attachmentsCount = opt.attachments_count;
 
 		this.isRead = opt.is_read;
 		this.isEncrypted = true;
-		this.attachmentsCount = 0;
 	};
 
 	return Thread;

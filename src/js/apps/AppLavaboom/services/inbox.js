@@ -43,7 +43,15 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	var getThreadsByLabelName = function *(labelName) {
 		var label = self.labelsByName[labelName];
-		var threads = (yield apiProxy(['threads', 'list'], {label: label.id, sort: '-date_modified', offset: self.offset, limit: self.limit})).body.threads;
+
+		var threads = (yield apiProxy(['threads', 'list'], {
+			label: label.id,
+			attachments_count: true,
+			sort: '-date_modified',
+			offset: self.offset,
+			limit: self.limit
+		})).body.threads;
+
 		if (threads)
 			self.offset += threads.length;
 
