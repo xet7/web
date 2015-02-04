@@ -1,7 +1,7 @@
 #mail-thread.details-pane.ng-cloak(ng-controller="CtrlMailDetail")
-	div.pane-status(ng-if="!selected")
+	div.pane-status(ng-if="selectedTid === null")
 		.col-xs-24 no email selected
-	div(ng-if="selected").row.no-gutter.actions.lava-icon-row
+	div(ng-if="selectedTid !== null").row.no-gutter.actions.lava-icon-row
 			.col-xs-24
 				.lava-icon-wrapper
 					a(href="#")
@@ -18,7 +18,7 @@
 					a(href="#")
 						span.icon-trash
 	// mail-thread-template
-	div(ng-if="selected").main-view
+	div(ng-if="selectedTid !== null").main-view
 		.pane-status(ng-show="isLoading") Loading...
 		.row.no-gutter.mail(ng-repeat="email in emails")
 			.col-xs-24
