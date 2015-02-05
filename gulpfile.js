@@ -99,6 +99,10 @@ var createJadePipeline = function (input, output, isTemplateCache) {
 		.pipe(plg.ignore.exclude(/\/_.*/))
 		.pipe(plg.jade({
 			locals: {
+				fs: fs,
+				resolveAsset: function(name) {
+					return manifest[name] ? manifest[name] : name;
+				},
 				assets: manifest,
 				globs: {
 					isProduction: config.isProduction
