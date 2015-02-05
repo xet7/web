@@ -13,7 +13,8 @@
 			a(href="#", ng-click="deleteThread()")
 				span.icon-trash
 	.mail-list-group
-		div.pane-status(ng-show="isLoading") Loading...
+		div.pane-status(ng-show="isLoading")
+			img(src="/img/loader.svg")
 		div.pane-status(ng-show="!isLoading && threadsList.length < 1") No emails found
 		div(infinite-scroll="scroll()", infinite-scroll-disabled="isLoading || isDisabled", infinite-scroll-parent="true")
 			div(ng-repeat="thread in threadsList | filter: searchFilter track by thread.id", ng-class="{active: selectedTid == thread.id}", ng-click="choose(thread.id)")
