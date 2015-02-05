@@ -100,7 +100,7 @@ var createJadePipeline = function (input, output, isTemplateCache) {
 		.pipe(plg.jade({
 			locals: {
 				fs: fs,
-				loadAsset: function(name) {
+				resolveAsset: function(name) {
 					return manifest[name] ? manifest[name] : name;
 				},
 				assets: manifest,
