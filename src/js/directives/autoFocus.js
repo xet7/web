@@ -1,15 +1,16 @@
-angular.module(primaryApplicationName).directive('autoFocus', $timeout => {
+angular.module(primaryApplicationName).directive('focus',function($timeout) {
 	return {
-		scope: {
-			trigger: '@autoFocus'
-		},
-		link: (scope, element) => {
-			scope.$watch('trigger', function (value) {
-				if (value) {
-					$timeout(function () {
-						console.log('giving focus to element', element[0].id);
-						element[0].focus();
-					});
+		link: function ( scope, element, attrs ) {
+			scope.$watch( attrs.focus, function ( val ) {
+				if ( angular.isDefined( val ) && val ) {
+					$timeout( function () { element[0].focus(); } );
+				}
+			}, true);
+
+			element.bind('blur', function () {
+				if ( angular.isDefined( attrs.focusLost ) ) {
+					scope.$apply( attrs.focusLost );
+
 				}
 			});
 		}

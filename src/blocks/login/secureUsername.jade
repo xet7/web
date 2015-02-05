@@ -8,7 +8,8 @@ form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-subm
 
 	div.form-group
 		div.input-group.suffix.clearfix
-			input.form-control.input-lg(type='text', name="username", ng-model='form.username', placeholder="{{'GLOBAL.USERNAME' | translate}}", required, minlength="2")
+			input.form-control.input-lg(type='text', name="username", ng-model='form.username', placeholder="{{'GLOBAL.USERNAME' | translate}}",
+				focus="true", required, minlength="2")
 			span.input-group-addon @lavaboom.com
 			span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.username.$error", ng-messages-include="partials/validationMessages.html")
 

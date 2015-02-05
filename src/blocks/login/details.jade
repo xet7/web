@@ -15,7 +15,8 @@ form.steps-form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage
 		p {{'LOGIN.DETAILS.SUB_TITLE' | translate}}
 
 	div.form-group
-		input.form-control.input-lg(type='text', name="firstName", ng-model='form.firstName', placeholder="{{'GLOBAL.PLC_FIRST_NAME' | translate}}", requared, minlength=2)
+		input.form-control.input-lg(type='text', name="firstName", ng-model='form.firstName', placeholder="{{'GLOBAL.PLC_FIRST_NAME' | translate}}",
+			focus="true", requared, minlength=2)
 		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.firstName.$error", ng-messages-include="partials/validationMessages.html")
 	div.form-group
 		input.form-control.input-lg(type='text', name="lastName", ng-model='form.lastName', placeholder="{{'GLOBAL.PLC_LAST_NAME' | translate}}", requared, minlength=2)

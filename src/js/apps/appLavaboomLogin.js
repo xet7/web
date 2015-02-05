@@ -7,6 +7,7 @@ angular.module(primaryApplicationName, [
 	'ui.router',
 	'pascalprecht.translate',
 	'ngMessages',
+	'angular-inview',
 	'angular-co'
 ]);
 
