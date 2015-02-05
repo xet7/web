@@ -21,8 +21,10 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 	$scope.isInitialized = false;
 
 	$scope.initializeApplication = () => co(function *(){
+		console.log('main app: processing $scope.initializeApplication()');
 		try {
-			yield translationsCh;
+			if (!$scope.isInitialized)
+				yield translationsCh;
 
 			loader.incProgress(translations.LB_INITIALIZING_I18N, 1);
 

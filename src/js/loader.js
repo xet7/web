@@ -301,7 +301,7 @@ var __Promise = (function (func, obj) {
 		});
 
 		var initializeApplication = (app, opts) => {
-			console.log('loader: initializing application', app.appName);
+			console.log('loader: initializing application', app.appName, opts);
 
 			isMainApp = app.container == APP_LAVABOOM_MAIN.container;
 
@@ -310,8 +310,11 @@ var __Promise = (function (func, obj) {
 
 			var rootScope = angular.element(app.container).scope();
 			rootScope.$apply(() => {
+				console.log('loader: calling rootScope.initializeApplication()', rootScope.initializeApplication);
 				rootScope.initializeApplication()
 					.then(r => {
+						console.log('loader: initialized application', app.appName, 'with result', r);
+
 						showContainer(app, opts.lbDone ? opts.lbDone : (r && r.lbDone ? r.lbDone : null))
 							.then(() => {
 								if (rootScope.onApplicationReady)
@@ -323,13 +326,13 @@ var __Promise = (function (func, obj) {
 					.catch(err => {
 						self.setProgressText(err.message);
 						isError = true;
-						console.error('loader: initialization of app.appName failed', err.error);
+						console.error('loader: initialization of application failed', app.appName, 'with error', err.error);
 					});
 			});
 		};
 
 		var loadApplication = (app, opts) => new Promise((resolve, reject) => {
-			console.log('loader: loading application', app.appName);
+			console.log('loader: loading application', app.appName, opts);
 			isMainApp = app.container == APP_LAVABOOM_MAIN.container;
 
 			loadScripts(app)

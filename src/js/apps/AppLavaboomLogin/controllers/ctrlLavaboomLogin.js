@@ -18,7 +18,8 @@ angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function(
 
 	$scope.initializeApplication = () => co(function *(){
 		try {
-			yield translationsCh;
+			if (!$scope.isInitialized)
+				yield translationsCh;
 
 			loader.incProgress(translations.LB_INITIALIZING_I18N, 1);
 
