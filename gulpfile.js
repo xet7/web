@@ -95,6 +95,9 @@ var createJadePipeline = function (input, output) {
 	return gulp.src(input)
 		.pipe(plumber())
 		.pipe(plg.ignore(function(file){
+			if (config.isProduction && file.relative.indexOf('.test') > -1)
+				return false;
+
 			var basename = path.basename(file.relative);
 			return basename.indexOf('_') == 0;
 		}))
