@@ -220,7 +220,7 @@ var __Promise = (function (func, obj) {
 		};
 
 	const
-		DEBUG_DELAY = 0,
+		DEBUG_DELAY = 1000,
 		APP_TRANSITION_DELAY = 1000;
 
 	var loadedScripts = {};

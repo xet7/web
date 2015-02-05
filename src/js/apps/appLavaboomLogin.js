@@ -2,6 +2,7 @@ angular.module('utils', []);
 
 window.primaryApplicationName = 'AppLavaboomLogin';
 angular.module(primaryApplicationName, [
+	'templates',
 	'lavaboom.api',
 	'utils',
 	'ui.router',

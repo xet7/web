@@ -1,6 +1,7 @@
 window.primaryApplicationName = 'AppLavaboom';
 
 angular.module(primaryApplicationName, [
+	'templates',
 	'lavaboom.api',
 	'ngSanitize',
 	'ui.router',
