@@ -120,22 +120,28 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		return yield (emails ? emails : []).map(e => Email.fromEnvelope(e));
 	});
 
-	this.getLabels = () => co(function *() {
+	this.getLabels = (classes = {}) => co(function *() {
 		var labels = (yield apiProxy(['labels', 'list'])).body.labels;
 
 		return labels.reduce((a, label) => {
-			label.iconClass = `icon-${label.name.toLowerCase()}`;
+			label.iconClass = `icon-${classes[label.name] ? classes[label.name] :label.name.toLowerCase()}`;
 			a[label.name] = label;
 			return a;
 		}, {});
 	});
 
 	this.initialize = (decodeChan) => co(function *(){
-		var labels = yield self.getLabels();
+		var labelsClasses = {
+			'Drafts': 'draft',
+			'Spam': 'ban',
+			'Starred': 'star'
+		};
+
+		var labels = yield self.getLabels(labelsClasses);
 
 		if (!labels.Drafts) {
 			yield apiProxy(['labels', 'create'], {name: 'Drafts'});
-			labels = yield self.getLabels();
+			labels = yield self.getLabels(labelsClasses);
 		}
 
 		self.labelsByName = labels;
