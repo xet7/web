@@ -86,7 +86,7 @@ var prodHtmlPipeline  = function (input, output) {
 		.pipe(gulp.dest, output);
 };
 
-var createJadePipeline = function (input, output) {
+var createJadePipeline = function (input, output, isTemplateCache) {
 	return gulp.src(input)
 		.pipe(plumber())
 		.pipe(config.isProduction ? plg.ignore.exclude(/.*\.test.*/) :  plg.util.noop())
@@ -94,7 +94,7 @@ var createJadePipeline = function (input, output) {
 		.pipe(plg.jade())
 		.pipe(gulp.dest(output))
 		.pipe(livereloadPipeline()())
-		.pipe(config.isProduction ? prodHtmlPipeline(input, output)() : plg.util.noop());
+		.pipe(config.isProduction && isTemplateCache ? prodHtmlPipeline(input, output)() : plg.util.noop());
 };
 
 /**
@@ -350,12 +350,12 @@ gulp.task('build:translations', function() {
 
 // Build primary markup jade files
 gulp.task('build:jade', function() {
-	return createJadePipeline(paths.markup.input, paths.markup.output);
+	return createJadePipeline(paths.markup.input, paths.markup.output, false);
 });
 
 // Build partials markup jade files
 gulp.task('build:partials-jade', function() {
-	return createJadePipeline(paths.partials.input, paths.partials.output);
+	return createJadePipeline(paths.partials.input, paths.partials.output, true);
 });
 
 // Remove pre-existing content from output and test folders
