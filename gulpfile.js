@@ -94,13 +94,8 @@ var prodHtmlPipeline  = function (input, output) {
 var createJadePipeline = function (input, output) {
 	return gulp.src(input)
 		.pipe(plumber())
-		.pipe(plg.ignore(function(file){
-			if (config.isProduction && file.relative.indexOf('.test') > -1)
-				return false;
-
-			var basename = path.basename(file.relative);
-			return basename.indexOf('_') == 0;
-		}))
+		.pipe(config.isProduction ? plg.ignore.exclude(/.*\.test.*/) :  plg.util.noop())
+		.pipe(plg.ignore.exclude(/\/_.*/))
 		.pipe(plg.jade())
 		.pipe(gulp.dest(output))
 		.pipe(livereloadPipeline()())
