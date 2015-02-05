@@ -61,9 +61,9 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 			}
 		},
 
-		'main.settings.preferences': {
-			url: '/preferences',
-			templateUrl: 'partials/settings/settings.preferences.html'
+		'main.settings.general': {
+			url: '/general',
+			templateUrl: 'partials/settings/settings.general.html'
 		},
 
 		'main.settings.profile': {

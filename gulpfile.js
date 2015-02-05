@@ -1,5 +1,4 @@
 var gulp = require('gulp');
-var gulp = require('gulp');
 var plg = require('gulp-load-plugins')({
 	pattern: ['gulp-*', 'gulp.*'],
 	replaceString: /\bgulp[\-.]/
@@ -17,6 +16,7 @@ if (!semver.satisfies(process.version, config.nodeVersion)) {
 }
 
 // system
+var crypto = require('crypto');
 var os = require('os');
 var fs = require('fs');
 var del = require('del');
@@ -51,11 +51,13 @@ var args = process.argv.slice(2);
 
 var plumber = null;
 var isServe = false;
+process.env.IS_PRODUCTION = false;
 if (args.length > 0) {
 	plumber = plg.util.noop;
 	if (args[0] === 'production') {
 		console.log('Making a production build...');
 		config.isProduction = true;
+		process.env.IS_PRODUCTION = true;
 	}
 } else {
 	plumber = plg.plumber;
@@ -82,31 +84,55 @@ var livereloadPipeline  = function (isForce) {
 
 var prodHtmlPipeline  = function (input, output) {
 	return lazypipe()
-		.pipe(plg.minifyHtml, {
-			empty: true
-		})
-		.pipe(plg.rename, { suffix: '.min' })
-		.pipe(gulp.dest, output)
-		.pipe(plg.gzip)
-		.pipe(gulp.dest, output);
+		.pipe(plg.sourcemaps.init)
+		.pipe(plg.angularTemplatecache, {root: output.split('/').filter(function (p) {return !!p}).slice(-1)[0], standalone: true})
+		.pipe(plg.uglify)
+		.pipe(plg.tap, revTap(paths.scripts.output))
+		.pipe(plg.sourcemaps.write, '.')
+		.pipe(gulp.dest, paths.scripts.output);
 };
 
-var createJadePipeline = function (input, output) {
+var createJadePipeline = function (input, output, isTemplateCache) {
 	return gulp.src(input)
 		.pipe(plumber())
-		.pipe(plg.ignore(function(file){
-			var basename = path.basename(file.relative);
-			return basename.indexOf('_') == 0;
+		.pipe(config.isProduction ? plg.ignore.exclude(/.*\.test.*/) :  plg.util.noop())
+		.pipe(plg.ignore.exclude(/\/_.*/))
+		.pipe(plg.jade({
+			locals: {
+				fs: fs,
+				resolveAsset: function(name) {
+					return manifest[name] ? manifest[name] : name;
+				},
+				assets: manifest,
+				globs: {
+					isProduction: config.isProduction
+				}
+			}
 		}))
-		.pipe(plg.jade())
 		.pipe(gulp.dest(output))
 		.pipe(livereloadPipeline()())
-		.pipe(config.isProduction ? prodHtmlPipeline(input, output)() : plg.util.noop());
+		.pipe(config.isProduction && isTemplateCache ? prodHtmlPipeline(input, output)() : plg.util.noop());
 };
 
 /**
  * Gulp Taks
  */
+
+var manifest = {};
+
+var revTap = function (output) {
+	return function(file) {
+		file.revHash = crypto.createHash('sha1').update(file.contents).digest('hex');
+
+		var key = '/' + output.replace(paths.output, '') + path.basename(file.relative);
+		var value = path.dirname(key) + '/' + path.basename(key, path.extname(key)) + '-' + file.revHash + path.extname(key);
+		manifest[key] = value;
+
+		file.path = file.path.replace(path.basename(key), path.basename(value));
+
+		console.log('Perform manifest translation for a static asset', key, '->', value);
+	};
+};
 
 gulp.task('build:scripts:vendor:min', function() {
 	return gulp.src(paths.scripts.inputDeps)
@@ -140,7 +166,8 @@ gulp.task('build:scripts:vendor:min', function() {
 
 gulp.task('build:scripts:core', function() {
 	var prodPipeline = lazypipe()
-		.pipe(plg.uglify);
+		.pipe(plg.uglify)
+		.pipe(plg.tap, revTap(paths.scripts.output));
 
 	return gulp.src(paths.scripts.input)
 		.pipe(plumber())
@@ -193,10 +220,11 @@ gulp.task('build:scripts:vendor', ['build:scripts:vendor:min', 'build:scripts:co
 				.pipe(plumber())
 				.pipe(plg.sourcemaps.init())
 				.pipe(plg.concat(newName))
+				.pipe(config.isProduction ? plg.tap(revTap(paths.scripts.output)) : plg.util.noop())
 				.pipe(plg.sourcemaps.write('.'))
 				.pipe(gulp.dest(paths.scripts.output));
 		}))
-		.pipe(gulp.dest(paths.scripts.output));
+		.pipe(gulp.dest(paths.scripts.output))
 });
 
 var browserifyBundle = function(filename) {
@@ -244,6 +272,8 @@ var browserifyBundle = function(filename) {
 			});
 		}))
 		.pipe(plg.streamify(plg.concat(basename)))
+		.pipe(plg.buffer())
+		.pipe(config.isProduction ? plg.tap(revTap(paths.scripts.output)) : plg.util.noop())
 		.pipe(gulp.dest(paths.scripts.output));
 };
 
@@ -282,7 +312,8 @@ gulp.task('build:styles', function() {
 	var prodPipeline = lazypipe()
 		.pipe(plg.minifyCss, {
 			keepSpecialComments: 0
-		});
+		})
+		.pipe(plg.tap, revTap(paths.styles.output));
 
 	if (config.isDebugable) {
 		prodPipeline = prodPipeline
@@ -357,12 +388,12 @@ gulp.task('build:translations', function() {
 
 // Build primary markup jade files
 gulp.task('build:jade', function() {
-	return createJadePipeline(paths.markup.input, paths.markup.output);
+	return createJadePipeline(paths.markup.input, paths.markup.output, false);
 });
 
 // Build partials markup jade files
 gulp.task('build:partials-jade', function() {
-	return createJadePipeline(paths.partials.input, paths.partials.output);
+	return createJadePipeline(paths.partials.input, paths.partials.output, true);
 });
 
 // Remove pre-existing content from output and test folders
@@ -392,7 +423,7 @@ gulp.task('bower', function() {
  */
 
 var compileSteps = [
-		'build:jade',
+		//'build:jade',
 		'build:partials-jade',
 		'build:translations',
 		'copy:static',
@@ -404,6 +435,12 @@ var compileSteps = [
 	.concat(scriptBuildSteps);
 
 gulp.task('compile:finished', compileSteps, function() {
+	fs.writeFileSync('manifest.json', JSON.stringify(manifest, null, 4));
+
+	gulp.start(['build:jade', 'lr']);
+});
+
+gulp.task('lr', ['build:jade'], function () {
 	if (!isFirstBuild) {
 		return gulp.src(paths.markup.input)
 			.pipe(livereloadPipeline(true)());

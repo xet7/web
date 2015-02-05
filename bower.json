@@ -29,12 +29,15 @@
     "lodash": "~2.4.1",
     "underscore": "~1.7.0",
     "angular-validation-match": "~1.3.0",
-    "lavaboom": "~0.1.20",
+    "lavaboom": "~0.1.22",
     "traceur-runtime": "0.0.79",
     "sockjs-client": "~0.3.4",
     "angular-ui-select": "~0.9.6",
     "textAngular": "~1.2.2",
-    "angular-co": "~0.0.6"
+    "angular-co": "~0.0.6",
+    "ngInfiniteScroll": "~1.2.0",
+    "tagged-infinite-scroll": "~1.1.0",
+    "angular-inview": "~1.5.0"
   },
   "resolutions": {
     "angular": "~1.3.8"

@@ -21,8 +21,10 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 	$scope.isInitialized = false;
 
 	$scope.initializeApplication = () => co(function *(){
+		console.log('main app: processing $scope.initializeApplication()');
 		try {
-			yield translationsCh;
+			if (!$scope.isInitialized)
+				yield translationsCh;
 
 			loader.incProgress(translations.LB_INITIALIZING_I18N, 1);
 
@@ -37,18 +39,6 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 			yield user.gatherUserInformation();
 
 			loader.incProgress(translations.LB_LOADING_EMAILS, 5);
-
-			/*var decodeChan = chan();
-			co(function *() {
-				while (!decodeChan.done()) {
-					var status = yield decodeChan;
-
-					if (status.current < status.total)
-						loader.setProgress(LB_DECRYPTING, beforeDecryptingProgress + (status.current / status.total) * (95 - beforeDecryptingProgress));
-					else
-						loader.setProgress(LB_DECRYPTING, 95);
-				}
-			});*/
 
 			yield inbox.initialize();
 

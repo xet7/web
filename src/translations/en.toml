@@ -6,6 +6,11 @@
 
 [INBOX]
 	NO_PREVIEW_AVAILABLE = "No preview available"
+	LOADING = "Loading..."
+	DECRYPTING = "Decrypting..."
+	LB_AND_ONE_OTHER = "and one other"
+	LB_AND_TWO_OTHERS = "and two others"
+	LB_AND_OTHERS = "and others"
 
 [GLOBAL]
 	USERNAME = "username"
@@ -22,6 +27,11 @@
 	PLC_RETYPE_PASSWORD = "Retype password"
 	LB_PRIVATE_KEY = "Private Key"
     LB_PUBLIC_KEY = "Public Key"
+    LB_NOT_IMPLEMENTED = "Not yet implemented"
+
+[DATES]
+	TODAY = "Today"
+	YESTERDAY = "Yesterday"
 
 [VALIDATION]
 	LB_REQUIRED = "required"
@@ -105,11 +115,12 @@
 	BTN_NEXT = "Generate my key pair"
 
 [LOGIN.GENERATING_KEYS]
-	LABEL_GENERATING = "Generating your Keys"
-	LABEL_GENERATED = "Your keys are ready!"
-	LABEL_REACHED = "Our hamsters are running extra hard, just be a bit more patient..."
-	LABEL_ERROR = "Cannot generate keys, make sure you use up-to-date browser and try again!"
-	LABEL_DO_NOT_CLOSE = "Do not close this window!"
+	LB_GENERATING = "Generating your Keys..."
+	LB_UPLOADING = "Uploading Public Key..."
+	LB_READY = "Your keys are ready!"
+	LB_REACHED = "Our hamsters are running extra hard, just be a bit more patient..."
+	LB_ERROR = "Cannot generate keys, make sure you use up-to-date browser and try again!"
+	LB_DO_NOT_CLOSE = "Do not close this window!"
 
 [LOGIN.BACKUP_KEY]
 	TITLE = "Back up your key"
@@ -168,6 +179,15 @@
 	GENERAL = "General"
 	PROFILE = "Profile"
 	SUBSCRIPTION = "Subscription"
+
+[MAIN.SETTINGS.GENERAL]
+	TITLE_USER_INTERFACE = "User Interface"
+	LB_LANGUAGE = "Language"
+    LB_FONT_SIZE = "Font size"
+	TITLE_MAIL_BEHAVIOUR = "Mail Behaviour"
+	LB_COMPOSED_MAILS = "Composed Mails"
+	LB_MARKED_AS_SPAM = "Marked as Spam"
+	LB_DELETED_EMAILS = "Deleted Emails"
 
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
