@@ -2,36 +2,33 @@ angular.module(primaryApplicationName).controller('CtrlGeneratingKeys', function
 	if (!user.isAuthenticated())
 		$state.go('login');
 
-	const bits = consts.DEFAULT_KEY_LENGTH;
-	const estimatedTimeSeconds = consts.ESTIMATED_KEY_GENERATION_TIME_SECONDS;
 	var timePassed = 0;
-
-	$scope.progress = 0;
-
 	var translations = {};
+	
+	$scope.progress = 0;
 	$scope.label = '';
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LABEL_GENERATING = $translate.instant('LOGIN.GENERATING_KEYS.LABEL_GENERATING');
-		translations.LABEL_GENERATED = $translate.instant('LOGIN.GENERATING_KEYS.LABEL_GENERATED');
-		translations.LABEL_REACHED = $translate.instant('LOGIN.GENERATING_KEYS.LABEL_REACHED');
-		translations.LABEL_ERROR = $translate.instant('LOGIN.GENERATING_KEYS.LABEL_ERROR');
-		$scope.label = translations.LABEL_GENERATING;
+		translations.LB_GENERATING = $translate.instant('LOGIN.GENERATING_KEYS.LB_GENERATING');
+		translations.LB_GENERATED = $translate.instant('LOGIN.GENERATING_KEYS.LB_GENERATED');
+		translations.LB_REACHED = $translate.instant('LOGIN.GENERATING_KEYS.LB_REACHED');
+		translations.LB_ERROR = $translate.instant('LOGIN.GENERATING_KEYS.LB_ERROR');
+		$scope.label = translations.LB_GENERATING;
 	});
 
 	var progressBarInterval = $interval(() => {
-		$scope.progress = Math.floor(++timePassed / estimatedTimeSeconds * 100);
+		$scope.progress = Math.floor(++timePassed / consts.ESTIMATED_KEY_GENERATION_TIME_SECONDS * 100);
 		if ($scope.progress >= 100) {
-			$scope.label = translations.LABEL_REACHED;
+			$scope.label = translations.LB_REACHED;
 			$interval.clear(progressBarInterval);
 		}
 	}, 1000);
 
-	crypto.generateKeys(user.nameEmail, signUp.password, bits)
+	crypto.generateKeys(user.nameEmail, signUp.password, consts.DEFAULT_KEY_LENGTH)
 		.then((res) => {
 			console.log('keys generated!', res);
 			$scope.progress = 100;
-			$scope.label = translations.LABEL_GENERATED;
+			$scope.label = translations.LB_GENERATED;
 			$interval.cancel(progressBarInterval);
 
 			$timeout(() => {
@@ -40,6 +37,6 @@ angular.module(primaryApplicationName).controller('CtrlGeneratingKeys', function
 		})
 		.catch(err => {
 			console.log('keys generation error!', err);
-			$scope.label = translations.LABEL_ERROR;
+			$scope.label = translations.LB_ERROR;
 		});
 });
