@@ -20,13 +20,15 @@ angular.module(primaryApplicationName).controller('CtrlGeneratingKeys', function
 		$scope.progress = Math.floor(++timePassed / consts.ESTIMATED_KEY_GENERATION_TIME_SECONDS * 100);
 		if ($scope.progress >= 100) {
 			$scope.label = translations.LB_REACHED;
-			$interval.clear(progressBarInterval);
+
+			$interval.cancel(progressBarInterval);
 		}
 	}, 1000);
 
 	crypto.generateKeys(user.nameEmail, signUp.password, consts.DEFAULT_KEY_LENGTH)
 		.then((res) => {
-			console.log('keys generated!', res);
+			console.log('login app: keys generated!', res);
+
 			$scope.progress = 100;
 			$scope.label = translations.LB_GENERATED;
 			$interval.cancel(progressBarInterval);
