@@ -1,6 +1,3 @@
-- var loadAsset = function(name) {
-- 		return assets[name] ? assets[name] : name;
-- };
 html(lang="en")
 	head
 		meta(charset="utf-8")
@@ -29,11 +26,6 @@ html(lang="en")
 		meta(name="msapplication-TileColor", content="#000000")
 		meta(name="msapplication-TileImage", content="#{loadAsset('/img/assets/mstile-144x144.png')}')}")
 		meta(name="msapplication-config", content="#{loadAsset('/img/assets/browserconfig.xml')}")
-
-		if globs.isProduction
-			script!= 'window.assets = ' + JSON.stringify(assets) + ';'
-		script!= 'window.globs = ' + JSON.stringify(globs) + ';'
-
 	body
 		#loader-container
 			.login-app.login
@@ -57,4 +49,7 @@ html(lang="en")
 			#content(ui-view="main-view", autoscroll="false")
 			#modal(ui-view="modal-view", autoscroll="false")
 
-		script(src="#{loadAsset('/js/loader.js')}")
+		if globs.isProduction
+			script!= 'window.assets = ' + JSON.stringify(assets) + ';'
+		script!= 'window.globs = ' + JSON.stringify(globs) + ';'
+		script!= fs.readFileSync('./dist' + loadAsset('/js/loader.js'), 'utf8')
