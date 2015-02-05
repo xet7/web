@@ -83,7 +83,7 @@ var livereloadPipeline  = function (isForce) {
 var prodHtmlPipeline  = function (input, output) {
 	return lazypipe()
 		.pipe(plg.sourcemaps.init)
-		.pipe(plg.angularTemplatecache, {standalone: true})
+		.pipe(plg.angularTemplatecache, {root: output.split('/').filter(function (p) {return !!p}).slice(-1)[0], standalone: true})
 		.pipe(plg.uglify)
 		.pipe(plg.sourcemaps.write, '.')
 		.pipe(gulp.dest, paths.scripts.output);
