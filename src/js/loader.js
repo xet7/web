@@ -135,7 +135,8 @@ var __Promise = (function (func, obj) {
 		SRC_APP_LAVABOOM_LOGIN = '/js/appLavaboomLogin.js',
 		SRC_APP_LAVABOOM_MAIN = '/js/appLavaboom.js',
 		SRC_CHECKER = '/js/checker.js',
-		SRC_CHECKER_VENDOR = '/js/checker-vendor.js';
+		SRC_CHECKER_VENDOR = '/js/checker-vendor.js',
+		SRC_TEMPLATE_CACHE = '/js/templates.js';
 
 	const
 		LB_DONE = 'Done!',
@@ -180,6 +181,10 @@ var __Promise = (function (func, obj) {
 					progressText: 'Loading openpgp.js...'
 				},
 				{
+					src: SRC_TEMPLATE_CACHE,
+					progressText: 'Loading templates...'
+				},
+				{
 					src: SRC_APP_LAVABOOM_LOGIN,
 					progressText: 'Loading Lavaboom...'
 				}
@@ -202,6 +207,10 @@ var __Promise = (function (func, obj) {
 				{
 					src: SRC_OPENPGP,
 					progressText: 'Loading openpgp.js...'
+				},
+				{
+					src: SRC_TEMPLATE_CACHE,
+					progressText: 'Loading templates...'
 				},
 				{
 					src: SRC_APP_LAVABOOM_MAIN,

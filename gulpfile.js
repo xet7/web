@@ -82,8 +82,11 @@ var livereloadPipeline  = function (isForce) {
 
 var prodHtmlPipeline  = function (input, output) {
 	return lazypipe()
-		.pipe(plg.angularTemplatecache)
-		.pipe(gulp.dest, output);
+		.pipe(plg.sourcemaps.init)
+		.pipe(plg.angularTemplatecache, {standalone: true})
+		.pipe(plg.uglify)
+		.pipe(plg.sourcemaps.write, '.')
+		.pipe(gulp.dest, paths.scripts.output);
 };
 
 var createJadePipeline = function (input, output, isTemplateCache) {
