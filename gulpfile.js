@@ -82,12 +82,7 @@ var livereloadPipeline  = function (isForce) {
 
 var prodHtmlPipeline  = function (input, output) {
 	return lazypipe()
-		.pipe(plg.minifyHtml, {
-			empty: true
-		})
-		.pipe(plg.rename, { suffix: '.min' })
-		.pipe(gulp.dest, output)
-		.pipe(plg.gzip)
+		.pipe(plg.angularTemplatecache)
 		.pipe(gulp.dest, output);
 };
 
