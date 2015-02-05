@@ -115,8 +115,9 @@
 	BTN_NEXT = "Generate my key pair"
 
 [LOGIN.GENERATING_KEYS]
-	LB_GENERATING = "Generating your Keys"
-	LB_GENERATED = "Your keys are ready!"
+	LB_GENERATING = "Generating your Keys..."
+	LB_UPLOADING = "Uploading Public Key..."
+	LB_READY = "Your keys are ready!"
 	LB_REACHED = "Our hamsters are running extra hard, just be a bit more patient..."
 	LB_ERROR = "Cannot generate keys, make sure you use up-to-date browser and try again!"
 	LB_DO_NOT_CLOSE = "Do not close this window!"

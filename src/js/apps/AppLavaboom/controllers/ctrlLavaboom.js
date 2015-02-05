@@ -40,18 +40,6 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 
 			loader.incProgress(translations.LB_LOADING_EMAILS, 5);
 
-			/*var decodeChan = chan();
-			co(function *() {
-				while (!decodeChan.done()) {
-					var status = yield decodeChan;
-
-					if (status.current < status.total)
-						loader.setProgress(LB_DECRYPTING, beforeDecryptingProgress + (status.current / status.total) * (95 - beforeDecryptingProgress));
-					else
-						loader.setProgress(LB_DECRYPTING, 95);
-				}
-			});*/
-
 			yield inbox.initialize();
 
 			loader.incProgress(translations.LB_LOADING_CONTACTS, 5);

@@ -10,35 +10,42 @@ angular.module(primaryApplicationName).controller('CtrlGeneratingKeys', function
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
 		translations.LB_GENERATING = $translate.instant('LOGIN.GENERATING_KEYS.LB_GENERATING');
-		translations.LB_GENERATED = $translate.instant('LOGIN.GENERATING_KEYS.LB_GENERATED');
+		translations.LB_READY = $translate.instant('LOGIN.GENERATING_KEYS.LB_READY');
 		translations.LB_REACHED = $translate.instant('LOGIN.GENERATING_KEYS.LB_REACHED');
 		translations.LB_ERROR = $translate.instant('LOGIN.GENERATING_KEYS.LB_ERROR');
+		translations.LB_UPLOADING = $translate.instant('LOGIN.GENERATING_KEYS.LB_UPLOADING');
 		$scope.label = translations.LB_GENERATING;
 	});
 
 	var progressBarInterval = $interval(() => {
-		$scope.progress = Math.floor(++timePassed / consts.ESTIMATED_KEY_GENERATION_TIME_SECONDS * 100);
-		if ($scope.progress >= 100) {
+		$scope.progress = Math.floor(++timePassed / consts.ESTIMATED_KEY_GENERATION_TIME_SECONDS * 95);
+		if ($scope.progress >= 95) {
 			$scope.label = translations.LB_REACHED;
 
 			$interval.cancel(progressBarInterval);
 		}
 	}, 1000);
 
-	crypto.generateKeys(user.nameEmail, signUp.password, consts.DEFAULT_KEY_LENGTH)
-		.then((res) => {
-			console.log('login app: keys generated!', res);
+	co(function *() {
+		try {
+			var res = yield crypto.generateKeys(user.nameEmail, signUp.password, consts.DEFAULT_KEY_LENGTH);
+			console.log('login app: keys generated', res);
+
+			$interval.cancel(progressBarInterval);
+			$scope.label = translations.LB_UPLOADING;
+
+			yield user.syncKeys();
+			yield user.updateKey(res.prv.primaryKey.fingerprint);
 
 			$scope.progress = 100;
-			$scope.label = translations.LB_GENERATED;
-			$interval.cancel(progressBarInterval);
+			$scope.label = translations.LB_READY;
 
 			$timeout(() => {
 				$state.go('backupKeys');
 			}, consts.BACKUP_KEYS_REDIRECT_DELAY);
-		})
-		.catch(err => {
-			console.log('keys generation error!', err);
+		} catch (err) {
+			console.log('login app: keys generation error', err);
 			$scope.label = translations.LB_ERROR;
-		});
+		}
+	});
 });
