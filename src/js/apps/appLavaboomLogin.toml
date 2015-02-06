@@ -11,6 +11,8 @@
 		'../../bower_components/angular-inview/angular-inview.js',
 		'../../bower_components/lavaboom/dist/lavaboom-angular.js',
 		'../../bower_components/file-saver/FileSaver.js',
+		'../../bower_components/angular-autodisable/angular-autodisable.js',
+
 		'../../bower_components/angular-co/dist/co.js',
 
 		'../../bower_components/sockjs-client/dist/sockjs.js'

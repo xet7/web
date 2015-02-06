@@ -18,12 +18,12 @@ angular.module(primaryApplicationName).factory('Email', function(co, contacts, c
 		var isPreviewAvailable = !!envelope.preview;
 
 		var t = yield [
-			co.transform(crypto.decodeEnvelope(envelope.body, 'raw'), r => {
+			co.transform(crypto.decodeEnvelope(envelope.body, '', 'raw'), r => {
 				if (!isPreviewAvailable)
 					ch(r);
 				return r;
 			}),
-			isPreviewAvailable ? crypto.decodeEnvelope(envelope.preview, 'raw') : ch
+			isPreviewAvailable ? crypto.decodeEnvelope(envelope.preview, '', 'raw') : ch
 		];
 		var bodyData = t[0], previewData = t[1];
 

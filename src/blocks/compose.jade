@@ -4,7 +4,7 @@ div#compose-wrapper
 			.lava-icon-wrapper.pull-right
 				a(href="#", ng-click="isXCC = !isXCC")
 					span.icon-tick
-				a(href="#", ng-click="send()")
+				a(href="#", ng-click="send()", ng-autodisable=)
 					span.icon-sent
 				a(href="#", ng-click="hidePopup()")
 					span.icon-close
@@ -68,7 +68,13 @@ div#compose-wrapper
 					label.text-primary {{'MAIN.COMPOSE.LB_SUBJECT' | translate}}:
 				.cell.fields
 					input#subject.form-control.text-primary.col-xs-24(type="text", name="subject", auto-complete="off", ng-model="form.subject").text-primary
-					
 
 		article#compose-body
-			div(text-angular="", ng-model="form.body")
+			div(text-angular="", ta-file-drop="onFileDrop", ng-model="form.body")
+		article#attachments
+			div(ng-repeat="attachment in attachments")
+				div(ng-bind="attachment.attachment.name")
+				div(ng-bind="attachment.attachment.size | fileSize")
+				div(ng-bind="attachment.attachment.dateModified | date")
+				div(ng-bind="attachment.status")
+				button.btn.btn-block.btn-lg.btn-primary(ng-click="deleteAttachment(attachment, $index)", ng-autodisable) delete
