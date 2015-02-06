@@ -6,6 +6,5 @@
 		'../../bower_components/angular-ui-select/dist/select.js',
 		'../../bower_components/textAngular/dist/textAngular-sanitize.min.js',
         '../../bower_components/textAngular/dist/textAngular.min.js',
-        '../../bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
-        '../../bower_components/dropzone/dist/dropzone.js'
+        '../../bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js'
 	]
