@@ -240,9 +240,11 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		return envelope;
 	});
 
-	this.decodeEnvelope = (envelope, prefixName = '') => co(function *(){
+	this.decodeEnvelope = (envelope, prefixName = '', encoding = '') => co(function *(){
 		if (prefixName)
 			prefixName = `${prefixName}_`;
+		if (encoding)
+			envelope.encoding = encoding;
 
 		var pgpData = envelope.data;
 		var message = null;

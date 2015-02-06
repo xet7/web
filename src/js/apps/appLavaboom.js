@@ -14,7 +14,8 @@ angular.module(primaryApplicationName, (globs.isProduction
 		'textAngular',
 		'pascalprecht.translate',
 		'infinite-scroll',
-		'angular-co'
+		'angular-co',
+		'ngAutodisable'
 	])
 );
 

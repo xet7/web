@@ -13,7 +13,8 @@ angular.module(primaryApplicationName, (globs.isProduction
 		'pascalprecht.translate',
 		'ngMessages',
 		'angular-inview',
-		'angular-co'
+		'angular-co',
+		'ngAutodisable'
 	])
 );
 
