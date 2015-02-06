@@ -1,4 +1,4 @@
-angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateParams, co, user, contacts, inbox, router, Attachment) {
+angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateParams, consts, co, user, contacts, inbox, router, Attachment) {
 	$scope.isXCC = false;
 
 	var threadId = $stateParams.threadId;
@@ -86,6 +86,8 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateP
 
 		console.log('uploads completed...');
 
+		console.log($scope.form);
+
 		yield inbox.send(
 			$scope.form.selected.to.map(e => e.email),
 			$scope.form.selected.cc.map(e => e.email),
@@ -150,10 +152,18 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateP
 	$scope.clearBCC = () => $scope.form.selected.bcc = [];
 
 	$scope.tagTransform = function (newTag) {
-		return  {
-			name: newTag,
-			email: newTag.toLowerCase() + '@email.com',
-			sec: 'unknown'
+		var p = newTag.split('@');
+		if (p.length > 1)
+			return {
+				name: p[0].trim(),
+				email: `${p[0].trim()}@${p[1].trim()}`,
+				sec: 1
+			};
+
+		return {
+			name: newTag.trim(),
+			email: `${newTag.trim()}@${consts.ROOT_DOMAIN}`,
+			sec: 1
 		};
 	};
 
