@@ -1,16 +1,23 @@
 window.primaryApplicationName = 'AppLavaboom';
 
-angular.module(primaryApplicationName, [
-	'lavaboom.api',
-	'ngSanitize',
-	'ui.router',
-	'ui.bootstrap',
-	'ui.select',
-	'textAngular',
-	'pascalprecht.translate',
-	'validation.match',
-	'angular-co'
-]);
+angular.module(primaryApplicationName, (globs.isProduction
+	? [
+		'templates'
+	]
+	: []
+	).concat([
+		'lavaboom.api',
+		'ngSanitize',
+		'ui.router',
+		'ui.bootstrap',
+		'ui.select',
+		'textAngular',
+		'pascalprecht.translate',
+		'infinite-scroll',
+		'angular-co',
+		'ngAutodisable'
+	])
+);
 
 window.coJS = require('co');
 

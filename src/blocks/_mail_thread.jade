@@ -1,7 +1,7 @@
 #mail-thread.details-pane.ng-cloak(ng-controller="CtrlMailDetail")
-	div.pane-status(ng-if="!selected")
-		.col-xs-24 no email selected
-	div(ng-if="selected").row.no-gutter.actions.lava-icon-row
+	div.pane-status(ng-if="selectedTid === null")
+		.col-xs-24 {{'INBOX.LB_NOTHING_SELECTED' | translate}}
+	div(ng-if="selectedTid !== null").row.no-gutter.actions.lava-icon-row
 			.col-xs-24
 				.lava-icon-wrapper
 					a(href="#")
@@ -17,27 +17,27 @@
 						span.icon-ban
 					a(href="#")
 						span.icon-trash
-	// mail-thread-template
-	div(ng-if="selected").main-view
-		.pane-status(ng-show="isLoading") Loading...
+	div(ng-if="selectedTid !== null").main-view
+		.pane-status(ng-show="isLoading")
+			img(src="/img/loader.svg")
 		.row.no-gutter.mail(ng-repeat="email in emails")
 			.col-xs-24
 				header.row.no-gutter
 					.col-xs-21
 						strong(ng-bind="email.fromName")
 						br
-						| From:
+						| {{'MAIN.COMPOSE.LB_FROM' | translate}}:
 						span(ng-repeat="from in email.from", ng-bind="from")
 						br
-						| Subject:
+						| {{'MAIN.COMPOSE.LB_SUBJECT' | translate}}:
 						span(ng-bind="email.subject")
 					.col-xs-2.when
 						span(ng-bind="email.date | date")
 					.col-xs-1.secure
 						a.icon-<!--.$secure.-->
 				.mail-content.row.no-gutter
-					.col-xs-22(ng-bind-html="email.body.text")
-				//footer
+					.col-xs-22(ng-bind-html="email.body.data")
+				footer
 					.row.no-gutter
 						.col-xs-8
 							a.attachment(href="test.mov", filetype="mov")
@@ -51,4 +51,3 @@
 								| Very Long Filename...pdf
 								br
 								| 24kb
-		// // mail-thread-template

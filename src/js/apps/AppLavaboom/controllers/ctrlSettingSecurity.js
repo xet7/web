@@ -12,11 +12,17 @@ angular.module(primaryApplicationName).controller('CtrlSettingsSecurity', functi
 	$scope.keys = crypto.keyring.privateKeys.keys.map(k => {
 		return {
 			keyId: utils.hexify(k.primaryKey.keyid.bytes),
+			isDecrypted: crypto.getPrivateKeyByFingerprint(k.primaryKey.fingerprint).primaryKey.isDecrypted,
+			decryptPassword: '',
+			decryptIsSuccess: null,
+			decryptTime: null,
 			fingerprint: k.primaryKey.fingerprint,
 			created: k.primaryKey.created,
 			user: k.users[0].userId.userid
 		};
 	});
+
+	$scope.isAnyUndecryptedKeys = $scope.keys.some(k => !k.isDecrypted);
 
 	$scope.isProcessing = false;
 	$scope.passwordUpdateStatus = '';

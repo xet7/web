@@ -1,15 +1,21 @@
-form.ng-cloak(name="secure", ng-class="{'errors': currentErrorMessage}")
+form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-submit="__form.$valid && requestSecure()", novalidate)
 	h1 {{'LOGIN.SECURE_USERNAME.TITLE' | translate}}
-	div.alert.alert-danger(ng-if="currentErrorMessage", ng-bind="currentErrorMessage")
+
+	div.alert.alert-danger(ng-show="currentErrorMessage", ng-bind="currentErrorMessage")
+
 	p.text-center
 		a(ui-sref="verifyInvite") {{'LOGIN.SECURE_USERNAME.LNK_INVITE_QUESTION' | translate}}
+
 	div.form-group
 		div.input-group.suffix.clearfix
-			input.form-control.input-lg(type='text', ng-model='form.username', placeholder="{{'GLOBAL.USERNAME' | translate}}", required, minlength="2")
+			input.form-control.input-lg(type='text', name="username", ng-model='form.username', placeholder="{{'GLOBAL.USERNAME' | translate}}",
+				focus="true", required, minlength="2")
 			span.input-group-addon @lavaboom.com
+			span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.username.$error", ng-messages-include="partials/validationMessages.html")
 
 	div.form-group.clearfix
-		input.form-control.input-lg(type='email', ng-model='form.email', placeholder="{{'GLOBAL.CURRENT_EMAIL' | translate}}", required, minlength="4")
+		input.form-control.input-lg(type='email', name="email", ng-model='form.email', placeholder="{{'GLOBAL.CURRENT_EMAIL' | translate}}", required, minlength="4")
+		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.email.$error", ng-messages-include="partials/validationMessages.html")
 
 	hr.spacer.large
 
@@ -18,4 +24,4 @@ form.ng-cloak(name="secure", ng-class="{'errors': currentErrorMessage}")
 		label(for='check1') {{'LOGIN.SECURE_USERNAME.LB_NEWS' | translate}}
 
 	footer
-		button.btn.btn-block.btn-lg.btn-primary(ng-click='requestSecure()', ng-disabled="secure.$invalid || isProcessing") {{'LOGIN.SECURE_USERNAME.BTN_SECURE' | translate}}
+		button.btn.btn-block.btn-lg.btn-primary(type="submit", ng-disabled="isProcessing") {{'LOGIN.SECURE_USERNAME.BTN_SECURE' | translate}}

@@ -1,9 +1,12 @@
 /dist
 /cache
-.DS_Store
 /node_modules
 src/bower_components
 *.map
+manifest.json
+.DS_Store
+*.codekit
+
 # Created by https://www.gitignore.io
 
 ### OSX ###

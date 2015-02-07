@@ -1,7 +1,36 @@
 import os, random, string
-from fabric.api import run, env, cd, settings, put, local
+from fabric.api import run, env, cd, settings, put, local, shell_env
 
+# load ~/.ssh/id_rsa
 env.key_filename = os.getenv('HOME', '/root') + '/.ssh/id_rsa'
+
+# determine hosts
+branch = os.getenv('DRONE_BRANCH', '')
+if branch == "master":
+	env.hosts = ["marge.lavaboom.io:36104"]
+	api_uri = "https://api.lavaboom.com"
+	tld = "lavaboom.com"
+elif branch == "staging":
+	env.hosts = ["lisa.lavaboom.io:36412"]
+	api_uri = "https://api.lavaboom.io"
+	tld = "lavaboom.io"
+elif branch == "develop":
+	env.hosts = ["bart.lavaboom.io:36467"]
+	api_uri = "https://api.lavaboom.co"
+	tld = "lavaboom.co"
+
+# build
+def build():
+	local("npm install -g gulp")
+	local("npm install")
+	if branch == "master" or branch == "staging":
+		with shell_env(API_URI=api_uri, TLD=tld):
+			local("gulp production")
+	elif branch == "develop":
+		with shell_env(API_URI=api_uri, TLD=tld):
+			local("gulp develop")
+	else:
+		local("develop")
 
 def deploy():
 	branch = os.getenv('DRONE_BRANCH', 'master')
@@ -26,3 +55,9 @@ def deploy():
 			run('./web-' + branch + '.sh')
 
 	run('rm -r ' + tmp_dir)
+
+def integrate():
+	build()
+
+	if branch == "master" or branch == "staging" or branch == "develop":
+		deploy()

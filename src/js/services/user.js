@@ -39,7 +39,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 	this.isAuthenticated = () => token && isAuthenticated;
 
-	var syncKeys = () => co(function *(){
+	this.syncKeys = () => co(function *(){
 		var res = yield apiProxy(['keys', 'list'], self.name);
 
 		var keysByFingerprint = res.body.keys ? res.body.keys.reduce((a, k) => {
@@ -74,7 +74,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 		setupUserBasicInformation(res.body.user.name);
 
-		yield syncKeys();
+		yield self.syncKeys();
 
 		res = yield apiProxy(['keys', 'get'], self.email);
 		self.key = res.body.key;
@@ -93,6 +93,12 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 			settings: self.settings
 		});
 	};
+
+	this.updateKey = (fingerprint) => co(function * () {
+		return yield apiProxy(['accounts', 'update'], 'me', {
+			public_key: fingerprint
+		});
+	});
 
 	this.signIn = (username, password, isRemember, isPrivateComputer) => {
 		setupUserBasicInformation(username);

@@ -43,9 +43,17 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		return a;
 	}, {}));
 
-	this.getAvailablePrivateKeys = () => keyring.privateKeys;
+	this.getPrivateKeyByFingerprint = (fingerprint) => {
+		var k = localKeyring.privateKeys.findByFingerprint(fingerprint);
+		if (k)
+			return k;
 
-	this.getAvailablePrivateDecryptedKeys = () => sessionKeyring.privateKeys;
+		k = sessionKeyring.privateKeys.findByFingerprint(fingerprint);
+		if (k)
+			return k;
+
+		return keyring.privateKeys.findByFingerprint(fingerprint);
+	};
 
 	this.getAvailableDestinationEmails = () => getAvailableEmails(keyring.publicKeys);
 
@@ -232,23 +240,32 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		return envelope;
 	});
 
-	this.decodeEnvelope = (envelope, prefixName = '') => co(function *(){
+	this.decodeEnvelope = (envelope, prefixName = '', encoding = '') => co(function *(){
 		if (prefixName)
 			prefixName = `${prefixName}_`;
+		if (encoding)
+			envelope.encoding = encoding;
 
-		var pgpData = envelope.raw;
+		var pgpData = envelope.data;
 		var message = null;
+		var state = 'ok';
+
 		try {
-			message = yield self.decodeByListedFingerprints(pgpData, envelope.pgp_fingerprints);
+			message = envelope.pgp_fingerprints && envelope.pgp_fingerprints.length > 0
+				? yield self.decodeByListedFingerprints(pgpData, envelope.pgp_fingerprints)
+				: pgpData;
 
 			if (envelope.encoding == 'json')
 				message = JSON.parse(message);
 		} catch (error) {
+			message = error.message;
+			state = 'error';
 			console.error('decodeEnvelope', error);
 		}
 
 		return {
 			data: message,
+			state: state,
 			majorVersion: envelope[`${prefixName}version_major`],
 			minorVersion: envelope[`${prefixName}version_minor`]
 		};

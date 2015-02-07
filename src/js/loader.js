@@ -127,7 +127,7 @@ var __Promise = (function (func, obj) {
 })('f', 'o');
 /* jshint ignore:end */
 
-((Promise) => {
+((Promise, assets, globs) => {
 	const
 		SRC_APP_LAVABOOM_LOGIN_VENDOR = '/js/appLavaboomLogin-vendor.js',
 		SRC_APP_LAVABOOM_MAIN_VENDOR = '/js/appLavaboom-vendor.js',
@@ -135,7 +135,8 @@ var __Promise = (function (func, obj) {
 		SRC_APP_LAVABOOM_LOGIN = '/js/appLavaboomLogin.js',
 		SRC_APP_LAVABOOM_MAIN = '/js/appLavaboom.js',
 		SRC_CHECKER = '/js/checker.js',
-		SRC_CHECKER_VENDOR = '/js/checker-vendor.js';
+		SRC_CHECKER_VENDOR = '/js/checker-vendor.js',
+		SRC_TEMPLATE_CACHE = '/js/templates.js';
 
 	const
 		LB_DONE = 'Done!',
@@ -179,6 +180,10 @@ var __Promise = (function (func, obj) {
 					src: SRC_OPENPGP,
 					progressText: 'Loading openpgp.js...'
 				},
+				globs.isProduction ? {
+					src: SRC_TEMPLATE_CACHE,
+					progressText: 'Loading templates...'
+				} : null,
 				{
 					src: SRC_APP_LAVABOOM_LOGIN,
 					progressText: 'Loading Lavaboom...'
@@ -203,6 +208,10 @@ var __Promise = (function (func, obj) {
 					src: SRC_OPENPGP,
 					progressText: 'Loading openpgp.js...'
 				},
+				globs.isProduction ? {
+					src: SRC_TEMPLATE_CACHE,
+					progressText: 'Loading templates...'
+				} : null,
 				{
 					src: SRC_APP_LAVABOOM_MAIN,
 					progressText: 'Loading Lavaboom...'
@@ -278,10 +287,14 @@ var __Promise = (function (func, obj) {
 			var total = opts.scripts.length;
 
 			var load = (loaded = 0) => {
-				var script = opts.scripts.splice(0, 1)[0];
+				var script = null;
+				do {
+					script = opts.scripts.splice(0, 1)[0];
+				} while (!script);
+
 				self.setProgress(script.progressText, Math.ceil(progress + (opts.afterProgressValue - progress) * loaded / total));
 
-				loadJS(script.src)
+				loadJS(globs.isProduction && assets[script.src] ? assets[script.src] : script.src)
 					.then(() => {
 						if (opts.scripts.length > 0)
 							load(loaded + 1);
@@ -301,7 +314,7 @@ var __Promise = (function (func, obj) {
 		});
 
 		var initializeApplication = (app, opts) => {
-			console.log('loader: initializing application', app.appName);
+			console.log('loader: initializing application', app.appName, opts);
 
 			isMainApp = app.container == APP_LAVABOOM_MAIN.container;
 
@@ -310,8 +323,11 @@ var __Promise = (function (func, obj) {
 
 			var rootScope = angular.element(app.container).scope();
 			rootScope.$apply(() => {
+				console.log('loader: calling rootScope.initializeApplication()');
 				rootScope.initializeApplication()
 					.then(r => {
+						console.log('loader: initialized application', app.appName, 'with result', r);
+
 						showContainer(app, opts.lbDone ? opts.lbDone : (r && r.lbDone ? r.lbDone : null))
 							.then(() => {
 								if (rootScope.onApplicationReady)
@@ -323,13 +339,13 @@ var __Promise = (function (func, obj) {
 					.catch(err => {
 						self.setProgressText(err.message);
 						isError = true;
-						console.error('loader: initialization of app.appName failed', err.error);
+						console.error('loader: initialization of application failed', app.appName, 'with error', err.error);
 					});
 			});
 		};
 
 		var loadApplication = (app, opts) => new Promise((resolve, reject) => {
-			console.log('loader: loading application', app.appName);
+			console.log('loader: loading application', app.appName, opts);
 			isMainApp = app.container == APP_LAVABOOM_MAIN.container;
 
 			loadScripts(app)
@@ -431,4 +447,4 @@ var __Promise = (function (func, obj) {
 
 	window.loader = new Loader();
 	window.loader.initialize();
-})(__Promise);
+})(__Promise, window.assets, window.globs);
