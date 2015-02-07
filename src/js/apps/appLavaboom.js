@@ -14,6 +14,7 @@ angular.module(primaryApplicationName, (globs.isProduction
 		'textAngular',
 		'pascalprecht.translate',
 		'infinite-scroll',
+		'angular-promise-cache',
 		'angular-co',
 		'ngAutodisable'
 	])

@@ -1,6 +1,6 @@
 var chan = require('chan');
 
-angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, $timeout, co, apiProxy, LavaboomAPI, crypto, contacts, Email, Thread) {
+angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, $timeout, co, apiProxy, Cache, LavaboomAPI, crypto, contacts, Email, Thread) {
 	var self = this;
 
 	this.offset = 0;
@@ -13,6 +13,12 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.labelsByName = [];
 	this.threads = {};
 	this.threadsList = [];
+
+	var cacheOptions = {
+		ttl: 60 * 1000,
+		isInvalidateWholeCache: true
+	};
+	var threadsCaches = [];
 
 	$timeout(() => {
 		LavaboomAPI.subscribe('receipt', (msg) => {
@@ -41,7 +47,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		return r;
 	});
 
-	var getThreadsByLabelName = function *(labelName) {
+	var getThreadsByLabelName = (labelName) => co(function *() {
 		var label = self.labelsByName[labelName];
 
 		var threads = (yield apiProxy(['threads', 'list'], {
@@ -51,9 +57,6 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			offset: self.offset,
 			limit: self.limit
 		})).body.threads;
-
-		if (threads)
-			self.offset += threads.length;
 
 		var result = {
 			list: [],
@@ -70,7 +73,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		}
 
 		return result;
-	};
+	});
 
 	this.getThreadById = (threadId) => co(function *() {
 		var thread = (yield apiProxy(['threads', 'get'], threadId)).body.thread;
@@ -123,9 +126,11 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.getLabels = (classes = {}) => co(function *() {
 		var labels = (yield apiProxy(['labels', 'list'])).body.labels;
 
+		threadsCaches = [];
 		return labels.reduce((a, label) => {
 			label.iconClass = `icon-${classes[label.name] ? classes[label.name] :label.name.toLowerCase()}`;
 			a[label.name] = label;
+			threadsCaches[label.name] = new Cache(cacheOptions);
 			return a;
 		}, {});
 	});
@@ -159,7 +164,9 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		return yield apiProxy(['attachments', 'delete'], attachmentId);
 	});
 
-	this.requestList = (labelName, decodeChan = null) => {
+
+
+	this.requestList = (labelName) => {
 		if (self.labelName != labelName) {
 			self.offset = 0;
 			self.threads = {};
@@ -169,7 +176,10 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		self.labelName = labelName;
 
 		return performsThreadsOperation(co(function * (){
-			var e = yield getThreadsByLabelName(labelName, decodeChan);
+			var e = yield threadsCaches[labelName].call(() => getThreadsByLabelName(labelName), [self.offset, self.limit]);
+
+			if (e.list.length > 0)
+				self.offset += e.list.length;
 
 			self.threads = angular.extend(self.threads, e.map);
 			self.threadsList = self.threadsList.concat(e.list);
