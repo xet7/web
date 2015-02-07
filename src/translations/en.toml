@@ -13,6 +13,10 @@
 	LB_AND_OTHERS = "and others"
 	LB_NOTHING_FOUND = "Nothing found"
 	LB_NOTHING_SELECTED = "Nothing selected"
+	LB_NO_PRIVATE_KEY_FOUND1 = "No decrypted private key found for this email"
+	LB_NO_PRIVATE_KEY_FOUND2 = "Please go to "
+	LB_SETTINGS = "settings"
+	LB_NO_PRIVATE_KEY_FOUND3 = " and check your key"
 
 [GLOBAL]
 	USERNAME = "username"

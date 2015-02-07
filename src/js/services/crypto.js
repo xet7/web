@@ -197,7 +197,7 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		}, {});
 
 		if (!privateKey)
-			throw new Error('No decrypted private key found!');
+			throw new Error('no_private_key');
 
 		return yield openpgp.decryptMessage(privateKey, pgpMessage);
 	});
@@ -258,8 +258,8 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 			if (envelope.encoding == 'json')
 				message = JSON.parse(message);
 		} catch (error) {
-			message = error.message;
-			state = 'error';
+			message = '';
+			state = error.message;
 			console.error('decodeEnvelope', error);
 		}
 

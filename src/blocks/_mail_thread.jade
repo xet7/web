@@ -36,7 +36,11 @@
 					.col-xs-1.secure
 						a.icon-<!--.$secure.-->
 				.mail-content.row.no-gutter
-					.col-xs-22(ng-bind-html="email.body.data")
+					.col-xs-22(ng-show="email.body.state == 'ok'", ng-bind-html="email.body.data")
+					.col-xs-22(ng-show="email.body.state == 'no_private_key'") {{'INBOX.LB_NO_PRIVATE_KEY_FOUND1' | translate}}
+						div {{'INBOX.LB_NO_PRIVATE_KEY_FOUND2' | translate}}
+							a(ui-sref="main.settings.security") {{'INBOX.LB_SETTINGS' | translate}}
+							{{'INBOX.LB_NO_PRIVATE_KEY_FOUND3' | translate}}
 				footer
 					.row.no-gutter
 						.col-xs-8
