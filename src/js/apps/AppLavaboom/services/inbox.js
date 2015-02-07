@@ -14,11 +14,14 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.threads = {};
 	this.threadsList = [];
 
-	var cacheOptions = {
-		ttl: 60 * 1000,
-		isInvalidateWholeCache: true
+	var defaultCacheOptions = {
+		ttl: 60 * 1000
 	};
+	var cacheOptions = angular.extend({}, defaultCacheOptions, {
+		isInvalidateWholeCache: true
+	});
 	var threadsCaches = [];
+	var emailsListCache = new Cache(defaultCacheOptions);
 
 	$timeout(() => {
 		LavaboomAPI.subscribe('receipt', (msg) => {
@@ -117,11 +120,14 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		return yield apiProxy(['threads', 'update'], threadId, {labels: _.union(thread.labels, [labelId])});
 	}));
 
-	this.getEmailsByThreadId = (threadId, decodeChan) => co(function *() {
-		var emails = (yield apiProxy(['emails', 'list'], {thread: threadId})).body.emails;
+	this.getEmailsByThreadId = (threadId, decodeChan) => emailsListCache.call(
+		(threadId, decodeChan) => co(function *() {
+			var emails = (yield apiProxy(['emails', 'list'], {thread: threadId})).body.emails;
 
-		return yield (emails ? emails : []).map(e => Email.fromEnvelope(e));
-	});
+			return yield (emails ? emails : []).map(e => Email.fromEnvelope(e));
+		}),
+		[threadId, decodeChan]
+	);
 
 	this.getLabels = (classes = {}) => co(function *() {
 		var labels = (yield apiProxy(['labels', 'list'])).body.labels;
