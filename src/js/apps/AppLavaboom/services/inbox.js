@@ -1,6 +1,6 @@
 var chan = require('chan');
 
-angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, $timeout, co, apiProxy, Cache, LavaboomAPI, crypto, contacts, Email, Thread) {
+angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, $timeout, co, apiProxy, LavaboomAPI, crypto, contacts, Cache, Email, Thread, Label) {
 	var self = this;
 
 	this.offset = 0;
@@ -25,7 +25,11 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 	$timeout(() => {
 		LavaboomAPI.subscribe('receipt', (msg) => {
-			console.log('receipt', msg);
+
+			co(function *(){
+				var email = yield self.getEmail(msg.id);
+			});
+
 		});
 
 		LavaboomAPI.subscribe('delivery', (msg) => {
@@ -134,25 +138,18 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 		threadsCaches = [];
 		return labels.reduce((a, label) => {
-			label.iconClass = `icon-${classes[label.name] ? classes[label.name] :label.name.toLowerCase()}`;
-			a[label.name] = label;
 			threadsCaches[label.name] = new Cache(cacheOptions);
+			a[label.name] = new Label(label);
 			return a;
 		}, {});
 	});
 
 	this.initialize = () => co(function *(){
-		var labelsClasses = {
-			'Drafts': 'draft',
-			'Spam': 'ban',
-			'Starred': 'star'
-		};
-
-		var labels = yield self.getLabels(labelsClasses);
+		var labels = yield self.getLabels();
 
 		if (!labels.Drafts) {
 			yield apiProxy(['labels', 'create'], {name: 'Drafts'});
-			labels = yield self.getLabels(labelsClasses);
+			labels = yield self.getLabels();
 		}
 
 		self.labelsByName = labels;
@@ -170,7 +167,11 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		return yield apiProxy(['attachments', 'delete'], attachmentId);
 	});
 
+	this.getEmail = (emailId) => co(function *(){
+		var r = yield apiProxy(['emails', 'get'], emailId);
 
+		return r.body.email;
+	});
 
 	this.requestList = (labelName) => {
 		if (self.labelName != labelName) {
