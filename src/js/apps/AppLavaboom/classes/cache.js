@@ -12,9 +12,9 @@ angular.module(primaryApplicationName).factory('Cache', function(co) {
 
 			if (now - r.time > opts.ttl) {
 				if (opts.isInvalidateWholeCache)
-					cache = {};
+					self.invalidateAll();
 				else
-					delete cache[name];
+					self.invalidate(name);
 
 				return null;
 			}
@@ -27,6 +27,15 @@ angular.module(primaryApplicationName).factory('Cache', function(co) {
 				value: value,
 				time: new Date()
 			};
+		};
+
+		this.invalidate = (name) => {
+			if (cache[name])
+				delete cache[name];
+		};
+
+		this.invalidateAll = () => {
+			cache = {};
 		};
 
 		this.call = (promiseInvoker, args) => co(function* (){
