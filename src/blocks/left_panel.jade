@@ -12,7 +12,7 @@ div#left-panel.ng-cloak
 				a(ui-sref="main.label({labelName: label.name})")
 					span(ng-class="label.iconClass")
 					span.action(ng-bind="label.name")
-					span.badge
+					span.badge(ng-bind="label.emailsUnread | unread")
 			li.separator
 			li(ui-sref-active="active")
 				a(ui-sref="main.contacts")
