@@ -10,13 +10,18 @@ angular.module(primaryApplicationName).controller('CtrlMailDetail', function($sc
 			$scope.selectedTid = selectedTid;
 
 			if (selectedTid !== null) {
-				$scope.isLoading = true;
+
+				var t = $timeout(() => {
+					$scope.isLoading = true;
+				}, consts.LOADER_SHOW_DELAY);
+
 				$scope.emails = [];
 				inbox.getEmailsByThreadId(selectedTid)
 					.then(emails => {
 						$scope.emails = emails;
 					})
 					.finally(() => {
+						$timeout.cancel(t);
 						$scope.isLoading = false;
 					});
 			}

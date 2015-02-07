@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlMailList', function($rootScope, $document, $scope, $timeout, $interval, $stateParams, user, inbox, cryptoKeys) {
+angular.module(primaryApplicationName).controller('CtrlMailList', function($rootScope, $document, $scope, $timeout, $interval, $stateParams, user, inbox, consts) {
 	$scope.labelName = $stateParams.labelName;
 	$scope.searchText = '';
 
@@ -23,10 +23,11 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 		}
 
 		$scope.isLoading = false;
+		$scope.isDisabled = false;
 	});
 
-	$scope.isLoading = true;
-	$scope.isDisabled = false;
+	$scope.isLoading = false;
+	$scope.isDisabled = true;
 	$scope.selectedTid = null;
 
 	$document.bind("keydown", (event) => $rootScope.$apply(() => {
@@ -75,10 +76,16 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 	};
 
 	var requestList = () => {
-		$scope.isLoading = true;
+		var t = $timeout(() => {
+			$scope.isLoading = true;
+		}, consts.LOADER_SHOW_DELAY);
+
 		inbox.requestList($scope.labelName)
 			.then((e) => {
 				$scope.isDisabled = e.list.length < 1;
+			})
+			.finally(() => {
+				$timeout.cancel(t);
 			});
 	};
 
