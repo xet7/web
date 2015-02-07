@@ -48,6 +48,7 @@
 							label(ng-show="!key.isDecrypted") {{'MAIN.SETTINGS.SECURITY.LB_PASSPHRASE' | translate}}
 							input.form-control(type='password', ng-disabled="key.isDecrypted", ng-model="key.decryptPassword", ng-controller="CtrlSettingsSecurityKey")
 			div(ng-show="isAnyUndecryptedKeys") {{'MAIN.SETTINGS.SECURITY.LB_PASSPHRASE_NOTE' | translate}}
+			div(ng-show="!keys || keys.length < 1") {{'MAIN.SETTINGS.SECURITY.LB_KEY_NOTE' | translate}}
 			h4 {{'MAIN.SETTINGS.SECURITY.TITLE_KEYS_MANAGEMENT' | translate}}
 			input.hidden(type="file", file-select, get-file="getFile(file)", id="import-btn")
 			ul.list-group

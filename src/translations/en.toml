@@ -208,6 +208,7 @@
 	LB_CREATION_DATE = "Creation Date"
 	LB_PASSPHRASE = "Enter your passphrase"
 	LB_PASSPHRASE_NOTE = "In order to remember your passphrase please select \"private computer\" checkbox when you sign in to the lavaboom"
+	LB_KEY_NOTE = "Don't see your key? Private key required in order to read emails and view contacts, please import private key"
 	BTN_EXPORT_KEYS = "Export keys"
 	BTN_IMPORT_KEYS = "Import keys"
 	LB_DECRYPTED = "Decrypted"
