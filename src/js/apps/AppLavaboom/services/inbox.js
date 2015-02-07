@@ -28,6 +28,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 			co(function *(){
 				var email = yield self.getEmail(msg.id);
+				var thread = yield self.getThreadById(email.threadId);
 			});
 
 		});
@@ -170,7 +171,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.getEmail = (emailId) => co(function *(){
 		var r = yield apiProxy(['emails', 'get'], emailId);
 
-		return r.body.email;
+		return r.body.email ? new Email(r.body.email) : null;
 	});
 
 	this.requestList = (labelName) => {

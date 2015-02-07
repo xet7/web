@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlDetails', function($scope, $state, user, signUp) {
+angular.module(primaryApplicationName).controller('CtrlDetails', function($scope, $state, co, user, signUp) {
 	if (!signUp.tokenSignup || !signUp.plan)
 		$state.go('invite');
 
@@ -16,9 +16,9 @@ angular.module(primaryApplicationName).controller('CtrlDetails', function($scope
 		$scope.form.displayName = firstName || lastName ? autoDisplayName : $scope.form.displayName;
 	});
 
-	$scope.requestDetailsUpdate = () => {
+	$scope.requestDetailsUpdate = () => co(function *(){
 		signUp.details = $scope.form;
 
-		$state.go('choosePasswordIntro');
-	};
+		yield $state.go('choosePasswordIntro');
+	});
 });

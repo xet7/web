@@ -1,4 +1,4 @@
-form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-submit="__form.$valid && requestSecure()", novalidate)
+form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-submit="__form.$valid && requestSecure()", novalidate, ng-autodisable)
 	h1 {{'LOGIN.SECURE_USERNAME.TITLE' | translate}}
 
 	div.alert.alert-danger(ng-show="currentErrorMessage", ng-bind="currentErrorMessage")
@@ -24,4 +24,4 @@ form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-subm
 		label(for='check1') {{'LOGIN.SECURE_USERNAME.LB_NEWS' | translate}}
 
 	footer
-		button.btn.btn-block.btn-lg.btn-primary(type="submit", ng-disabled="isProcessing") {{'LOGIN.SECURE_USERNAME.BTN_SECURE' | translate}}
+		button.btn.btn-block.btn-lg.btn-primary(type="submit") {{'LOGIN.SECURE_USERNAME.BTN_SECURE' | translate}}
