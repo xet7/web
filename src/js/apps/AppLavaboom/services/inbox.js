@@ -120,13 +120,13 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		return yield apiProxy(['threads', 'update'], threadId, {labels: _.union(thread.labels, [labelId])});
 	}));
 
-	this.getEmailsByThreadId = (threadId, decodeChan) => emailsListCache.call(
-		(threadId, decodeChan) => co(function *() {
+	this.getEmailsByThreadId = (threadId) => emailsListCache.call(
+		(threadId) => co(function *() {
 			var emails = (yield apiProxy(['emails', 'list'], {thread: threadId})).body.emails;
 
 			return yield (emails ? emails : []).map(e => Email.fromEnvelope(e));
 		}),
-		[threadId, decodeChan]
+		[threadId]
 	);
 
 	this.getLabels = (classes = {}) => co(function *() {
@@ -141,7 +141,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		}, {});
 	});
 
-	this.initialize = (decodeChan) => co(function *(){
+	this.initialize = () => co(function *(){
 		var labelsClasses = {
 			'Drafts': 'draft',
 			'Spam': 'ban',
@@ -159,7 +159,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 
 		$rootScope.$broadcast('inbox-labels', self.labels);
 
-		yield self.requestList('Inbox', decodeChan);
+		yield self.requestList('Inbox');
 	});
 
 	this.uploadAttachment = (envelope) => co(function *(){
