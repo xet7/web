@@ -1,6 +1,6 @@
 var chan = require('chan');
 
-angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, $timeout, co, apiProxy, LavaboomAPI, crypto, contacts, Cache, Email, Thread, Label) {
+angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, $timeout, consts, co, apiProxy, LavaboomAPI, crypto, contacts, Cache, Email, Thread, Label) {
 	var self = this;
 
 	this.offset = 0;
@@ -15,9 +15,10 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.threadsList = [];
 
 	var defaultCacheOptions = {
-		ttl: 60 * 1000
+		ttl: consts.INBOX_THREADS_CACHE_TTL
 	};
 	var cacheOptions = angular.extend({}, defaultCacheOptions, {
+		ttl: consts.INBOX_EMAILS_CACHE_TTL,
 		isInvalidateWholeCache: true
 	});
 	var threadsCaches = [];
