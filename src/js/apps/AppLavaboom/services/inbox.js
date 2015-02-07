@@ -96,6 +96,8 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		var spamLabelId = self.labelsByName.Spam.id;
 		var draftsLabelId = self.labelsByName.Drafts.id;
 
+		threadsCaches[self.labelName].invalidateAll();
+
 		var r;
 		if (thread.labels.indexOf(trashLabelId) > -1 || thread.labels.indexOf(spamLabelId) > -1 || thread.labels.indexOf(draftsLabelId) > -1)
 			r = yield apiProxy(['threads', 'delete'], threadId);
@@ -111,6 +113,11 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		var currentLabelName = self.labelName;
 
 		var labelId = self.labelsByName[labelName].id;
+		var thread = self.threads[threadId];
+
+		for(let c in threadsCaches)
+			threadsCaches[c].invalidateAll();
+
 		var r =  yield apiProxy(['threads', 'update'], threadId, {labels: [labelId]});
 
 		if (labelName != currentLabelName)
@@ -122,6 +129,8 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.requestAddLabel = (threadId, labelName) => performsThreadsOperation(co(function *() {
 		var labelId = self.labelsByName[labelName].id;
 		var thread = self.threads[threadId];
+
+		threadsCaches[labelName].invalidateAll();
 
 		return yield apiProxy(['threads', 'update'], threadId, {labels: _.union(thread.labels, [labelId])});
 	}));
