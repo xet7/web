@@ -5,7 +5,7 @@ div#left-panel.ng-cloak
 				img(src="img/Lavaboom-logo-full.svg")
 		ul.list-unstyled
 			li.compose
-				a(ui-sref-active="active", ng-click="showPopup('compose')")
+				a(ng-click="showPopup('compose')")
 					span.icon-compose
 					span.action {{'MAIN.NAV.LB_COMPOSE' | translate}}
 			li(ui-sref-active="active", ng-repeat="(name, label) in labelsByName track by label.id")

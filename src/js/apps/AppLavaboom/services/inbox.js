@@ -151,6 +151,14 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		yield self.requestList('Inbox', decodeChan);
 	});
 
+	this.uploadAttachment = (envelope) => co(function *(){
+		return yield apiProxy(['attachments', 'create'], envelope);
+	});
+
+	this.deleteAttachment = (attachmentId) => co(function *(){
+		return yield apiProxy(['attachments', 'delete'], attachmentId);
+	});
+
 	this.requestList = (labelName, decodeChan = null) => {
 		if (self.labelName != labelName) {
 			self.offset = 0;
@@ -170,7 +178,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		}));
 	};
 
-	this.send = (to, cc, bcc, subject, body, thread_id = null) => co(function * () {
+	this.send = (to, cc, bcc, subject, body, attachments, thread_id = null) => co(function * () {
 		var res = yield apiProxy(['keys', 'get'], to);
 		var publicKey = res.body.key;
 		var encryptedMessage = yield crypto.encodeWithKey(body, publicKey.key);
@@ -182,6 +190,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			subject: subject,
 			body: encryptedMessage,
 			pgp_fingerprints: [publicKey.id],
+			attachments: attachments,
 			thread_id: thread_id
 		});
 	});

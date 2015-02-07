@@ -1,9 +1,107 @@
-angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateParams, co, user, contacts, inbox, router) {
+angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateParams, consts, co, user, contacts, inbox, router, Attachment) {
 	$scope.isXCC = false;
 
 	var threadId = $stateParams.threadId;
 
-	console.log('Compose wow, thread id: ', threadId);
+	$scope.attachments = [];
+
+	var processAttachment = (attachmentStatus) => co(function *(){
+		attachmentStatus.status = 'reading';
+		attachmentStatus.isCancelled = false;
+
+		try {
+			yield attachmentStatus.attachment.read();
+		} catch (err) {
+			attachmentStatus.status = 'cannot read';
+			throw err;
+		} finally {
+			if (attachmentStatus.isCancelled)
+				throw new Error('cancelled');
+		}
+
+		console.log('dropzone added file', attachmentStatus);
+
+		var envelope;
+		attachmentStatus.status = 'encrypting';
+		try {
+			envelope = yield Attachment.toEnvelope(attachmentStatus.attachment);
+		} catch (err) {
+			attachmentStatus.status = 'cannot encrypt';
+			throw err;
+		} finally {
+			if (attachmentStatus.isCancelled)
+				throw new Error('cancelled');
+		}
+
+		var r;
+		attachmentStatus.status = 'uploading';
+		try {
+			r = yield inbox.uploadAttachment(envelope);
+			attachmentStatus.id = r.body.attachment.id;
+			attachmentStatus.status = 'uploaded!';
+		} catch (err) {
+			attachmentStatus.status = 'cannot upload';
+			throw err;
+		} finally {
+			if (attachmentStatus.isCancelled)
+				throw new Error('cancelled');
+		}
+	});
+
+	var deleteAttachment = (attachmentStatus, index) => co(function *(){
+		attachmentStatus.isCancelled = true;
+
+		try {
+			yield attachmentStatus.processingPromise;
+		} catch (err){
+			if (err.message != 'cancelled')
+				throw err;
+		}
+
+		if (attachmentStatus.id)
+			try {
+				yield inbox.deleteAttachment(attachmentStatus.id);
+			} catch (err) {
+				attachmentStatus.status = 'cannot delete';
+				throw err;
+			}
+
+		$scope.attachments.splice(index, 1);
+	});
+
+	$scope.onFileDrop = (file, action) => {
+		var attachmentStatus = {
+			attachment: new Attachment(file)
+		};
+		attachmentStatus.processingPromise = processAttachment(attachmentStatus);
+		$scope.attachments.push(attachmentStatus);
+	};
+
+	$scope.deleteAttachment = (attachmentStatus, index) => deleteAttachment(attachmentStatus, index);
+
+	$scope.send = () => co(function *(){
+		console.log('waiting for uploads to complete...');
+
+		yield $scope.attachments.map(a => a.processingPromise);
+
+		console.log('uploads completed...');
+
+		console.log($scope.form);
+
+		yield inbox.send(
+			$scope.form.selected.to.map(e => e.email),
+			$scope.form.selected.cc.map(e => e.email),
+			$scope.form.selected.bcc.map(e => e.email),
+			$scope.form.subject,
+			$scope.form.body,
+			$scope.attachments.map(a => a.id),
+			threadId
+		);
+
+		router.hidePopup();
+	});
+
+
 
 	$scope.$bind('contacts-changed', () => {
 		$scope.people = contacts.people;
@@ -53,28 +151,19 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateP
 	$scope.clearCC = () => $scope.form.selected.cc = [];
 	$scope.clearBCC = () => $scope.form.selected.bcc = [];
 
-	$scope.send = () => {
-		inbox.send(
-			$scope.form.selected.to.map(e => e.email),
-			$scope.form.selected.cc.map(e => e.email),
-			$scope.form.selected.bcc.map(e => e.email),
-			$scope.form.subject,
-			$scope.form.body,
-			threadId
-		)
-			.then(() => {
-				router.hidePopup();
-			})
-			.catch(err => {
-
-			});
-	};
-
 	$scope.tagTransform = function (newTag) {
-		return  {
-			name: newTag,
-			email: newTag.toLowerCase() + '@email.com',
-			sec: 'unknown'
+		var p = newTag.split('@');
+		if (p.length > 1)
+			return {
+				name: p[0].trim(),
+				email: `${p[0].trim()}@${p[1].trim()}`,
+				sec: 1
+			};
+
+		return {
+			name: newTag.trim(),
+			email: `${newTag.trim()}@${consts.ROOT_DOMAIN}`,
+			sec: 1
 		};
 	};
 
