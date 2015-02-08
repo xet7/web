@@ -90,13 +90,9 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 			});
 	};
 
-	if ($scope.isInitialized) {
+	$rootScope.whenInitialized(() => {
 		requestList();
-	}
-	else
-		$rootScope.$on('initialization-completed', () => {
-			requestList();
-		});
+	});
 
 	$scope.$watch('selectedTid', () => {
 		$rootScope.$broadcast('inbox-selection-changed', $scope.selectedTid);

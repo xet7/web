@@ -18,12 +18,10 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 			translationsCh(true);
 	});
 
-	$scope.isInitialized = false;
-
 	$scope.initializeApplication = () => co(function *(){
 		console.log('main app: processing $scope.initializeApplication()');
 		try {
-			if (!$scope.isInitialized)
+			if (!$rootScope.isInitialized)
 				yield translationsCh;
 
 			loader.incProgress(translations.LB_INITIALIZING_I18N, 1);
@@ -49,7 +47,7 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 			if ($state.current.name == 'empty')
 				yield $state.go('main.label', {labelName: 'Inbox'}, {reload: true});
 
-			$scope.isInitialized = true;
+			$rootScope.isInitialized = true;
 			return {lbDone: translations.LB_SUCCESS};
 		} catch (error) {
 			throw {message: translations.LB_INITIALIZATION_FAILED, error: error};
