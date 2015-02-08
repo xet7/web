@@ -17,9 +17,12 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 
 		console.log('$scope.selectedTid', $scope.selectedTid);
 
-		if ($scope.selectedTid !== null && $scope.threadsList.length > 0) {
-			selectedIndex = Math.min(Math.max(selectedIndex, 0), $scope.threadsList.length - 1);
-			$scope.selectedTid = $scope.threadsList[selectedIndex].id;
+		if ($scope.selectedTid !== null) {
+			if ($scope.threadsList.length > 0) {
+				selectedIndex = Math.min(Math.max(selectedIndex, 0), $scope.threadsList.length - 1);
+				$scope.selectedTid = $scope.threadsList[selectedIndex].id;
+			} else
+				$scope.selectedTid = null;
 		}
 
 		$scope.isLoading = false;
