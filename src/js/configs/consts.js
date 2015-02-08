@@ -1,5 +1,5 @@
 angular.module(primaryApplicationName).constant('consts', {
-	ROOT_DOMAIN: process.env.TLD ? process.env.TLD : 'lavaboom.co',
+	ROOT_DOMAIN: process.env.TLD ? process.env.TLD : 'lavaboom.io',
 	DEFAULT_KEY_LENGTH: 2048,
 	ESTIMATED_KEY_GENERATION_TIME_SECONDS: 24,
 	INBOX_REDIRECT_DELAY: 1000,
