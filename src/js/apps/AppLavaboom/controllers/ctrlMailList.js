@@ -15,8 +15,6 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 		$scope.threads = angular.copy(inbox.threads);
 		$scope.threadsList = angular.copy(inbox.threadsList);
 
-		console.log('$scope.selectedTid', $scope.selectedTid);
-
 		if ($scope.selectedTid !== null) {
 			if ($scope.threadsList.length > 0) {
 				selectedIndex = Math.min(Math.max(selectedIndex, 0), $scope.threadsList.length - 1);
