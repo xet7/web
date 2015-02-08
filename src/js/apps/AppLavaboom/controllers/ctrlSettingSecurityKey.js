@@ -19,7 +19,7 @@ angular.module(primaryApplicationName).controller('CtrlSettingsSecurityKey', fun
 
 				$scope.key.decryptIsSuccess = r;
 				$scope.key.decryptTime = new Date();
-			}, consts.AUTOSAVE_TIMEOUT);
+			}, consts.AUTO_SAVE_TIMEOUT);
 		}
 	});
 });

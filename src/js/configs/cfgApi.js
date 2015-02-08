@@ -1,3 +1,3 @@
-angular.module(primaryApplicationName).config(function(LavaboomAPIProvider){
-    LavaboomAPIProvider.setURL(process.env.API_URI ? process.env.API_URI : 'https://api.lavaboom.io');
+angular.module(primaryApplicationName).config(function(LavaboomAPIProvider, consts){
+    LavaboomAPIProvider.setURL(consts.API_URI);
 });
