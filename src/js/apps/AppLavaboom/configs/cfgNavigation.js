@@ -92,7 +92,12 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 
 	var popupStates = {
 		'compose': function () {
-			this.url =  '/compose/:threadId';
+			this.url =  '/compose/:threadId/:to';
+
+			this.params = {
+				threadId: {value: null},
+				to: {value: null}
+			};
 
 			// @ngInject
 			this.onEnter = ($state, $stateParams, router) => {

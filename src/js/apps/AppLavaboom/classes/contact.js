@@ -4,6 +4,10 @@ angular.module(primaryApplicationName).factory('Contact', function(co, user, cry
 			opt.isSecured = false;
 		angular.extend(this, opt);
 		this.sec = opt.isSecured ? 1 : 0;
+
+		if (!this.name) {
+			this.name = this.email.split('@')[0].trim();
+		}
 	};
 
 	var secureFields = ['email', 'phone', 'url', 'notes', 'isSecured'];

@@ -1,7 +1,8 @@
-angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateParams, consts, co, user, contacts, inbox, router, Attachment) {
+angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateParams, consts, co, user, contacts, inbox, router, Attachment, Contact) {
 	$scope.isXCC = false;
 
 	var threadId = $stateParams.threadId;
+	var toEmail = $stateParams.to;
 
 	$scope.attachments = [];
 
@@ -104,7 +105,9 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateP
 
 
 	$scope.$bind('contacts-changed', () => {
-		$scope.people = contacts.people;
+		var toEmailContact = toEmail ? new Contact({email: toEmail}) : null;
+
+		$scope.people = contacts.people.concat(toEmailContact ? [toEmailContact] : []);
 
 		var bindUserSignature = () => {
 			if (user.settings.isSignatureEnabled && user.settings.signatureHtml)
@@ -134,18 +137,20 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateP
 			$scope.form = {
 				person: {},
 				selected: {
-					to: [contacts.myself],
+					to: toEmailContact ? [toEmailContact] : [contacts.myself],
 					cc: [],
 					bcc: [],
 					from: contacts.myself
 				},
 				fromEmails: [contacts.myself],
 				subject: 'Test subject',
-				body: '<p>Dear Orwell</p><p>Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Sed porttitor lectus nibh. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec sollicitudin molestie malesuada. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec rutrum congue leo eget malesuada. Sed porttitor lectus nibh. Curabitur aliquet quam id dui posuere blandit. Nulla porttitor accumsan tincidunt.</p><blockquote><p>See, there never was actually any spoon. It was just lying around the production set.</p></blockquote>'
+				body: '<p>Dear Orwell</p><p>Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Sed porttitor lectus nibh. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec sollicitudin molestie malesuada. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec rutrum congue leo eget malesuada. Sed porttitor lectus nibh. Curabitur aliquet quam id dui posuere blandit. Nulla porttitor accumsan tincidunt.</p><blockquote><p>See, there never was actually any spoon. It was just lying around the production set.</p></blockquote><a href="mailto:aerials@soad.com">test mailto link</a>'
 			};
 
 			bindUserSignature();
 		}
+
+		console.log('$scope.form', $scope.form);
 	});
 
 	$scope.clearTo = () => $scope.form.selected.to = [];
