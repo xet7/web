@@ -14,13 +14,13 @@ div#compose-wrapper
 				.cell.label
 					label {{'MAIN.COMPOSE.LB_TO' | translate}}:
 				.cell.fields
-					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="form.selected.to", theme="bootstrap", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}")
+					ui-select(multiple="", tagging="tagTransform", tagging-tokens="tagginTokens", ng-model="form.selected.to", theme="bootstrap", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}")
 						ui-select-match(placeholder="{{'MAIN.COMPOSE.PLC_SELECT_PERSON' | translate}}", ng-class="$item.name")
 							| {{$item.name}} &#60;{{$item.email}}&#62;
 							span(class="icon-lock sec-{{$item.sec}}")
 						ui-select-choices(repeat="person in people | propsFilter: {name: $select.search, email: $select.search}")
-							div(ng-if="person.isTag", ng-bind-html="person.name + ' ' + $select.taggingLabel | highlight: $select.search")
-							div(ng-if="!person.isTag", ng-bind-html="person.name| highlight: $select.search")
+							div(ng-show="person.isTag", ng-bind-html="person.name + ' ' + $select.taggingLabel | highlight: $select.search")
+							div(ng-show="!person.isTag", ng-bind-html="person.name| highlight: $select.search")
 							small
 								| {{'MAIN.COMPOSE.LB_EMAIL' | translate}}: {{person.email}}
 								span(class="icon-lock sec-{{person.sec}}")
@@ -29,13 +29,13 @@ div#compose-wrapper
 				.cell.label
 					label {{'MAIN.COMPOSE.LB_CC' | translate}}:
 				.cell.fields
-					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="form.selected.cc", theme="bootstrap", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}")
+					ui-select(multiple="", tagging="tagTransform", tagging-tokens="taggingTokens", ng-model="form.selected.cc", theme="bootstrap", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}")
 						ui-select-match(placeholder="{{'MAIN.COMPOSE.PLC_SELECT_PERSON' | translate}}", ng-class="$item.name")
 							| {{$item.name}} &#60;{{$item.email}}&#62;
 							span(class="icon-lock sec-{{$item.sec}}")
 						ui-select-choices(repeat="person in people | propsFilter: {name: $select.search, email: $select.search}")
-							div(ng-if="person.isTag", ng-bind-html="person.name + ' ' + $select.taggingLabel | highlight: $select.search")
-							div(ng-if="!person.isTag", ng-bind-html="person.name| highlight: $select.search")
+							div(ng-show="person.isTag", ng-bind-html="person.name + ' ' + $select.taggingLabel | highlight: $select.search")
+							div(ng-show="!person.isTag", ng-bind-html="person.name| highlight: $select.search")
 							small
 								| {{'MAIN.COMPOSE.LB_EMAIL' | translate}}: {{person.email}}
 								span(class="icon-lock sec-{{person.sec}}")
@@ -44,13 +44,13 @@ div#compose-wrapper
 				.cell.label
 					label {{'MAIN.COMPOSE.LB_BCC' | translate}}:
 				.cell.fields
-					ui-select(multiple="", tagging="tagTransform", tagging-tokens="SPACE|,|/", ng-model="from.selected.bcc", theme="bootstrap", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}")
+					ui-select(multiple="", tagging="tagTransform", tagging-tokens="taggingTokens", ng-model="from.selected.bcc", theme="bootstrap", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}")
 						ui-select-match(placeholder="{{'MAIN.COMPOSE.PLC_SELECT_PERSON' | translate}}", ng-class="$item.name")
 							| {{$item.name}} &#60;{{$item.email}}&#62;
 							span(class="icon-lock sec-{{$item.sec}}")
 						ui-select-choices(repeat="person in people | propsFilter: {name: $select.search, email: $select.search}")
-							div(ng-if="person.isTag", ng-bind-html="person.name + ' ' + $select.taggingLabel | highlight: $select.search")
-							div(ng-if="!person.isTag", ng-bind-html="person.name| highlight: $select.search")
+							div(ng-show="person.isTag", ng-bind-html="person.name + ' ' + $select.taggingLabel | highlight: $select.search")
+							div(ng-show="!person.isTag", ng-bind-html="person.name| highlight: $select.search")
 							small
 								| {{'MAIN.COMPOSE.LB_EMAIL' | translate}}: {{person.email}}
 								span(class="icon-lock sec-{{person.sec}}")
