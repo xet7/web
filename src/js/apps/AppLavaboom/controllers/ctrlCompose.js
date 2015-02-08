@@ -71,6 +71,7 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateP
 	});
 
 	$scope.onFileDrop = (file, action) => {
+		if(_.startsWith(file.type, 'image')) return;
 		var attachmentStatus = {
 			attachment: new Attachment(file)
 		};
