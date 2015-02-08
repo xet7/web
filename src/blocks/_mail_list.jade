@@ -6,11 +6,12 @@
 		.lava-icon-wrapper.col-xs-8(ng-show="selectedTid !== null")
 			a(href="#")
 				span.icon-arrow-down
-			a(href="#", ng-click="starThread()")
-				span.icon-star
-			a(href="#", ng-click="spamThread()", ng-show="labelName != 'Spam'")
+			a(href="#", ng-click="starThread(selectedTid)")
+				span.icon-star(ng-show="selectedTid !== null && threads[selectedTid].isLabel('Starred')")
+				span.icon-star-outline(ng-show="selectedTid !== null && !threads[selectedTid].isLabel('Starred')")
+			a(href="#", ng-click="spamThread(selectedTid)", ng-show="labelName != 'Spam'")
 				span.icon-ban
-			a(href="#", ng-click="deleteThread()")
+			a(href="#", ng-click="deleteThread(selectedTid)")
 				span.icon-trash
 	.mail-list-group
 		div.pane-status(ng-show="isLoading")
@@ -21,9 +22,10 @@
 				.mail-list-item(class="{{thread.active}}", href="#")
 					.row.no-gutter
 						.col-xs-3.clear.buttons
-							a(href="#")
-								span.icon-star
-							a(ui-sref=".popup.compose({threadId: tid})")
+							a(href="#", ng-click="starThread(thread.id)")
+								span.icon-star(ng-show="thread.isLabel('Starred')")
+								span.icon-star-outline(ng-show="!thread.isLabel('Starred')")
+							a(ui-sref=".popup.compose({threadId: thread.id})")
 								span.icon-reply
 							a(href="#")
 								span.icon-arrow-right

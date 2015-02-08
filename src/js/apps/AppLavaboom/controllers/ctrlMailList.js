@@ -63,16 +63,16 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 		$scope.selectedTid = tid;
 	};
 
-	$scope.spamThread = () => {
-		inbox.requestSetLabel($scope.selectedTid, 'Spam');
+	$scope.spamThread = (tid) => {
+		inbox.requestSetLabel(tid, 'Spam');
 	};
 
-	$scope.deleteThread = () => {
-		inbox.requestDelete($scope.selectedTid);
+	$scope.deleteThread = (tid) => {
+		inbox.requestDelete(tid);
 	};
 
-	$scope.starThread = () => {
-		inbox.requestAddLabel($scope.selectedTid, 'Starred');
+	$scope.starThread = (tid) => {
+		inbox.requestSwitchLabel(tid, 'Starred');
 	};
 
 	var requestList = () => {

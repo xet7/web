@@ -10,7 +10,8 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.totalEmailsCount = 0;
 
 	this.labelName = '';
-	this.labelsByName = [];
+	this.labelsById = {};
+	this.labelsByName = {};
 	this.threads = {};
 	this.threadsList = [];
 
@@ -126,13 +127,38 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		return r;
 	}));
 
+	this.requestSwitchLabel = (threadId, labelName) => performsThreadsOperation(co(function *() {
+		var thread = self.threads[threadId];
+
+		if (thread.isLabel(labelName)) {
+			console.log('label found - remove');
+
+			threadsCaches[labelName].invalidateAll();
+
+			var newLabels = thread.removeLabel(labelName);
+			var r = yield apiProxy(['threads', 'update'], threadId, {labels: newLabels});
+
+			if (self.labelName == 'Starred')
+				deleteThreadLocally(threadId);
+
+			thread.labels = newLabels;
+			return r;
+		} else {
+			console.log('label not found - add');
+			return yield self.requestAddLabel(threadId, labelName);
+		}
+	}));
+
 	this.requestAddLabel = (threadId, labelName) => performsThreadsOperation(co(function *() {
-		var labelId = self.labelsByName[labelName].id;
 		var thread = self.threads[threadId];
 
 		threadsCaches[labelName].invalidateAll();
 
-		return yield apiProxy(['threads', 'update'], threadId, {labels: _.union(thread.labels, [labelId])});
+		var newLabels = thread.addLabel(labelName);
+		var r = yield apiProxy(['threads', 'update'], threadId, {labels: newLabels});
+
+		thread.labels = newLabels;
+		return r;
 	}));
 
 	this.getEmailsByThreadId = (threadId) => emailsListCache.call(
@@ -144,28 +170,29 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		[threadId]
 	);
 
-	this.getLabels = (classes = {}) => co(function *() {
+	this.getLabels = () => co(function *() {
 		var labels = (yield apiProxy(['labels', 'list'])).body.labels;
 
 		threadsCaches = [];
 		return labels.reduce((a, label) => {
 			threadsCaches[label.name] = new Cache(cacheOptions);
-			a[label.name] = new Label(label);
+			a.byName[label.name] = a.byId[label.id] = new Label(label);
 			return a;
-		}, {});
+		}, {byName: {}, byId: {}});
 	});
 
 	this.initialize = () => co(function *(){
 		var labels = yield self.getLabels();
 
-		if (!labels.Drafts) {
+		if (!labels.byName.Drafts) {
 			yield apiProxy(['labels', 'create'], {name: 'Drafts'});
 			labels = yield self.getLabels();
 		}
 
-		self.labelsByName = labels;
+		self.labelsByName = labels.byName;
+		self.labelsById = labels.byId;
 
-		$rootScope.$broadcast('inbox-labels', self.labels);
+		$rootScope.$broadcast('inbox-labels');
 
 		yield self.requestList('Inbox');
 	});
