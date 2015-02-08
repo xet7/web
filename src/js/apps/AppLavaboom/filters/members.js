@@ -15,7 +15,7 @@ angular.module(primaryApplicationName).filter('members', ($rootScope, $translate
 			})
 			: [];
 
-		var membersString = members.slice(0, 2).join(',');
+		var membersString = members.slice(0, 2).join(', ');
 		if (members.length == 3)
 			membersString += ' ' + translations.LB_AND_ONE_OTHER;
 		else if (members.length == 4)

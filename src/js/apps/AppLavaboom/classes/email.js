@@ -8,7 +8,10 @@ angular.module(primaryApplicationName).factory('Email', function(co, contacts, c
 		this.subject = opt.name;
 		this.date = opt.date_created;
 		this.from = opt.from;
-		this.fromName = contacts.getContactByEmail(opt.from).name;
+
+		var fromContact = contacts.getContactByEmail(opt.from);
+
+		this.fromName = fromContact ? fromContact.name : opt.from;
 		this.preview = opt.preview;
 		this.body = opt.body;
 		this.attachments = opt.attachments;

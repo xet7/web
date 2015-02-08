@@ -31,7 +31,7 @@ angular.module(primaryApplicationName).controller('CtrlMailList', function($root
 	$scope.isDisabled = true;
 	$scope.selectedTid = null;
 
-	$document.bind("keydown", (event) => $rootScope.$apply(() => {
+	$document.bind('keydown', (event) => $rootScope.$apply(() => {
 		var delta = 0;
 		if (event.keyIdentifier == 'Up')
 			delta = -1;
