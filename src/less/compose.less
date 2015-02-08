@@ -1,7 +1,5 @@
 #compose-wrapper{
-	// margin: 0;
-	// height: 90%;
-	// .pos-rel();
+
 }
 #compose{
 	
@@ -14,9 +12,8 @@
 		background-color: @lava-compose-header;
 		color: @lava-compose-header-fg !important;
 		.table-list{
-			&:not(:last-child){
-				border-bottom: 1px solid @lava-gray-lighter;
-			}
+			border-bottom: 1px solid @lava-gray-lighter;
+			
 			> *{
 				vertical-align: middle;
 			}
@@ -46,9 +43,28 @@
 	.dropdown-control.cell{
 		width: 100%;
 	}
+
 	.ta-toolbar{
-		display: none;
+		text-align: center;
+		background-color: @lava-compose-header;
+		&.btn-toolbar{
+			margin: 0;
+			padding: 4px 0;
+		}
+		.btn-group{
+			display: inline-block;
+			float: none;
+			i{
+				line-height: inherit;
+				color: @lava-compose-header-fg !important;
+			}
+			.btn{
+				border: 0;
+				background: transparent none;
+			}
+		}
 	}
+
 
 	input{
 		background: transparent;
