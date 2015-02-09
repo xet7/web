@@ -1,13 +1,23 @@
-angular.module(primaryApplicationName).controller('CtrlThreadList', function($rootScope, $document, $scope, $timeout, $interval, $stateParams, user, inbox, consts) {
+angular.module(primaryApplicationName).controller('CtrlThreadList', function($rootScope, $document, $scope, $state, $timeout, $interval, $stateParams, user, inbox, consts) {
 	$scope.labelName = $stateParams.labelName;
 	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
+	$scope.$state = $state;
 
-	console.log('mail list reload', $scope.selectedTid);
+	console.log('CtrlThreadList loaded', $scope.selectedTid);
 
 	$scope.searchText = '';
 	$scope.isLoading = false;
 	$scope.isDisabled = true;
 	$scope.isInitialLoad = true;
+
+	$scope.selectThread = (event, tid) => {
+		$state.go('main.inbox.label', {labelName: $scope.labelName, threadId: tid});
+	};
+
+	$scope.replyThread = (event, tid) => {
+		event.stopPropagation(); // god damn
+		$scope.showPopup('compose', {replyThreadId: tid});
+	};
 
 	$scope.searchFilter = (thread) => {
 		var searchText = $scope.searchText.toLowerCase();
@@ -27,7 +37,7 @@ angular.module(primaryApplicationName).controller('CtrlThreadList', function($ro
 		$rootScope.$on('$stateChangeStart', (e, toState, toParams) => {
 			if (toState.name == 'main.inbox.label' && toParams.threadId)
 				$scope.selectedTid = toParams.threadId;
-			console.log('mail list reload $stateChangeStart', $scope.selectedTid);
+			console.log('CtrlThreadList $stateChangeStart', $scope.selectedTid);
 		});
 
 		$document.bind('keydown', (event) => $rootScope.$apply(() => {

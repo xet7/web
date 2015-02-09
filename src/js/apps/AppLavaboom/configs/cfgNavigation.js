@@ -41,10 +41,6 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 		'main.inbox.label': {
 			url: '/label/:labelName?threadId',
 
-			params : {
-				threadId: {value: null}
-			},
-
 			views: {
 				'threads@main.inbox': {
 					templateUrl: 'partials/inbox/threads.html',
@@ -103,23 +99,14 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 
 	var PopupAbstractState = function () {
 		this.abstract = true;
-		this.data = {
-			settings: {
-			}
-		};
 	};
 
 	var popupStates = {
 		'compose': function () {
-			this.url =  '/compose/:threadId/:to';
-
-			this.params = {
-				threadId: {value: null},
-				to: {value: null}
-			};
+			this.url =  '/compose?replyThreadId&to';
 
 			// @ngInject
-			this.onEnter = ($state, $stateParams, router) => {
+			this.onEnter = (router) => {
 				router.createPopup({
 					templateUrl: 'partials/compose.html',
 					controller: 'CtrlCompose',
@@ -142,10 +129,13 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 
 	for(let stateName in primaryStates) {
 		declareState(stateName, primaryStates[stateName]);
-		declareState(`${stateName}.popup`, new PopupAbstractState());
-		for(let popupStateName in popupStates)
-			if (stateName.indexOf('main.') === 0) {
-				declareState(`${stateName}.popup.${popupStateName}`, new popupStates[popupStateName]());
-			}
+
+		if (!primaryStates[stateName].abstract) {
+			declareState(`${stateName}.popup`, new PopupAbstractState());
+			for (let popupStateName in popupStates)
+				if (stateName.indexOf('main.') === 0) {
+					declareState(`${stateName}.popup.${popupStateName}`, new popupStates[popupStateName]());
+				}
+		}
 	}
 });

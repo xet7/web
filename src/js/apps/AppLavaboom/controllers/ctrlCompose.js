@@ -1,12 +1,12 @@
 angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateParams, consts, co, user, contacts, inbox, router, Attachment, Contact) {
 	$scope.isXCC = false;
 
-	var threadId = $stateParams.threadId;
+	var threadId = $stateParams.replyThreadId;
 	var toEmail = $stateParams.to;
 
 	$scope.attachments = [];
 
-	var processAttachment = (attachmentStatus) => co(function *(){
+	var processAttachment = (attachmentStatus) => co(function *() {
 		attachmentStatus.status = 'reading';
 		attachmentStatus.isCancelled = false;
 
@@ -49,12 +49,12 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateP
 		}
 	});
 
-	var deleteAttachment = (attachmentStatus, index) => co(function *(){
+	var deleteAttachment = (attachmentStatus, index) => co(function *() {
 		attachmentStatus.isCancelled = true;
 
 		try {
 			yield attachmentStatus.processingPromise;
-		} catch (err){
+		} catch (err) {
 			if (err.message != 'cancelled')
 				throw err;
 		}
@@ -71,7 +71,7 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateP
 	});
 
 	$scope.onFileDrop = (file, action) => {
-		if(_.startsWith(file.type, 'image')) return;
+		if (_.startsWith(file.type, 'image')) return;
 		var attachmentStatus = {
 			attachment: new Attachment(file)
 		};
@@ -81,7 +81,7 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateP
 
 	$scope.deleteAttachment = (attachmentStatus, index) => deleteAttachment(attachmentStatus, index);
 
-	$scope.send = () => co(function *(){
+	$scope.send = () => co(function *() {
 		console.log('waiting for uploads to complete...');
 
 		yield $scope.attachments.map(a => a.processingPromise);
@@ -104,7 +104,6 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateP
 	});
 
 
-
 	$scope.$bind('contacts-changed', () => {
 		var toEmailContact = toEmail ? new Contact({email: toEmail}) : null;
 
@@ -116,7 +115,7 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateP
 		};
 
 		if (threadId) {
-			co(function *(){
+			co(function *() {
 				var thread = yield inbox.getThreadById(threadId);
 
 				$scope.form = {
