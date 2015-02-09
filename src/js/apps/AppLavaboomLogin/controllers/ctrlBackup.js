@@ -2,8 +2,12 @@ angular.module(primaryApplicationName).controller('CtrlBackup', function($scope,
 	if (!user.isAuthenticated())
 		$state.go('login');
 
+	$scope.form = {
+		isPrivateComputer: false
+	};
+
 	var navigateMainApplication = () => {
-		crypto.options.isPrivateComputer = false;
+		crypto.options.isPrivateComputer = $scope.form.isPrivateComputer;
 		crypto.authenticateDefault(signUp.password);
 
 		loader.resetProgress();
