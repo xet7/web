@@ -34,6 +34,10 @@
 @link-color: @lava;
 @text-muted: @lava-gray-light;
 
+@border-radius-base:        2px;
+@border-radius-large:       3px;
+@border-radius-small:       1px;
+
 //grid system - we're going 24 because we're THAT crazy
 @grid-columns:              24;
 @grid-gutter-width:         20px;
@@ -50,10 +54,6 @@
 
 @light-font-weight: 100;
 @base-font-weight: 300;
-
-@border-radius-base:        3px;
-@border-radius-large:       5px;
-@border-radius-small:       0;
 
 //birds-eye-view
 .z1{
@@ -198,6 +198,10 @@ body{
 	  padding-right:0;
 	  padding-left:0;
 	}
+}
+
+.spacer{
+	border-color: transparent;
 }
 
 .lava-icon-row{
