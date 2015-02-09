@@ -1754,7 +1754,7 @@
 			},
 			"metrics": {
 				"emSize": 1024,
-				"baseline": 17,
+				"baseline": 20,
 				"whitespace": 50
 			},
 			"resetPoint": 58880,
