@@ -6,7 +6,7 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 		console.log('main router otherwise: window.loader.isMainApplication()', window.loader.isMainApplication(), $location);
 		if (!window.loader.isMainApplication())
 			return undefined;
-		return '/label/Inbox/';
+		return '/label/Inbox';
 	});
 
 	var primaryStates = {

@@ -67,11 +67,6 @@ angular.module(primaryApplicationName).controller('CtrlThreadList', function($ro
 		requestList();
 	};
 
-	$scope.choose = (tid) => {
-		console.log('$scope.selectedTid', tid);
-		$scope.selectedTid = tid;
-	};
-
 	$scope.spamThread = (tid) => {
 		inbox.requestSetLabel(tid, 'Spam');
 	};
