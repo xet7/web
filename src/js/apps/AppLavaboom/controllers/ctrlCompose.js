@@ -22,6 +22,12 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateP
 
 		console.log('dropzone added file', attachmentStatus);
 
+		try {
+			attachmentStatus.ext = attachmentStatus.attachment.type.split("/")[0];
+		} catch (err) {
+			attachmentStatus.ext = "file";
+		}
+		
 		var envelope;
 		attachmentStatus.status = 'encrypting';
 		try {
