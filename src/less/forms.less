@@ -58,8 +58,8 @@
 }
 
 form.settings{
-	position: relative;
-	height: 100%;
+	// position: relative;
+	// height: 100%;
 
 	.switch{
 		position: relative;
@@ -73,6 +73,17 @@ form.settings{
 
 	.btn, input, textarea, label{
 		.lava-font();
+		color: @lava-gray;
+		&.btn-danger{
+			color: #FFF;
+		}
+	}
+
+	.btn-icon{
+		.text-left();
+		[class^="icon-"], [class*=" icon-"]{
+			padding-right: .5em;
+		}		
 	}
 
 	[class^="icon-"], [class*=" icon-"]{
@@ -81,41 +92,40 @@ form.settings{
 	}
 
 	.form-wrap{
-		 position: relative;
+		// position: relative;
+		// top: 50%;
+		// transform: translateY(-50%);
+	}
 
-			top: 50%;
-			transform: translateY(-63%);
-
-		 .price-tag {
-			height:0; overflow: visible;
-		 
-			text-align: right;
+	 .price-tag {
+		height:0; overflow: visible;
+	 
+		text-align: right;
+		position: relative;
+		span.text{
+			background: @lava;
 			position: relative;
-			span.text{
-				background: @lava;
-				position: relative;
-				top: 1.5em;
-				.z2();
-				padding: .6em 3em .6em 1em;
-				font-size: 1.1em;
-				right: -10px;
-				color: #FFF;
-				display: inline-block;
-			}
+			top: 1.5em;
+			.z2();
+			padding: .6em 3em .6em 1em;
+			font-size: 1.1em;
+			right: -10px;
+			color: #FFF;
+			display: inline-block;
+		}
 
-			.caret{
-					display: inline-block;
-					width: 0;
-					height: 0;
-					margin: .6em 3em .6em 0;
-					vertical-align: middle;
-				 border-top: 10px solid @lava-dark;
-					border-right: 10px solid transparent;
-					border-left: 0px solid transparent;
-					position: absolute;
-					top: 3.78em;
-					.z1();
-			}
+		.caret{
+				display: inline-block;
+				width: 0;
+				height: 0;
+				margin: .6em 3em .6em 0;
+				vertical-align: middle;
+			 border-top: 10px solid @lava-dark;
+				border-right: 10px solid transparent;
+				border-left: 0px solid transparent;
+				position: absolute;
+				top: 3.78em;
+				.z1();
 		}
 	}
 	.settings-row{
@@ -174,6 +184,10 @@ form.settings{
 				}
 				&.active .icon-star-outline:before{
 					content: "\67";
+					color: @lava;
+				}
+				.icon-lock:before{
+					color: @lava;
 				}
 			}
 		}
