@@ -402,6 +402,12 @@ gulp.task('clean', function () {
 		paths.output + '**/*',
 		paths.cache + '**/*'
 	]);
+	try {
+		fs.mkdirSync(paths.output);
+	} catch (e) { }
+	try {
+		fs.mkdirSync(paths.cache);
+	} catch (e) { }
 });
 
 // Run some unit tests to check key logic
