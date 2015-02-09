@@ -59,16 +59,13 @@
 											span.icon-arrow-down
 				//- h4(ng-show="email.type == 'business'") {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}
 				//- h4(ng-show="email.type == 'private'") {{'MAIN.CONTACTS.TITLE_PRIVATE_EMAIL' | translate}}
-				ul.list-group(ng-show="email.type == 'private'")
-					li.list-group-item
-						button.form-control(type="button")
+				a.btn.btn-lg.btn-default.btn-block.btn-icon(type="button", ng-show="email.type == 'private'")
+							span.icon-plus
+							| add new {{'MAIN.CONTACTS.TITLE_PRIVATE_EMAIL' | translate}}
+				a.btn.btn-lg.btn-default.btn-block.btn-icon(type="button", ng-show="email.type == 'business'")
 							span.icon-plus
 							| add new {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}
-				ul.list-group(ng-show="email.type == 'private'")
-					li.list-group-item
-						button.form-control(type="button")
-							span.icon-plus
-							| add new {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}			
-				button.form-control(type="button", ng-show="email.type == 'private'")
-							span.icon-plus
-							| add new {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}			
+			hr.spacer
+			a.btn.btn-lg.btn-danger.btn-block.btn-icon.text-center(type="button")
+						span.icon-trash
+						| {{'MAIN.CONTACTS.DELETE_CONTACT' | translate}}
