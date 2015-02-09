@@ -2,9 +2,9 @@ angular.module(primaryApplicationName).filter('members', ($rootScope, $translate
 	var translations = {};
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_AND_ONE_OTHER = $translate.instant('LOADER.LB_AND_ONE_OTHER');
-		translations.LB_AND_TWO_OTHERS = $translate.instant('LOADER.LB_AND_TWO_OTHERS');
-		translations.LB_AND_OTHERS = $translate.instant('LOADER.LB_AND_OTHERS');
+		translations.LB_AND_ONE_OTHER = $translate.instant('INBOX.LB_AND_ONE_OTHER');
+		translations.LB_AND_TWO_OTHERS = $translate.instant('INBOX.LB_AND_TWO_OTHERS');
+		translations.LB_AND_OTHERS = $translate.instant('INBOX.LB_AND_OTHERS');
 	});
 
 	return (membersList) => {
