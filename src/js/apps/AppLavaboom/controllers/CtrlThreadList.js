@@ -1,64 +1,56 @@
 angular.module(primaryApplicationName).controller('CtrlThreadList', function($rootScope, $document, $scope, $timeout, $interval, $stateParams, user, inbox, consts) {
 	$scope.labelName = $stateParams.labelName;
+	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
+
+	console.log('mail list reload', $scope.selectedTid);
+
 	$scope.searchText = '';
+	$scope.isLoading = false;
+	$scope.isDisabled = true;
+	$scope.isInitialLoad = true;
 
 	$scope.searchFilter = (thread) => {
 		var searchText = $scope.searchText.toLowerCase();
 		return thread.subject.toLowerCase().indexOf(searchText) > -1 || thread.members.some(m => m.toLowerCase().indexOf(searchText) > -1);
 	};
 
-	$scope.$bind(`inbox-threads[${$scope.labelName}]`, () => {
-		var selectedIndex = $scope.threadsList && $scope.selectedTid !== null
-			? $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid)
-			: -1;
+	$rootScope.whenInitialized(() => {
+		$scope.$bind(`inbox-threads[${$scope.labelName}]`, () => {
+			$scope.threads = angular.copy(inbox.threads);
+			$scope.threadsList = angular.copy(inbox.threadsList);
 
-		$scope.threads = angular.copy(inbox.threads);
-		$scope.threadsList = angular.copy(inbox.threadsList);
+			$scope.isLoading = false;
+			$scope.isDisabled = false;
+			$scope.isInitialLoad = false;
+		});
 
-		if ($scope.selectedTid !== null) {
-			if ($scope.threadsList.length > 0) {
-				selectedIndex = Math.min(Math.max(selectedIndex, 0), $scope.threadsList.length - 1);
-				$scope.selectedTid = $scope.threadsList[selectedIndex].id;
-			} else
-				$scope.selectedTid = null;
-		}
+		$rootScope.$on('$stateChangeStart', (e, toState, toParams) => {
+			if (toState.name == 'main.inbox.label' && toParams.threadId)
+				$scope.selectedTid = toParams.threadId;
+			console.log('mail list reload $stateChangeStart', $scope.selectedTid);
+		});
 
-		$scope.isLoading = false;
-		$scope.isDisabled = false;
-	});
+		$document.bind('keydown', (event) => $rootScope.$apply(() => {
+			var delta = 0;
+			if (event.keyIdentifier == 'Up')
+				delta = -1;
+			else if (event.keyIdentifier == 'Down')
+				delta = +1;
 
-	$scope.isLoading = false;
-	$scope.isDisabled = true;
-	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
+			if (delta) {
+				var selectedIndex = $scope.threadsList && $scope.selectedTid !== null
+					? $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid)
+					: -1;
 
-	console.log('mail list reload', $scope.selectedTid);
+				if ($scope.selectedTid !== null) {
+					selectedIndex = Math.min(Math.max(selectedIndex + delta, 0), $scope.threadsList.length - 1);
+					$scope.selectedTid = $scope.threadsList[selectedIndex].id;
+				}
 
-	$rootScope.$on('$stateChangeStart', (e, toState, toParams) => {
-		if (toState.name == 'main.inbox.label' && toParams.threadId)
-			$scope.selectedTid = toParams.threadId;
-		console.log('mail list reload $stateChangeStart', $scope.selectedTid);
-	});
-
-	$document.bind('keydown', (event) => $rootScope.$apply(() => {
-		var delta = 0;
-		if (event.keyIdentifier == 'Up')
-			delta = -1;
-		else if (event.keyIdentifier == 'Down')
-			delta = +1;
-
-		if (delta) {
-			var selectedIndex = $scope.threadsList && $scope.selectedTid !== null
-				? $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid)
-				: -1;
-
-			if ($scope.selectedTid !== null) {
-				selectedIndex = Math.min(Math.max(selectedIndex + delta, 0), $scope.threadsList.length - 1);
-				$scope.selectedTid = $scope.threadsList[selectedIndex].id;
+				event.preventDefault();
 			}
-
-			event.preventDefault();
-		}
-	}));
+		}));
+	});
 
 	$scope.scroll = () => {
 		if ($scope.isLoading || $scope.isDisabled)
@@ -89,6 +81,8 @@ angular.module(primaryApplicationName).controller('CtrlThreadList', function($ro
 				$scope.isDisabled = e.list.length < 1;
 			})
 			.finally(() => {
+				$scope.isLoading = false;
+				$scope.isDisabled = false;
 				$timeout.cancel(t);
 			});
 	};

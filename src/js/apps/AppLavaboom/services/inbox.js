@@ -227,7 +227,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 				self.offset += e.list.length;
 
 			self.threads = angular.extend(self.threads, e.map);
-			self.threadsList = self.threadsList.concat(e.list);
+			self.threadsList = _.uniq(self.threadsList.concat(e.list), t => t.id);
 
 			return e;
 		}));
