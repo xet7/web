@@ -1,15 +1,15 @@
 div#left-panel.ng-cloak
 	nav#navigation
 		div#brand
-			a(ui-sref="main.label({labelName: 'Inbox'})")
+			a(ui-sref="main.inbox.label({labelName: 'Inbox', threadId: null})")
 				img(src="img/Lavaboom-logo-full.svg")
 		ul.list-unstyled
 			li.compose
 				a(ng-click="showPopup('compose')")
 					span.icon-compose
 					span.action {{'MAIN.NAV.LB_COMPOSE' | translate}}
-			li(ui-sref-active="active", ng-repeat="(name, label) in labelsByName track by label.id")
-				a(ui-sref="main.label({labelName: label.name})")
+			li(ng-class="{ active: $state.includes('main.inbox.label', {labelName: label.name}) }", ng-repeat="(name, label) in labelsByName track by label.id")
+				a(ui-sref="main.inbox.label({labelName: label.name, threadId: null})")
 					span(ng-class="label.iconClass")
 					span.action(ng-bind="label.name")
 					span.badge(ng-bind="label.emailsUnread | unread")

@@ -45,7 +45,7 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 			yield contacts.initialize();
 
 			if ($state.current.name == 'empty')
-				yield $state.go('main.label', {labelName: 'Inbox'}, {reload: true});
+				yield $state.go('main.inbox.label', {labelName: 'Inbox', threadId: null}, {reload: true});
 
 			$rootScope.isInitialized = true;
 			return {lbDone: translations.LB_SUCCESS};

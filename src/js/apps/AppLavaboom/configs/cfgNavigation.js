@@ -6,7 +6,7 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 		console.log('main router otherwise: window.loader.isMainApplication()', window.loader.isMainApplication(), $location);
 		if (!window.loader.isMainApplication())
 			return undefined;
-		return '/label/Inbox';
+		return '/label/Inbox/';
 	});
 
 	var primaryStates = {
@@ -29,11 +29,30 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 			}
 		},
 
-		'main.label': {
-			url: '/label/:labelName',
+		'main.inbox': {
+			abstract: true,
 			views: {
 				'main-view@': {
 					templateUrl: 'partials/inbox.html'
+				}
+			}
+		},
+
+		'main.inbox.label': {
+			url: '/label/:labelName?threadId',
+
+			params : {
+				threadId: {value: null}
+			},
+
+			views: {
+				'threads@main.inbox': {
+					templateUrl: 'partials/inbox/threads.html',
+					controller: 'CtrlThreadList'
+				},
+				'emails@main.inbox': {
+					templateUrl: 'partials/inbox/emails.html',
+					controller: 'CtrlEmailList'
 				}
 			}
 		},
