@@ -73,7 +73,7 @@ angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $root
 		}, null, 4);
 	};
 
-	this.getExportFilename = (backup, userName = 'test') => {
+	this.getExportFilename = (backup, userName) => {
 		var hashPostfix = (new Buffer(openpgp.crypto.hash.md5(backup), 'binary')).toString('hex').substr(0, 8);
 		return `${userName}-${hashPostfix}.json`;
 	};

@@ -59,7 +59,7 @@ angular.module(primaryApplicationName).controller('CtrlSettingsSecurity', functi
 	$scope.exportKeys = () => {
 		var keysBackup = cryptoKeys.exportKeys();
 		var blob = new Blob([keysBackup], {type: "text/json;charset=utf-8"});
-		saveAs(blob, cryptoKeys.getExportFilename(keysBackup));
+		saveAs(blob, cryptoKeys.getExportFilename(keysBackup, user.name));
 	};
 
 	$scope.importKeys = () => {
