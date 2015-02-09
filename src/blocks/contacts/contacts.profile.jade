@@ -1,57 +1,74 @@
-.row.main-panel.ng-cloak(ng-controller="CtrlContactsProfile")
-	form.settings.col-md-12.col-md-offset-6.col-xs-22.col-xs-offset-1
-		h4(ng-bind="details.name")
-		.row
-			.col-md-12.col-xs-24
-				img.thumbnail.img-responsive(src="/img/avatar.svg")
-			.col-md-12.col-xs-24
+.filters.row.no-gutter.lava-icon-row
+.main-view
+	.row.main-panel.ng-cloak(ng-controller="CtrlContactsProfile")
+		form.settings.col-md-12.col-md-offset-6.col-xs-22.col-xs-offset-1
+			h4(ng-bind="details.name")
+			.row
+				.col-md-12.col-xs-24
+					img.thumbnail.img-responsive(src="/img/avatar.svg")
+				.col-md-12.col-xs-24
+					ul.list-group
+						li.list-group-item
+							.text-control.block
+								input.form-control(type="text", placeholder="{{'GLOBAL.PLC_FIRST_NAME' | translate}}", ng-model="details.firstName")
+						li.list-group-item
+							.text-control.block
+								input.form-control(type="text", placeholder="{{'GLOBAL.PLC_LAST_NAME' | translate}}", ng-model="details.lastName")
+						li.list-group-item
+							.text-control.block
+								input.form-control(type="text", placeholder="{{'GLOBAL.PLC_DISPLAY_NAME' | translate}}", ng-model="details.name")
+						li.list-group-item
+							.text-control.block
+								input.form-control(type="text", placeholder="{{'GLOBAL.PLC_COMPANY_NAME' | translate}}", ng-model="details.companyName")
+
+			div(ng-repeat="email in emails track by email.email")
+				h4(ng-show="email.type == 'business'") {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}
+				h4(ng-show="email.type == 'private'") {{'MAIN.CONTACTS.TITLE_PRIVATE_EMAIL' | translate}}
 				ul.list-group
 					li.list-group-item
-						.text-control.block
-							input.form-control(type="text", placeholder="{{'GLOBAL.PLC_FIRST_NAME' | translate}}", ng-model="details.firstName")
-					li.list-group-item
-						.text-control.block
-							input.form-control(type="text", placeholder="{{'GLOBAL.PLC_LAST_NAME' | translate}}", ng-model="details.lastName")
-					li.list-group-item
-						.text-control.block
-							input.form-control(type="text", placeholder="{{'GLOBAL.PLC_DISPLAY_NAME' | translate}}", ng-model="details.name")
-					li.list-group-item
-						.text-control.block
-							input.form-control(type="text", placeholder="{{'GLOBAL.PLC_COMPANY_NAME' | translate}}", ng-model="details.companyName")
-
-		div(ng-repeat="email in emails track by email.email")
-			h4(ng-show="email.type == 'business'") {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}
-			h4(ng-show="email.type == 'private'") {{'MAIN.CONTACTS.TITLE_PRIVATE_EMAIL' | translate}}
-			ul.list-group
-				li.list-group-item
-					div.input-group
-						input.form-control(type="email", ng-model="email.email")
-						div.input-group-btn
-							button.btn.tggl(type="button", ng-model="email.isStar", btn-checkbox="", btn-checkbox-true="1", btn-checkbox-false="0")
-								span.icon-star-outline
-							a.btn
-								span.icon-lock
-				li.list-group-item
-					div
-						div.input-group.with-label
-							label {{'MAIN.CONTACTS.LB_KEY_ID' | translate}}
-							input.form-control(type="text", ng-model="email.key.keyId")
+						div.input-group
+							input.form-control(type="email", ng-model="email.email")
 							div.input-group-btn
-								button.btn.btn-default(ng-click="email.isCollapsed = !email.isCollapsed")
-									span.icon-chevron-down
-					div.child-item(collapse="email.isCollapsed")
-						.text-control
-							label {{'MAIN.CONTACTS.LB_LENGTH' | translate}}
-							input.icon-field.form-control(disabled="", ng-model="email.key.length")
-						.text-control
-							label {{'MAIN.CONTACTS.LB_ALGORITHMS' | translate}}
-							input.icon-field.form-control(disabled="", ng-model="email.key.algos")
-						.text-control
-							label {{'MAIN.CONTACTS.LB_PUBLIC_KEY' | translate}}
-							input.icon-field.form-control(disabled="", ng-model="email.key.fingerprint")
+								button.btn.tggl(type="button", ng-model="email.isStar", btn-checkbox="", btn-checkbox-true="1", btn-checkbox-false="0")
+									span.icon-star-outline
+								a.btn
+									span.icon-lock
+					li.list-group-item
 						div
 							div.input-group.with-label
-								label {{'MAIN.CONTACTS.LB_DOWNLOAD_PUBLIC_KEY' | translate}}
+								label {{'MAIN.CONTACTS.LB_KEY_ID' | translate}}
+								input.form-control(type="text", ng-model="email.key.keyId")
 								div.input-group-btn
-									button.btn.btn-default(ng-click="downloadPublicKey(email.key)")
-										span.icon-arrow-down
+									button.btn.btn-default(ng-click="email.isCollapsed = !email.isCollapsed")
+										span.icon-chevron-down
+						div.child-item(collapse="email.isCollapsed")
+							.text-control
+								label {{'MAIN.CONTACTS.LB_LENGTH' | translate}}
+								input.field-icon.form-control(disabled="", ng-model="email.key.length")
+							.text-control
+								label {{'MAIN.CONTACTS.LB_ALGORITHMS' | translate}}
+								input.field-icon.form-control(disabled="", ng-model="email.key.algos")
+							.text-control
+								label {{'MAIN.CONTACTS.LB_PUBLIC_KEY' | translate}}
+								input.field-icon.form-control(disabled="", ng-model="email.key.fingerprint")
+							div
+								div.input-group.with-label
+									label {{'MAIN.CONTACTS.LB_DOWNLOAD_PUBLIC_KEY' | translate}}
+									div.input-group-btn
+										button.btn.btn-default(ng-click="downloadPublicKey(email.key)")
+											span.icon-arrow-down
+				//- h4(ng-show="email.type == 'business'") {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}
+				//- h4(ng-show="email.type == 'private'") {{'MAIN.CONTACTS.TITLE_PRIVATE_EMAIL' | translate}}
+				ul.list-group(ng-show="email.type == 'private'")
+					li.list-group-item
+						button.form-control(type="button")
+							span.icon-plus
+							| add new {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}
+				ul.list-group(ng-show="email.type == 'private'")
+					li.list-group-item
+						button.form-control(type="button")
+							span.icon-plus
+							| add new {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}			
+				button.form-control(type="button", ng-show="email.type == 'private'")
+							span.icon-plus
+							| add new {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}			
