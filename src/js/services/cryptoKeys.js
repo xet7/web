@@ -43,8 +43,7 @@ angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $root
 
 		crypto.keyring.store();
 
-		$rootScope.$broadcast('crypto-dst-emails-updated', crypto.getAvailableDestinationEmails());
-		$rootScope.$broadcast('crypto-src-emails-updated', crypto.getAvailableSourceEmails());
+		$rootScope.$broadcast('keyring-updated');
 
 		return status;
 	};
