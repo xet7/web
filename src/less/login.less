@@ -43,7 +43,7 @@
 			background: @lava-login-error-bg;
 			color: @lava-login-gray-lightest;
 		}
-		+ .alert-danger{
+		+ .alert-danger, + span.input-group-addon + .alert-danger{
 			padding-left: 15px;
 			font-style: italic;
 			font-size: 1em;
@@ -211,7 +211,7 @@
 			.z1();
 			line-height: 1.8em;
 			font-size: 18px;
-			font-weight: 100;
+			.lava-font();
 			pointer-events: none;
 		}
 	}
@@ -331,7 +331,7 @@
 	}
 
 	label{
-		font-weight: @base-font-weight;
+		.lava-font();
 	}
 
 	footer{
