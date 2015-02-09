@@ -40,10 +40,10 @@
 	YESTERDAY = "Yesterday"
 
 [VALIDATION]
-	LB_REQUIRED = "required"
-	LB_MIN = "too small"
-	LB_EMAIL = "email address expected"
-	LB_MATCH = "passwords should match"
+	LB_REQUIRED = "This field is required"
+	LB_MIN = "The code entered is too short"
+	LB_EMAIL = "Enter a Valid Email"
+	LB_MATCH = "Both passwords should match"
 
 [LOADER]
 	LB_INITIALIZATION_FAILED = "Initialization failed..."
