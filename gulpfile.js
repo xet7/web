@@ -472,7 +472,9 @@ var isFirstBuild = true;
 var scheduleLiveReloadBuildTaskStart = function (taskName, timeout) {
 	if (!timeout)
 		timeout = 500;
-	isPartialLivereloadBuild = true;
+
+	if (taskName != 'compile')
+		isPartialLivereloadBuild = true;
 
 	console.warn('live reload build scheduled for ' + taskName + ' in ' + timeout + 'ms.');
 	if (scheduledTimeout) {
