@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlContacts', function($rootScope, $scope, $state, $stateParams, co, contacts, Contact) {
+angular.module(primaryApplicationName).controller('CtrlContactList', function($rootScope, $scope, $state, $stateParams, co, contacts, Contact) {
 	$scope.selectedContactId = null;
 	$scope.searchText = '';
 

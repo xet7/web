@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlContactsProfile', function($rootScope, $scope, $state, $stateParams, co, contacts) {
+angular.module(primaryApplicationName).controller('CtrlContactProfile', function($rootScope, $scope, $state, $stateParams, co, contacts) {
 	$scope.contactId = $stateParams.contactId;
 
 	$rootScope.whenInitialized(() => {
