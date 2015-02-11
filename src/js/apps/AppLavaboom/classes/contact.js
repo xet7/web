@@ -7,7 +7,7 @@ angular.module(primaryApplicationName).factory('Contact', function(co, user, cry
 		angular.extend(this, opt);
 		this.sec = opt.isSecured ? 1 : 0;
 
-		if (!this.name)
+		if (!this.name && this.email)
 			this.name = this.email.split('@')[0].trim();
 
 		this.isMatchEmail = (email) => {

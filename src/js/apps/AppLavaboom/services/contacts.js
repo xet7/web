@@ -1,5 +1,6 @@
 angular.module(primaryApplicationName).service('contacts', function($q, $rootScope, co, user, crypto, apiProxy, Contact) {
 	var self = this;
+	var emptyContact = null;
 
 	var deleteLocally = (contactId) => {
 		if (self.peopleById[contactId]) {
@@ -8,6 +9,20 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 			self.peopleList.splice(index, 1);
 			delete self.peopleById[contactId];
 		}
+	};
+
+	this.newContact = () => {
+		if (emptyContact)
+			return emptyContact;
+
+		var id = 'new';
+		emptyContact = new Contact({id: id, isSecured: true, name: 'New contact'});
+		self.peopleById[id] = emptyContact;
+		self.peopleList.unshift(emptyContact);
+
+		$rootScope.$broadcast('contacts-changed');
+
+		return emptyContact;
 	};
 
 	this.list = () => co(function *() {
@@ -36,12 +51,13 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 	});
 
 	this.deleteContact = (contactId) => co(function *() {
-		var r = yield apiProxy(['contacts', 'delete'], contactId);
+		if (emptyContact && contactId != emptyContact.id)
+			yield apiProxy(['contacts', 'delete'], contactId);
+		else
+			emptyContact = null;
 
 		deleteLocally(contactId);
 		$rootScope.$broadcast('contacts-changed');
-
-		return r;
 	});
 
 	this.initialize = () => co(function*(){

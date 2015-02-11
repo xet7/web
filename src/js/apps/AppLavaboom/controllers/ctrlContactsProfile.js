@@ -1,10 +1,17 @@
-angular.module(primaryApplicationName).controller('CtrlContactsProfile', function($rootScope, $scope, $stateParams, co, contacts) {
+angular.module(primaryApplicationName).controller('CtrlContactsProfile', function($rootScope, $scope, $state, $stateParams, co, contacts) {
 	$scope.contactId = $stateParams.contactId;
 
 	$rootScope.whenInitialized(() => {
-		$scope.details = contacts.getContactById($scope.contactId);
+		if ($scope.contactId == 'new') {
+			$scope.details = contacts.newContact();
+		} else {
+			$scope.details = contacts.getContactById($scope.contactId);
 
-		$scope.emails = [
+			if (!$scope.details)
+				$state.go('main.contacts');
+		}
+
+		/*$scope.emails = [
 			{
 				type: 'private',
 				email: 'house.stark@gmail.com',
@@ -29,7 +36,7 @@ angular.module(primaryApplicationName).controller('CtrlContactsProfile', functio
 					fingerprint: '62CE62CEB52562CEB62CEB525525B525'
 				}
 			}
-		];
+		];*/
 	});
 
 	$scope.deleteThisContact = () => co(function *(){
