@@ -1,7 +1,8 @@
 .filters.row.no-gutter.lava-icon-row
 .main-view
-	.row.main-panel.ng-cloak(ng-controller="CtrlContactsProfile")
-		form.settings.col-md-12.col-md-offset-6.col-xs-22.col-xs-offset-1
+	.row.main-panel.ng-cloak
+		section.pane-status(ng-show="!details") {{'MAIN.CONTACTS.LB_NOTHING_FOUND' | translate}}
+		form.settings.col-md-12.col-md-offset-6.col-xs-22.col-xs-offset-1(ng-show="details")
 			h4(ng-bind="details.name")
 			.row
 				.col-md-12.col-xs-24
@@ -66,6 +67,6 @@
 							span.icon-plus
 							| add new {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}
 			hr.spacer
-			a.btn.btn-lg.btn-danger.btn-block.btn-icon.text-center(type="button")
+			a.btn.btn-lg.btn-danger.btn-block.btn-icon.text-center(type="button", ng-click="deleteThisContact()", ng-autodisable)
 						span.icon-trash
 						| {{'MAIN.CONTACTS.DELETE_CONTACT' | translate}}

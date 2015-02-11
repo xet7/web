@@ -1,11 +1,8 @@
-angular.module(primaryApplicationName).controller('CtrlContactsProfile', function($rootScope, $scope, $stateParams, contacts) {
-	var contactId = $stateParams.contactId;
-	console.log(contactId);
+angular.module(primaryApplicationName).controller('CtrlContactsProfile', function($rootScope, $scope, $stateParams, co, contacts) {
+	$scope.contactId = $stateParams.contactId;
 
 	$rootScope.whenInitialized(() => {
-		console.log('contacts.getContactById', contactId, contacts.people);
-		$scope.details = contacts.getContactById(contactId);
-		console.log('$scope.details', $scope.details);
+		$scope.details = contacts.getContactById($scope.contactId);
 
 		$scope.emails = [
 			{
@@ -35,7 +32,9 @@ angular.module(primaryApplicationName).controller('CtrlContactsProfile', functio
 		];
 	});
 
-
+	$scope.deleteThisContact = () => co(function *(){
+		return yield contacts.deleteContact($scope.contactId);
+	});
 
 	$scope.downloadPublicKey = (key) => {
 

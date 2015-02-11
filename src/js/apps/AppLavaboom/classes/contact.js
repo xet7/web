@@ -1,16 +1,21 @@
 angular.module(primaryApplicationName).factory('Contact', function(co, user, crypto) {
 	var Contact = function(opt) {
+		var self = this;
+
 		if (opt.isSecured === undefined)
 			opt.isSecured = false;
 		angular.extend(this, opt);
 		this.sec = opt.isSecured ? 1 : 0;
 
-		if (!this.name) {
+		if (!this.name)
 			this.name = this.email.split('@')[0].trim();
-		}
+
+		this.isMatchEmail = (email) => {
+			return self.email == email || (self.privateEmails && self.privateEmails.indexOf(email) > -1) || (self.companyEmails && self.companyEmails.indexOf(email) > -1);
+		};
 	};
 
-	var secureFields = ['email', 'phone', 'url', 'notes', 'isSecured'];
+	var secureFields = ['email', 'privateEmails', 'companyEmails', 'phone', 'url', 'notes', 'isSecured'];
 
 	Contact.toEnvelope = (contact) => co(function *() {
 		var envelope = yield crypto.encodeEnvelopeWithKeys({

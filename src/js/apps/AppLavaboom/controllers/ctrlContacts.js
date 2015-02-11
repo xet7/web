@@ -1,4 +1,6 @@
 angular.module(primaryApplicationName).controller('CtrlContacts', function($rootScope, $scope, $state, $stateParams, contacts) {
+	$scope.selectedContactId = null;
+
 	$scope.$bind('$stateChangeSuccess', () => {
 		$scope.selectedContactId = $stateParams.contactId;
 	});
@@ -6,7 +8,9 @@ angular.module(primaryApplicationName).controller('CtrlContacts', function($root
 	$scope.searchText = '';
 
 	$rootScope.whenInitialized(() => {
-		$scope.people = contacts.people;
-		$scope.sortedPeople = _.groupBy(contacts.people, contact => contact.name[0]);
+		$scope.$bind('contacts-changed', () => {
+			$scope.people = _.groupBy(contacts.peopleList, contact => contact.name[0]);
+			$scope.letters = _.sortBy(Object.keys($scope.people), letter => letter);
+		});
 	});
 });

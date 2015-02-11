@@ -223,3 +223,4 @@
 	LB_PUBLIC_KEY = "Public Key"
 	LB_DOWNLOAD_PUBLIC_KEY = "Download Public Key"
 	DELETE_CONTACT = "Delete Contact"
+	LB_NOTHING_FOUND = "Nothing found"
