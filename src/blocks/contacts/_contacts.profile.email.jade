@@ -1,0 +1,32 @@
+li.list-group-item
+	div.input-group
+		input.form-control(type="email", ng-model="email.email")
+		div.input-group-btn
+			button.btn.tggl(type="button", ng-model="email.isStar", btn-checkbox="", btn-checkbox-true="1", btn-checkbox-false="0")
+				span.icon-star-outline
+			a.btn
+				span.icon-lock
+	li.list-group-item
+		div
+			div.input-group.with-label
+				label {{'MAIN.CONTACTS.LB_KEY_ID' | translate}}
+				input.form-control(type="text", ng-model="email.key.keyId")
+				div.input-group-btn
+					button.btn.btn-default(ng-click="email.isCollapsed = !email.isCollapsed")
+						span.icon-chevron-down
+		div.child-item(collapse="email.isCollapsed")
+			.text-control
+				label {{'MAIN.CONTACTS.LB_LENGTH' | translate}}
+				input.field-icon.form-control(disabled="", ng-model="email.key.length")
+			.text-control
+				label {{'MAIN.CONTACTS.LB_ALGORITHMS' | translate}}
+				input.field-icon.form-control(disabled="", ng-model="email.key.algos")
+			.text-control
+				label {{'MAIN.CONTACTS.LB_PUBLIC_KEY' | translate}}
+				input.field-icon.form-control(disabled="", ng-model="email.key.fingerprint")
+			div
+				div.input-group.with-label
+					label {{'MAIN.CONTACTS.LB_DOWNLOAD_PUBLIC_KEY' | translate}}
+					div.input-group-btn
+						button.btn.btn-default(ng-click="downloadPublicKey(email.key)")
+							span.icon-arrow-down

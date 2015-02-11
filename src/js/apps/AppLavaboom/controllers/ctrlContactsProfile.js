@@ -11,8 +11,8 @@ angular.module(primaryApplicationName).controller('CtrlContactsProfile', functio
 				$state.go('main.contacts');
 		}
 
-		/*$scope.emails = [
-			{
+		$scope.privateEmails = [
+			/*{
 				type: 'private',
 				email: 'house.stark@gmail.com',
 				isStar: false,
@@ -23,8 +23,11 @@ angular.module(primaryApplicationName).controller('CtrlContactsProfile', functio
 					algos: 'RSA',
 					fingerprint: '62CE62CEB52562CEB62CEB525525B525'
 				}
-			},
-			{
+			}*/
+		];
+
+		$scope.businessEmails = [
+			/*{
 				type: 'business',
 				email: 'ned@stark.com',
 				isStar: false,
@@ -35,8 +38,8 @@ angular.module(primaryApplicationName).controller('CtrlContactsProfile', functio
 					algos: 'RSA',
 					fingerprint: '62CE62CEB52562CEB62CEB525525B525'
 				}
-			}
-		];*/
+			}*/
+		];
 	});
 
 	$scope.deleteThisContact = () => co(function *(){

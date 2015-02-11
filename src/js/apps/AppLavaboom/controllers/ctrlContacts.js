@@ -9,8 +9,7 @@ angular.module(primaryApplicationName).controller('CtrlContacts', function($root
 		});
 
 		$scope.newContact = () => co(function *(){
-			var contact = contacts.newContact();
-			yield $state.go('main.contacts.profile', {contactId: contact.id});
+			yield $state.go('main.contacts.profile', {contactId: 'new'});
 		});
 
 		$scope.$bind('$stateChangeSuccess', () => {
