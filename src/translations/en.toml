@@ -229,4 +229,6 @@
 	LB_NOTHING_FOUND = "Nothing found"
 	LB_NEW_CONTACT = "New contact"
 	LB_CONTACT_NAME = "Contact name"
+	LB_NEW_CONTACT_SHORT = "+"
+	LB_EMPTY_CONTACT_SHORT = "?"
 	PLC_EMAIL = "Enter email address"
