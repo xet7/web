@@ -1,28 +1,19 @@
 #compose-wrapper{
-	margin: 0;
-	height: 90%;
-	.pos-rel();
+
 }
 #compose{
-	.pos-abs();
-
+	
 	.text-primary{
 		color: @lava-login-lava !important;
 	}
 	
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	box-shadow:  0px 0px 30px 10px rgba(0, 0, 0, 0.19);
 	header{
 		padding: @filter-height 1.75em 0;
 		background-color: @lava-compose-header;
 		color: @lava-compose-header-fg !important;
 		.table-list{
-			&:not(:last-child){
-				border-bottom: 1px solid @lava-gray-lighter;
-			}
+			border-bottom: 1px solid @lava-gray-lighter;
+			
 			> *{
 				vertical-align: middle;
 			}
@@ -52,9 +43,28 @@
 	.dropdown-control.cell{
 		width: 100%;
 	}
+
 	.ta-toolbar{
-		display: none;
+		text-align: center;
+		background-color: @lava-compose-header;
+		&.btn-toolbar{
+			margin: 0;
+			padding: 4px 0;
+		}
+		.btn-group{
+			display: inline-block;
+			float: none;
+			i{
+				line-height: inherit;
+				color: @lava-compose-header-fg !important;
+			}
+			.btn{
+				border: 0;
+				background: transparent none;
+			}
+		}
 	}
+
 
 	input{
 		background: transparent;

@@ -3,11 +3,15 @@ var chan = require('chan');
 angular.module(primaryApplicationName).factory('Email', function(co, contacts, crypto) {
 	var Email = function(opt) {
 		this.id =  opt.id;
+		this.threadId = opt.thread;
 		this.isEncrypted = opt.isEncrypted;
 		this.subject = opt.name;
 		this.date = opt.date_created;
 		this.from = opt.from;
-		this.fromName = contacts.getContactByEmail(opt.from).name;
+
+		var fromContact = contacts.getContactByEmail(opt.from);
+
+		this.fromName = fromContact ? fromContact.name : opt.from;
 		this.preview = opt.preview;
 		this.body = opt.body;
 		this.attachments = opt.attachments;

@@ -51,14 +51,14 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 			if (c.id == id)
 				return c;
 		}
-		return {};
+		return null;
 	};
 
 	this.getContactByEmail = (email) => {
 		for(let c of self.people)
 			if (c.email == email)
 				return c;
-		return {};
+		return null;
 	};
 
 	this.myself = null;

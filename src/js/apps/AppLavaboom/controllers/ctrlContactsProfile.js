@@ -1,8 +1,8 @@
-angular.module(primaryApplicationName).controller('CtrlContactsProfile', function($scope, $stateParams, contacts) {
+angular.module(primaryApplicationName).controller('CtrlContactsProfile', function($rootScope, $scope, $stateParams, contacts) {
 	var contactId = $stateParams.contactId;
 	console.log(contactId);
 
-	$scope.$bind('initialization-completed', () => {
+	$rootScope.whenInitialized(() => {
 		console.log('contacts.getContactById', contactId, contacts.people);
 		$scope.details = contacts.getContactById(contactId);
 		console.log('$scope.details', $scope.details);

@@ -1,19 +1,13 @@
-angular.module(primaryApplicationName).controller('CtrlSecureUsername', function($scope, $state, signUp) {
+angular.module(primaryApplicationName).controller('CtrlSecureUsername', function($scope, $state, co, signUp) {
 	$scope.form = {
 		username: '',
 		email: '',
 		isNews: true
 	};
-	$scope.isProcessing = false;
 
-	$scope.requestSecure = () => {
-		$scope.isProcessing = true;
-		signUp.register($scope.form.username, $scope.form.email, $scope.form.isNews)
-			.then(() => {
-				$state.go('reservedUsername');
-			})
-			.finally(() => {
-				$scope.isProcessing = false;
-			});
-	};
+	$scope.requestSecure = () => co(function *(){
+		yield signUp.register($scope.form.username, $scope.form.email, $scope.form.isNews);
+
+		yield $state.go('reservedUsername');
+	});
 });

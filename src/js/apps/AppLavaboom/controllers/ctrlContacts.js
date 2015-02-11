@@ -5,7 +5,7 @@ angular.module(primaryApplicationName).controller('CtrlContacts', function($root
 
 	$scope.searchText = '';
 
-	$scope.$bind('initialization-completed', () => {
+	$rootScope.whenInitialized(() => {
 		$scope.people = contacts.people;
 		$scope.sortedPeople = _.groupBy(contacts.people, contact => contact.name[0]);
 	});

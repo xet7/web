@@ -30,7 +30,7 @@ def build():
 		with shell_env(API_URI=api_uri, TLD=tld):
 			local("gulp develop")
 	else:
-		local("develop")
+		local("gulp develop")
 
 def deploy():
 	branch = os.getenv('DRONE_BRANCH', 'master')

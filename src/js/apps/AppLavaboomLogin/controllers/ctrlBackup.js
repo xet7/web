@@ -2,8 +2,12 @@ angular.module(primaryApplicationName).controller('CtrlBackup', function($scope,
 	if (!user.isAuthenticated())
 		$state.go('login');
 
+	$scope.form = {
+		isPrivateComputer: false
+	};
+
 	var navigateMainApplication = () => {
-		crypto.options.isPrivateComputer = false;
+		crypto.options.isPrivateComputer = $scope.form.isPrivateComputer;
 		crypto.authenticateDefault(signUp.password);
 
 		loader.resetProgress();
@@ -14,7 +18,7 @@ angular.module(primaryApplicationName).controller('CtrlBackup', function($scope,
 	$scope.backup = () => {
 		var keysBackup = cryptoKeys.exportKeys();
 		var blob = new Blob([keysBackup], {type: "text/json;charset=utf-8"});
-		saveAs(blob, cryptoKeys.getExportFilename(keysBackup));
+		saveAs(blob, cryptoKeys.getExportFilename(keysBackup, user.name));
 
 		navigateMainApplication();
 	};

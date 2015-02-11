@@ -1,6 +1,6 @@
 var chan = require('chan');
 
-angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, $timeout, co, apiProxy, LavaboomAPI, crypto, contacts, Email, Thread) {
+angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, $timeout, consts, co, apiProxy, LavaboomAPI, crypto, contacts, Cache, Email, Thread, Label) {
 	var self = this;
 
 	this.offset = 0;
@@ -10,13 +10,29 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.totalEmailsCount = 0;
 
 	this.labelName = '';
-	this.labelsByName = [];
+	this.labelsById = {};
+	this.labelsByName = {};
 	this.threads = {};
 	this.threadsList = [];
 
+	var defaultCacheOptions = {
+		ttl: consts.INBOX_THREADS_CACHE_TTL
+	};
+	var cacheOptions = angular.extend({}, defaultCacheOptions, {
+		ttl: consts.INBOX_EMAILS_CACHE_TTL,
+		isInvalidateWholeCache: true
+	});
+	var threadsCaches = [];
+	var emailsListCache = new Cache(defaultCacheOptions);
+
 	$timeout(() => {
 		LavaboomAPI.subscribe('receipt', (msg) => {
-			console.log('receipt', msg);
+
+			co(function *(){
+				var email = yield self.getEmail(msg.id);
+				var thread = yield self.getThreadById(email.threadId);
+			});
+
 		});
 
 		LavaboomAPI.subscribe('delivery', (msg) => {
@@ -41,7 +57,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		return r;
 	});
 
-	var getThreadsByLabelName = function *(labelName) {
+	var getThreadsByLabelName = (labelName) => co(function *() {
 		var label = self.labelsByName[labelName];
 
 		var threads = (yield apiProxy(['threads', 'list'], {
@@ -51,9 +67,6 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			offset: self.offset,
 			limit: self.limit
 		})).body.threads;
-
-		if (threads)
-			self.offset += threads.length;
 
 		var result = {
 			list: [],
@@ -70,7 +83,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		}
 
 		return result;
-	};
+	});
 
 	this.getThreadById = (threadId) => co(function *() {
 		var thread = (yield apiProxy(['threads', 'get'], threadId)).body.thread;
@@ -83,6 +96,8 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		var trashLabelId = self.labelsByName.Trash.id;
 		var spamLabelId = self.labelsByName.Spam.id;
 		var draftsLabelId = self.labelsByName.Drafts.id;
+
+		threadsCaches[self.labelName].invalidateAll();
 
 		var r;
 		if (thread.labels.indexOf(trashLabelId) > -1 || thread.labels.indexOf(spamLabelId) > -1 || thread.labels.indexOf(draftsLabelId) > -1)
@@ -99,6 +114,11 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		var currentLabelName = self.labelName;
 
 		var labelId = self.labelsByName[labelName].id;
+		var thread = self.threads[threadId];
+
+		for(let c in threadsCaches)
+			threadsCaches[c].invalidateAll();
+
 		var r =  yield apiProxy(['threads', 'update'], threadId, {labels: [labelId]});
 
 		if (labelName != currentLabelName)
@@ -107,48 +127,74 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		return r;
 	}));
 
-	this.requestAddLabel = (threadId, labelName) => performsThreadsOperation(co(function *() {
-		var labelId = self.labelsByName[labelName].id;
+	this.requestSwitchLabel = (threadId, labelName) => performsThreadsOperation(co(function *() {
 		var thread = self.threads[threadId];
 
-		return yield apiProxy(['threads', 'update'], threadId, {labels: _.union(thread.labels, [labelId])});
+		if (thread.isLabel(labelName)) {
+			console.log('label found - remove');
+
+			threadsCaches[labelName].invalidateAll();
+
+			var newLabels = thread.removeLabel(labelName);
+			var r = yield apiProxy(['threads', 'update'], threadId, {labels: newLabels});
+
+			if (self.labelName == 'Starred')
+				deleteThreadLocally(threadId);
+
+			thread.labels = newLabels;
+			return r;
+		} else {
+			console.log('label not found - add');
+			return yield self.requestAddLabel(threadId, labelName);
+		}
 	}));
 
-	this.getEmailsByThreadId = (threadId, decodeChan) => co(function *() {
-		var emails = (yield apiProxy(['emails', 'list'], {thread: threadId})).body.emails;
+	this.requestAddLabel = (threadId, labelName) => performsThreadsOperation(co(function *() {
+		var thread = self.threads[threadId];
 
-		return yield (emails ? emails : []).map(e => Email.fromEnvelope(e));
-	});
+		threadsCaches[labelName].invalidateAll();
 
-	this.getLabels = (classes = {}) => co(function *() {
+		var newLabels = thread.addLabel(labelName);
+		var r = yield apiProxy(['threads', 'update'], threadId, {labels: newLabels});
+
+		thread.labels = newLabels;
+		return r;
+	}));
+
+	this.getEmailsByThreadId = (threadId) => emailsListCache.call(
+		(threadId) => co(function *() {
+			var emails = (yield apiProxy(['emails', 'list'], {thread: threadId})).body.emails;
+
+			return yield (emails ? emails : []).map(e => Email.fromEnvelope(e));
+		}),
+		[threadId]
+	);
+
+	this.getLabels = () => co(function *() {
 		var labels = (yield apiProxy(['labels', 'list'])).body.labels;
 
+		threadsCaches = [];
 		return labels.reduce((a, label) => {
-			label.iconClass = `icon-${classes[label.name] ? classes[label.name] :label.name.toLowerCase()}`;
-			a[label.name] = label;
+			threadsCaches[label.name] = new Cache(cacheOptions);
+			a.byName[label.name] = a.byId[label.id] = new Label(label);
 			return a;
-		}, {});
+		}, {byName: {}, byId: {}});
 	});
 
-	this.initialize = (decodeChan) => co(function *(){
-		var labelsClasses = {
-			'Drafts': 'draft',
-			'Spam': 'ban',
-			'Starred': 'star'
-		};
+	this.initialize = () => co(function *(){
+		var labels = yield self.getLabels();
 
-		var labels = yield self.getLabels(labelsClasses);
-
-		if (!labels.Drafts) {
+		if (!labels.byName.Drafts) {
 			yield apiProxy(['labels', 'create'], {name: 'Drafts'});
-			labels = yield self.getLabels(labelsClasses);
+			labels = yield self.getLabels();
 		}
 
-		self.labelsByName = labels;
+		self.labelsByName = labels.byName;
+		self.labelsById = labels.byId;
 
-		$rootScope.$broadcast('inbox-labels', self.labels);
+		$rootScope.$broadcast('inbox-labels');
 
-		yield self.requestList('Inbox', decodeChan);
+		yield self.requestList('Inbox');
 	});
 
 	this.uploadAttachment = (envelope) => co(function *(){
@@ -159,7 +205,13 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		return yield apiProxy(['attachments', 'delete'], attachmentId);
 	});
 
-	this.requestList = (labelName, decodeChan = null) => {
+	this.getEmail = (emailId) => co(function *(){
+		var r = yield apiProxy(['emails', 'get'], emailId);
+
+		return r.body.email ? new Email(r.body.email) : null;
+	});
+
+	this.requestList = (labelName) => {
 		if (self.labelName != labelName) {
 			self.offset = 0;
 			self.threads = {};
@@ -169,10 +221,13 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		self.labelName = labelName;
 
 		return performsThreadsOperation(co(function * (){
-			var e = yield getThreadsByLabelName(labelName, decodeChan);
+			var e = yield threadsCaches[labelName].call(() => getThreadsByLabelName(labelName), [self.offset, self.limit]);
+
+			if (e.list.length > 0)
+				self.offset += e.list.length;
 
 			self.threads = angular.extend(self.threads, e.map);
-			self.threadsList = self.threadsList.concat(e.list);
+			self.threadsList = _.uniq(self.threadsList.concat(e.list), t => t.id);
 
 			return e;
 		}));

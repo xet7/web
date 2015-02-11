@@ -13,6 +13,10 @@
 	LB_AND_OTHERS = "and others"
 	LB_NOTHING_FOUND = "Nothing found"
 	LB_NOTHING_SELECTED = "Nothing selected"
+	LB_NO_PRIVATE_KEY_FOUND1 = "No decrypted private key found for this email"
+	LB_NO_PRIVATE_KEY_FOUND2 = "Please go to "
+	LB_SETTINGS = "settings"
+	LB_NO_PRIVATE_KEY_FOUND3 = " and check your key"
 
 [GLOBAL]
 	USERNAME = "username"
@@ -36,10 +40,10 @@
 	YESTERDAY = "Yesterday"
 
 [VALIDATION]
-	LB_REQUIRED = "required"
-	LB_MIN = "too small"
-	LB_EMAIL = "email address expected"
-	LB_MATCH = "passwords should match"
+	LB_REQUIRED = "This field is required"
+	LB_MIN = "The code entered is too short"
+	LB_EMAIL = "Enter a Valid Email"
+	LB_MATCH = "Both passwords should match"
 
 [LOADER]
 	LB_INITIALIZATION_FAILED = "Initialization failed..."
@@ -204,6 +208,7 @@
 	LB_CREATION_DATE = "Creation Date"
 	LB_PASSPHRASE = "Enter your passphrase"
 	LB_PASSPHRASE_NOTE = "In order to remember your passphrase please select \"private computer\" checkbox when you sign in to the lavaboom"
+	LB_KEY_NOTE = "Don't see your key? Private key required in order to read emails and view contacts, please import private key"
 	BTN_EXPORT_KEYS = "Export keys"
 	BTN_IMPORT_KEYS = "Import keys"
 	LB_DECRYPTED = "Decrypted"
@@ -217,3 +222,4 @@
 	LB_ALGORITHMS = "Algorithms"
 	LB_PUBLIC_KEY = "Public Key"
 	LB_DOWNLOAD_PUBLIC_KEY = "Download Public Key"
+	DELETE_CONTACT = "Delete Contact"

@@ -43,8 +43,7 @@ angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $root
 
 		crypto.keyring.store();
 
-		$rootScope.$broadcast('crypto-dst-emails-updated', crypto.getAvailableDestinationEmails());
-		$rootScope.$broadcast('crypto-src-emails-updated', crypto.getAvailableSourceEmails());
+		$rootScope.$broadcast('keyring-updated');
 
 		return status;
 	};
@@ -74,7 +73,7 @@ angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $root
 		}, null, 4);
 	};
 
-	this.getExportFilename = (backup, userName = 'test') => {
+	this.getExportFilename = (backup, userName) => {
 		var hashPostfix = (new Buffer(openpgp.crypto.hash.md5(backup), 'binary')).toString('hex').substr(0, 8);
 		return `${userName}-${hashPostfix}.json`;
 	};

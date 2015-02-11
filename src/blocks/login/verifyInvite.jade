@@ -1,4 +1,4 @@
-form.steps-form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-submit="__form.$valid && requestVerify()", novalidate)
+form.steps-form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-submit="__form.$valid && requestVerify()", novalidate, ng-autodisable)
 	p.lead.pack {{'LOGIN.VERIFY_INVITE.TITLE' | translate}}
 
 	p.text-center.steps.large
@@ -31,4 +31,4 @@ form.steps-form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage
 		a {{'LOGIN.VERIFY_INVITE.LNK_TOS' | translate}}
 
 	footer
-		button.btn.btn-block.btn-lg.btn-primary(type='submit', ng-disabled="isProcessing") {{'GLOBAL.NEXT_STEP' | translate}}
+		button.btn.btn-block.btn-lg.btn-primary(type='submit') {{'GLOBAL.NEXT_STEP' | translate}}

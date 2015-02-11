@@ -14,11 +14,9 @@ angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function(
 			translationsCh(true);
 	});
 
-	$scope.isInitialized = false;
-
 	$scope.initializeApplication = () => co(function *(){
 		try {
-			if (!$scope.isInitialized)
+			if (!$rootScope.isInitialized)
 				yield translationsCh;
 
 			loader.incProgress(translations.LB_INITIALIZING_I18N, 1);
@@ -29,10 +27,10 @@ angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function(
 
 			crypto.initialize();
 
-			if ($scope.isInitialized) {
+			if ($rootScope.isInitialized) {
 				yield $state.go('login', {}, {reload: true});
 			} else {
-				$scope.isInitialized = true;
+				$rootScope.isInitialized = true;
 				return {lbDone: translations.LB_SUCCESS};
 			}
 		} catch (error) {

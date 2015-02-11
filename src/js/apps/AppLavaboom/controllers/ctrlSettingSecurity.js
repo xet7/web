@@ -9,20 +9,22 @@ angular.module(primaryApplicationName).controller('CtrlSettingsSecurity', functi
 		passwordRepeat: ''
 	};
 
-	$scope.keys = crypto.keyring.privateKeys.keys.map(k => {
-		return {
-			keyId: utils.hexify(k.primaryKey.keyid.bytes),
-			isDecrypted: crypto.getPrivateKeyByFingerprint(k.primaryKey.fingerprint).primaryKey.isDecrypted,
-			decryptPassword: '',
-			decryptIsSuccess: null,
-			decryptTime: null,
-			fingerprint: k.primaryKey.fingerprint,
-			created: k.primaryKey.created,
-			user: k.users[0].userId.userid
-		};
-	});
+	$scope.$bind('keyring-updated', () => {
+		$scope.keys = crypto.keyring.privateKeys.keys.map(k => {
+			return {
+				keyId: utils.hexify(k.primaryKey.keyid.bytes),
+				isDecrypted: crypto.getPrivateKeyByFingerprint(k.primaryKey.fingerprint).primaryKey.isDecrypted,
+				decryptPassword: '',
+				decryptIsSuccess: null,
+				decryptTime: null,
+				fingerprint: k.primaryKey.fingerprint,
+				created: k.primaryKey.created,
+				user: k.users[0].userId.userid
+			};
+		});
 
-	$scope.isAnyUndecryptedKeys = $scope.keys.some(k => !k.isDecrypted);
+		$scope.isAnyUndecryptedKeys = $scope.keys.some(k => !k.isDecrypted);
+	});
 
 	$scope.isProcessing = false;
 	$scope.passwordUpdateStatus = '';
@@ -47,12 +49,7 @@ angular.module(primaryApplicationName).controller('CtrlSettingsSecurity', functi
 	$scope.getFile = function(file) {
 		fileReader.readAsText(file, $scope)
 			.then(jsonBackup => {
-				try {
-					var statuses = cryptoKeys.importKeys(jsonBackup);
-					alert(statuses.join('\n'));
-				} catch (error) {
-					console.error(error);
-				}
+				cryptoKeys.importKeys(jsonBackup);
 			})
 			.catch(error => {
 				console.error(error);
@@ -62,7 +59,7 @@ angular.module(primaryApplicationName).controller('CtrlSettingsSecurity', functi
 	$scope.exportKeys = () => {
 		var keysBackup = cryptoKeys.exportKeys();
 		var blob = new Blob([keysBackup], {type: "text/json;charset=utf-8"});
-		saveAs(blob, cryptoKeys.getExportFilename(keysBackup));
+		saveAs(blob, cryptoKeys.getExportFilename(keysBackup, user.name));
 	};
 
 	$scope.importKeys = () => {

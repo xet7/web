@@ -74,7 +74,7 @@ var livereloadPipeline  = function (isForce) {
 	if (!isForce)
 		isForce = false;
 
-	return config.isProduction || (!isForce && !isLivereloadBuild)
+	return config.isProduction || (!isForce && !isPartialLivereloadBuild)
 		? lazypipe()
 			.pipe(plg.util.noop)
 		: lazypipe()
@@ -402,6 +402,12 @@ gulp.task('clean', function () {
 		paths.output + '**/*',
 		paths.cache + '**/*'
 	]);
+	try {
+		fs.mkdirSync(paths.output);
+	} catch (e) { }
+	try {
+		fs.mkdirSync(paths.cache);
+	} catch (e) { }
 });
 
 // Run some unit tests to check key logic
@@ -461,18 +467,20 @@ gulp.task('compile', ['clean', 'tests', 'lint:scripts'], function() {
 
 // black magic to fix multiple and inconsistent live reloads, the simplest possible way
 var scheduledTimeout = null;
-var isLivereloadBuild = false;
+var isPartialLivereloadBuild = false;
 var isFirstBuild = true;
 var scheduleLiveReloadBuildTaskStart = function (taskName, timeout) {
 	if (!timeout)
 		timeout = 500;
-	isLivereloadBuild = true;
+
+	if (taskName != 'compile')
+		isPartialLivereloadBuild = true;
 
 	console.warn('live reload build scheduled for ' + taskName + ' in ' + timeout + 'ms.');
 	if (scheduledTimeout) {
 		clearTimeout(scheduledTimeout);
 		taskName = 'compile';
-		isLivereloadBuild = false;
+		isPartialLivereloadBuild = false;
 		console.warn('live reload conflict - perform full rebuild');
 	}
 	scheduledTimeout = setTimeout(function (){
@@ -490,8 +498,8 @@ gulp.task('default', [
 	
 	// watch for source changes and rebuild the whole project with _exceptions_
 	gulp.watch([paths.input, '!' + paths.styles.inputAll, '!' + paths.markup.input, '!' + paths.partials.input]).on('change', function(file) {
-		isLivereloadBuild = false;
-		gulp.start('compile');
+		isPartialLivereloadBuild = false;
+		scheduleLiveReloadBuildTaskStart('compile');
 	});
 	
 	// _exceptions_
