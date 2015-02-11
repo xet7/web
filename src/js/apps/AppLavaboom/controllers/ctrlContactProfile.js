@@ -1,5 +1,11 @@
-angular.module(primaryApplicationName).controller('CtrlContactProfile', function($rootScope, $scope, $state, $stateParams, co, contacts) {
+angular.module(primaryApplicationName).controller('CtrlContactProfile', function($rootScope, $scope, $translate, $state, $stateParams, co, contacts) {
 	$scope.contactId = $stateParams.contactId;
+
+	var translations = {};
+
+	$rootScope.$bind('$translateChangeSuccess', () => {
+		translations.LB_NEW_CONTACT = $translate.instant('MAIN.CONTACTS.LB_NEW_CONTACT');
+	});
 
 	$rootScope.whenInitialized(() => {
 		if ($scope.contactId == 'new') {
@@ -13,7 +19,6 @@ angular.module(primaryApplicationName).controller('CtrlContactProfile', function
 
 		$scope.privateEmails = [
 			/*{
-				type: 'private',
 				email: 'house.stark@gmail.com',
 				isStar: false,
 				isCollapsed: false,
@@ -28,7 +33,6 @@ angular.module(primaryApplicationName).controller('CtrlContactProfile', function
 
 		$scope.businessEmails = [
 			/*{
-				type: 'business',
 				email: 'ned@stark.com',
 				isStar: false,
 				isCollapsed: false,
@@ -40,6 +44,25 @@ angular.module(primaryApplicationName).controller('CtrlContactProfile', function
 				}
 			}*/
 		];
+	});
+
+	function ContactEmail () {
+		this.email =  '';
+		this.isStar = false;
+		this.isCollapsed = true;
+		this.key = null;
+	}
+
+	$scope.addNewPrivateEmail = () => {
+		$scope.privateEmails.push(new ContactEmail());
+	};
+
+	$scope.addNewBusinessEmail = () => {
+		$scope.businessEmails.push(new ContactEmail());
+	};
+
+	$scope.saveThisContact = () => co(function *(){
+
 	});
 
 	$scope.deleteThisContact = () => co(function *(){

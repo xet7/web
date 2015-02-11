@@ -3,7 +3,8 @@
 	.row.main-panel.ng-cloak
 		section.pane-status(ng-show="!details") {{'MAIN.CONTACTS.LB_NOTHING_FOUND' | translate}}
 		form.settings.col-md-12.col-md-offset-6.col-xs-22.col-xs-offset-1(ng-show="details")
-			h4(ng-bind="details.name")
+			h4(ng-show="details.isNew", ng-bind="details.name | defaultValue:('MAIN.CONTACTS.LB_NEW_CONTACT' | translate)")
+			h4(ng-show="!details.isNew", ng-bind="details.name | defaultValue:('MAIN.CONTACTS.LB_CONTACT_NAME' | translate)")
 			.row
 				.col-md-12.col-xs-24
 					img.thumbnail.img-responsive(src="/img/avatar.svg")
@@ -26,17 +27,18 @@
 				h4 {{'MAIN.CONTACTS.TITLE_PRIVATE_EMAIL' | translate}}
 				ul.list-group(ng-repeat="email in privateEmails")
 					include ./_contacts.profile.email.jade
-				a.btn.btn-lg.btn-default.btn-block.btn-icon(type="button")
+				a.btn.btn-lg.btn-default.btn-block.btn-icon(type="button", ng-click="addNewPrivateEmail()")
 							span.icon-plus
-							| add new {{'MAIN.CONTACTS.TITLE_PRIVATE_EMAIL' | translate}}
+							| {{'MAIN.CONTACTS.BTN_ADD_PRIVATE_EMAIL' | translate}}
 			div
 				h4 {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}
 				ul.list-group(ng-repeat="email in businessEmails")
 					include ./_contacts.profile.email.jade
-				a.btn.btn-lg.btn-default.btn-block.btn-icon(type="button")
+				a.btn.btn-lg.btn-default.btn-block.btn-icon(type="button", ng-click="addNewBusinessEmail()")
 					span.icon-plus
-					| add new {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}
+					| {{'MAIN.CONTACTS.BTN_ADD_BUSINESS_EMAIL' | translate}}
 			hr.spacer
+			a.btn.btn-lg.btn-success.btn-block.btn-icon.text-center(type="button", ng-click="saveThisContact()", ng-autodisable) {{'MAIN.CONTACTS.BTN_SAVE_CONTACT' | translate}}
 			a.btn.btn-lg.btn-danger.btn-block.btn-icon.text-center(type="button", ng-click="deleteThisContact()", ng-autodisable)
 						span.icon-trash
-						| {{'MAIN.CONTACTS.DELETE_CONTACT' | translate}}
+						| {{'MAIN.CONTACTS.BTN_DELETE_CONTACT' | translate}}

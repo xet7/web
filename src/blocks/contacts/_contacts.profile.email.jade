@@ -1,6 +1,6 @@
 li.list-group-item
 	div.input-group
-		input.form-control(type="email", ng-model="email.email")
+		input.form-control(type="email", placeholder="{{'MAIN.CONTACTS.PLC_EMAIL' | translate}}", ng-model="email.email")
 		div.input-group-btn
 			button.btn.tggl(type="button", ng-model="email.isStar", btn-checkbox="", btn-checkbox-true="1", btn-checkbox-false="0")
 				span.icon-star-outline

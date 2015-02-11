@@ -16,7 +16,7 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 			return emptyContact;
 
 		var id = 'new';
-		emptyContact = new Contact({id: id, isSecured: true, name: 'New contact'});
+		emptyContact = new Contact({id: id, isSecured: true, isNew: true, name: 'New contact'});
 		self.peopleById[id] = emptyContact;
 		self.peopleList.unshift(emptyContact);
 
