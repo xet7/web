@@ -105,7 +105,8 @@ var createJadePipeline = function (input, output, isTemplateCache) {
 				},
 				assets: manifest,
 				globs: {
-					isProduction: config.isProduction
+					isProduction: config.isProduction,
+					API_URI: process.env.API_URI
 				}
 			}
 		}))

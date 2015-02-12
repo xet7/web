@@ -399,9 +399,16 @@ var __Promise = (function (func, obj) {
 			progress = 10;
 			loadScripts(CHECKER)
 				.then(() => {
-					window.checker.check();
+					var checker = window.checkerFactory(Promise);
+					console.log('checker', checker);
+					checker.check()
+						.catch(e => {
+							console.error(e);
+							self.setProgressText(LB_FAIL);
+						});
 				})
 				.catch(e => {
+					console.error(e);
 					self.setProgressText(LB_FAIL);
 				});
 		};

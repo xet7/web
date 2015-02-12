@@ -1,6 +1,6 @@
 var chan = require('chan');
 
-angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $rootScope, $timeout, $scope, $state, $translate, co, translate, crypto, cryptoKeys, user, inbox, contacts, loader) {
+angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $rootScope, $timeout, $scope, $state, $translate, LavaboomAPI, co, translate, crypto, cryptoKeys, user, inbox, contacts, loader) {
 	var translations = {};
 	var translationsCh = chan();
 
@@ -21,6 +21,8 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 	$scope.initializeApplication = () => co(function *(){
 		console.log('main app: processing $scope.initializeApplication()');
 		try {
+			var connectionPromise = LavaboomAPI.connect();
+
 			if (!$rootScope.isInitialized)
 				yield translationsCh;
 
@@ -34,6 +36,7 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 
 			loader.incProgress(translations.LB_AUTHENTICATING, 5);
 
+			yield connectionPromise;
 			yield user.gatherUserInformation();
 
 			loader.incProgress(translations.LB_LOADING_EMAILS, 5);
