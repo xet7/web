@@ -233,6 +233,11 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		}));
 	};
 
+	this.getKeyForEmail = (email) => co(function * () {
+		var r = yield apiProxy(['keys', 'get'], email);
+		return r.body.key;
+	});
+
 	this.send = (to, cc, bcc, subject, body, attachments, thread_id = null) => co(function * () {
 		var res = yield apiProxy(['keys', 'get'], to);
 		var publicKey = res.body.key;
