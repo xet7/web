@@ -6,7 +6,7 @@ angular.module(primaryApplicationName).controller('CtrlEmailList', function($sco
 	$scope.selectedTid = $stateParams.threadId;
 	$scope.emails = [];
 
-	if ($scope.selectedTid !== null) {
+	if ($scope.selectedTid) {
 
 		var t = $timeout(() => {
 			$scope.isLoading = true;
