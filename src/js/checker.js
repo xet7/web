@@ -3,6 +3,7 @@
 	var token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
 
 	var Checker = function (url, Promise) {
+		console.log('checker', url);
 		this.check = () => new Promise((resolve, reject) => {
 			if (token) {
 				var api = new Lavaboom(url, null, Promise);

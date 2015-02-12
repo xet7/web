@@ -19,6 +19,7 @@ angular.module(primaryApplicationName).factory('Label', function() {
 
 		var unreadFromServer = opt.unread_threads_count;
 		var unreadThreads = {};
+		var readThreads = {};
 
 		this.threadsUnread = unreadFromServer;
 
@@ -27,7 +28,7 @@ angular.module(primaryApplicationName).factory('Label', function() {
 				return;
 
 			unreadThreads[tid] = true;
-			self.threadsUnread = unreadFromServer + Object.keys(unreadThreads).length;
+			self.threadsUnread = unreadFromServer + Object.keys(unreadThreads).length - Object.keys(readThreads).length;
 		};
 	};
 
