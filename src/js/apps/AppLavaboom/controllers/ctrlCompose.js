@@ -1,10 +1,17 @@
-angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateParams, consts, co, user, contacts, inbox, router, Attachment, Contact) {
+angular.module('AppLavaboom').controller('CtrlCompose', function($rootScope, $scope, $stateParams, $translate, consts, co, user, contacts, inbox, router, Attachment, Contact) {
 	$scope.isXCC = false;
 
 	var threadId = $stateParams.replyThreadId;
 	var toEmail = $stateParams.to;
 
 	$scope.attachments = [];
+
+	var translations = {};
+
+	$rootScope.$bind('$translateChangeSuccess', () => {
+		translations.LB_PRIVATE = $translate.instant('MAIN.COMPOSE.LB_PRIVATE');
+		translations.LB_BUSINESS = $translate.instant('MAIN.COMPOSE.LB_BUSINESS');
+	});
 
 	var processAttachment = (attachmentStatus) => co(function *() {
 		attachmentStatus.status = 'reading';
@@ -113,7 +120,25 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateP
 	$scope.$bind('contacts-changed', () => {
 		var toEmailContact = toEmail ? new Contact({email: toEmail}) : null;
 
-		$scope.people = contacts.peopleList.concat(toEmailContact ? [toEmailContact] : []);
+		$scope.people = contacts.peopleList.reduce((a, c) => {
+			if (c.privateEmails)
+				c.privateEmails.forEach(e => {
+					var newContact = angular.copy(c);
+					newContact.label = translations.LB_PRIVATE;
+					newContact.email = e.email;
+					a.push(newContact);
+				});
+
+			if (c.businessEmails)
+				c.businessEmails.forEach(e => {
+					var newContact = angular.copy(c);
+					newContact.label = translations.LB_BUSINESS;
+					newContact.email = e.email;
+					a.push(newContact);
+				});
+
+			return a;
+		}, []).concat(toEmailContact ? [toEmailContact] : []);
 
 		var bindUserSignature = () => {
 			if (user.settings.isSignatureEnabled && user.settings.signatureHtml)

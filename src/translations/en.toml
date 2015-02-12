@@ -179,6 +179,8 @@
 	PLC_SELECT_PERSON = "Select person..."
 	LB_EMAIL = "email"
 	LB_SUBJECT = "Subject"
+	LB_PRIVATE = "private"
+	LB_BUSINESS = "business"
 
 [MAIN.SETTINGS.MENU]
 	KEYS = "Keys"
