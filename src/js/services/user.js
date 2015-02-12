@@ -116,7 +116,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		return co(function * (){
 			try {
 				restoreAuth();
-				
+
 				var res = yield apiProxy(['tokens', 'create'], {
 					type: 'auth',
 					username: username,

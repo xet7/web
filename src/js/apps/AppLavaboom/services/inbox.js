@@ -175,6 +175,24 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		[threadId]
 	);
 
+	this.setThreadReadStatus = (threadId) => co(function *(){
+		if (self.threads[threadId].is_read)
+			return;
+
+		yield apiProxy(['threads', 'update'], threadId, {
+			is_read: true,
+			labels: self.threads[threadId].labels
+		});
+
+		self.threads[threadId].is_read = true;
+
+		var labels = yield self.getLabels();
+		self.labelsByName = labels.byName;
+		self.labelsById = labels.byId;
+
+		$rootScope.$broadcast('inbox-labels');
+	});
+
 	this.getLabels = () => co(function *() {
 		var labels = (yield apiProxy(['labels', 'list'])).body.labels;
 

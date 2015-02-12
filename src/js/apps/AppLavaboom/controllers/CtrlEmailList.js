@@ -6,20 +6,33 @@ angular.module(primaryApplicationName).controller('CtrlEmailList', function($sco
 	$scope.selectedTid = $stateParams.threadId;
 	$scope.emails = [];
 
-	if ($scope.selectedTid) {
+	$scope.whenInitialized(() => {
+		if ($scope.selectedTid) {
+			var t = $timeout(() => {
+				$scope.isLoading = true;
+			}, consts.LOADER_SHOW_DELAY);
 
-		var t = $timeout(() => {
-			$scope.isLoading = true;
-		}, consts.LOADER_SHOW_DELAY);
+			$scope.emails = [];
+			inbox.getEmailsByThreadId($scope.selectedTid)
+				.then(emails => {
+					$scope.emails = emails;
+				})
+				.finally(() => {
+					$timeout.cancel(t);
+					$scope.isLoading = false;
+				});
+		}
 
-		$scope.emails = [];
-		inbox.getEmailsByThreadId($scope.selectedTid)
-			.then(emails => {
-				$scope.emails = emails;
-			})
-			.finally(() => {
-				$timeout.cancel(t);
-				$scope.isLoading = false;
-			});
-	}
+		var markAsReadTimeout = null;
+
+		if ($scope.selectedTid)
+			markAsReadTimeout = $timeout(() => {
+				inbox.setThreadReadStatus($scope.selectedTid);
+			}, consts.SET_READ_AFTER_TIMEOUT);
+
+		$scope.$on('$destroy', () => {
+			if (markAsReadTimeout)
+				$timeout.cancel(markAsReadTimeout);
+		});
+	});
 });
