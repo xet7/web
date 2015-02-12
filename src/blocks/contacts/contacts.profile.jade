@@ -1,8 +1,10 @@
-.filters.row.no-gutter.lava-icon-row
+.filters.row.no-gutter.lava-icon-row.ng-cloak
 .main-view
-	.row.main-panel.ng-cloak(ng-controller="CtrlContactsProfile")
-		form.settings.col-md-12.col-md-offset-6.col-xs-22.col-xs-offset-1
-			h4(ng-bind="details.name")
+	.row.main-panel
+		section.pane-status(ng-show="!details") {{'MAIN.CONTACTS.LB_NOTHING_FOUND' | translate}}
+		form.settings.col-md-12.col-md-offset-6.col-xs-22.col-xs-offset-1(name="__form", ng-show="details", ng-submit="__form.$valid && saveThisContact()", novalidate)
+			h4(ng-show="details.isNew", ng-bind="details.name | defaultValue:('MAIN.CONTACTS.LB_NEW_CONTACT' | translate)")
+			h4(ng-show="!details.isNew", ng-bind="details.name | defaultValue:('MAIN.CONTACTS.LB_CONTACT_NAME' | translate)")
 			.row
 				.col-md-12.col-xs-24
 					img.thumbnail.img-responsive(src="/img/avatar.svg")
@@ -10,62 +12,32 @@
 					ul.list-group
 						li.list-group-item
 							.text-control.block
-								input.form-control(type="text", placeholder="{{'GLOBAL.PLC_FIRST_NAME' | translate}}", ng-model="details.firstName")
+								input.form-control(type="text", name="firstName", placeholder="{{'GLOBAL.PLC_FIRST_NAME' | translate}}", ng-model="details.firstName", required, minlength="2")
 						li.list-group-item
 							.text-control.block
-								input.form-control(type="text", placeholder="{{'GLOBAL.PLC_LAST_NAME' | translate}}", ng-model="details.lastName")
+								input.form-control(type="text", name="lastName", placeholder="{{'GLOBAL.PLC_LAST_NAME' | translate}}", ng-model="details.lastName", required, minlength="2")
 						li.list-group-item
 							.text-control.block
-								input.form-control(type="text", placeholder="{{'GLOBAL.PLC_DISPLAY_NAME' | translate}}", ng-model="details.name")
+								input.form-control(type="text", name="displayName", placeholder="{{'GLOBAL.PLC_DISPLAY_NAME' | translate}}", ng-model="details.name", required, minlength="2")
 						li.list-group-item
 							.text-control.block
-								input.form-control(type="text", placeholder="{{'GLOBAL.PLC_COMPANY_NAME' | translate}}", ng-model="details.companyName")
-
-			div(ng-repeat="email in emails track by email.email")
-				h4(ng-show="email.type == 'business'") {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}
-				h4(ng-show="email.type == 'private'") {{'MAIN.CONTACTS.TITLE_PRIVATE_EMAIL' | translate}}
-				ul.list-group
-					li.list-group-item
-						div.input-group
-							input.form-control(type="email", ng-model="email.email")
-							div.input-group-btn
-								button.btn.tggl(type="button", ng-model="email.isStar", btn-checkbox="", btn-checkbox-true="1", btn-checkbox-false="0")
-									span.icon-star-outline
-								a.btn
-									span.icon-lock
-					li.list-group-item
-						div
-							div.input-group.with-label
-								label {{'MAIN.CONTACTS.LB_KEY_ID' | translate}}
-								input.form-control(type="text", ng-model="email.key.keyId")
-								div.input-group-btn
-									button.btn.btn-default(ng-click="email.isCollapsed = !email.isCollapsed")
-										span.icon-chevron-down
-						div.child-item(collapse="email.isCollapsed")
-							.text-control
-								label {{'MAIN.CONTACTS.LB_LENGTH' | translate}}
-								input.field-icon.form-control(disabled="", ng-model="email.key.length")
-							.text-control
-								label {{'MAIN.CONTACTS.LB_ALGORITHMS' | translate}}
-								input.field-icon.form-control(disabled="", ng-model="email.key.algos")
-							.text-control
-								label {{'MAIN.CONTACTS.LB_PUBLIC_KEY' | translate}}
-								input.field-icon.form-control(disabled="", ng-model="email.key.fingerprint")
-							div
-								div.input-group.with-label
-									label {{'MAIN.CONTACTS.LB_DOWNLOAD_PUBLIC_KEY' | translate}}
-									div.input-group-btn
-										button.btn.btn-default(ng-click="downloadPublicKey(email.key)")
-											span.icon-arrow-down
-				//- h4(ng-show="email.type == 'business'") {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}
-				//- h4(ng-show="email.type == 'private'") {{'MAIN.CONTACTS.TITLE_PRIVATE_EMAIL' | translate}}
-				a.btn.btn-lg.btn-default.btn-block.btn-icon(type="button", ng-show="email.type == 'private'")
-							span.icon-plus
-							| add new {{'MAIN.CONTACTS.TITLE_PRIVATE_EMAIL' | translate}}
-				a.btn.btn-lg.btn-default.btn-block.btn-icon(type="button", ng-show="email.type == 'business'")
-							span.icon-plus
-							| add new {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}
+								input.form-control(type="text", name="companyName", placeholder="{{'GLOBAL.PLC_COMPANY_NAME' | translate}}", ng-model="details.companyName")
 			hr.spacer
-			a.btn.btn-lg.btn-danger.btn-block.btn-icon.text-center(type="button")
-						span.icon-trash
-						| {{'MAIN.CONTACTS.DELETE_CONTACT' | translate}}
+			button.btn.btn-lg.btn-success.btn-block.btn-icon.text-center(type="submit") {{'MAIN.CONTACTS.BTN_SAVE_CONTACT' | translate}}
+			button.btn.btn-lg.btn-danger.btn-block.btn-icon.text-center(type="button", ng-click="deleteThisContact()")
+				span.icon-trash
+				| {{'MAIN.CONTACTS.BTN_DELETE_CONTACT' | translate}}
+			div
+				h4 {{'MAIN.CONTACTS.TITLE_PRIVATE_EMAIL' | translate}}
+				ul.list-group(ng-repeat="currentEmail in details.privateEmails", ng-controller="CtrlContactProfileEmail")
+					include ./_contacts.profile.email.jade
+				button.btn.btn-lg.btn-default.btn-block.btn-icon(type="button", ng-click="addNewPrivateEmail()")
+					span.icon-plus
+					| {{'MAIN.CONTACTS.BTN_ADD_PRIVATE_EMAIL' | translate}}
+			div
+				h4 {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}
+				ul.list-group(ng-repeat="currentEmail in details.businessEmails", ng-controller="CtrlContactProfileEmail")
+					include ./_contacts.profile.email.jade
+				button.btn.btn-lg.btn-default.btn-block.btn-icon(type="button", ng-click="addNewBusinessEmail()")
+					span.icon-plus
+					| {{'MAIN.CONTACTS.BTN_ADD_BUSINESS_EMAIL' | translate}}

@@ -1,0 +1,15 @@
+.cell.label
+	label #{defs.label}:
+.cell.fields
+	ui-select(multiple="", theme="bootstrap", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}",
+		tagging="tagTransform", tagging-tokens="tagginTokens", ng-model="#{defs.model}")
+		ui-select-match(placeholder="{{'MAIN.COMPOSE.PLC_SELECT_PERSON' | translate}}", ng-class="$item.name")
+			| {{$item.name}} &#60;{{$item.email}}&#62; ({{$item.label}} )
+			span(class="icon-lock sec-{{$item.sec}}")
+		ui-select-choices(repeat="person in people | propsFilter: {name: $select.search, email: $select.search}")
+			div(ng-show="person.isTag", ng-bind-html="person.name + ' ' + $select.taggingLabel | highlight: $select.search")
+			div(ng-show="!person.isTag", ng-bind-html="person.name + ' (' + person.firstName + ' ' + person.lastName + ')' | highlight: $select.search")
+			small
+				| {{person.label}} {{'MAIN.COMPOSE.LB_EMAIL' | translate}}: {{person.email}}
+				span(class="icon-lock sec-{{person.sec}}")
+	span.icon-close.pull-right(ng-click="#{defs.click}")

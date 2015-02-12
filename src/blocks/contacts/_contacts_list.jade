@@ -1,19 +1,21 @@
-#contacts-list.list-pane.ng-cloak(ng-controller="CtrlContacts")
+#contacts-list.list-pane.ng-cloak(ng-controller="CtrlContactList")
 	.filters.row.no-gutter.lava-icon-row.z2
 		label.search-icon.col-xs-3(for="top-search")
 			span.icon-search
 		input#top-search.search.col-xs-13(placeholder="{{'MAIN.CONTACTS.PLC_SEARCH_CONTACTS' | translate}}", ng-model="searchText")
 		.lava-icon-wrapper.col-xs-8.text-right
-			a(href="#")
+			a(href="#", ng-click="newContact()", ng-autodisable)
 				span.icon-plus
 			a(href="#")
 				span.icon-star
 	.list-group-wrapper.scrollable.z1
 		ul.list-group
-			section(ng-repeat="(alpha, contacts) in sortedPeople")
-				li.separator.list-group-item(ng-show="contacts", ng-bind="alpha")
-				li.list-group-item(ng-repeat="contact in contacts | filter: searchText", ng-class="{active: selectedContactId && selectedContactId == contact.id}")
+			section.pane-status(ng-show="letters.length < 1") {{'MAIN.CONTACTS.LB_NOTHING_FOUND' | translate}}
+			section(ng-repeat="alpha in letters")
+				li.separator.list-group-item(ng-bind="alpha")
+				li.list-group-item(ng-repeat="contact in people[alpha] | filter: searchText", ng-class="{active: selectedContactId == contact.id}")
 					a(ng-class="'sec-' + contact.sec", ui-sref="main.contacts.profile({contactId: contact.id})")
-						span(ng-bind="contact.name")
+						span(ng-show="contact.isNew", ng-bind="contact.name | defaultValue:('MAIN.CONTACTS.LB_NEW_CONTACT' | translate)")
+						span(ng-show="!contact.isNew", ng-bind="contact.name | defaultValue:('MAIN.CONTACTS.LB_CONTACT_NAME' | translate)")
 						span.sec-icon.icon-lock(ng-show="contact.isSecured")
 						span.sec-icon.icon-unlock(ng-show="!contact.isSecured")
