@@ -113,7 +113,7 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($scope, $stateP
 	$scope.$bind('contacts-changed', () => {
 		var toEmailContact = toEmail ? new Contact({email: toEmail}) : null;
 
-		$scope.people = contacts.people.concat(toEmailContact ? [toEmailContact] : []);
+		$scope.people = contacts.peopleList.concat(toEmailContact ? [toEmailContact] : []);
 
 		var bindUserSignature = () => {
 			if (user.settings.isSignatureEnabled && user.settings.signatureHtml)

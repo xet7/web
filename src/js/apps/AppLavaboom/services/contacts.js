@@ -16,7 +16,14 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 			return emptyContact;
 
 		var id = 'new';
-		emptyContact = new Contact({id: id, isSecured: true, isNew: true, name: 'New contact'});
+		emptyContact = new Contact({
+			id: id,
+			isSecured: true,
+			isNew: true,
+			name: 'New contact',
+			privateEmails: [],
+			businessEmails: []
+		});
 		self.peopleById[id] = emptyContact;
 		self.peopleList.unshift(emptyContact);
 
@@ -42,16 +49,19 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 
 	this.createContact = (contact) => co(function *() {
 		var envelope = yield Contact.toEnvelope(contact);
-		return yield apiProxy(['contacts', 'create'], envelope);
+		var r = yield apiProxy(['contacts', 'create'], envelope);
+		return r.body.contact.id;
 	});
 
 	this.updateContact = (contact) => co(function *() {
 		var envelope = yield Contact.toEnvelope(contact);
-		return yield apiProxy(['contacts', 'update'], contact.id, envelope);
+		var r = yield apiProxy(['contacts', 'update'], contact.id, envelope);
+		return r.body.contact.id;
 	});
 
 	this.deleteContact = (contactId) => co(function *() {
-		if (emptyContact && contactId != emptyContact.id)
+		console.log('deleting contact', contactId, 'empty contact?', emptyContact);
+		if (!emptyContact || contactId != emptyContact.id)
 			yield apiProxy(['contacts', 'delete'], contactId);
 		else
 			emptyContact = null;
