@@ -1,4 +1,4 @@
-- var model = '';
+- var defs = {};
 div#compose-wrapper
 	form#compose
 		.filters.row.no-gutter.lava-icon-row.z1
@@ -12,26 +12,14 @@ div#compose-wrapper
 
 		header#compose-header
 			.table-list
-				.cell.label
-					label {{'MAIN.COMPOSE.LB_TO' | translate}}:
-				.cell.fields
-					- model='form.selected.to';
-					include ./compose/_compose.email.jade
-					span.icon-close.pull-right(ng-click="clearTo()")
+				- defs = {model: "form.selected.to", label: "{{'MAIN.COMPOSE.LB_TO' | translate}}", click: "clearTo()"};
+				include ./compose/_compose.email.jade
 			.table-list(ng-show="isXCC")
-				.cell.label
-					label {{'MAIN.COMPOSE.LB_CC' | translate}}:
-				.cell.fields
-					- model='form.selected.cc';
-					include ./compose/_compose.email.jade
-					span.icon-close.pull-right(ng-click="clearCC()")
+				- defs = {model: "form.selected.cc", label: "{{'MAIN.COMPOSE.LB_CC' | translate}}", click: "clearCC()"};
+				include ./compose/_compose.email.jade
 			.table-list(ng-show="isXCC")
-				.cell.label
-					label {{'MAIN.COMPOSE.LB_BCC' | translate}}:
-				.cell.fields
-					- model='form.selected.bcc';
-					include ./compose/_compose.email.jade
-					span.icon-close.pull-right(ng-click="clearBCC()")
+				- defs = {model: "form.selected.bcc", label: "{{'MAIN.COMPOSE.LB_BCC' | translate}}", click: "clearBCC()"};
+				include ./compose/_compose.email.jade
 			.table-list
 				.cell.label
 					label {{'MAIN.COMPOSE.LB_FROM' | translate}}:
