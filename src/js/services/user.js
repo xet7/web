@@ -18,7 +18,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 	// primary key
 	this.key = null;
 
-	var token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
+	var token = null;
 	var isAuthenticated = false;
 
 	var setupUserBasicInformation = (username) => {
@@ -27,15 +27,19 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		self.nameEmail = `${self.name} <${self.email}>`;
 	};
 
+	var restoreAuth = () => {
+		token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
+
+		if (token)
+			LavaboomAPI.setAuthToken(token);
+	};
+
 	var persistAuth = (isRemember = true) => {
 		var storage = isRemember ? localStorage : sessionStorage;
 		storage.lavaboomToken = token;
 	};
 
 	this.calculateHash = (password) => (new Buffer(openpgp.crypto.hash.sha256(password), 'binary')).toString('hex');
-
-	if (token)
-		LavaboomAPI.setAuthToken(token);
 
 	this.isAuthenticated = () => token && isAuthenticated;
 
@@ -67,6 +71,8 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 	});
 
 	this.gatherUserInformation = () => co(function * () {
+		restoreAuth();
+
 		var res = yield apiProxy(['accounts', 'get'], 'me');
 
 		self.settings = res.body.user.settings ? res.body.user.settings : {};
@@ -109,6 +115,8 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 
 		return co(function * (){
 			try {
+				restoreAuth();
+				
 				var res = yield apiProxy(['tokens', 'create'], {
 					type: 'auth',
 					username: username,
@@ -142,6 +150,10 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 			delete localStorage.lavaboomToken;
 		if (sessionStorage.lavaboomToken)
 			delete sessionStorage.lavaboomToken;
+
+		LavaboomAPI.setAuthToken('');
+		isAuthenticated = false;
+		token = '';
 
 		loader.resetProgress();
 		loader.showLoader(true);
