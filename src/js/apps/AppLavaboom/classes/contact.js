@@ -15,7 +15,7 @@ angular.module(primaryApplicationName).factory('Contact', function(co, user, cry
 		};
 	};
 
-	var secureFields = ['email', 'privateEmails', 'companyEmails', 'phone', 'url', 'notes', 'isSecured'];
+	var secureFields = ['email', 'firstName', 'lastName', 'companyName', 'privateEmails', 'companyEmails', 'isSecured'];
 
 	Contact.toEnvelope = (contact) => co(function *() {
 		var envelope = yield crypto.encodeEnvelopeWithKeys({
