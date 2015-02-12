@@ -28,7 +28,7 @@
     "angular-translate-loader-static-files": "~2.5.2",
     "lodash": "~3.1.0",
     "underscore": "~1.7.0",
-    "lavaboom": "~0.2.4",
+    "lavaboom": "~0.2.5",
     "sockjs-client": "~0.3.4",
     "angular-ui-select": "~0.9.6",
     "textAngular": "~1.2.2",
