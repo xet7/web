@@ -13,7 +13,7 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($rootScope, $sc
 		translations.LB_BUSINESS = $translate.instant('MAIN.COMPOSE.LB_BUSINESS');
 	});
 
-	var processAttachment = (attachmentStatus) => co(function *() {
+	/*var processAttachment = (attachmentStatus) => co(function *() {
 		attachmentStatus.status = 'reading';
 		attachmentStatus.isCancelled = false;
 
@@ -81,18 +81,18 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($rootScope, $sc
 			}
 
 		$scope.attachments.splice(index, 1);
-	});
+	});*/
 
 	$scope.onFileDrop = (file, action) => {
-		if (_.startsWith(file.type, 'image')) return;
+		/*if (_.startsWith(file.type, 'image')) return;
 		var attachmentStatus = {
 			attachment: new Attachment(file)
 		};
 		attachmentStatus.processingPromise = processAttachment(attachmentStatus);
-		$scope.attachments.push(attachmentStatus);
+		$scope.attachments.push(attachmentStatus);*/
 	};
 
-	$scope.deleteAttachment = (attachmentStatus, index) => deleteAttachment(attachmentStatus, index);
+	//$scope.deleteAttachment = (attachmentStatus, index) => deleteAttachment(attachmentStatus, index);
 
 	$scope.send = () => co(function *() {
 		console.log('waiting for uploads to complete...');
