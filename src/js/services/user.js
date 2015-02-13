@@ -169,6 +169,8 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 	};
 
 	this.logout = () => {
+		$rootScope.$broadcast('logout');
+
 		if (localStorage.lavaboomToken)
 			delete localStorage.lavaboomToken;
 		if (sessionStorage.lavaboomToken)

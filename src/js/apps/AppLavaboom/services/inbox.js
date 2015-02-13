@@ -23,6 +23,16 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	var threadsCaches = [];
 	var emailsListCache = new Cache(defaultCacheOptions);
 
+	$rootScope.$on('logout', () => {
+		emailsListCache.invalidateAll();
+		for(let labelName in threadsCaches)
+			threadsCaches[labelName].invalidateAll();
+	});
+
+	this.invalidateEmailCache = () => {
+		emailsListCache.invalidateAll();
+	};
+
 	var handleEvent = (event) => co(function *(){
 		console.log('got server event', event);
 
@@ -165,10 +175,6 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		thread.labels = newLabels;
 		return r;
 	}));
-
-	this.invalidateEmailCache = () => {
-		emailsListCache.invalidateAll();
-	};
 
 	this.getEmailsByThreadId = (threadId) => emailsListCache.call(
 		(threadId) => co(function *() {
