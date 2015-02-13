@@ -1,11 +1,10 @@
-angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, $timeout, consts, co, apiProxy, LavaboomAPI, crypto, contacts, Cache, Email, Thread, Label) {
+angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, $timeout, consts, co, apiProxy, LavaboomAPI, user, crypto, contacts, Cache, Email, Thread, Label) {
 	var self = this;
 
 	this.offset = 0;
 	this.limit = 15;
 	this.emails = [];
 	this.selected = null;
-	this.totalEmailsCount = 0;
 
 	this.labelName = '';
 	this.labelsById = {};
@@ -23,11 +22,10 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	var threadsCaches = [];
 	var emailsListCache = new Cache(defaultCacheOptions);
 
-	$rootScope.$on('logout', () => {
-		emailsListCache.invalidateAll();
+	this.invalidateThreadCache = () => {
 		for(let labelName in threadsCaches)
 			threadsCaches[labelName].invalidateAll();
-	});
+	};
 
 	this.invalidateEmailCache = () => {
 		emailsListCache.invalidateAll();
@@ -48,11 +46,6 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			self.threadsList.unshift(thread);
 			self.threadsList = _.uniq(self.threadsList, t => t.id);
 		}
-	});
-
-	$rootScope.whenInitialized(() => {
-		LavaboomAPI.subscribe('receipt', (msg) => performsThreadsOperation(handleEvent(msg)));
-		LavaboomAPI.subscribe('delivery', (msg) => performsThreadsOperation(handleEvent(msg)));
 	});
 
 	var deleteThreadLocally = (threadId) => {
@@ -274,7 +267,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	this.send = (to, cc, bcc, subject, body, attachments, thread_id = null) => co(function * () {
 		var res = yield apiProxy(['keys', 'get'], to);
 		var publicKey = res.body.key;
-		var encryptedMessage = yield crypto.encodeWithKey(body, publicKey.key);
+		var encryptedMessage = yield crypto.encodeWithKeys(body, [publicKey.key, user.key.key]);
 
 		yield apiProxy(['emails', 'create'], {
 			to: to,
@@ -282,13 +275,19 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			bcc: bcc,
 			subject: subject,
 			body: encryptedMessage,
-			pgp_fingerprints: [publicKey.id],
+			pgp_fingerprints: [publicKey.id, user.key.id],
 			attachments: attachments,
 			thread_id: thread_id
 		});
 	});
 
-	this.scroll = () => {
-		self.isInboxLoading = true;
-	};
+	$rootScope.whenInitialized(() => {
+		LavaboomAPI.subscribe('receipt', (msg) => performsThreadsOperation(handleEvent(msg)));
+		LavaboomAPI.subscribe('delivery', (msg) => performsThreadsOperation(handleEvent(msg)));
+
+		$rootScope.$on('logout', () => {
+			self.invalidateEmailCache();
+			self.invalidateThreadCache();
+		});
+	});
 });

@@ -202,10 +202,10 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 		return yield openpgp.decryptMessage(privateKey, pgpMessage);
 	});
 
-	this.encodeWithKey = (message, publicKey) => co(function *(){
-		publicKey = openpgp.key.readArmored(publicKey).keys[0];
+	this.encodeWithKeys = (message, publicKeys) => co(function *(){
+		publicKeys = publicKeys.map(publicKey => openpgp.key.readArmored(publicKey).keys[0]);
 
-		return yield openpgp.encryptMessage(publicKey, message);
+		return yield openpgp.encryptMessage(publicKeys, message);
 	});
 
 	this.encodeEnvelopeWithKeys = (data, publicKeys, dataFieldName = 'data', prefixName = '') => co(function *(){
