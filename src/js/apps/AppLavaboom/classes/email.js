@@ -21,7 +21,7 @@ angular.module(primaryApplicationName).factory('Email', function(co, contacts, c
 		var ch = chan();
 		var isPreviewAvailable = !!envelope.preview;
 
-		var t = yield [
+		var [bodyData, previewData] = yield [
 			co.transform(crypto.decodeEnvelope(envelope.body, '', 'raw'), r => {
 				if (!isPreviewAvailable)
 					ch(r);
@@ -29,7 +29,6 @@ angular.module(primaryApplicationName).factory('Email', function(co, contacts, c
 			}),
 			isPreviewAvailable ? crypto.decodeEnvelope(envelope.preview, '', 'raw') : ch
 		];
-		var bodyData = t[0], previewData = t[1];
 
 		switch (bodyData.majorVersion) {
 			default:

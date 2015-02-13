@@ -21,7 +21,7 @@ angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $root
 			status.push(`process keys for email ${email}...`);
 			importObj.body.key_pairs[email].prv.forEach(privateKey => {
 				try {
-					var key = openpgp.key.readArmored(privateKey).keys[0];
+					var [key] = openpgp.key.readArmored(privateKey).keys;
 					crypto.keyring.privateKeys.importKey(privateKey);
 
 					status.push(`Imported private key for email '${email}...'(${key.primaryKey.fingerprint} from ${key.primaryKey.created})`);
@@ -31,7 +31,7 @@ angular.module(primaryApplicationName).service('cryptoKeys', function ($q, $root
 			});
 			importObj.body.key_pairs[email].pub.forEach(publicKey => {
 				try {
-					var key = openpgp.key.readArmored(publicKey).keys[0];
+					var [key] = openpgp.key.readArmored(publicKey).keys;
 					crypto.keyring.publicKeys.importKey(publicKey);
 
 					status.push(`Imported public key for email '${email}...'(${key.primaryKey.fingerprint} from ${key.primaryKey.created})`);
