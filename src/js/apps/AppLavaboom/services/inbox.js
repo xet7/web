@@ -265,9 +265,12 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	});
 
 	this.send = (to, cc, bcc, subject, body, attachments, thread_id = null) => co(function * () {
-		var res = yield apiProxy(['keys', 'get'], to);
-		var publicKey = res.body.key;
-		var encryptedMessage = yield crypto.encodeWithKeys(body, [publicKey.key, user.key.key]);
+		var res = yield to.map(toEmail => apiProxy(['keys', 'get'], toEmail));
+		var publicKeys = [user.key, ...res.map(r => r.body.key)];
+
+		console.log('inbox.send, publicKeys', publicKeys);
+
+		var encryptedMessage = yield crypto.encodeWithKeys(body, publicKeys.map(k => k.key));
 
 		yield apiProxy(['emails', 'create'], {
 			to: to,
@@ -275,7 +278,7 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 			bcc: bcc,
 			subject: subject,
 			body: encryptedMessage,
-			pgp_fingerprints: [publicKey.id, user.key.id],
+			pgp_fingerprints: publicKeys.map(k => k.id),
 			attachments: attachments,
 			thread_id: thread_id
 		});

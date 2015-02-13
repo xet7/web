@@ -183,27 +183,33 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 	this.decodeByListedFingerprints = (message, fingerprints) => co(function *(){
 		var pgpMessage = openpgp.message.readArmored(message);
 
-		var privateKey = fingerprints.reduce((a, fingerprint) => {
-			var privateKey = keyring.privateKeys.findByFingerprint(fingerprint);
+		var privateKeys = fingerprints
+			.map((fingerprint) => {
+				var privateKey = keyring.privateKeys.findByFingerprint(fingerprint);
 
-			if (!privateKey || !privateKey.primaryKey.isDecrypted)
-				privateKey = sessionKeyring.privateKeys.findByFingerprint(fingerprint);
+				if (!privateKey || !privateKey.primaryKey.isDecrypted)
+					privateKey = sessionKeyring.privateKeys.findByFingerprint(fingerprint);
 
-			if (!privateKey || !privateKey.primaryKey.isDecrypted)
-				privateKey = localKeyring.privateKeys.findByFingerprint(fingerprint);
+				if (!privateKey || !privateKey.primaryKey.isDecrypted)
+					privateKey = localKeyring.privateKeys.findByFingerprint(fingerprint);
 
-			if (privateKey && privateKey.primaryKey.isDecrypted)
-				return privateKey;
-		}, {});
+				if (privateKey && privateKey.primaryKey.isDecrypted)
+					return privateKey;
 
-		if (!privateKey)
+				return null;
+			}, {})
+			.filter(k => k);
+
+		if (!privateKeys || privateKeys.length < 1)
 			throw new Error('no_private_key');
 
-		return yield openpgp.decryptMessage(privateKey, pgpMessage);
+		return yield openpgp.decryptMessage(privateKeys[0], pgpMessage);
 	});
 
 	this.encodeWithKeys = (message, publicKeys) => co(function *(){
+		console.log('encodeWithKeys, publicKeys', publicKeys);
 		publicKeys = publicKeys.map(publicKey => openpgp.key.readArmored(publicKey).keys[0]);
+		console.log('encodeWithKeys, publicKeys', publicKeys);
 
 		return yield openpgp.encryptMessage(publicKeys, message);
 	});
