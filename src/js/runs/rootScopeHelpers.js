@@ -4,10 +4,6 @@ angular.module(primaryApplicationName).run(($rootScope, $translate, translate) =
 		bindHandler();
 	};
 
-	$rootScope.trustedHtml = (html) => {
-		return $sce.trustAsHtml(html);
-	};
-
 	$rootScope.switchLanguage = (langKey) => {
 		translate.switchLanguage(langKey);
 	};
