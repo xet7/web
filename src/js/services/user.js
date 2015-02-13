@@ -22,9 +22,13 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 	var isAuthenticated = false;
 
 	var setupUserBasicInformation = (username) => {
+		username = self.transformUserName(username);
+
 		self.name = username;
 		self.email = `${username}@${consts.ROOT_DOMAIN}`;
 		self.nameEmail = `${self.name} <${self.email}>`;
+
+		return username;
 	};
 
 	var restoreAuth = () => {
@@ -38,6 +42,8 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 		var storage = isRemember ? localStorage : sessionStorage;
 		storage.lavaboomToken = token;
 	};
+
+	this.transformUserName = (username) => username.split('.').join('').toLowerCase();
 
 	this.calculateHash = (password) => (new Buffer(openpgp.crypto.hash.sha256(password), 'binary')).toString('hex');
 
@@ -107,7 +113,7 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 	});
 
 	this.signIn = (username, password, isRemember, isPrivateComputer) => {
-		setupUserBasicInformation(username);
+		username = setupUserBasicInformation(username);
 
 		crypto.initialize({
 			isRememberPasswords: isRemember
