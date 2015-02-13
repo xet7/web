@@ -140,6 +140,23 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 					return;
 				}
 
+				var lastKey = res.body.keys.sort((a, b) => {
+					var aCreated = new Date(a.date_created);
+					var bCreated = new Date(b.date_created);
+					if (aCreated < bCreated) return -1;
+					if (aCreated > bCreated) return 1;
+					return 0;
+				});
+
+				try {
+					res = yield apiProxy(['keys', 'get'], self.email);
+				} catch (err) {
+					yield user.updateKey(lastKey.id);
+					res = yield apiProxy(['keys', 'get'], self.email);
+				}
+
+				self.key = res.body.key;
+
 				crypto.options.isPrivateComputer = isPrivateComputer;
 				crypto.authenticateDefault(password);
 
