@@ -139,6 +139,8 @@ angular.module(primaryApplicationName).service('user', function($q, $rootScope, 
 					$state.go('generateKeys');
 					return;
 				}
+
+				// what, why?
 				try {
 					res = yield apiProxy(['keys', 'get'], self.email);
 				} catch (err) {

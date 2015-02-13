@@ -41,9 +41,10 @@
 
 [VALIDATION]
 	LB_REQUIRED = "This field is required"
-	LB_MIN = "The code entered is too short"
+	LB_MIN = "Too short"
 	LB_EMAIL = "Enter a Valid Email"
 	LB_MATCH = "Both passwords should match"
+	LB_PASSWORD = "Password should have at least one capital letter and special symbol/digit inside"
 
 [LOADER]
 	LB_INITIALIZATION_FAILED = "Initialization failed..."
