@@ -166,6 +166,10 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		return r;
 	}));
 
+	this.invalidateEmailCache = () => {
+		emailsListCache.invalidateAll();
+	};
+
 	this.getEmailsByThreadId = (threadId) => emailsListCache.call(
 		(threadId) => co(function *() {
 			var emails = (yield apiProxy(['emails', 'list'], {thread: threadId})).body.emails;
