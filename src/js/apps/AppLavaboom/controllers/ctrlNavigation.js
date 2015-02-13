@@ -1,8 +1,6 @@
 angular.module(primaryApplicationName).controller('CtrlNavigation', function($scope, $state, inbox, user) {
 	$scope.$state = $state;
 
-	console.log('CtrlNavigation loaded');
-
 	$scope.$bind('inbox-labels', (e) => {
 		$scope.labelsByName = inbox.labelsByName;
 	});

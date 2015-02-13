@@ -7,16 +7,14 @@ angular.module(primaryApplicationName).controller('CtrlContactProfile', function
 		translations.LB_NEW_CONTACT = $translate.instant('MAIN.CONTACTS.LB_NEW_CONTACT');
 	});
 
-	$rootScope.whenInitialized(() => {
-		if ($scope.contactId == 'new') {
-			$scope.details = contacts.newContact();
-		} else {
-			$scope.details = contacts.getContactById($scope.contactId);
+	if ($scope.contactId == 'new') {
+		$scope.details = contacts.newContact();
+	} else {
+		$scope.details = contacts.getContactById($scope.contactId);
 
-			if (!$scope.details)
-				$state.go('main.contacts');
-		}
-	});
+		if (!$scope.details)
+			$state.go('main.contacts');
+	}
 
 	function ContactEmail () {
 		this.email =  '';

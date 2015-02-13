@@ -12,18 +12,16 @@ angular.module(primaryApplicationName).controller('CtrlSettingsGeneral', functio
 		$scope.notImplemented = [{name: translations.LB_NOT_IMPLEMENTED}];
 	});
 
-	$rootScope.whenInitialized(() => {
-		$scope.languages = Object.keys(translate.settings.TRANSLATIONS).reduce((a, langCode) => {
-			a.push({
-				name: translate.settings.TRANSLATIONS[langCode],
-				langCode: langCode
-			});
-			return a;
-		}, []);
-		$scope.form.selectedLanguage = $scope.languages.find(e => e.langCode == translate.getCurrentLangCode());
+	$scope.languages = Object.keys(translate.settings.TRANSLATIONS).reduce((a, langCode) => {
+		a.push({
+			name: translate.settings.TRANSLATIONS[langCode],
+			langCode: langCode
+		});
+		return a;
+	}, []);
+	$scope.form.selectedLanguage = $scope.languages.find(e => e.langCode == translate.getCurrentLangCode());
 
-		console.log('initialize CtrlSettingsGeneral', $scope.languages);
-	});
+	console.log('initialize CtrlSettingsGeneral', $scope.languages);
 
 	$scope.$watch('form.selectedLanguage', () => {
 		if ($scope.form.selectedLanguage)
