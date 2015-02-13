@@ -35,7 +35,11 @@ angular.module(primaryApplicationName).controller('CtrlGeneratingKeys', function
 			$scope.label = translations.LB_UPLOADING;
 
 			yield user.syncKeys();
-			yield user.updateKey(res.prv.primaryKey.fingerprint);
+			try {
+				yield user.updateKey(res.prv.primaryKey.fingerprint);
+			} catch (err) {
+				console.error(err);
+			}
 
 			$scope.progress = 100;
 			$scope.label = translations.LB_READY;
