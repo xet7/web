@@ -12,7 +12,6 @@ angular.module(primaryApplicationName, (globs.isProduction
 		'ui.router',
 		'pascalprecht.translate',
 		'ngMessages',
-		'angular-inview',
 		'angular-co',
 		'ngAutodisable'
 	])

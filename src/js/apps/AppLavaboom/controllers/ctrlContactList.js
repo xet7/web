@@ -46,34 +46,32 @@ angular.module(primaryApplicationName).controller('CtrlContactList', function($r
 		return peopleByLetter[pos.index].id;
 	};
 
-	$rootScope.whenInitialized(() => {
-		$scope.$bind('contacts-changed', () => {
-			var oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
+	$scope.$bind('contacts-changed', () => {
+		var oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
 
-			console.log('contacts-changed, $scope.selectedContactId', $scope.selectedContactId, 'oldContactPosition', oldContactPosition);
+		console.log('contacts-changed, $scope.selectedContactId', $scope.selectedContactId, 'oldContactPosition', oldContactPosition);
 
-			$scope.list = contacts.peopleList;
-			$scope.people = _.groupBy(contacts.peopleList, contact => {
-				if (contact.isNew)
-					return '+';
+		$scope.list = contacts.peopleList;
+		$scope.people = _.groupBy(contacts.peopleList, contact => {
+			if (contact.isNew)
+				return '+';
 
-				if (!contact.name)
-					return '?';
+			if (!contact.name)
+				return '?';
 
-				return contact.name[0];
-			});
-			$scope.letters = _.sortBy(Object.keys($scope.people), letter => letter);
-
-			if (oldContactPosition !== null)
-				$state.go('main.contacts.profile', {contactId: nextContactId(oldContactPosition)});
+			return contact.name[0];
 		});
+		$scope.letters = _.sortBy(Object.keys($scope.people), letter => letter);
 
-		$scope.newContact = () => co(function *(){
-			yield $state.go('main.contacts.profile', {contactId: 'new'});
-		});
+		if (oldContactPosition !== null)
+			$state.go('main.contacts.profile', {contactId: nextContactId(oldContactPosition)});
+	});
 
-		$scope.$bind('$stateChangeSuccess', () => {
-			$scope.selectedContactId = $stateParams.contactId;
-		});
+	$scope.newContact = () => co(function *(){
+		yield $state.go('main.contacts.profile', {contactId: 'new'});
+	});
+
+	$scope.$bind('$stateChangeSuccess', () => {
+		$scope.selectedContactId = $stateParams.contactId;
 	});
 });

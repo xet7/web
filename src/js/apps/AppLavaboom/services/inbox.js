@@ -1,5 +1,3 @@
-var chan = require('chan');
-
 angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, $timeout, consts, co, apiProxy, LavaboomAPI, crypto, contacts, Cache, Email, Thread, Label) {
 	var self = this;
 
@@ -25,20 +23,27 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 	var threadsCaches = [];
 	var emailsListCache = new Cache(defaultCacheOptions);
 
-	$timeout(() => {
-		LavaboomAPI.subscribe('receipt', (msg) => {
+	var handleEvent = (event) => co(function *(){
+		console.log('got server event', event);
 
-			co(function *(){
-				var email = yield self.getEmail(msg.id);
-				var thread = yield self.getThreadById(email.threadId);
-			});
-
+		var labelNames = event.labels.map(lid => self.labelsById[lid].name);
+		labelNames.forEach(labelName => {
+			threadsCaches[labelName].invalidateAll();
+			self.labelsByName[labelName].addUnreadThreadId(event.thread);
 		});
 
-		LavaboomAPI.subscribe('delivery', (msg) => {
-			console.log('delivery', msg);
-		});
-	}, 3000);
+		if (labelNames.indexOf(self.labelName) > -1) {
+			var thread = yield self.getThreadById(event.thread);
+			self.threads[thread.id] = thread;
+			self.threadsList.unshift(thread);
+			self.threadsList = _.uniq(self.threadsList, t => t.id);
+		}
+	});
+
+	$rootScope.whenInitialized(() => {
+		LavaboomAPI.subscribe('receipt', (msg) => performsThreadsOperation(handleEvent(msg)));
+		LavaboomAPI.subscribe('delivery', (msg) => performsThreadsOperation(handleEvent(msg)));
+	});
 
 	var deleteThreadLocally = (threadId) => {
 		if (self.threads[threadId]) {
@@ -161,6 +166,10 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		return r;
 	}));
 
+	this.invalidateEmailCache = () => {
+		emailsListCache.invalidateAll();
+	};
+
 	this.getEmailsByThreadId = (threadId) => emailsListCache.call(
 		(threadId) => co(function *() {
 			var emails = (yield apiProxy(['emails', 'list'], {thread: threadId})).body.emails;
@@ -169,6 +178,24 @@ angular.module(primaryApplicationName).service('inbox', function($q, $rootScope,
 		}),
 		[threadId]
 	);
+
+	this.setThreadReadStatus = (threadId) => co(function *(){
+		if (self.threads[threadId].is_read)
+			return;
+
+		yield apiProxy(['threads', 'update'], threadId, {
+			is_read: true,
+			labels: self.threads[threadId].labels
+		});
+
+		self.threads[threadId].is_read = true;
+
+		var labels = yield self.getLabels();
+		self.labelsByName = labels.byName;
+		self.labelsById = labels.byId;
+
+		$rootScope.$broadcast('inbox-labels');
+	});
 
 	this.getLabels = () => co(function *() {
 		var labels = (yield apiProxy(['labels', 'list'])).body.labels;

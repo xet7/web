@@ -6,8 +6,7 @@ angular.module(primaryApplicationName).controller('CtrlEmailList', function($sco
 	$scope.selectedTid = $stateParams.threadId;
 	$scope.emails = [];
 
-	if ($scope.selectedTid !== null) {
-
+	if ($scope.selectedTid) {
 		var t = $timeout(() => {
 			$scope.isLoading = true;
 		}, consts.LOADER_SHOW_DELAY);
@@ -22,4 +21,16 @@ angular.module(primaryApplicationName).controller('CtrlEmailList', function($sco
 				$scope.isLoading = false;
 			});
 	}
+
+	var markAsReadTimeout = null;
+
+	if ($scope.selectedTid)
+		markAsReadTimeout = $timeout(() => {
+			inbox.setThreadReadStatus($scope.selectedTid);
+		}, consts.SET_READ_AFTER_TIMEOUT);
+
+	$scope.$on('$destroy', () => {
+		if (markAsReadTimeout)
+			$timeout.cancel(markAsReadTimeout);
+	});
 });

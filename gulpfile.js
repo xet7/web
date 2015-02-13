@@ -15,6 +15,11 @@ if (!semver.satisfies(process.version, config.nodeVersion)) {
 	return;
 }
 
+if (!process.env.API_URI)
+	process.env.API_URI = config.defaultApiUri;
+if (!process.env.TLD)
+	process.env.TLD = config.defaultRootDomain;
+
 // system
 var crypto = require('crypto');
 var os = require('os');
@@ -105,7 +110,9 @@ var createJadePipeline = function (input, output, isTemplateCache) {
 				},
 				assets: manifest,
 				globs: {
-					isProduction: config.isProduction
+					isProduction: config.isProduction,
+					API_URI: process.env.API_URI,
+					TLD: process.env.TLD
 				}
 			}
 		}))

@@ -1,6 +1,6 @@
 var chan = require('chan');
 
-angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function($q, $rootScope, $state, $scope, $translate, translate, co, crypto, loader) {
+angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function($q, $rootScope, $state, $scope, $translate, LavaboomAPI, translate, co, crypto, loader) {
 	var translations = {};
 	var translationsCh = chan();
 
@@ -16,6 +16,8 @@ angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function(
 
 	$scope.initializeApplication = () => co(function *(){
 		try {
+			var connectionPromise = LavaboomAPI.connect();
+
 			if (!$rootScope.isInitialized)
 				yield translationsCh;
 
@@ -26,6 +28,8 @@ angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function(
 			loader.incProgress(translations.LB_INITIALIZING_OPENPGP, 5);
 
 			crypto.initialize();
+
+			yield connectionPromise;
 
 			if ($rootScope.isInitialized) {
 				yield $state.go('login', {}, {reload: true});

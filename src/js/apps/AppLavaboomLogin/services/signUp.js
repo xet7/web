@@ -8,6 +8,8 @@ angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, 
 	this.password = null;
 
 	this.register = (username, altEmail, isNews) => {
+		username = user.transformUserName(username);
+
 		self.reserve = {
 			username: username,
 			altEmail: altEmail,
@@ -25,6 +27,8 @@ angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, 
 	};
 
 	this.verifyInvite = (username, token, isNews) => {
+		username = user.transformUserName(username);
+
 		self.tokenSignup = {
 			username: username,
 			token: token,

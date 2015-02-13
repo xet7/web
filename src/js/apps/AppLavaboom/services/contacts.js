@@ -50,6 +50,14 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 	this.createContact = (contact) => co(function *() {
 		var envelope = yield Contact.toEnvelope(contact);
 		var r = yield apiProxy(['contacts', 'create'], envelope);
+
+		contact.id = r.body.contact.id;
+
+		self.peopleList.unshift(contact);
+		self.peopleById[contact.id] = contact;
+
+		$rootScope.$broadcast('contacts-changed');
+
 		return r.body.contact.id;
 	});
 

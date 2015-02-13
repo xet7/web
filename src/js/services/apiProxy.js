@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).factory('apiProxy', function($q, $rootScope, $translate, co, LavaboomAPI) {
+angular.module(primaryApplicationName).factory('apiProxy', function($q, $rootScope, $translate, co, consts, LavaboomAPI) {
 	LavaboomAPI.formatError = (callName, error) => {
 		callName = callName.toUpperCase();
 

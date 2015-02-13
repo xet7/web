@@ -7,16 +7,14 @@ angular.module(primaryApplicationName).controller('CtrlContactProfile', function
 		translations.LB_NEW_CONTACT = $translate.instant('MAIN.CONTACTS.LB_NEW_CONTACT');
 	});
 
-	$rootScope.whenInitialized(() => {
-		if ($scope.contactId == 'new') {
-			$scope.details = contacts.newContact();
-		} else {
-			$scope.details = contacts.getContactById($scope.contactId);
+	if ($scope.contactId == 'new') {
+		$scope.details = contacts.newContact();
+	} else {
+		$scope.details = contacts.getContactById($scope.contactId);
 
-			if (!$scope.details)
-				$state.go('main.contacts');
-		}
-	});
+		if (!$scope.details)
+			$state.go('main.contacts');
+	}
 
 	function ContactEmail () {
 		this.email =  '';
@@ -36,8 +34,10 @@ angular.module(primaryApplicationName).controller('CtrlContactProfile', function
 	$scope.saveThisContact = () => co(function *(){
 		if ($scope.details.id != 'new')
 			yield contacts.updateContact($scope.details);
-		else
-			$scope.details.id = yield contacts.createContact($scope.details);
+		else {
+			var cid = yield contacts.createContact($scope.details);
+			$state.go('main.contacts.profile', {contactId: cid});
+		}
 	});
 
 	$scope.deleteThisContact = () => co(function *(){

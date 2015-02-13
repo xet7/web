@@ -8,7 +8,6 @@
 
 		'../../bower_components/angular-ui-router/release/angular-ui-router.js',
 
-		'../../bower_components/angular-inview/angular-inview.js',
 		'../../bower_components/lavaboom/dist/lavaboom-angular.js',
 		'../../bower_components/file-saver/FileSaver.js',
 		'../../bower_components/angular-autodisable/angular-autodisable.js',

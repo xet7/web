@@ -1,6 +1,6 @@
 var Buffer = require('buffer/').Buffer;
 
-angular.module(primaryApplicationName).controller('CtrlSettingsSecurity', function($scope, $timeout, utils, user, crypto, cryptoKeys, apiProxy, fileReader) {
+angular.module(primaryApplicationName).controller('CtrlSettingsSecurity', function($scope, $timeout, utils, user, crypto, cryptoKeys, apiProxy, fileReader, inbox) {
 	$scope.email = user.email;
 
 	$scope.form = {
@@ -50,6 +50,7 @@ angular.module(primaryApplicationName).controller('CtrlSettingsSecurity', functi
 		fileReader.readAsText(file, $scope)
 			.then(jsonBackup => {
 				cryptoKeys.importKeys(jsonBackup);
+				inbox.invalidateEmailCache();
 			})
 			.catch(error => {
 				console.error(error);

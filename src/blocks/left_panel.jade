@@ -12,7 +12,7 @@ div#left-panel.ng-cloak
 				a(ui-sref="main.inbox.label({labelName: label.name, threadId: null})")
 					span(ng-class="label.iconClass")
 					span.action(ng-bind="label.name")
-					span.badge(ng-bind="label.emailsUnread | unread")
+					span.badge(ng-bind="label.threadsUnread | unread")
 			li.separator
 			li(ui-sref-active="active")
 				a(ui-sref="main.contacts")

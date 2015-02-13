@@ -13,7 +13,7 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($rootScope, $sc
 		translations.LB_BUSINESS = $translate.instant('MAIN.COMPOSE.LB_BUSINESS');
 	});
 
-	var processAttachment = (attachmentStatus) => co(function *() {
+	/*var processAttachment = (attachmentStatus) => co(function *() {
 		attachmentStatus.status = 'reading';
 		attachmentStatus.isCancelled = false;
 
@@ -81,18 +81,18 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($rootScope, $sc
 			}
 
 		$scope.attachments.splice(index, 1);
-	});
+	});*/
 
 	$scope.onFileDrop = (file, action) => {
-		if (_.startsWith(file.type, 'image')) return;
+		/*if (_.startsWith(file.type, 'image')) return;
 		var attachmentStatus = {
 			attachment: new Attachment(file)
 		};
 		attachmentStatus.processingPromise = processAttachment(attachmentStatus);
-		$scope.attachments.push(attachmentStatus);
+		$scope.attachments.push(attachmentStatus);*/
 	};
 
-	$scope.deleteAttachment = (attachmentStatus, index) => deleteAttachment(attachmentStatus, index);
+	//$scope.deleteAttachment = (attachmentStatus, index) => deleteAttachment(attachmentStatus, index);
 
 	$scope.send = () => co(function *() {
 		console.log('waiting for uploads to complete...');
@@ -175,7 +175,7 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($rootScope, $sc
 				},
 				fromEmails: [contacts.myself],
 				subject: 'Test subject',
-				body: '<p>Dear Orwell</p><p>Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Sed porttitor lectus nibh. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec sollicitudin molestie malesuada. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec rutrum congue leo eget malesuada. Sed porttitor lectus nibh. Curabitur aliquet quam id dui posuere blandit. Nulla porttitor accumsan tincidunt.</p><blockquote><p>See, there never was actually any spoon. It was just lying around the production set.</p></blockquote><a href="mailto:aerials@soad.com">test mailto link</a>'
+				body: ''
 			};
 
 			bindUserSignature();
