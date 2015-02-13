@@ -34,8 +34,10 @@ angular.module(primaryApplicationName).controller('CtrlContactProfile', function
 	$scope.saveThisContact = () => co(function *(){
 		if ($scope.details.id != 'new')
 			yield contacts.updateContact($scope.details);
-		else
-			$scope.details.id = yield contacts.createContact($scope.details);
+		else {
+			var cid = yield contacts.createContact($scope.details);
+			$state.go('main.contacts.profile', {contactId: cid});
+		}
 	});
 
 	$scope.deleteThisContact = () => co(function *(){
