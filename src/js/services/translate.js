@@ -1,4 +1,4 @@
-module.exports = function($rootScope, $http, $translate, co, consts) {
+module.exports = /*@ngInject*/function($rootScope, $http, $translate, co, consts) {
 	var self = this;
 
 	this.settings = {};

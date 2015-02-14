@@ -1,4 +1,4 @@
-module.exports = ($scope, $state, signUp) => {
+module.exports = /*@ngInject*/($scope, $state, signUp) => {
 	if (!signUp.tokenSignup)
 		$state.go('invite');
 

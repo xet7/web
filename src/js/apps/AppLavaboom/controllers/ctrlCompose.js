@@ -1,4 +1,4 @@
-module.exports = ($rootScope, $scope, $stateParams, $translate, consts, co, user, contacts, inbox, router, Attachment, Contact) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, consts, co, user, contacts, inbox, router, Attachment, Contact) => {
 	$scope.isXCC = false;
 
 	var threadId = $stateParams.replyThreadId;

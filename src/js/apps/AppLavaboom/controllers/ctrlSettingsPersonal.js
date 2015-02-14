@@ -1,4 +1,4 @@
-module.exports = ($scope, $timeout, user) => {
+module.exports = /*@ngInject*/($scope, $timeout, user) => {
 	$scope.name = user.name;
 	$scope.status = '';
 	$scope.settings = {};

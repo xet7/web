@@ -1,4 +1,4 @@
-module.exports = function($q, $rootScope, consts, co) {
+module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 	var self = this;
 
 	var wrapOpenpgpKeyring = (keyring) => {

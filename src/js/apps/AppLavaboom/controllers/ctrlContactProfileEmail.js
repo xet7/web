@@ -1,4 +1,4 @@
-module.exports = ($rootScope, $scope, $timeout, $interval, $translate, co, inbox) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $interval, $translate, co, inbox) => {
 	var translations = {};
 
 	$rootScope.$bind('$translateChangeSuccess', () => {

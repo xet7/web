@@ -1,6 +1,6 @@
 var Buffer = require('buffer/').Buffer;
 
-module.exports = function ($q, $rootScope, $filter, co, crypto) {
+module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto) {
 	this.importKeys = (jsonBackup) => {
 		var importObj = null;
 		try {

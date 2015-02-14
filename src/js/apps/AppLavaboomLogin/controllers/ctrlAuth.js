@@ -1,4 +1,4 @@
-module.exports = ($scope, $rootScope, $window, $interval, co, user, loader) => {
+module.exports = /*@ngInject*/($scope, $rootScope, $window, $interval, co, user, loader) => {
 	$scope.form = {
 		username: '',
 		password: '',

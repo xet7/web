@@ -1,4 +1,4 @@
-module.exports = function($q, $rootScope, co, user, crypto, LavaboomAPI, Contact) {
+module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, LavaboomAPI, Contact) {
 	var self = this;
 	var emptyContact = null;
 

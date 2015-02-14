@@ -1,4 +1,4 @@
-module.exports = ($scope, $timeout, consts, crypto) => {
+module.exports = /*@ngInject*/($scope, $timeout, consts, crypto) => {
 	var decodeTimeout = null;
 	var cryptoKey = crypto.getPrivateKeyByFingerprint($scope.key.fingerprint);
 

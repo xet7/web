@@ -5,7 +5,7 @@
  * We want to perform a OR.
  */
 
-module.exports = () => {
+module.exports = /*@ngInject*/() => {
 	return (items, props) => {
 		var out = [];
 

@@ -1,4 +1,4 @@
-module.exports = ($scope, $state, signUp, co) => {
+module.exports = /*@ngInject*/($scope, $state, signUp, co) => {
 	if (!signUp.tokenSignup || !signUp.details)
 		$state.go('login');
 

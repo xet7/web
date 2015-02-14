@@ -1,4 +1,4 @@
-module.exports = ($rootScope, $scope, $translate, $state, $stateParams, co, contacts) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts) => {
 	$scope.contactId = $stateParams.contactId;
 
 	var translations = {};

@@ -1,4 +1,4 @@
-module.exports = ($delegate, $rootScope, $translate, co) => {
+module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co) => {
 	let propsList = ['info', 'accounts', 'attachments', 'contacts', 'emails', 'labels', 'keys', 'threads', 'tokens'];
 
 	$delegate.formatError = (callName, error) => {

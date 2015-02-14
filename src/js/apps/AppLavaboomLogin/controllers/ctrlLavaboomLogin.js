@@ -1,6 +1,6 @@
 var chan = require('chan');
 
-module.exports = ($q, $rootScope, $state, $scope, $translate, LavaboomAPI, translate, co, crypto, loader) => {
+module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, LavaboomAPI, translate, co, crypto, loader) => {
 	var translations = {};
 	var translationsCh = chan();
 

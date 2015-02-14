@@ -1,4 +1,4 @@
-module.exports = (dateFilter, translateFilter) => {
+module.exports = /*@ngInject*/(dateFilter, translateFilter) => {
 	return (date) => {
 		var now = new Date();
 		var dateObj = new Date(date);

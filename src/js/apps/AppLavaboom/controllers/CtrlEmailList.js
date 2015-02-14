@@ -1,4 +1,4 @@
-module.exports = ($scope, $timeout, $stateParams, inbox, consts) => {
+module.exports = /*@ngInject*/($scope, $timeout, $stateParams, inbox, consts) => {
 	$scope.isLoading = false;
 
 	console.log('loading emails list', $stateParams.threadId);

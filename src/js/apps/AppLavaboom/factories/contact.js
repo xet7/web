@@ -1,4 +1,4 @@
-module.exports = (co, user, crypto) => {
+module.exports = /*@ngInject*/(co, user, crypto) => {
 	var Contact = function(opt) {
 		var self = this;
 

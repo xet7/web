@@ -1,4 +1,4 @@
-module.exports = ($rootScope, $translate, translate) => {
+module.exports = /*@ngInject*/($rootScope, $translate, translate) => {
 	$rootScope.$bind = (bindName, bindHandler) => {
 		$rootScope.$on(bindName, bindHandler);
 		bindHandler();

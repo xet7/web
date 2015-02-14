@@ -1,4 +1,4 @@
-module.exports = ($timeout, $state) => {
+module.exports = /*@ngInject*/($timeout, $state) => {
 	return {
 		restrict : 'A',
 		link  : function(scope, el, attrs) {

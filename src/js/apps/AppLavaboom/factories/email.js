@@ -1,6 +1,6 @@
 var chan = require('chan');
 
-module.exports = (co, contacts, crypto) => {
+module.exports = /*@ngInject*/(co, contacts, crypto) => {
 	var Email = function(opt) {
 		this.id =  opt.id;
 		this.threadId = opt.thread;

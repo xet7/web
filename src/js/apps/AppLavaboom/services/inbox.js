@@ -1,4 +1,4 @@
-module.exports = function($q, $rootScope, $timeout, consts, co, LavaboomAPI, user, crypto, contacts, Cache, Email, Thread, Label) {
+module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, LavaboomAPI, user, crypto, contacts, Cache, Email, Thread, Label) {
 	var self = this;
 
 	this.offset = 0;

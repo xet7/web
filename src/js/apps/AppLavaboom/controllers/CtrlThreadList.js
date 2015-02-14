@@ -1,4 +1,4 @@
-module.exports = ($rootScope, $document, $scope, $state, $timeout, $interval, $stateParams, user, inbox, consts) => {
+module.exports = /*@ngInject*/($rootScope, $document, $scope, $state, $timeout, $interval, $stateParams, user, inbox, consts) => {
 	$scope.labelName = $stateParams.labelName;
 	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
 	$scope.$state = $state;

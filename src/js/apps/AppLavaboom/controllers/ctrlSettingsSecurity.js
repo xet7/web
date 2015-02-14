@@ -1,4 +1,4 @@
-module.exports = ($scope, $timeout, utils, user, crypto, cryptoKeys, LavaboomAPI, fileReader, inbox) => {
+module.exports = /*@ngInject*/($scope, $timeout, utils, user, crypto, cryptoKeys, LavaboomAPI, fileReader, inbox) => {
 	$scope.email = user.email;
 
 	$scope.form = {

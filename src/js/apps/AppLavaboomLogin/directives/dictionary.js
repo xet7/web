@@ -1,5 +1,5 @@
 var Levenshtein = require('levenshtein');
-module.exports = ($http, $q) => {
+module.exports = /*@ngInject*/($http, $q) => {
 	var words = {};
 
 	return {

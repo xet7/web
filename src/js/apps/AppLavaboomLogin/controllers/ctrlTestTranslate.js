@@ -1,2 +1,2 @@
-module.exports = function($scope) {
+module.exports = /*@ngInject*/function($scope) {
 };

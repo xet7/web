@@ -1,4 +1,4 @@
-module.exports = function($timeout) {
+module.exports = /*@ngInject*/function($timeout) {
 	return {
 		link: function ( scope, element, attrs ) {
 			scope.$watch( attrs.focus, function ( val ) {

@@ -245,7 +245,7 @@ var browserifyBundle = function(filename) {
 				utils.logGulpError('Browserify compile error:', file.path, err);
 			});
 
-			var ownCodebaseTransform = function(transform) {
+			var ownCodebaseTransform = function(transform, name) {
 				return filterTransform(
 					function(file) {
 						return file.indexOf(path.resolve(__dirname, paths.scripts.inputFolder)) > -1;

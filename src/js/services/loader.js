@@ -1,4 +1,4 @@
-module.exports = function() {
+module.exports = /*@ngInject*/function() {
 	var loader = window.loader;
 
 	this.loadMainApplication = (opts) => {

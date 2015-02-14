@@ -1,4 +1,4 @@
-module.exports = () => {
+module.exports = /*@ngInject*/() => {
 	return {
 		require: 'ngModel',
 		link: function(scope, elem, attrs, ngModel) {

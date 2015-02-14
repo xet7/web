@@ -14,9 +14,11 @@ function AngularApplication (applicationName) {
 
 		if (bulks.decorators) {
 			for (let decoratorName of Object.keys(bulks.decorators)) {
-				applicationModule.config(($provide) => {
+				// @ngInject
+				let provider = ($provide) => {
 					$provide.decorator(decoratorName, bulks.decorators[decoratorName]);
-				});
+				};
+				applicationModule.config(provider);
 			}
 		}
 

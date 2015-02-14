@@ -1,6 +1,6 @@
 var Buffer = require('buffer/').Buffer;
 
-module.exports = function($q, $rootScope, $state, $timeout, $window, $translate, consts, LavaboomAPI, co, crypto, cryptoKeys, loader) {
+module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window, $translate, consts, LavaboomAPI, co, crypto, cryptoKeys, loader) {
 	var self = this;
 
 	var translations = {};

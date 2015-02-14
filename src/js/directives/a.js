@@ -1,4 +1,4 @@
-module.exports = () => {
+module.exports = /*@ngInject*/() => {
 	return {
 		restrict: 'E',
 		link: (scope, elem, attrs) => {
