@@ -41,7 +41,7 @@ module.exports = {
 	},
 	staticFiles: 'src/static/**',
 	vendor: {
-		input: 'src/vendor/*.js',
+		input: 'src/vendor/*',
 		output: output + 'vendor/'
 	},
 	translations : {
