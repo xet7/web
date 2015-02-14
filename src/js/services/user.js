@@ -88,7 +88,12 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 		yield self.syncKeys();
 
-		res = yield LavaboomAPI.keys.get(self.email);
+		try {
+			res = yield LavaboomAPI.keys.get(self.email);
+		} catch (err) {
+			yield $state.go('generateKeys');
+			return;
+		}
 		self.key = res.body.key;
 
 		if (!isAuthenticated) {
@@ -136,7 +141,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 				res = yield LavaboomAPI.keys.list(self.name);
 				if (!res.body.keys || res.body.keys.length < 1) {
-					$state.go('generateKeys');
+					yield $state.go('generateKeys');
 					return;
 				}
 
@@ -144,7 +149,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 				try {
 					res = yield LavaboomAPI.keys.get(self.email);
 				} catch (err) {
-					$state.go('generateKeys');
+					yield $state.go('generateKeys');
 					return;
 				}
 
