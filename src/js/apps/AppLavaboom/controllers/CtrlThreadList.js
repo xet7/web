@@ -22,7 +22,7 @@ angular.module(primaryApplicationName).controller('CtrlThreadList',
 
 		$scope.searchFilter = (thread) => {
 			var searchText = $scope.searchText.toLowerCase();
-			return thread.subject.toLowerCase().contains(searchText) || thread.members.some(m => m.toLowerCase().contains(searchText));
+			return thread.subject.toLowerCase().includes(searchText) || thread.members.some(m => m.toLowerCase().includes(searchText));
 		};
 
 		$scope.$bind(`inbox-threads[${$scope.labelName}]`, () => {
