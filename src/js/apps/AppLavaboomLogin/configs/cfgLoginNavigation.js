@@ -46,7 +46,7 @@ module.exports = ($stateProvider, $urlRouterProvider, $locationProvider) => {
 		.state('verifyInvite', {
 			url: '/verifyInvite',
 			templateUrl: 'partials/login/verifyInvite.html',
-			controller:'VerifyController'
+			controller:'CtrlVerify'
 		})
 
 		.state('plan', {
