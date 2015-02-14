@@ -1,6 +1,6 @@
 angular.module(primaryApplicationName).constant('consts', {
-	API_URI: process.env.API_URI ? process.env.API_URI : 'https://api.lavaboom.co',
-	ROOT_DOMAIN: process.env.TLD ? process.env.TLD : 'lavaboom.co',
+	API_URI: process.env.API_URI,
+	ROOT_DOMAIN: process.env.TLD,
 	DEFAULT_LANG: 'en',
 	DEFAULT_KEY_LENGTH: 2048,
 	ESTIMATED_KEY_GENERATION_TIME_SECONDS: 24,
