@@ -6,7 +6,6 @@ angular.module(primaryApplicationName).controller('CtrlSettingsPersonal',
 
 		$scope.$bind('user-settings', () => {
 			$scope.settings = user.settings;
-			console.log('$scope.settings', $scope.settings);
 		});
 
 		var clearTimeout = null;
