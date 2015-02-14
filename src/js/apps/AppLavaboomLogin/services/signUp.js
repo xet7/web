@@ -1,5 +1,5 @@
 angular.module(primaryApplicationName).service('signUp',
-	function(apiProxy, co, user) {
+	function(LavaboomAPI, co, user) {
 		var self = this;
 
 		this.reserve = null;
@@ -18,7 +18,7 @@ angular.module(primaryApplicationName).service('signUp',
 			};
 
 			return co(function * (){
-				var res = yield apiProxy(['accounts', 'create', 'register'], {
+				var res = yield LavaboomAPI.accounts.create.register({
 					username: username,
 					alt_email: altEmail
 				});
@@ -37,7 +37,7 @@ angular.module(primaryApplicationName).service('signUp',
 			};
 
 			return co(function * (){
-				var res = yield apiProxy(['accounts', 'create', 'verify'], {
+				var res = yield LavaboomAPI.accounts.create.verify({
 					username: self.tokenSignup.username,
 					invite_code: self.tokenSignup.token
 				});
@@ -49,7 +49,7 @@ angular.module(primaryApplicationName).service('signUp',
 		this.setup = (password) => {
 			self.password = password;
 			return co(function * (){
-				yield apiProxy(['accounts', 'create', 'setup'], {
+				yield LavaboomAPI.accounts.create.setup({
 					username: self.tokenSignup.username,
 					invite_code: self.tokenSignup.token,
 					password: user.calculateHash(password)
