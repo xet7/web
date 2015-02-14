@@ -1,50 +1,51 @@
-angular.module(primaryApplicationName).service('router', function ($rootScope, $state, $modal, $timeout) {
-	var self = this;
+angular.module(primaryApplicationName).service('router',
+	function ($rootScope, $state, $modal, $timeout) {
+		var self = this;
 
-	var isInitialized = false;
-	var delayedPopup = null;
+		var isInitialized = false;
+		var delayedPopup = null;
 
-	$rootScope.whenInitialized(() => {
-		isInitialized = true;
-		if (delayedPopup) {
-			delayedPopup.windowClass = 'no-animation-modal';
-			self.createPopup(delayedPopup);
-			delayedPopup = null;
-		}
-	});
-
-	this.currentModal = null;
-
-	this.createPopup = (opts) => {
-		if (isInitialized) {
-			self.currentModal = $modal.open(opts);
-			self.currentModal.result
-				.then(() => {
-					self.hidePopup();
-				})
-				.catch(() => {
-					self.hidePopup();
-				});
-		} else delayedPopup = opts;
-	};
-
-	this.showPopup = (stateName, params, onClose = null) => {
-		stateName = `.popup.${stateName}`;
-
-		$state.go(self.getPrimaryStateName($state.current.name) + stateName);
-	};
-
-	this.hidePopup = () => {
-		if (self.currentModal) {
-			self.currentModal.close();
-			self.currentModal = null;
-		}
-		$timeout(() => {
-			$state.go(self.getPrimaryStateName($state.current.name));
+		$rootScope.whenInitialized(() => {
+			isInitialized = true;
+			if (delayedPopup) {
+				delayedPopup.windowClass = 'no-animation-modal';
+				self.createPopup(delayedPopup);
+				delayedPopup = null;
+			}
 		});
-	};
 
-	this.isPopupState = (name) => name.indexOf('.popup.') > 0;
+		this.currentModal = null;
 
-	this.getPrimaryStateName = (name) => name.replace(/\.popup\..+/, '');
-});
+		this.createPopup = (opts) => {
+			if (isInitialized) {
+				self.currentModal = $modal.open(opts);
+				self.currentModal.result
+					.then(() => {
+						self.hidePopup();
+					})
+					.catch(() => {
+						self.hidePopup();
+					});
+			} else delayedPopup = opts;
+		};
+
+		this.showPopup = (stateName, params, onClose = null) => {
+			stateName = `.popup.${stateName}`;
+
+			$state.go(self.getPrimaryStateName($state.current.name) + stateName);
+		};
+
+		this.hidePopup = () => {
+			if (self.currentModal) {
+				self.currentModal.close();
+				self.currentModal = null;
+			}
+			$timeout(() => {
+				$state.go(self.getPrimaryStateName($state.current.name));
+			});
+		};
+
+		this.isPopupState = (name) => name.indexOf('.popup.') > 0;
+
+		this.getPrimaryStateName = (name) => name.replace(/\.popup\..+/, '');
+	});

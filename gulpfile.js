@@ -306,6 +306,9 @@ gulp.task('lint:scripts', function () {
 		.pipe(plg.jshint({
 			esnext: true,
 			noyield: true,
+			indent: 4,
+			maxdepth: 5,
+			maxlen: 140,
 			'-W002': false,
 			'-W014': false
 		}))

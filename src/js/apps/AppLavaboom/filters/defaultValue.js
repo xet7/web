@@ -1,3 +1,4 @@
-angular.module(primaryApplicationName) .filter('defaultValue', () => {
-	return (v, defaultValue) => v ? v : defaultValue;
-});
+angular.module(primaryApplicationName) .filter('defaultValue',
+	() => {
+		return (v, defaultValue) => v ? v : defaultValue;
+	});
