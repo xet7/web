@@ -1,15 +1,14 @@
-angular.module(primaryApplicationName).controller('CtrlPassword',
-	function($scope, $state, signUp, co) {
-		if (!signUp.tokenSignup || !signUp.details)
-			$state.go('login');
+module.exports = ($scope, $state, signUp, co) => {
+	if (!signUp.tokenSignup || !signUp.details)
+		$state.go('login');
 
-		$scope.form = {
-			password: '',
-			passwordConfirm: ''
-		};
+	$scope.form = {
+		password: '',
+		passwordConfirm: ''
+	};
 
-		$scope.updatePassword = () => co(function *(){
-			yield signUp.setup($scope.form.password);
-			yield $state.go('generateKeys');
-		});
+	$scope.updatePassword = () => co(function *(){
+		yield signUp.setup($scope.form.password);
+		yield $state.go('generateKeys');
 	});
+};

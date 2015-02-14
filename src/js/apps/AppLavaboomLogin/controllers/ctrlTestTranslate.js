@@ -1,3 +1,2 @@
-angular.module(primaryApplicationName).controller('CtrlTestTranslate',
-	function($scope) {
-	});
+module.exports = function($scope) {
+};

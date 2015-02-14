@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).service('crypto', function($q, $rootScope, consts, co) {
+module.exports = function($q, $rootScope, consts, co) {
 	var self = this;
 
 	var wrapOpenpgpKeyring = (keyring) => {
@@ -276,4 +276,4 @@ angular.module(primaryApplicationName).service('crypto', function($q, $rootScope
 			minorVersion: envelope[`${prefixName}version_minor`]
 		};
 	});
-});
+};

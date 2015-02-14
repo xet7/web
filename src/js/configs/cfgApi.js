@@ -1,4 +1,3 @@
-angular.module(primaryApplicationName).config(
-	function(LavaboomAPIProvider, consts){
-		LavaboomAPIProvider.url = consts.API_URI;
-	});
+module.exports = (LavaboomAPIProvider, consts) => {
+	LavaboomAPIProvider.url = consts.API_URI;
+};

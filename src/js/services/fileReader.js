@@ -1,37 +1,36 @@
-angular.module(primaryApplicationName).service('fileReader',
-	function ($rootScope, $q) {
-		var getReader = function(deferred, opts) {
-			var reader = new FileReader();
+module.exports = function ($rootScope, $q) {
+	var getReader = function(deferred, opts) {
+		var reader = new FileReader();
 
-			reader.onload = () => deferred.resolve(reader.result);
-			reader.onerror = () => deferred.reject(reader.result);
+		reader.onload = () => deferred.resolve(reader.result);
+		reader.onerror = () => deferred.reject(reader.result);
 
-			if (opts && opts.fileProgress)
-				reader.onprogress = event => $rootScope.$apply(() => {
-					opts.fileProgress({
-						total: event.total,
-						loaded: event.loaded
-					});
+		if (opts && opts.fileProgress)
+			reader.onprogress = event => $rootScope.$apply(() => {
+				opts.fileProgress({
+					total: event.total,
+					loaded: event.loaded
 				});
+			});
 
-			return reader;
-		};
+		return reader;
+	};
 
-		this.readAsDataURL = (file, opts = {}) => {
-			var deferred = $q.defer();
+	this.readAsDataURL = (file, opts = {}) => {
+		var deferred = $q.defer();
 
-			var reader = getReader(deferred, opts);
-			reader.readAsDataURL(file);
+		var reader = getReader(deferred, opts);
+		reader.readAsDataURL(file);
 
-			return deferred.promise;
-		};
+		return deferred.promise;
+	};
 
-		this.readAsText = (file, opts = {}) => {
-			var deferred = $q.defer();
+	this.readAsText = (file, opts = {}) => {
+		var deferred = $q.defer();
 
-			var reader = getReader(deferred, opts);
-			reader.readAsText(file);
+		var reader = getReader(deferred, opts);
+		reader.readAsText(file);
 
-			return deferred.promise;
-		};
-	});
+		return deferred.promise;
+	};
+};

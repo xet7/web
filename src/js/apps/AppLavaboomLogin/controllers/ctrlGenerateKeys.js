@@ -1,5 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlGenerateKeys',
-	function($scope, $state, user, signUp, crypto) {
-		if (!user.isAuthenticated())
-			$state.go('login');
-	});
+module.exports = ($scope, $state, user, signUp, crypto) => {
+	if (!user.isAuthenticated())
+		$state.go('login');
+};
