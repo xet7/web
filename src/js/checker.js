@@ -13,7 +13,7 @@
 					.then(() => {
 						api.accounts.get('me').then(res => {
 							console.log('checker: accounts.get(me) success', res);
-							api.keys.get(res.body.user.name)
+							api.keys.get(`${res.body.user.name}@${globs.TLD}`)
 								.then(res => {
 									console.log('checker: keys.get success', res);
 									loader.loadMainApplication();
