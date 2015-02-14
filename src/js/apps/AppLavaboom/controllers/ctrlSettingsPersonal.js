@@ -29,7 +29,7 @@ angular.module(primaryApplicationName).controller('CtrlSettingsPersonal',
 						.then(() => {
 							$scope.status = 'saved!';
 						})
-						.catch(err => {
+						.catch(() => {
 							$scope.status = 'ops...';
 						});
 				}, 1000);

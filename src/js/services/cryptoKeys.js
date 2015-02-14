@@ -2,8 +2,6 @@ var Buffer = require('buffer/').Buffer;
 
 angular.module(primaryApplicationName).service('cryptoKeys',
 	function ($q, $rootScope, $filter, co, apiProxy, crypto) {
-		var self = this;
-
 		this.importKeys = (jsonBackup) => {
 			var importObj = null;
 			try {
@@ -19,14 +17,12 @@ angular.module(primaryApplicationName).service('cryptoKeys',
 			Object.keys(importObj.body.key_pairs).forEach(email => {
 				importObj.body.key_pairs[email].prv.forEach(privateKey => {
 					try {
-						var [key] = openpgp.key.readArmored(privateKey).keys;
 						crypto.keyring.privateKeys.importKey(privateKey);
 					} catch (error) {
 					}
 				});
 				importObj.body.key_pairs[email].pub.forEach(publicKey => {
 					try {
-						var [key] = openpgp.key.readArmored(publicKey).keys;
 						crypto.keyring.publicKeys.importKey(publicKey);
 					} catch (error) {
 					}

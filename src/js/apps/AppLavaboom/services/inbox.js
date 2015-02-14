@@ -124,7 +124,6 @@ angular.module(primaryApplicationName).service('inbox',
 			var currentLabelName = self.labelName;
 
 			var labelId = self.labelsByName[labelName].id;
-			var thread = self.threads[threadId];
 
 			for(let c in threadsCaches)
 				threadsCaches[c].invalidateAll();

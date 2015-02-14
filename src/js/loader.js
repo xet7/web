@@ -1,5 +1,7 @@
-var __Promise = (function (func, obj) {
-	/* jshint ignore:start */
+var __Promise = null;
+
+/* jshint ignore:start */
+__Promise = (function (func, obj) {
 	// Type checking utility function
 	function is(type, item) { return (typeof item)[0] == type; }
 
@@ -124,8 +126,8 @@ var __Promise = (function (func, obj) {
 	};
 
 	return Promise;
-	/* jshint ignore:end */
 })('f', 'o');
+/* jshint ignore:end */
 
 ((Promise, assets, globs) => {
 	const
@@ -270,7 +272,7 @@ var __Promise = (function (func, obj) {
 			currentProgress,
 			progress;
 
-		var showContainer = (e, lbDone, isImmediate = false) => new Promise((resolve, reject) => {
+		var showContainer = (e, lbDone, isImmediate = false) => new Promise((resolve) => {
 			if (e.container != LOADER.container)
 				self.setProgress(lbDone ? lbDone : LB_DONE, 100);
 

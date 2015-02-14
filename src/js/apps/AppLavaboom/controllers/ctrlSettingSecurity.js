@@ -1,5 +1,3 @@
-var Buffer = require('buffer/').Buffer;
-
 angular.module(primaryApplicationName).controller('CtrlSettingsSecurity',
 	function($scope, $timeout, utils, user, crypto, cryptoKeys, apiProxy, fileReader, inbox) {
 		$scope.email = user.email;

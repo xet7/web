@@ -329,6 +329,8 @@ gulp.task('lint:scripts', function () {
 				console: true
 			},
 			undef: true,
+			latedef: true,
+			unused: 'vars',
 			'-W002': false,
 			'-W014': false
 		}))
