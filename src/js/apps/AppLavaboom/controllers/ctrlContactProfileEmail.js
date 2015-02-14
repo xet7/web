@@ -27,7 +27,7 @@ angular.module(primaryApplicationName).controller('CtrlContactProfileEmail',
 
 		$scope.downloadPublicKey = () => {
 			console.log('downloadPublicKey', $scope.currentEmail);
-			var blob = new Blob([$scope.currentEmail.key.key], {type: "text/plain;charset=utf-8"});
+			var blob = new Blob([$scope.currentEmail.key.key], {type: 'text/plain;charset=utf-8'});
 			saveAs(blob, `${$scope.currentEmail.email}-publicKey.txt`);
 		};
 

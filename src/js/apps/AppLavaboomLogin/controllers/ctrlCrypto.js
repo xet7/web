@@ -27,7 +27,7 @@ angular.module(primaryApplicationName).controller('CtrlCrypto',
 			$scope.srcEmails = emails;
 		});
 
-		$scope.text = "Hi! I'm super secret message about cats! Did you know that cats are going to conquer the world?... No seriously!";
+		$scope.text = 'Hi! I\'m super secret message about cats! Did you know that cats are going to conquer the world?... No seriously!';
 		$scope.error = '';
 
 		$scope.passwords = {};
@@ -118,7 +118,7 @@ angular.module(primaryApplicationName).controller('CtrlCrypto',
 
 		$scope.exportKeys = () => {
 			var keysBackup = cryptoKeys.exportKeys();
-			var blob = new Blob([keysBackup], {type: "text/json;charset=utf-8"});
+			var blob = new Blob([keysBackup], {type: 'text/json;charset=utf-8'});
 			saveAs(blob, cryptoKeys.getExportFilename(keysBackup));
 		};
 	});

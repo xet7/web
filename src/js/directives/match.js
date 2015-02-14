@@ -1,13 +1,13 @@
 angular.module(primaryApplicationName).directive('match',
 	() => {
 		return {
-			require: "ngModel",
+			require: 'ngModel',
 			scope: {
-				otherModelValue: "=match"
+				otherModelValue: '=match'
 			},
 			link: (scope, element, attributes, ngModel) => {
 				ngModel.$validators.match = modelValue => modelValue == scope.otherModelValue;
-				scope.$watch("otherModelValue", () => ngModel.$validate());
+				scope.$watch('otherModelValue', () => ngModel.$validate());
 			}
 		};
 	});

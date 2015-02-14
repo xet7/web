@@ -309,6 +309,12 @@ gulp.task('lint:scripts', function () {
 			indent: 4,
 			maxdepth: 5,
 			maxlen: 140,
+			maxstatements: 50,
+			newcap: true,
+			noempty: true,
+			nonbsp: true,
+			nonew: true,
+			quotmark: 'single',
 			'-W002': false,
 			'-W014': false
 		}))
