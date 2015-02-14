@@ -1,5 +1,5 @@
 angular.module(primaryApplicationName).controller('CtrlSettingsSecurity',
-	function($scope, $timeout, utils, user, crypto, cryptoKeys, apiProxy, fileReader, inbox) {
+	function($scope, $timeout, utils, user, crypto, cryptoKeys, LavaboomAPI, fileReader, inbox) {
 		$scope.email = user.email;
 
 		$scope.form = {
@@ -30,7 +30,7 @@ angular.module(primaryApplicationName).controller('CtrlSettingsSecurity',
 
 		$scope.changePassword = () => {
 			$scope.isProcessing = true;
-			apiProxy(['accounts', 'update'], 'me', {
+			LavaboomAPI.accounts.update('me', {
 				current_password: user.calculateHash($scope.form.oldPassword),
 				new_password: user.calculateHash($scope.form.password)
 			})

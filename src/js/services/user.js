@@ -1,7 +1,7 @@
 var Buffer = require('buffer/').Buffer;
 
 angular.module(primaryApplicationName).service('user',
-	function($q, $rootScope, $state, $timeout, $window, $translate, consts, apiProxy, LavaboomAPI, co, app, crypto, cryptoKeys, loader) {
+	function($q, $rootScope, $state, $timeout, $window, $translate, consts, LavaboomAPI, co, app, crypto, cryptoKeys, loader) {
 		var self = this;
 
 		var translations = {};
@@ -51,7 +51,7 @@ angular.module(primaryApplicationName).service('user',
 		this.isAuthenticated = () => token && isAuthenticated;
 
 		this.syncKeys = () => co(function *(){
-			var res = yield apiProxy(['keys', 'list'], self.name);
+			var res = yield LavaboomAPI.keys.list(self.name);
 
 			var keysByFingerprint = res.body.keys ? res.body.keys.reduce((a, k) => {
 				a[k.id] = k;
@@ -68,7 +68,7 @@ angular.module(primaryApplicationName).service('user',
 					if (!keysByFingerprint[key.primaryKey.fingerprint]) {
 						console.log(`Importing key with fingerprint '${key.primaryKey.fingerprint}' to the server...`);
 
-						keysCreationPromises.push(apiProxy(['keys', 'create'], key.armor()));
+						keysCreationPromises.push(LavaboomAPI.keys.create(key.armor()));
 					} else
 						console.log(`Key with fingerprint '${key.primaryKey.fingerprint}' already imported...`);
 				});
@@ -80,7 +80,7 @@ angular.module(primaryApplicationName).service('user',
 		this.gatherUserInformation = () => co(function * () {
 			restoreAuth();
 
-			var res = yield apiProxy(['accounts', 'get'], 'me');
+			var res = yield LavaboomAPI.accounts.get('me');
 
 			self.settings = res.body.user.settings ? res.body.user.settings : {};
 			$rootScope.$broadcast('user-settings');
@@ -89,7 +89,7 @@ angular.module(primaryApplicationName).service('user',
 
 			yield self.syncKeys();
 
-			res = yield apiProxy(['keys', 'get'], self.email);
+			res = yield LavaboomAPI.keys.get(self.email);
 			self.key = res.body.key;
 
 			if (!isAuthenticated) {
@@ -102,13 +102,13 @@ angular.module(primaryApplicationName).service('user',
 
 		this.update = (settings) => {
 			angular.extend(self.settings, settings);
-			return apiProxy(['accounts', 'update'], 'me', {
+			return LavaboomAPI.accounts.update('me', {
 				settings: self.settings
 			});
 		};
 
 		this.updateKey = (fingerprint) => co(function * () {
-			return yield apiProxy(['accounts', 'update'], 'me', {
+			return yield LavaboomAPI.accounts.update('me', {
 				public_key: fingerprint
 			});
 		});
@@ -124,7 +124,7 @@ angular.module(primaryApplicationName).service('user',
 				try {
 					restoreAuth();
 
-					var res = yield apiProxy(['tokens', 'create'], {
+					var res = yield LavaboomAPI.tokens.create({
 						type: 'auth',
 						username: username,
 						password: self.calculateHash(password)
@@ -135,7 +135,7 @@ angular.module(primaryApplicationName).service('user',
 					persistAuth(isRemember);
 					isAuthenticated = true;
 
-					res = yield apiProxy(['keys', 'list'], self.name);
+					res = yield LavaboomAPI.keys.list(self.name);
 					if (!res.body.keys || res.body.keys.length < 1) {
 						$state.go('generateKeys');
 						return;
@@ -143,7 +143,7 @@ angular.module(primaryApplicationName).service('user',
 
 					// what, why?
 					try {
-						res = yield apiProxy(['keys', 'get'], self.email);
+						res = yield LavaboomAPI.keys.get(self.email);
 					} catch (err) {
 						$state.go('generateKeys');
 						return;

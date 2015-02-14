@@ -1,5 +1,5 @@
 angular.module(primaryApplicationName).service('inbox',
-	function($q, $rootScope, $timeout, consts, co, apiProxy, LavaboomAPI, user, crypto, contacts, Cache, Email, Thread, Label) {
+	function($q, $rootScope, $timeout, consts, co, LavaboomAPI, user, crypto, contacts, Cache, Email, Thread, Label) {
 		var self = this;
 
 		this.offset = 0;
@@ -69,7 +69,7 @@ angular.module(primaryApplicationName).service('inbox',
 		var getThreadsByLabelName = (labelName) => co(function *() {
 			var label = self.labelsByName[labelName];
 
-			var threads = (yield apiProxy(['threads', 'list'], {
+			var threads = (yield LavaboomAPI.threads.list({
 				label: label.id,
 				attachments_count: true,
 				sort: '-date_modified',
@@ -95,7 +95,7 @@ angular.module(primaryApplicationName).service('inbox',
 		});
 
 		this.getThreadById = (threadId) => co(function *() {
-			var thread = (yield apiProxy(['threads', 'get'], threadId)).body.thread;
+			var thread = (yield LavaboomAPI.threads.get(threadId)).body.thread;
 
 			return thread ? new Thread(thread) : null;
 		});
@@ -111,7 +111,7 @@ angular.module(primaryApplicationName).service('inbox',
 			var r;
 			var lbs = thread.labels;
 			if (lbs.indexOf(trashLabelId) > -1 || lbs.indexOf(spamLabelId) > -1 || lbs.indexOf(draftsLabelId) > -1)
-				r = yield apiProxy(['threads', 'delete'], threadId);
+				r = yield LavaboomAPI.threads.delete(threadId);
 			else
 				r = yield self.requestSetLabel(threadId, 'Trash');
 
@@ -128,7 +128,7 @@ angular.module(primaryApplicationName).service('inbox',
 			for(let c in threadsCaches)
 				threadsCaches[c].invalidateAll();
 
-			var r =  yield apiProxy(['threads', 'update'], threadId, {labels: [labelId]});
+			var r =  yield LavaboomAPI.threads.update(threadId, {labels: [labelId]});
 
 			if (labelName != currentLabelName)
 				deleteThreadLocally(threadId);
@@ -145,7 +145,7 @@ angular.module(primaryApplicationName).service('inbox',
 				threadsCaches[labelName].invalidateAll();
 
 				var newLabels = thread.removeLabel(labelName);
-				var r = yield apiProxy(['threads', 'update'], threadId, {labels: newLabels});
+				var r = yield LavaboomAPI.threads.update(threadId, {labels: newLabels});
 
 				if (self.labelName == 'Starred')
 					deleteThreadLocally(threadId);
@@ -164,7 +164,7 @@ angular.module(primaryApplicationName).service('inbox',
 			threadsCaches[labelName].invalidateAll();
 
 			var newLabels = thread.addLabel(labelName);
-			var r = yield apiProxy(['threads', 'update'], threadId, {labels: newLabels});
+			var r = yield LavaboomAPI.threads.update(threadId, {labels: newLabels});
 
 			thread.labels = newLabels;
 			return r;
@@ -172,7 +172,7 @@ angular.module(primaryApplicationName).service('inbox',
 
 		this.getEmailsByThreadId = (threadId) => emailsListCache.call(
 			(threadId) => co(function *() {
-				var emails = (yield apiProxy(['emails', 'list'], {thread: threadId})).body.emails;
+				var emails = (yield LavaboomAPI.emails.list({thread: threadId})).body.emails;
 
 				return yield (emails ? emails : []).map(e => Email.fromEnvelope(e));
 			}),
@@ -183,7 +183,7 @@ angular.module(primaryApplicationName).service('inbox',
 			if (self.threads[threadId].is_read)
 				return;
 
-			yield apiProxy(['threads', 'update'], threadId, {
+			yield LavaboomAPI.threads.update(threadId, {
 				is_read: true,
 				labels: self.threads[threadId].labels
 			});
@@ -198,7 +198,7 @@ angular.module(primaryApplicationName).service('inbox',
 		});
 
 		this.getLabels = () => co(function *() {
-			var labels = (yield apiProxy(['labels', 'list'])).body.labels;
+			var labels = (yield LavaboomAPI.labels.list()).body.labels;
 
 			threadsCaches = [];
 			return labels.reduce((a, label) => {
@@ -212,7 +212,7 @@ angular.module(primaryApplicationName).service('inbox',
 			var labels = yield self.getLabels();
 
 			if (!labels.byName.Drafts) {
-				yield apiProxy(['labels', 'create'], {name: 'Drafts'});
+				yield LavaboomAPI.labels.create({name: 'Drafts'});
 				labels = yield self.getLabels();
 			}
 
@@ -225,15 +225,15 @@ angular.module(primaryApplicationName).service('inbox',
 		});
 
 		this.uploadAttachment = (envelope) => co(function *(){
-			return yield apiProxy(['attachments', 'create'], envelope);
+			return yield LavaboomAPI.attachments.create(envelope);
 		});
 
 		this.deleteAttachment = (attachmentId) => co(function *(){
-			return yield apiProxy(['attachments', 'delete'], attachmentId);
+			return yield LavaboomAPI.attachments.delete(attachmentId);
 		});
 
 		this.getEmail = (emailId) => co(function *(){
-			var r = yield apiProxy(['emails', 'get'], emailId);
+			var r = yield LavaboomAPI.emails.get(emailId);
 
 			return r.body.email ? new Email(r.body.email) : null;
 		});
@@ -261,19 +261,19 @@ angular.module(primaryApplicationName).service('inbox',
 		};
 
 		this.getKeyForEmail = (email) => co(function * () {
-			var r = yield apiProxy(['keys', 'get'], email);
+			var r = yield LavaboomAPI.keys.get(email);
 			return r.body.key;
 		});
 
 		this.send = (to, cc, bcc, subject, body, attachments, thread_id = null) => co(function * () {
-			var res = yield to.map(toEmail => apiProxy(['keys', 'get'], toEmail));
+			var res = yield to.map(toEmail => LavaboomAPI.keys.get(toEmail));
 			var publicKeys = [user.key, ...res.map(r => r.body.key)];
 
 			console.log('inbox.send, publicKeys', publicKeys);
 
 			var encryptedMessage = yield crypto.encodeWithKeys(body, publicKeys.map(k => k.key));
 
-			yield apiProxy(['emails', 'create'], {
+			yield LavaboomAPI.emails.create({
 				to: to,
 				cc: cc,
 				bcc: bcc,

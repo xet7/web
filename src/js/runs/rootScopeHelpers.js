@@ -10,6 +10,11 @@ angular.module(primaryApplicationName).run(
 		};
 
 		$rootScope.isInitialized = false;
+		$rootScope.currentErrorMessage = '';
+
+		$rootScope.$on('$stateChangeSuccess', () => {
+			$rootScope.currentErrorMessage = '';
+		});
 
 		$rootScope.whenInitialized = (initializer) => {
 			console.log('whenInitialized', $rootScope.isInitialized);

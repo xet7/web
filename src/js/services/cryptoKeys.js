@@ -1,7 +1,7 @@
 var Buffer = require('buffer/').Buffer;
 
 angular.module(primaryApplicationName).service('cryptoKeys',
-	function ($q, $rootScope, $filter, co, apiProxy, crypto) {
+	function ($q, $rootScope, $filter, co, crypto) {
 		this.importKeys = (jsonBackup) => {
 			var importObj = null;
 			try {
