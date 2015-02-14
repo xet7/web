@@ -94,7 +94,6 @@ angular.module(primaryApplicationName).config(
 
 			.state('importKeys', {
 				url: '/importKeys',
-				templateUrl: 'partials/login/importKey.html',
-				controller: 'CtrlImport'
+				templateUrl: 'partials/login/importKey.html'
 			});
 	});
