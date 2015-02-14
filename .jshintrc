@@ -17,6 +17,7 @@
 		"openpgp": true,
 		"saveAs": true,
 		"Lavaboom": true,
+		"Symbol": true,
 
 		"globs": true,
 		"assets": true,
