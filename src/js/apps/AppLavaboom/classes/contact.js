@@ -11,12 +11,12 @@ angular.module(primaryApplicationName).factory('Contact',
 			if (!this.name && this.email)
 				this.name = this.email.split('@')[0].trim();
 
-			this.isMatchEmail = (email) => {
-				return self.privateEmails.indexOf(email) > -1 || self.companyEmails.indexOf(email) > -1;
-			};
+			this.isMatchEmail = (email) =>
+				(self.privateEmails && self.privateEmails.indexOf(email) > -1) ||
+				(self.businessEmails && self.businessEmails.indexOf(email) > -1);
 		};
 
-		var secureFields = ['email', 'firstName', 'lastName', 'companyName', 'privateEmails', 'companyEmails', 'isSecured'];
+		var secureFields = ['email', 'firstName', 'lastName', 'companyName', 'privateEmails', 'businessEmails', 'isSecured'];
 
 		Contact.toEnvelope = (contact) => co(function *() {
 			var envelope = yield crypto.encodeEnvelopeWithKeys({
