@@ -48,7 +48,7 @@ angular.module(primaryApplicationName).config(
 				let originalFunction = obj[k];
 
 				obj[k] = (...args) => {
-					console.log(`!Calling ${callName}`, args ? args : '[no args]', '...');
+					console.log(`Calling ${callName}`, args ? args : '[no args]', '...');
 					return co(function *() {
 						try {
 							let res = yield originalFunction(...args);
@@ -60,7 +60,7 @@ angular.module(primaryApplicationName).config(
 							var formattedError = yield $delegate.formatError(callName, err);
 							$rootScope.currentErrorMessage = formattedError;
 
-							console.error(`!${callName} error: `, err);
+							console.error(`${callName} error: `, err);
 
 							var error =  new Error(formattedError);
 							error.original = err;
@@ -74,7 +74,7 @@ angular.module(primaryApplicationName).config(
 				if (angular.isFunction(obj[k])) {
 					var callName = [...path, k].join('.');
 
-					console.log('patching LavaboomAPI', callName);
+					//console.log('patching LavaboomAPI', callName);
 					patchApiMethod(obj, k, callName);
 				} else
 					wrapApiObject([...path, k], obj[k]);
