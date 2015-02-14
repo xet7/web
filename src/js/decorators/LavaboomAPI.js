@@ -51,7 +51,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co) => {
 				try {
 					let res = yield originalFunction(...args);
 
-					console.log(`!${callName}: `, res);
+					console.log(`${callName}: `, res);
 
 					return res;
 				} catch (err) {
