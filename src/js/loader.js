@@ -326,7 +326,7 @@ __Promise = (function (func, obj) {
 			var rootScope = angular.element(app.container).scope();
 			rootScope.$apply(() => {
 				console.log('loader: calling rootScope.initializeApplication()');
-				rootScope.initializeApplication()
+				rootScope.initializeApplication(opts)
 					.then(r => {
 						console.log('loader: initialized application', app.appName, 'with result', r);
 

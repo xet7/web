@@ -76,7 +76,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		yield keysCreationPromises;
 	});
 
-	this.gatherUserInformation = () => co(function * () {
+	this.authenticate = () => co(function * () {
 		restoreAuth();
 
 		var res = yield LavaboomAPI.accounts.get('me');
@@ -86,14 +86,17 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 		setupUserBasicInformation(res.body.user.name);
 
+		if (!isAuthenticated) {
+			isAuthenticated = true;
+			$rootScope.$broadcast('user-authenticated');
+		}
+	});
+
+	this.gatherUserInformation = () => co(function * () {
+		yield self.authenticate();
 		yield self.syncKeys();
 
-		try {
-			res = yield LavaboomAPI.keys.get(self.email);
-		} catch (err) {
-			yield $state.go('generateKeys');
-			return;
-		}
+		var res = yield LavaboomAPI.keys.get(self.email);
 		self.key = res.body.key;
 
 		if (!isAuthenticated) {

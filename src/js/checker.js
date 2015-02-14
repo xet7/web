@@ -12,11 +12,18 @@
 				api.connect()
 					.then(() => {
 						api.accounts.get('me').then(res => {
-							console.log('checker: accounts.me success', res);
-							loader.loadMainApplication();
-							resolve();
+							console.log('checker: accounts.get(me) success', res);
+							api.keys.get(res.body.user.name)
+								.then(res => {
+									console.log('checker: keys.get success', res);
+									loader.loadMainApplication();
+								})
+								.catch(err => {
+									console.log('checker: keys.get error', err);
+									loader.loadLoginApplication({state: 'generateKeys'});
+								});
 						}).catch(function(err) {
-							console.log('checker: accounts.me error', err);
+							console.log('checker: accounts.get(me) error', err);
 							loader.loadLoginApplication();
 							resolve();
 						});

@@ -1,6 +1,6 @@
 var chan = require('chan');
 
-module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, LavaboomAPI, translate, co, crypto, loader) => {
+module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, LavaboomAPI, translate, co, crypto, loader, user) => {
 	var translations = {};
 	var translationsCh = chan();
 
@@ -14,8 +14,9 @@ module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, Lavab
 			translationsCh(true);
 	});
 
-	$scope.initializeApplication = () => co(function *(){
+	$scope.initializeApplication = (opts) => co(function *(){
 		try {
+			console.log('initializeApplication', opts);
 			var connectionPromise = LavaboomAPI.connect();
 
 			if (!$rootScope.isInitialized)
@@ -35,6 +36,10 @@ module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, Lavab
 				yield $state.go('login', {}, {reload: true});
 			} else {
 				$rootScope.isInitialized = true;
+				if (opts && opts.state == 'generateKeys') {
+					yield user.authenticate();
+					yield $state.go('generateKeys');
+				}
 				return {lbDone: translations.LB_SUCCESS};
 			}
 		} catch (error) {
