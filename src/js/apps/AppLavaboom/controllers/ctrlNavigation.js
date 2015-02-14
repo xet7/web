@@ -1,15 +1,16 @@
-angular.module(primaryApplicationName).controller('CtrlNavigation', function($scope, $state, inbox, user) {
-	$scope.$state = $state;
+angular.module(primaryApplicationName).controller('CtrlNavigation',
+	function($scope, $state, inbox, user) {
+		$scope.$state = $state;
 
-	$scope.$bind('inbox-labels', (e) => {
-		$scope.labelsByName = inbox.labelsByName;
+		$scope.$bind('inbox-labels', () => {
+			$scope.labelsByName = inbox.labelsByName;
+		});
+
+		$scope.composeTest = () => {
+			inbox.send(user.email, 'test PGP subject', 'test PGP body');
+		};
+
+		$scope.logout = () => {
+			user.logout();
+		};
 	});
-
-	$scope.composeTest = () => {
-		inbox.send(user.email, 'test PGP subject', 'test PGP body');
-	};
-
-	$scope.logout = () => {
-		user.logout();
-	};
-});

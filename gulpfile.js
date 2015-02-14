@@ -306,6 +306,31 @@ gulp.task('lint:scripts', function () {
 		.pipe(plg.jshint({
 			esnext: true,
 			noyield: true,
+			indent: 4,
+			maxdepth: 5,
+			maxlen: 140,
+			maxstatements: 50,
+			newcap: true,
+			noempty: true,
+			nonbsp: true,
+			nonew: true,
+			quotmark: 'single',
+			browserify: true,
+			globals: {
+				_: true,
+				angular: true,
+				openpgp: true,
+				saveAs: true,
+				Lavaboom: true,
+
+				globs: true,
+				assets: true,
+				primaryApplicationName: true,
+				console: true
+			},
+			undef: true,
+			latedef: true,
+			unused: 'vars',
 			'-W002': false,
 			'-W014': false
 		}))
