@@ -1,5 +1,5 @@
-/* jshint ignore:start */
 var __Promise = (function (func, obj) {
+	/* jshint ignore:start */
 	// Type checking utility function
 	function is(type, item) { return (typeof item)[0] == type; }
 
@@ -124,8 +124,8 @@ var __Promise = (function (func, obj) {
 	};
 
 	return Promise;
+	/* jshint ignore:end */
 })('f', 'o');
-/* jshint ignore:end */
 
 ((Promise, assets, globs) => {
 	const

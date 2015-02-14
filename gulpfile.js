@@ -315,6 +315,20 @@ gulp.task('lint:scripts', function () {
 			nonbsp: true,
 			nonew: true,
 			quotmark: 'single',
+			browserify: true,
+			globals: {
+				_: true,
+				angular: true,
+				openpgp: true,
+				saveAs: true,
+				Lavaboom: true,
+
+				globs: true,
+				assets: true,
+				primaryApplicationName: true,
+				console: true
+			},
+			undef: true,
 			'-W002': false,
 			'-W014': false
 		}))
