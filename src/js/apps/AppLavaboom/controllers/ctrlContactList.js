@@ -51,8 +51,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 
 		console.log('contacts-changed, $scope.selectedContactId', $scope.selectedContactId, 'oldContactPosition', oldContactPosition);
 
-		$scope.list = contacts.peopleList;
-		$scope.people = _.groupBy(contacts.peopleList, contact => {
+		$scope.list = contacts.peopleList.filter(c => !c.isPrivate());
+		$scope.people = _.groupBy($scope.list, contact => {
 			if (contact.isNew)
 				return '+';
 

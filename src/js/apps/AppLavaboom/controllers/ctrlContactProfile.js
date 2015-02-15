@@ -12,7 +12,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 	} else {
 		$scope.details = contacts.getContactById($scope.contactId);
 
-		if (!$scope.details)
+		if (!$scope.details || $scope.details.isPrivate())
 			$state.go('main.contacts');
 	}
 

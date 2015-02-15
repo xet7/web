@@ -264,8 +264,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 		return r.body.key;
 	});
 
-	this.send = (...args) => co(function * () {
-		var envelope = yield Email.toEnvelope(...args);
+	this.send = (opts) => co(function * () {
+		var envelope = yield Email.toEnvelope(opts);
 
 		var res = yield LavaboomAPI.emails.create(envelope);
 

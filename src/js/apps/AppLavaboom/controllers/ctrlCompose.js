@@ -11,6 +11,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 	$rootScope.$bind('$translateChangeSuccess', () => {
 		translations.LB_PRIVATE = $translate.instant('MAIN.COMPOSE.LB_PRIVATE');
 		translations.LB_BUSINESS = $translate.instant('MAIN.COMPOSE.LB_BUSINESS');
+		translations.LB_HIDDEN = $translate.instant('MAIN.COMPOSE.LB_HIDDEN');
 	});
 
 	/*var processAttachment = (attachmentStatus) => co(function *() {
@@ -97,15 +98,34 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 	$scope.send = () => co(function *() {
 		yield $scope.attachments.map(a => a.processingPromise);
 
+		let to = $scope.form.selected.to.map(e => e.email),
+			cc = $scope.form.selected.cc.map(e => e.email),
+			bcc = $scope.form.selected.bcc.map(e => e.email);
+
 		yield inbox.send({
-			to: $scope.form.selected.to.map(e => e.email),
-			cc: $scope.form.selected.cc.map(e => e.email),
-			bcc: $scope.form.selected.bcc.map(e => e.email),
+			to,
+			cc,
+			bcc,
 			subject: $scope.form.subject,
 			body: $scope.form.body,
 			attachmentIds: $scope.attachments.map(a => a.id),
-			threadId: threadId
+			threadId
 		});
+
+		let emails = new Set([
+			...to,
+			...cc,
+			...bcc
+		]).values();
+
+		yield [...emails]
+			.filter(email => !contacts.getContactByEmail(email))
+			.map(email =>
+				contacts.createContact(new Contact({
+					isSecured: true,
+					email
+				}))
+		);
 
 		router.hidePopup();
 	});
@@ -130,6 +150,13 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 					newContact.email = e.email;
 					a.push(newContact);
 				});
+
+			if (c.email) {
+				var newContact = angular.copy(c);
+				newContact.label = translations.LB_HIDDEN;
+				newContact.email = c.email;
+				a.push(newContact);
+			}
 
 			return a;
 		}, []).concat(toEmailContact ? [toEmailContact] : []);

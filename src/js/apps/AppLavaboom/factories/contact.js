@@ -13,6 +13,8 @@ module.exports = /*@ngInject*/(co, user, crypto) => {
 		this.isMatchEmail = (email) =>
 			(self.privateEmails && self.privateEmails.includes(email)) ||
 			(self.businessEmails && self.businessEmails.includes(email));
+
+		this.isPrivate = () => !!self.email;
 	};
 
 	var secureFields = ['email', 'firstName', 'lastName', 'companyName', 'privateEmails', 'businessEmails', 'isSecured'];

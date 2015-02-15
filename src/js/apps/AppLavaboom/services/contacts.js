@@ -92,10 +92,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 	};
 
 	this.getContactByEmail = (email) => {
-		for(let c of self.peopleList)
-			if (c.isMatchEmail(email))
-				return c;
-		return null;
+		return self.peopleList.find(c => c.isMatchEmail(email));
 	};
 
 	this.myself = null;
