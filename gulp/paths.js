@@ -39,7 +39,6 @@ module.exports = {
 		input: 'src/blocks/**/*.jade',
 		output: output + 'partials/'
 	},
-	staticFiles: 'src/static/**',
 	vendor: {
 		input: 'src/vendor/*',
 		output: output + 'vendor/'

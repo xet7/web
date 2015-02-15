@@ -368,13 +368,6 @@ gulp.task('copy:fonts', function() {
 		.pipe(gulp.dest(paths.fonts.output));
 });
 
-// Copy static files into output folder
-gulp.task('copy:static', function() {
-	return gulp.src(paths.staticFiles)
-		.pipe(plumber())
-		.pipe(gulp.dest(paths.output));
-});
-
 // Build translation files(toml -> json)
 gulp.task('build:translations', function() {
 	return gulp.src(paths.translations.input)
@@ -432,10 +425,8 @@ gulp.task('bower', function() {
  */
 
 var compileSteps = [
-		//'build:jade',
 		'build:partials-jade',
 		'build:translations',
-		'copy:static',
 		'copy:images',
 		'copy:fonts',
 		'copy:vendor',
