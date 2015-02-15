@@ -70,9 +70,9 @@ if (args.length > 0) {
 	isServe = true;
 }
 
-console.log('process.env.IS_PRODUCTION', process.env.IS_PRODUCTION);
-
 require('toml-require').install();
+
+var manifest = {};
 
 /**
  * Reused pipelines
@@ -128,8 +128,6 @@ var createJadePipeline = function (input, output, isTemplateCache) {
  * Gulp Taks
  */
 
-var manifest = {};
-
 var revTap = function (output) {
 	return function(file) {
 		file.revHash = crypto.createHash('sha1').update(file.contents).digest('hex');
@@ -173,21 +171,6 @@ gulp.task('build:scripts:vendor:min', function() {
 		}))
 		.pipe(gulp.dest(paths.scripts.output));
 });
-
-/*gulp.task('build:scripts:core', function() {
-	var prodPipeline = lazypipe()
-		.pipe(plg.uglify)
-		.pipe(plg.tap, revTap(paths.scripts.output));
-
-	return gulp.src(paths.scripts.input)
-		.pipe(plumber())
-		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.noop())
-		.pipe(to5())
-		.pipe(config.isLogs ? plg.util.noop() : plg.stripDebug())
-		.pipe(config.isProduction ? prodPipeline() : plg.util.noop())
-		.pipe(config.isDebugable ? plg.sourcemaps.write('.') : plg.util.noop())
-		.pipe(gulp.dest(paths.scripts.output));
-});*/
 
 gulp.task('build:scripts:vendor', ['build:scripts:vendor:min'], function() {
 	return gulp.src(paths.scripts.inputDeps)
