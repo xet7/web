@@ -16,19 +16,19 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto) {
 		Object.keys(importObj.body.key_pairs).forEach(email => {
 			importObj.body.key_pairs[email].prv.forEach(privateKey => {
 				try {
-					crypto.keyring.privateKeys.importKey(privateKey);
+					crypto.importPrivateKey(privateKey);
 				} catch (error) {
 				}
 			});
 			importObj.body.key_pairs[email].pub.forEach(publicKey => {
 				try {
-					crypto.keyring.publicKeys.importKey(publicKey);
+					crypto.importPublicKey(publicKey);
 				} catch (error) {
 				}
 			});
 		});
 
-		crypto.keyring.store();
+		crypto.storeKeyring();
 
 		$rootScope.$broadcast('keyring-updated');
 	};
@@ -38,8 +38,8 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto) {
 
 		var keyPairs = srcEmails.reduce((a, email) => {
 			a[email] = {
-				prv: crypto.keyring.privateKeys.getForAddress(email).map(k => k.armor()),
-				pub: crypto.keyring.publicKeys.getForAddress(email).map(k => k.armor())
+				prv: crypto.getAvailableEncryptedPrivateKeysForEmail(email).map(k => k.armor()),
+				pub: crypto.getAvailablePublicKeysForEmail(email).map(k => k.armor())
 			};
 			return a;
 		}, {});

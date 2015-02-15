@@ -8,10 +8,10 @@ module.exports = /*@ngInject*/($scope, $timeout, utils, user, crypto, cryptoKeys
 	};
 
 	$scope.$bind('keyring-updated', () => {
-		$scope.keys = crypto.keyring.privateKeys.keys.map(k => {
+		$scope.keys = crypto.getAvailableEncryptedPrivateKeys().map(k => {
 			return {
 				keyId: utils.hexify(k.primaryKey.keyid.bytes),
-				isDecrypted: crypto.getPrivateKeyByFingerprint(k.primaryKey.fingerprint).primaryKey.isDecrypted,
+				isDecrypted: crypto.getDecryptedPrivateKeyByFingerprint(k.primaryKey.fingerprint).primaryKey.isDecrypted,
 				decryptPassword: '',
 				decryptIsSuccess: null,
 				decryptTime: null,
