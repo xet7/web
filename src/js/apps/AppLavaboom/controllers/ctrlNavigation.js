@@ -5,10 +5,6 @@ module.exports = /*@ngInject*/($scope, $state, inbox, user) => {
 		$scope.labelsByName = inbox.labelsByName;
 	});
 
-	$scope.composeTest = () => {
-		inbox.send(user.email, 'test PGP subject', 'test PGP body');
-	};
-
 	$scope.logout = () => {
 		user.logout();
 	};

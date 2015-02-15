@@ -264,24 +264,12 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 		return r.body.key;
 	});
 
-	this.send = (to, cc, bcc, subject, body, attachments, thread_id = null) => co(function * () {
-		var res = yield to.map(toEmail => LavaboomAPI.keys.get(toEmail));
-		var publicKeys = [user.key, ...res.map(r => r.body.key)];
+	this.send = (...args) => co(function * () {
+		var envelope = yield Email.toEnvelope(...args);
 
-		console.log('inbox.send, publicKeys', publicKeys);
+		var res = yield LavaboomAPI.emails.create(envelope);
 
-		var encryptedMessage = yield crypto.encodeWithKeys(body, publicKeys.map(k => k.key));
-
-		yield LavaboomAPI.emails.create({
-			to: to,
-			cc: cc,
-			bcc: bcc,
-			subject: subject,
-			body: encryptedMessage,
-			pgp_fingerprints: publicKeys.map(k => k.id),
-			attachments: attachments,
-			thread_id: thread_id
-		});
+		return res.body.id;
 	});
 
 	$rootScope.whenInitialized(() => {

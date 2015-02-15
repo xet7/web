@@ -1,7 +1,7 @@
-var chan = require('chan');
+let chan = require('chan');
 
-module.exports = /*@ngInject*/(co, contacts, crypto) => {
-	var Email = function(opt) {
+module.exports = /*@ngInject*/(co, contacts, crypto, LavaboomAPI, user) => {
+	let Email = function(opt) {
 		this.id =  opt.id;
 		this.threadId = opt.thread;
 		this.isEncrypted = opt.isEncrypted;
@@ -9,7 +9,7 @@ module.exports = /*@ngInject*/(co, contacts, crypto) => {
 		this.date = opt.date_created;
 		this.from = opt.from;
 
-		var fromContact = contacts.getContactByEmail(opt.from);
+		let fromContact = contacts.getContactByEmail(opt.from);
 
 		this.fromName = fromContact ? fromContact.name : opt.from;
 		this.preview = opt.preview;
@@ -17,11 +17,37 @@ module.exports = /*@ngInject*/(co, contacts, crypto) => {
 		this.attachments = opt.attachments;
 	};
 
-	Email.fromEnvelope = (envelope) => co(function *() {
-		var ch = chan();
-		var isPreviewAvailable = !!envelope.preview;
+	Email.toEnvelope = ({to, subject, body, cc, bcc, attachmentIds, threadId}) => co(function *() {
+		if (!cc)
+			cc = [];
+		if (!bcc)
+			bcc = [];
+		if (!attachmentIds)
+			attachmentIds = [];
+		if (!threadId)
+			threadId = null;
 
-		var [bodyData, previewData] = yield [
+		let res = yield to.map(toEmail => LavaboomAPI.keys.get(toEmail));
+		let publicKeysValues = (new Map([user.key, ...res.map(r => r.body.key)].map(k => [k.id, k.key]))).values();
+
+		let envelope = yield crypto.encodeEnvelopeWithKeys({data: body}, [...publicKeysValues], 'body', 'body');
+		angular.extend(envelope, {
+			to,
+			cc,
+			bcc,
+			subject,
+			attachments: attachmentIds,
+			thread_id: threadId
+		});
+
+		return envelope;
+	});
+
+	Email.fromEnvelope = (envelope) => co(function *() {
+		let ch = chan();
+		let isPreviewAvailable = !!envelope.preview;
+
+		let [bodyData, previewData] = yield [
 			co.transform(crypto.decodeEnvelope(envelope.body, '', 'raw'), r => {
 				if (!isPreviewAvailable)
 					ch(r);

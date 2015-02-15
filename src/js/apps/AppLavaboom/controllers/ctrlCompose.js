@@ -95,23 +95,17 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 	$scope.deleteAttachment = (attachmentStatus, index) => deleteAttachment(attachmentStatus, index);*/
 
 	$scope.send = () => co(function *() {
-		console.log('waiting for uploads to complete...');
-
 		yield $scope.attachments.map(a => a.processingPromise);
 
-		console.log('uploads completed...');
-
-		console.log($scope.form);
-
-		yield inbox.send(
-			$scope.form.selected.to.map(e => e.email),
-			$scope.form.selected.cc.map(e => e.email),
-			$scope.form.selected.bcc.map(e => e.email),
-			$scope.form.subject,
-			$scope.form.body,
-			$scope.attachments.map(a => a.id),
-			threadId
-		);
+		yield inbox.send({
+			to: $scope.form.selected.to.map(e => e.email),
+			cc: $scope.form.selected.cc.map(e => e.email),
+			bcc: $scope.form.selected.bcc.map(e => e.email),
+			subject: $scope.form.subject,
+			body: $scope.form.body,
+			attachmentIds: $scope.attachments.map(a => a.id),
+			threadId: threadId
+		});
 
 		router.hidePopup();
 	});
