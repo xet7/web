@@ -58,7 +58,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 
 		$rootScope.$broadcast('contacts-changed');
 
-		return r.body.contact.id;
+		return contact.id;
 	});
 
 	this.updateContact = (contact) => co(function *() {
@@ -68,7 +68,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 	});
 
 	this.deleteContact = (contactId) => co(function *() {
-		console.log('deleting contact', contactId, 'empty contact?', emptyContact);
 		if (!emptyContact || contactId != emptyContact.id)
 			yield LavaboomAPI.contacts.delete(contactId);
 		else

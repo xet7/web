@@ -11,6 +11,7 @@ module.exports = /*@ngInject*/(co, user, crypto) => {
 			this.name = this.email.split('@')[0].trim();
 
 		this.isMatchEmail = (email) =>
+			(self.email == email) ||
 			(self.privateEmails && self.privateEmails.includes(email)) ||
 			(self.businessEmails && self.businessEmails.includes(email));
 
