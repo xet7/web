@@ -3,17 +3,11 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 
 	var wrapOpenpgpKeyring = (keyring) => {
 		var findByFingerprint = (keys, fingerprint) => {
-			for(var i = 0; i < keys.length; i++)
-				if (keys[i].primaryKey.fingerprint == fingerprint)
-					return keys[i];
-			return null;
+			return keys.find(k => k.primaryKey.fingerprint == fingerprint);
 		};
 
 		var findIndexByFingerprint = (keys, fingerprint) => {
-			for(var i = 0; i < keys.length; i++)
-				if (keys[i].primaryKey.fingerprint == fingerprint)
-					return i;
-			return null;
+			return keys.findIndex(k => k.primaryKey.fingerprint == fingerprint);
 		};
 
 		keyring.publicKeys.findByFingerprint = (fingerprint) => findByFingerprint(keyring.publicKeys.keys, fingerprint);
@@ -59,7 +53,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 			var selectedKeyring = isDecrypted ? localKeyring : keyring;
 
 			var i = selectedKeyring.privateKeys.findIndexByFingerprint(privateKey.primaryKey.fingerprint);
-			selectedKeyring.privateKeys.keys.splice(i, 1);
+			if (i > -1)
+				selectedKeyring.privateKeys.keys.splice(i, 1);
 
 			selectedKeyring.privateKeys.importKey(newKeyArmored);
 			selectedKeyring.store();
