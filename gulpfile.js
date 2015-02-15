@@ -380,7 +380,8 @@ gulp.task('build:translations', function() {
 	return gulp.src(paths.translations.input)
 		.pipe(plumber())
 		.pipe(plg.toml({to: JSON.stringify, ext: '.json'}))
-		.pipe(gulp.dest(paths.translations.output));
+		.pipe(gulp.dest(paths.translations.output))
+		.pipe(livereloadPipeline()());
 });
 
 // Build primary markup jade files
@@ -499,7 +500,7 @@ gulp.task('default', [
 	gulp.start('compile');
 	
 	// watch for source changes and rebuild the whole project with _exceptions_
-	gulp.watch([paths.input, '!' + paths.styles.inputAll, '!' + paths.markup.input, '!' + paths.partials.input]).on('change', function(file) {
+	gulp.watch([paths.input, '!' + paths.styles.inputAll, '!' + paths.markup.input, '!' + paths.partials.input, '!' + paths.translations.input]).on('change', function(file) {
 		isPartialLivereloadBuild = false;
 		scheduleLiveReloadBuildTaskStart('compile');
 	});
@@ -519,6 +520,11 @@ gulp.task('default', [
 	// partial live-reload for partials jade files
 	gulp.watch(paths.partials.input).on('change', function(file) {
 		scheduleLiveReloadBuildTaskStart('build:partials-jade');
+	});
+
+	// partial live-reload for translations
+	gulp.watch(paths.translations.input).on('change', function(file) {
+		scheduleLiveReloadBuildTaskStart('build:translations');
 	});
 
 	// start livereload server
