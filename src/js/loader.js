@@ -153,12 +153,10 @@
 				e.container.className = '';
 
 				if (e.rootScope && e.rootScope.shownApplication) {
-					setTimeout(() => {
-						e.rootScope.$apply(() => {
-							e.rootScope.shownApplication();
-						});
-						resolve();
+					e.rootScope.$apply(() => {
+						e.rootScope.shownApplication();
 					});
+					resolve();
 				} else
 					resolve();
 			}, isImmediate ? 0 : APP_TRANSITION_DELAY);
