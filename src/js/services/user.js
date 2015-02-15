@@ -121,7 +121,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	});
 
 	this.signIn = (username, password, isRemember, isPrivateComputer) => {
-		username = setupUserBasicInformation(username);
+		username = setupUserBasicInformation(username.split('@')[0].trim());
 
 		crypto.initialize({
 			isRememberPasswords: isRemember
