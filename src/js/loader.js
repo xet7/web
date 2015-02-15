@@ -7,6 +7,8 @@
 		SRC_OPENPGP = '/vendor/openpgp.js',
 		SRC_APP_LAVABOOM_LOGIN = '/js/appLavaboomLogin.js',
 		SRC_APP_LAVABOOM_MAIN = '/js/appLavaboom.js',
+		SRC_UTILS = '/js/utils.js',
+		SRC_UTILS_VENDOR = '/js/utils-vendor.js',
 		SRC_CHECKER = '/js/checker.js',
 		SRC_CHECKER_VENDOR = '/js/checker-vendor.js',
 		SRC_TEMPLATE_CACHE = '/js/templates.js';
@@ -46,6 +48,14 @@
 			afterProgressValue: 90,
 			scripts: [
 				{
+					src: SRC_UTILS_VENDOR,
+					progressText: 'Loading Lavaboom utils...'
+				},
+				{
+					src: SRC_UTILS,
+					progressText: 'Loading Lavaboom utils...'
+				},
+				{
 					src: SRC_APP_LAVABOOM_LOGIN_VENDOR,
 					progressText: 'Loading system libraries(3)...'
 				},
@@ -69,6 +79,14 @@
 			afterProgressText: 'Please wait...',
 			afterProgressValue: 50,
 			scripts: [
+				{
+					src: SRC_UTILS_VENDOR,
+					progressText: 'Loading Lavaboom utils...'
+				},
+				{
+					src: SRC_UTILS,
+					progressText: 'Loading Lavaboom utils...'
+				},
 				{
 					src: SRC_APP_LAVABOOM_LOGIN_VENDOR,
 					progressText: 'Loading system libraries(3)...'

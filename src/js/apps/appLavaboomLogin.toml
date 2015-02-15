@@ -1,18 +1,5 @@
 [application]
 	dependencies = [
-		# angular.js stuff
-		'../../bower_components/angular/angular.js',
-        '../../bower_components/angular-translate/angular-translate.js',
-        '../../bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
 		'../../bower_components/angular-messages/angular-messages.js',
-		'../../bower_components/angular-ui-router/release/angular-ui-router.js',
-		'../../bower_components/angular-autodisable/angular-autodisable.js',
-
-		# angular.js own dependencies
-		'../../bower_components/lavaboom/dist/lavaboom-angular.js',
-		'../../bower_components/angular-co/dist/co.js',
-
-		# raw libs
-		'../../bower_components/file-saver/FileSaver.js',
-		'../../bower_components/sockjs-client/dist/sockjs.js'
+        '../../bower_components/angular-autodisable/angular-autodisable.js'
 	]

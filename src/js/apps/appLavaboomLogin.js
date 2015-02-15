@@ -9,6 +9,7 @@ application.create(
 		'templates'
 	],
 	[
+		'utils',
 		'lavaboom.api',
 		'ui.router',
 		'pascalprecht.translate',
@@ -19,17 +20,6 @@ application.create(
 );
 
 application.registerBulks(
-	bulkRequire(__dirname + '/../', [
-		'runs/*.js',
-		'decorators/*.js',
-		'filters/*.js',
-		'constants/*.js',
-		'configs/*.js',
-		'directives/*.js',
-		'factories/*.js',
-		'services/*.js',
-		'controllers/*.js'
-	]),
 	bulkRequire(__dirname + '/AppLavaboomLogin/', [
 		'runs/*.js',
 		'decorators/*.js',

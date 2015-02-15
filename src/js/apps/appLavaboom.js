@@ -9,6 +9,7 @@ application.create(
 		'templates'
 	],
 	[
+		'utils',
 		'lavaboom.api',
 		'ngSanitize',
 		'ui.router',
@@ -23,17 +24,6 @@ application.create(
 );
 
 application.registerBulks(
-	bulkRequire(__dirname + '/../', [
-		'runs/*.js',
-		'decorators/*.js',
-		'filters/*.js',
-		'constants/*.js',
-		'configs/*.js',
-		'directives/*.js',
-		'factories/*.js',
-		'services/*.js',
-		'controllers/*.js'
-	]),
 	bulkRequire(__dirname + '/AppLavaboom/', [
 		'runs/*.js',
 		'decorators/*.js',

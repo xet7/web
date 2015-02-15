@@ -5,7 +5,7 @@ function AngularApplication (applicationName) {
 		applicationModule = angular.module(applicationName, (process.env.IS_PRODUCTION ? productionOnlyDependencies :[]).concat(dependencies));
 	};
 
-	let register = (bulks) => {
+	this.registerBulks = (bulks) => {
 		if (bulks.runs) {
 			for (let runName of Object.keys(bulks.runs)) {
 				applicationModule.run(bulks.runs[runName]);
@@ -67,11 +67,6 @@ function AngularApplication (applicationName) {
 				applicationModule.controller(declarativeControllerName, bulks.controllers[controllerName]);
 			}
 		}
-	};
-
-	this.registerBulks = (parent, app) => {
-		register(parent);
-		register(app);
 	};
 }
 
