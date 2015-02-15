@@ -44,7 +44,7 @@ module.exports = /*@ngInject*/function ($rootScope, $state, $modal, $timeout) {
 		});
 	};
 
-	this.isPopupState = (name) => name.indexOf('.popup.') > 0;
+	this.isPopupState = (name) => name.includes('.popup.');
 
 	this.getPrimaryStateName = (name) => name.replace(/\.popup\..+/, '');
 };

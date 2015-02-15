@@ -40,7 +40,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 			self.labelsByName[labelName].addUnreadThreadId(event.thread);
 		});
 
-		if (labelNames.indexOf(self.labelName) > -1) {
+		if (labelNames.includes(self.labelName)) {
 			var thread = yield self.getThreadById(event.thread);
 			self.threads[thread.id] = thread;
 			self.threadsList.unshift(thread);
@@ -109,7 +109,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 
 		var r;
 		var lbs = thread.labels;
-		if (lbs.indexOf(trashLabelId) > -1 || lbs.indexOf(spamLabelId) > -1 || lbs.indexOf(draftsLabelId) > -1)
+		if (lbs.includes(trashLabelId) || lbs.includes(spamLabelId) || lbs.includes(draftsLabelId))
 			r = yield LavaboomAPI.threads.delete(threadId);
 		else
 			r = yield self.requestSetLabel(threadId, 'Trash');
