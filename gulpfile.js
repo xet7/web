@@ -473,7 +473,7 @@ var isPartialLivereloadBuild = false;
 var isFirstBuild = true;
 var scheduleLiveReloadBuildTaskStart = function (taskName, timeout) {
 	if (!timeout)
-		timeout = 500;
+		timeout = 1000;
 
 	if (taskName != 'compile')
 		isPartialLivereloadBuild = true;
