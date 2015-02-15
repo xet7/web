@@ -10,12 +10,17 @@
 
 				api.connect()
 					.then(() => {
-						api.accounts.get('me').then(res => {
-							console.log('checker: accounts.get(me) success', res);
-							api.keys.get(`${res.body.user.name}@${process.env.TLD}`)
+						api.accounts.get('me').then(me => {
+							console.log('checker: accounts.get(me) success', me);
+							api.keys.get(`${me.body.user.name}@${process.env.TLD}`)
 								.then(res => {
 									console.log('checker: keys.get success', res);
-									loader.loadMainApplication();
+
+									if (!me.body.user.settings || me.body.user.settings.state != 'ok') {
+										console.log('checker: user haven\'t decided with keys');
+										loader.loadLoginApplication({state: 'backupKeys'});
+									} else
+										loader.loadMainApplication();
 								})
 								.catch(err => {
 									console.log('checker: keys.get error', err);

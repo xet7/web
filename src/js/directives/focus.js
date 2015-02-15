@@ -10,7 +10,6 @@ module.exports = /*@ngInject*/function($timeout) {
 			element.bind('blur', function () {
 				if ( angular.isDefined( attrs.focusLost ) ) {
 					scope.$apply( attrs.focusLost );
-
 				}
 			});
 		}

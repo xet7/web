@@ -151,7 +151,16 @@
 				for (let c of containers)
 					c.className = 'hidden';
 				e.container.className = '';
-				resolve();
+
+				if (e.rootScope && e.rootScope.shownApplication) {
+					setTimeout(() => {
+						e.rootScope.$apply(() => {
+							e.rootScope.shownApplication();
+						});
+						resolve();
+					});
+				} else
+					resolve();
 			}, isImmediate ? 0 : APP_TRANSITION_DELAY);
 
 		});
@@ -194,7 +203,7 @@
 			if (!opts)
 				opts = {};
 
-			var rootScope = angular.element(app.container).scope();
+			var rootScope = app.rootScope = angular.element(app.container).scope();
 			rootScope.$apply(() => {
 				console.log('loader: calling rootScope.initializeApplication()');
 				rootScope.initializeApplication(opts)

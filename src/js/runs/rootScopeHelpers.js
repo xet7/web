@@ -9,11 +9,16 @@ module.exports = /*@ngInject*/($rootScope, $translate, translate) => {
 	};
 
 	$rootScope.isInitialized = false;
+	$rootScope.isShown = false;
 	$rootScope.currentErrorMessage = '';
 
 	$rootScope.$on('$stateChangeSuccess', () => {
 		$rootScope.currentErrorMessage = '';
 	});
+
+	$rootScope.shownApplication = () => {
+		$rootScope.isShown = true;
+	};
 
 	$rootScope.whenInitialized = (initializer) => {
 		console.log('whenInitialized', $rootScope.isInitialized);

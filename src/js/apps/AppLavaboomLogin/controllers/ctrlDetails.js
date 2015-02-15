@@ -2,7 +2,7 @@ module.exports = /*@ngInject*/($scope, $state, co, user, signUp) => {
 	if (!signUp.tokenSignup || !signUp.plan)
 		$state.go('invite');
 
-	$scope.form = {
+	$scope.form = signUp.details ? signUp.details : {
 		firstName: '',
 		lastName: '',
 		displayName: ''

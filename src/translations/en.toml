@@ -46,6 +46,7 @@
 	LB_MATCH = "Both passwords should match"
 	LB_TOO_MANY_REPEATING_CHARACTERS = "Too many repeating characters"
 	LB_TOO_SIMPLE = "Your password is too simple"
+	LB_USERNAME_PATTERN = "Username can contain only a-z, 0-9 characters and optional dots(.) to separate parts"
 
 [LOADER]
 	LB_INITIALIZATION_FAILED = "Initialization failed..."

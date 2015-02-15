@@ -7,6 +7,8 @@ module.exports = /*@ngInject*/($scope, $state, $window, user, signUp, crypto, cr
 	};
 
 	var navigateMainApplication = () => {
+		user.update({state: 'ok'});
+
 		crypto.options.isPrivateComputer = $scope.form.isPrivateComputer;
 		crypto.authenticateDefault(signUp.password);
 

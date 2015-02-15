@@ -1,6 +1,7 @@
 module.exports = /*@ngInject*/($scope, $state, co, user, signUp) => {
+	$scope.isUsernameDefined = signUp.reserve ? true : false;
 	$scope.form = {
-		username: signUp.reserve ? signUp.reserve.username : '',
+		username: signUp.reserve ? signUp.reserve.originalUsername : '',
 		token: '',
 		isNews: true
 	};
