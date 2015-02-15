@@ -15,7 +15,6 @@
 		LB_DONE = 'Done!',
 		LB_FAIL = 'Cannot load Lavaboom :( \n Please check network connection and try again!';
 
-
 	var // containers
 		loaderContainer = document.getElementById('loader-container'),
 		loginAppContainer = document.getElementById('login-app-container'),

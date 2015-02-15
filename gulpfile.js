@@ -41,7 +41,8 @@ var browserify = require('browserify'),
 	uglifyify = require('uglifyify'),
 	stripify = require('stripify'),
 	envify = require('envify'),
-	brfs = require('brfs');
+	brfs = require('brfs'),
+	exorcist = require('exorcist');
 
 // Modules
 var serve = require('./serve');
@@ -238,6 +239,11 @@ gulp.task('build:scripts:vendor', ['build:scripts:vendor:min'], function() {
 
 var browserifyBundle = function(filename) {
 	var basename = path.basename(filename);
+	var jsMapBasename = '';
+
+	try {
+		fs.mkdirSync('./dist/js');
+	}catch (e) {}
 
 	return gulp.src(filename, {read: false})
 		.pipe(plg.tap(function (file){
@@ -276,13 +282,17 @@ var browserifyBundle = function(filename) {
 						.transform(uglifyify);
 				}
 
+				jsMapBasename = path.basename(file.path).replace('.js', '.js.map');
+
 				file.contents = browserifyPipeline
-					.bundle();
+					.bundle()
+					.pipe(exorcist('./' + paths.scripts.output + jsMapBasename));
 			});
 		}))
 		.pipe(plg.streamify(plg.concat(basename)))
 		.pipe(plg.buffer())
 		.pipe(config.isProduction ? plg.tap(revTap(paths.scripts.output)) : plg.util.noop())
+		.pipe(plg.stream())
 		.pipe(gulp.dest(paths.scripts.output));
 };
 
@@ -403,14 +413,19 @@ gulp.task('build:partials-jade', function() {
 // Remove pre-existing content from output and test folders
 gulp.task('clean', function () {
 	del.sync([
-		paths.output + '**/*',
-		paths.cache + '**/*'
+			'./' + paths.output + '**/*',
+			'./' + paths.cache + '**/*'
 	]);
+
+	// yea...
 	try {
-		fs.mkdirSync(paths.output);
+		fs.mkdirSync('./' + paths.output);
 	} catch (e) { }
 	try {
-		fs.mkdirSync(paths.cache);
+		fs.mkdirSync('./' + paths.cache);
+	} catch (e) { }
+	try {
+		fs.mkdirSync('./' + paths.scripts.output);
 	} catch (e) { }
 });
 
