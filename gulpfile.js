@@ -258,7 +258,7 @@ var browserifyBundle = function(filename) {
 					basedir: __dirname,
 					debug: config.isDebugable
 				})
-					.transform(ownCodebaseTransform(to5ify))
+					.transform(ownCodebaseTransform(to5ify), {runtime: true})
 					.transform(ownCodebaseTransform(bulkify))
 					.transform(ownCodebaseTransform(envify))
 					.transform(ownCodebaseTransform(brfs));
