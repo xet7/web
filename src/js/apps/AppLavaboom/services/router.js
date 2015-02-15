@@ -28,10 +28,12 @@ module.exports = /*@ngInject*/function ($rootScope, $state, $modal, $timeout) {
 		} else delayedPopup = opts;
 	};
 
-	this.showPopup = (stateName, params, onClose = null) => {
+	this.showPopup = (stateName, params) => {
 		stateName = `.popup.${stateName}`;
+		if (!params)
+			params = {};
 
-		$state.go(self.getPrimaryStateName($state.current.name) + stateName);
+		$state.go(self.getPrimaryStateName($state.current.name) + stateName, params);
 	};
 
 	this.hidePopup = () => {

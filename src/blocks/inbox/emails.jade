@@ -4,9 +4,9 @@
 	div(ng-if="selectedTid !== null").row.no-gutter.actions.lava-icon-row
 			.col-xs-24
 				.lava-icon-wrapper
-					a(href="#")
+					a(href="#", ng-click="showPopup('compose', {replyThreadId: selectedTid})")
 						span.icon-reply
-					a(href="#")
+					a(href="#", ng-click="showPopup('compose', {replyThreadId: selectedTid})")
 						span.icon-reply-all
 					a(href="#")
 						span.icon-arrow-right
