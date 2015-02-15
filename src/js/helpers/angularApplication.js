@@ -2,7 +2,7 @@ function AngularApplication (applicationName) {
 	let applicationModule = null;
 
 	this.create = (productionOnlyDependencies, dependencies) => {
-		applicationModule = angular.module(applicationName, (globs.isProduction ? productionOnlyDependencies :[]).concat(dependencies));
+		applicationModule = angular.module(applicationName, (process.env.IS_PRODUCTION ? productionOnlyDependencies :[]).concat(dependencies));
 	};
 
 	let register = (bulks) => {

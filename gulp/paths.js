@@ -9,7 +9,7 @@ module.exports = {
 		input: 'src/js/*.js',
 		inputFolder: 'src/js/',
 		inputAll: 'src/js/**/*.js',
-		inputApps: ['./src/js/apps/appLavaboom.js', './src/js/apps/appLavaboomLogin.js'],
+		inputApps: ['./src/js/apps/appLavaboom.js', './src/js/apps/appLavaboomLogin.js', './src/js/loader.js', './src/js/checker.js'],
 		inputDeps: 'src/js/apps/*.toml',
 		inputAppsFolder: 'src/js/apps/',
 		output: output + 'js/'

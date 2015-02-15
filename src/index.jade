@@ -51,7 +51,6 @@ html(lang="en")
 				#content(ui-view="main-view", autoscroll="false")
 				#modal(ui-view="modal-view", autoscroll="false")
 
-		if globs.isProduction
+		if globs.IS_PRODUCTION
 			script!= 'window.assets = ' + JSON.stringify(assets) + ';'
-		script!= 'window.globs = ' + JSON.stringify(globs) + ';'
 		script!= fs.readFileSync('./dist' + resolveAsset('/js/loader.js'), 'utf8')

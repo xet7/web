@@ -18,8 +18,9 @@
 		"saveAs": true,
 		"Lavaboom": true,
 		"Symbol": true,
+		"loader": true,
+		"checker": true,
 
-		"globs": true,
 		"assets": true,
 		"primaryApplicationName": true,
 		"console": true

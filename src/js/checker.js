@@ -1,5 +1,4 @@
-(() => {
-	var loader = window.loader;
+(function (loader) {
 	var token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
 
 	var Checker = function (url, Promise) {
@@ -13,7 +12,7 @@
 					.then(() => {
 						api.accounts.get('me').then(res => {
 							console.log('checker: accounts.get(me) success', res);
-							api.keys.get(`${res.body.user.name}@${globs.TLD}`)
+							api.keys.get(`${res.body.user.name}@${process.env.TLD}`)
 								.then(res => {
 									console.log('checker: keys.get success', res);
 									loader.loadMainApplication();
@@ -22,7 +21,7 @@
 									console.log('checker: keys.get error', err);
 									loader.loadLoginApplication({state: 'generateKeys'});
 								});
-						}).catch(function(err) {
+						}).catch(function (err) {
 							console.log('checker: accounts.get(me) error', err);
 							loader.loadLoginApplication();
 							resolve();
@@ -40,5 +39,5 @@
 		});
 	};
 
-	window.checkerFactory = (Promise) => new Checker(globs.API_URI, Promise);
-})();
+	window.checkerFactory = (Promise) => new Checker(process.env.API_URI, Promise);
+})(window.loader);

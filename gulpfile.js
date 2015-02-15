@@ -56,7 +56,7 @@ var args = process.argv.slice(2);
 
 var plumber = null;
 var isServe = false;
-process.env.IS_PRODUCTION = false;
+process.env.IS_PRODUCTION = '';
 if (args.length > 0) {
 	plumber = plg.util.noop;
 	if (args[0] === 'production') {
@@ -68,6 +68,8 @@ if (args.length > 0) {
 	plumber = plg.plumber;
 	isServe = true;
 }
+
+console.log('process.env.IS_PRODUCTION', process.env.IS_PRODUCTION);
 
 require('toml-require').install();
 
@@ -110,7 +112,7 @@ var createJadePipeline = function (input, output, isTemplateCache) {
 				},
 				assets: manifest,
 				globs: {
-					isProduction: config.isProduction,
+					IS_PRODUCTION: process.env.IS_PRODUCTION,
 					API_URI: process.env.API_URI,
 					TLD: process.env.TLD
 				}
@@ -171,7 +173,7 @@ gulp.task('build:scripts:vendor:min', function() {
 		.pipe(gulp.dest(paths.scripts.output));
 });
 
-gulp.task('build:scripts:core', function() {
+/*gulp.task('build:scripts:core', function() {
 	var prodPipeline = lazypipe()
 		.pipe(plg.uglify)
 		.pipe(plg.tap, revTap(paths.scripts.output));
@@ -184,9 +186,9 @@ gulp.task('build:scripts:core', function() {
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop())
 		.pipe(config.isDebugable ? plg.sourcemaps.write('.') : plg.util.noop())
 		.pipe(gulp.dest(paths.scripts.output));
-});
+});*/
 
-gulp.task('build:scripts:vendor', ['build:scripts:vendor:min', 'build:scripts:core'], function() {
+gulp.task('build:scripts:vendor', ['build:scripts:vendor:min'], function() {
 	return gulp.src(paths.scripts.inputDeps)
 		.pipe(plumber())
 		.pipe(plg.tap(function (file, t) {
