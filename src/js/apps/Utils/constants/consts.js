@@ -13,5 +13,6 @@ module.exports = {
 	FAST_ACTIONS_TIMEOUT: 250,
 	INBOX_THREADS_CACHE_TTL: 60 * 1000,
 	INBOX_EMAILS_CACHE_TTL: 60 * 1000,
-	SET_READ_AFTER_TIMEOUT: 3000
+	SET_READ_AFTER_TIMEOUT: 3000,
+	KEYS_BACKUP_README: 'https://lavaboom.com/placeholder/help/backup-file'
 };

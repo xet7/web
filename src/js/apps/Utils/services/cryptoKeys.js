@@ -1,6 +1,6 @@
 var Buffer = require('buffer/').Buffer;
 
-module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto) {
+module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, consts) {
 	this.importKeys = (jsonBackup) => {
 		var importObj = null;
 		try {
@@ -52,7 +52,7 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto) {
 		var bodyHash = (new Buffer(openpgp.crypto.hash.sha512(JSON.stringify(body)), 'binary')).toString('hex');
 
 		return JSON.stringify({
-			readme: 'https://lavaboom.com/placeholder/help/backup-file',
+			readme: consts.KEYS_BACKUP_README,
 			body: body,
 			bodyHash: bodyHash
 		}, null, 4);
