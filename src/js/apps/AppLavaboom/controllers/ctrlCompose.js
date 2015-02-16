@@ -189,13 +189,13 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 			$scope.form = {
 				person: {},
 				selected: {
-					to: toEmailContact ? [toEmailContact] : [contacts.myself],
+					to: [],
 					cc: [],
 					bcc: [],
 					from: contacts.myself
 				},
 				fromEmails: [contacts.myself],
-				subject: 'Test subject',
+				subject: '',
 				body: ''
 			};
 
