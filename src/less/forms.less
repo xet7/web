@@ -86,7 +86,7 @@ form.settings{
 		}		
 	}
 
-	[class^="icon-"], [class*=" icon-"]{
+	[class^="icon-"]:not(.field-icon), [class*=" icon-"]:not(.field-icon){
 		color: @lava-gray-light;
 		font-size: 1.3em;
 	}
@@ -265,6 +265,10 @@ form.settings{
 				box-shadow: none;
 				border: 0;
 			}
+
+			.ta-editor{
+				min-heigth: 200px;
+			}
 		}
 		.dropdown-control{
 			margin: -10px -15px;
@@ -413,7 +417,7 @@ form.settings{
 	h4{
 		padding-left: 16px;
 		color: @lava-text;
-		font-weight: 200;
+		.lava-font();
 		margin-top: 2em;
 	}
 }
