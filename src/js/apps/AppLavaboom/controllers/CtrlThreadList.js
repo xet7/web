@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlThreadList', function($rootScope, $document, $scope, $state, $timeout, $interval, $stateParams, user, inbox, consts) {
+module.exports = /*@ngInject*/($rootScope, $document, $scope, $state, $timeout, $interval, $stateParams, user, inbox, consts) => {
 	$scope.labelName = $stateParams.labelName;
 	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
 	$scope.$state = $state;
@@ -21,7 +21,7 @@ angular.module(primaryApplicationName).controller('CtrlThreadList', function($ro
 
 	$scope.searchFilter = (thread) => {
 		var searchText = $scope.searchText.toLowerCase();
-		return thread.subject.toLowerCase().indexOf(searchText) > -1 || thread.members.some(m => m.toLowerCase().indexOf(searchText) > -1);
+		return thread.subject.toLowerCase().includes(searchText) || thread.members.some(m => m.toLowerCase().includes(searchText));
 	};
 
 	$scope.$bind(`inbox-threads[${$scope.labelName}]`, () => {
@@ -96,4 +96,4 @@ angular.module(primaryApplicationName).controller('CtrlThreadList', function($ro
 	};
 
 	requestList();
-});
+};

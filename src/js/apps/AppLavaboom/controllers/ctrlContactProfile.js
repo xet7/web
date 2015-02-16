@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlContactProfile', function($rootScope, $scope, $translate, $state, $stateParams, co, contacts) {
+module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts) => {
 	$scope.contactId = $stateParams.contactId;
 
 	var translations = {};
@@ -12,7 +12,7 @@ angular.module(primaryApplicationName).controller('CtrlContactProfile', function
 	} else {
 		$scope.details = contacts.getContactById($scope.contactId);
 
-		if (!$scope.details)
+		if (!$scope.details || $scope.details.isPrivate())
 			$state.go('main.contacts');
 	}
 
@@ -43,4 +43,4 @@ angular.module(primaryApplicationName).controller('CtrlContactProfile', function
 	$scope.deleteThisContact = () => co(function *(){
 		return yield contacts.deleteContact($scope.contactId);
 	});
-});
+};

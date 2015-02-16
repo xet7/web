@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlSettingsGeneral', function($rootScope, $scope, $interval, $translate, translate) {
+module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, translate) => {
 	$scope.form = {
 		selectedLanguage: null
 	};
@@ -27,4 +27,4 @@ angular.module(primaryApplicationName).controller('CtrlSettingsGeneral', functio
 		if ($scope.form.selectedLanguage)
 			translate.switchLanguage($scope.form.selectedLanguage.langCode);
 	});
-});
+};

@@ -4,9 +4,9 @@
 	div(ng-if="selectedTid !== null").row.no-gutter.actions.lava-icon-row
 			.col-xs-24
 				.lava-icon-wrapper
-					a(href="#")
+					a(href="#", ng-click="showPopup('compose', {replyThreadId: selectedTid})")
 						span.icon-reply
-					a(href="#")
+					a(href="#", ng-click="showPopup('compose', {replyThreadId: selectedTid})")
 						span.icon-reply-all
 					a(href="#")
 						span.icon-arrow-right
@@ -40,7 +40,7 @@
 					.col-xs-22(ng-show="email.body.state == 'no_private_key'") {{'INBOX.LB_NO_PRIVATE_KEY_FOUND1' | translate}}
 						div {{'INBOX.LB_NO_PRIVATE_KEY_FOUND2' | translate}}
 							a(ui-sref="main.settings.security") {{'INBOX.LB_SETTINGS' | translate}}
-							{{'INBOX.LB_NO_PRIVATE_KEY_FOUND3' | translate}}
+							| {{'INBOX.LB_NO_PRIVATE_KEY_FOUND3' | translate}}
 				//footer
 					.row.no-gutter
 						.col-xs-8

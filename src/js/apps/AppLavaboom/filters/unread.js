@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).filter('unread', () => {
+module.exports = /*@ngInject*/() => {
 	return number => {
 		if (!number || number < 1)
 			return '';
@@ -8,4 +8,4 @@ angular.module(primaryApplicationName).filter('unread', () => {
 
 		return '999+';
 	};
-});
+};

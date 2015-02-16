@@ -1,6 +1,6 @@
 var chan = require('chan');
 
-angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function($q, $rootScope, $state, $scope, $translate, LavaboomAPI, translate, co, crypto, loader) {
+module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, LavaboomAPI, translate, co, crypto, loader, user) => {
 	var translations = {};
 	var translationsCh = chan();
 
@@ -14,8 +14,9 @@ angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function(
 			translationsCh(true);
 	});
 
-	$scope.initializeApplication = () => co(function *(){
+	$scope.initializeApplication = (opts) => co(function *(){
 		try {
+			console.log('initializeApplication', opts);
 			var connectionPromise = LavaboomAPI.connect();
 
 			if (!$rootScope.isInitialized)
@@ -35,10 +36,19 @@ angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function(
 				yield $state.go('login', {}, {reload: true});
 			} else {
 				$rootScope.isInitialized = true;
+				if (opts) {
+					if (opts.state == 'generateKeys') {
+						yield user.authenticate();
+						yield $state.go('generateKeys');
+					} else if (opts.state == 'backupKeys') {
+						yield user.authenticate();
+						yield $state.go('backupKeys');
+					}
+				}
 				return {lbDone: translations.LB_SUCCESS};
 			}
 		} catch (error) {
 			throw {message: translations.LB_INITIALIZATION_FAILED, error: error};
 		}
 	});
-});
+};

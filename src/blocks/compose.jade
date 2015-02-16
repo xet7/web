@@ -35,7 +35,8 @@ div#compose-wrapper
 					input#subject.form-control.text-primary.col-xs-24(type="text", name="subject", auto-complete="off", ng-model="form.subject").text-primary
 
 		article#compose-body
-			div(text-angular="", ta-file-drop="onFileDrop", ng-model="form.body", , ta-toolbar="[['h1','h2','h3', 'h4', 'h5', 'h6'],['bold','italics'], ['justifyLeft', 'justifyCenter', 'justifyRight']]")
+			//ta-file-drop="onFileDrop",
+			div(text-angular="", ng-model="form.body", ta-toolbar="[['h1','h2','h3', 'h4', 'h5', 'h6'],['bold','italics'], ['justifyLeft', 'justifyCenter', 'justifyRight']]")
 		//footer
 			#attachments.row
 				div.col-xs-6(ng-repeat="attachment in attachments")

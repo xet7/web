@@ -1,6 +1,7 @@
-angular.module(primaryApplicationName).controller('VerifyController', function($scope, $state, co, user, signUp) {
+module.exports = /*@ngInject*/($scope, $state, co, user, signUp) => {
+	$scope.isUsernameDefined = signUp.reserve ? true : false;
 	$scope.form = {
-		username: signUp.reserve ? signUp.reserve.username : '',
+		username: signUp.reserve ? signUp.reserve.originalUsername : '',
 		token: '',
 		isNews: true
 	};
@@ -9,4 +10,4 @@ angular.module(primaryApplicationName).controller('VerifyController', function($
 		yield signUp.verifyInvite($scope.form.username, $scope.form.token, $scope.form.isNews);
 		yield $state.go('plan');
 	});
-});
+};

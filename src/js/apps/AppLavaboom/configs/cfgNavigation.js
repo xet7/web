@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).config(function($stateProvider, $urlRouterProvider, $locationProvider){
+module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProvider) => {
 	$locationProvider.hashPrefix('!');
 
 	// small hack - both routers(login && main app) work at the same time, so we need to troubleshot this
@@ -139,4 +139,4 @@ angular.module(primaryApplicationName).config(function($stateProvider, $urlRoute
 				}
 		}
 	}
-});
+};

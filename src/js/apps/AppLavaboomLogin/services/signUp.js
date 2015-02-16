@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, user) {
+module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
 	var self = this;
 
 	this.reserve = null;
@@ -8,17 +8,18 @@ angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, 
 	this.password = null;
 
 	this.register = (username, altEmail, isNews) => {
-		username = user.transformUserName(username);
+		var transformedUsername = user.transformUserName(username);
 
 		self.reserve = {
-			username: username,
+			originalUsername: username,
+			username: transformedUsername,
 			altEmail: altEmail,
 			isNews: isNews
 		};
 
 		return co(function * (){
-			var res = yield apiProxy(['accounts', 'create', 'register'], {
-				username: username,
+			var res = yield LavaboomAPI.accounts.create.register({
+				username: transformedUsername,
 				alt_email: altEmail
 			});
 
@@ -36,7 +37,7 @@ angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, 
 		};
 
 		return co(function * (){
-			var res = yield apiProxy(['accounts', 'create', 'verify'], {
+			var res = yield LavaboomAPI.accounts.create.verify({
 				username: self.tokenSignup.username,
 				invite_code: self.tokenSignup.token
 			});
@@ -48,7 +49,7 @@ angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, 
 	this.setup = (password) => {
 		self.password = password;
 		return co(function * (){
-			yield apiProxy(['accounts', 'create', 'setup'], {
+			yield LavaboomAPI.accounts.create.setup({
 				username: self.tokenSignup.username,
 				invite_code: self.tokenSignup.token,
 				password: user.calculateHash(password)
@@ -58,10 +59,11 @@ angular.module(primaryApplicationName).service('signUp', function(apiProxy, co, 
 
 			var settings = angular.extend({},
 				self.details, {
-					isSubscribedToNews: (self.reserve ? self.reserve.isNews : false) || self.tokenSignup.isNews
+					isSubscribedToNews: (self.reserve ? self.reserve.isNews : false) || self.tokenSignup.isNews,
+					state: 'incomplete'
 				});
 
 			yield user.update(settings);
 		});
 	};
-});
+};

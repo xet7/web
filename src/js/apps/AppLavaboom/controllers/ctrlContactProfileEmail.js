@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlContactProfileEmail', function($rootScope, $scope, $timeout, $interval, $translate, co, inbox) {
+module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $interval, $translate, co, inbox) => {
 	var translations = {};
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
@@ -26,7 +26,7 @@ angular.module(primaryApplicationName).controller('CtrlContactProfileEmail', fun
 
 	$scope.downloadPublicKey = () => {
 		console.log('downloadPublicKey', $scope.currentEmail);
-		var blob = new Blob([$scope.currentEmail.key.key], {type: "text/plain;charset=utf-8"});
+		var blob = new Blob([$scope.currentEmail.key.key], {type: 'text/plain;charset=utf-8'});
 		saveAs(blob, `${$scope.currentEmail.email}-publicKey.txt`);
 	};
 
@@ -36,4 +36,4 @@ angular.module(primaryApplicationName).controller('CtrlContactProfileEmail', fun
 				loadKey();
 		}, 1000);
 	});
-});
+};

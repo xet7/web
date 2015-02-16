@@ -1,7 +1,11 @@
 [application]
 	dependencies = [
+		# poly-fills
 		"../../../node_modules/6to5/browser-polyfill.js",
+		"../../../node_modules/setimmediate/setImmediate.js",
+		# 6to5 runtime
+		"../../../node_modules/6to5/runtime.js",
+		# Lavaboom raw API
 		"../../bower_components/lodash/lodash.js",
-		"../../bower_components/lavaboom/dist/lavaboom-api.js",
-		"../../../node_modules/setimmediate/setImmediate.js"
+		"../../bower_components/lavaboom/dist/lavaboom-api.js"
 	]

@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).filter('members', ($rootScope, $translate, contacts) => {
+module.exports = /*@ngInject*/($rootScope, $translate, contacts) => {
 	var translations = {};
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
@@ -25,4 +25,4 @@ angular.module(primaryApplicationName).filter('members', ($rootScope, $translate
 
 		return membersString;
 	};
-});
+};

@@ -41,9 +41,12 @@
 
 [VALIDATION]
 	LB_REQUIRED = "This field is required"
-	LB_MIN = "The code entered is too short"
+	LB_MIN = "Too short"
 	LB_EMAIL = "Enter a Valid Email"
 	LB_MATCH = "Both passwords should match"
+	LB_TOO_MANY_REPEATING_CHARACTERS = "Too many repeating characters"
+	LB_TOO_SIMPLE = "Your password is too simple"
+	LB_USERNAME_PATTERN = "Username can contain only a-z, 0-9 characters and optional dots(.) to separate parts"
 
 [LOADER]
 	LB_INITIALIZATION_FAILED = "Initialization failed..."
@@ -181,6 +184,7 @@
 	LB_SUBJECT = "Subject"
 	LB_PRIVATE = "private"
 	LB_BUSINESS = "business"
+	LB_HIDDEN = "hidden"
 
 [MAIN.SETTINGS.MENU]
 	KEYS = "Keys"

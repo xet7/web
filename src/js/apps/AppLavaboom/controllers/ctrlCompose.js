@@ -1,4 +1,4 @@
-angular.module('AppLavaboom').controller('CtrlCompose', function($rootScope, $scope, $stateParams, $translate, consts, co, user, contacts, inbox, router, Attachment, Contact) {
+module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, consts, co, user, contacts, inbox, router, Attachment, Contact) => {
 	$scope.isXCC = false;
 
 	var threadId = $stateParams.replyThreadId;
@@ -11,6 +11,7 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($rootScope, $sc
 	$rootScope.$bind('$translateChangeSuccess', () => {
 		translations.LB_PRIVATE = $translate.instant('MAIN.COMPOSE.LB_PRIVATE');
 		translations.LB_BUSINESS = $translate.instant('MAIN.COMPOSE.LB_BUSINESS');
+		translations.LB_HIDDEN = $translate.instant('MAIN.COMPOSE.LB_HIDDEN');
 	});
 
 	/*var processAttachment = (attachmentStatus) => co(function *() {
@@ -34,7 +35,7 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($rootScope, $sc
 		} catch (err) {
 			attachmentStatus.ext = "file";
 		}
-		
+
 		var envelope;
 		attachmentStatus.status = 'encrypting';
 		try {
@@ -81,36 +82,49 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($rootScope, $sc
 			}
 
 		$scope.attachments.splice(index, 1);
-	});*/
+	});
 
 	$scope.onFileDrop = (file, action) => {
-		/*if (_.startsWith(file.type, 'image')) return;
+		if (_.startsWith(file.type, 'image')) return;
 		var attachmentStatus = {
 			attachment: new Attachment(file)
 		};
 		attachmentStatus.processingPromise = processAttachment(attachmentStatus);
-		$scope.attachments.push(attachmentStatus);*/
+		$scope.attachments.push(attachmentStatus);
 	};
 
-	//$scope.deleteAttachment = (attachmentStatus, index) => deleteAttachment(attachmentStatus, index);
+	$scope.deleteAttachment = (attachmentStatus, index) => deleteAttachment(attachmentStatus, index);*/
 
 	$scope.send = () => co(function *() {
-		console.log('waiting for uploads to complete...');
-
 		yield $scope.attachments.map(a => a.processingPromise);
 
-		console.log('uploads completed...');
+		let to = $scope.form.selected.to.map(e => e.email),
+			cc = $scope.form.selected.cc.map(e => e.email),
+			bcc = $scope.form.selected.bcc.map(e => e.email);
 
-		console.log($scope.form);
-
-		yield inbox.send(
-			$scope.form.selected.to.map(e => e.email),
-			$scope.form.selected.cc.map(e => e.email),
-			$scope.form.selected.bcc.map(e => e.email),
-			$scope.form.subject,
-			$scope.form.body,
-			$scope.attachments.map(a => a.id),
+		yield inbox.send({
+			to,
+			cc,
+			bcc,
+			subject: $scope.form.subject,
+			body: $scope.form.body,
+			attachmentIds: $scope.attachments.map(a => a.id),
 			threadId
+		});
+
+		let emails = new Set([
+			...to,
+			...cc,
+			...bcc
+		]).values();
+
+		yield [...emails]
+			.filter(email => !contacts.getContactByEmail(email))
+			.map(email =>
+				contacts.createContact(new Contact({
+					isSecured: true,
+					email
+				}))
 		);
 
 		router.hidePopup();
@@ -136,6 +150,13 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($rootScope, $sc
 					newContact.email = e.email;
 					a.push(newContact);
 				});
+
+			if (c.email) {
+				var newContact = angular.copy(c);
+				newContact.label = translations.LB_HIDDEN;
+				newContact.email = c.email;
+				a.push(newContact);
+			}
 
 			return a;
 		}, []).concat(toEmailContact ? [toEmailContact] : []);
@@ -205,4 +226,4 @@ angular.module('AppLavaboom').controller('CtrlCompose', function($rootScope, $sc
 			sec: 1
 		};
 	};
-});
+};

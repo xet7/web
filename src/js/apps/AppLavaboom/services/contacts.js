@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).service('contacts', function($q, $rootScope, co, user, crypto, apiProxy, Contact) {
+module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, LavaboomAPI, Contact) {
 	var self = this;
 	var emptyContact = null;
 
@@ -33,7 +33,7 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 	};
 
 	this.list = () => co(function *() {
-		var contacts = (yield apiProxy(['contacts', 'list'])).body.contacts;
+		var contacts = (yield LavaboomAPI.contacts.list()).body.contacts;
 
 		var list = contacts ? yield co.map(contacts, Contact.fromEnvelope) : [];
 		var map = list.reduce((a, c) => {
@@ -49,7 +49,7 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 
 	this.createContact = (contact) => co(function *() {
 		var envelope = yield Contact.toEnvelope(contact);
-		var r = yield apiProxy(['contacts', 'create'], envelope);
+		var r = yield LavaboomAPI.contacts.create(envelope);
 
 		contact.id = r.body.contact.id;
 
@@ -58,19 +58,18 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 
 		$rootScope.$broadcast('contacts-changed');
 
-		return r.body.contact.id;
+		return contact.id;
 	});
 
 	this.updateContact = (contact) => co(function *() {
 		var envelope = yield Contact.toEnvelope(contact);
-		var r = yield apiProxy(['contacts', 'update'], contact.id, envelope);
+		var r = yield LavaboomAPI.contacts.update(contact.id, envelope);
 		return r.body.contact.id;
 	});
 
 	this.deleteContact = (contactId) => co(function *() {
-		console.log('deleting contact', contactId, 'empty contact?', emptyContact);
 		if (!emptyContact || contactId != emptyContact.id)
-			yield apiProxy(['contacts', 'delete'], contactId);
+			yield LavaboomAPI.contacts.delete(contactId);
 		else
 			emptyContact = null;
 
@@ -92,10 +91,7 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 	};
 
 	this.getContactByEmail = (email) => {
-		for(let c of self.peopleList)
-			if (c.isMatchEmail(email))
-				return c;
-		return null;
+		return self.peopleList.find(c => c.isMatchEmail(email));
 	};
 
 	this.myself = null;
@@ -110,4 +106,4 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 		self.peopleById[0] = self.myself;
 		$rootScope.$broadcast('contacts-changed');
 	});
-});
+};

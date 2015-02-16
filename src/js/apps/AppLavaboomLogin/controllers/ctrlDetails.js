@@ -1,8 +1,8 @@
-angular.module(primaryApplicationName).controller('CtrlDetails', function($scope, $state, co, user, signUp) {
+module.exports = /*@ngInject*/($scope, $state, co, user, signUp) => {
 	if (!signUp.tokenSignup || !signUp.plan)
 		$state.go('invite');
 
-	$scope.form = {
+	$scope.form = signUp.details ? signUp.details : {
 		firstName: '',
 		lastName: '',
 		displayName: ''
@@ -21,4 +21,4 @@ angular.module(primaryApplicationName).controller('CtrlDetails', function($scope
 
 		yield $state.go('choosePasswordIntro');
 	});
-});
+};

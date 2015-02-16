@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlBackup', function($scope, $state, $window, user, signUp, crypto, cryptoKeys, loader) {
+module.exports = /*@ngInject*/($scope, $state, $window, user, signUp, crypto, cryptoKeys, loader) => {
 	if (!user.isAuthenticated())
 		$state.go('login');
 
@@ -7,6 +7,8 @@ angular.module(primaryApplicationName).controller('CtrlBackup', function($scope,
 	};
 
 	var navigateMainApplication = () => {
+		user.update({state: 'ok'});
+
 		crypto.options.isPrivateComputer = $scope.form.isPrivateComputer;
 		crypto.authenticateDefault(signUp.password);
 
@@ -17,7 +19,7 @@ angular.module(primaryApplicationName).controller('CtrlBackup', function($scope,
 
 	$scope.backup = () => {
 		var keysBackup = cryptoKeys.exportKeys();
-		var blob = new Blob([keysBackup], {type: "text/json;charset=utf-8"});
+		var blob = new Blob([keysBackup], {type: 'text/json;charset=utf-8'});
 		saveAs(blob, cryptoKeys.getExportFilename(keysBackup, user.name));
 
 		navigateMainApplication();
@@ -26,4 +28,4 @@ angular.module(primaryApplicationName).controller('CtrlBackup', function($scope,
 	$scope.skip = () => {
 		navigateMainApplication();
 	};
-});
+};

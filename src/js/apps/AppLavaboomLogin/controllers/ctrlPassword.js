@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlPassword', function($scope, $state, signUp, co) {
+module.exports = /*@ngInject*/($scope, $state, signUp, co) => {
 	if (!signUp.tokenSignup || !signUp.details)
 		$state.go('login');
 
@@ -11,4 +11,4 @@ angular.module(primaryApplicationName).controller('CtrlPassword', function($scop
 		yield signUp.setup($scope.form.password);
 		yield $state.go('generateKeys');
 	});
-});
+};

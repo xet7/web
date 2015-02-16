@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlContactList', function($rootScope, $scope, $translate, $state, $stateParams, co, contacts, Contact) {
+module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts) => {
 	$scope.selectedContactId = null;
 	$scope.searchText = '';
 
@@ -51,8 +51,8 @@ angular.module(primaryApplicationName).controller('CtrlContactList', function($r
 
 		console.log('contacts-changed, $scope.selectedContactId', $scope.selectedContactId, 'oldContactPosition', oldContactPosition);
 
-		$scope.list = contacts.peopleList;
-		$scope.people = _.groupBy(contacts.peopleList, contact => {
+		$scope.list = contacts.peopleList.filter(c => !c.isPrivate());
+		$scope.people = _.groupBy($scope.list, contact => {
 			if (contact.isNew)
 				return '+';
 
@@ -74,4 +74,4 @@ angular.module(primaryApplicationName).controller('CtrlContactList', function($r
 	$scope.$bind('$stateChangeSuccess', () => {
 		$scope.selectedContactId = $stateParams.contactId;
 	});
-});
+};

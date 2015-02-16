@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlSelectPlan', function($scope, $state, signUp) {
+module.exports = /*@ngInject*/($scope, $state, signUp) => {
 	if (!signUp.tokenSignup)
 		$state.go('invite');
 
@@ -6,4 +6,4 @@ angular.module(primaryApplicationName).controller('CtrlSelectPlan', function($sc
 		signUp.plan = 'beta';
 		$state.go('details');
 	};
-});
+};

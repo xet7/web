@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).filter('humanDate', (dateFilter, translateFilter) => {
+module.exports = /*@ngInject*/(dateFilter, translateFilter) => {
 	return (date) => {
 		var now = new Date();
 		var dateObj = new Date(date);
@@ -13,4 +13,4 @@ angular.module(primaryApplicationName).filter('humanDate', (dateFilter, translat
 
 		return dateFilter(dateObj);
 	};
-});
+};

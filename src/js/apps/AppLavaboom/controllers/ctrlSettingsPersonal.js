@@ -1,11 +1,10 @@
-angular.module(primaryApplicationName).controller('CtrlSettingsPersonal', function($scope, $timeout, user) {
+module.exports = /*@ngInject*/($scope, $timeout, user) => {
 	$scope.name = user.name;
 	$scope.status = '';
 	$scope.settings = {};
 
 	$scope.$bind('user-settings', () => {
 		$scope.settings = user.settings;
-		console.log('$scope.settings', $scope.settings);
 	});
 
 	var clearTimeout = null;
@@ -28,10 +27,10 @@ angular.module(primaryApplicationName).controller('CtrlSettingsPersonal', functi
 					.then(() => {
 						$scope.status = 'saved!';
 					})
-					.catch(err => {
+					.catch(() => {
 						$scope.status = 'ops...';
 					});
 			}, 1000);
 		}
 	}, true);
-});
+};

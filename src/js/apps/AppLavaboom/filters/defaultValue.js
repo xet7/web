@@ -1,3 +1,3 @@
-angular.module(primaryApplicationName) .filter('defaultValue', () => {
+module.exports = /*@ngInject*/() => {
 	return (v, defaultValue) => v ? v : defaultValue;
-});
+};

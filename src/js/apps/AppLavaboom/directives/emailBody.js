@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).directive('emailBody', function($timeout, $state) {
+module.exports = /*@ngInject*/($timeout, $state) => {
 	return {
 		restrict : 'A',
 		link  : function(scope, el, attrs) {
@@ -14,4 +14,4 @@ angular.module(primaryApplicationName).directive('emailBody', function($timeout,
 			});
 		}
 	};
-});
+};

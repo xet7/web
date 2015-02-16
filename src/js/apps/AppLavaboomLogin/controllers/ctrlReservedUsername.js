@@ -1,5 +1,5 @@
-angular.module(primaryApplicationName).controller('CtrlReservedUsername', function($scope, $state, signUp) {
+module.exports = /*@ngInject*/($scope, $state, signUp) => {
 	if (!signUp.reserve)
 		$state.go('login');
-    $scope.email = signUp.reserve.altEmail;
-});
+	$scope.email = signUp.reserve.altEmail;
+};

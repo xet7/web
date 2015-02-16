@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName).controller('CtrlSecureUsername', function($scope, $state, co, signUp) {
+module.exports = /*@ngInject*/($scope, $state, co, signUp) => {
 	$scope.form = {
 		username: '',
 		email: '',
@@ -10,4 +10,4 @@ angular.module(primaryApplicationName).controller('CtrlSecureUsername', function
 
 		yield $state.go('reservedUsername');
 	});
-});
+};

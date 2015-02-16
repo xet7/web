@@ -1,6 +1,6 @@
 var chan = require('chan');
 
-angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $rootScope, $timeout, $scope, $state, $translate, LavaboomAPI, co, translate, crypto, cryptoKeys, user, inbox, contacts, loader) {
+module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate, LavaboomAPI, co, translate, crypto, user, inbox, contacts, loader) => {
 	var translations = {};
 	var translationsCh = chan();
 
@@ -60,4 +60,4 @@ angular.module(primaryApplicationName).controller('CtrlLavaboom', function($q, $
 	$scope.onApplicationReady = () => {
 		$rootScope.$broadcast('initialization-completed');
 	};
-});
+};

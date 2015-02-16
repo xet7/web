@@ -1,10 +1,10 @@
-angular.module(primaryApplicationName).controller('CtrlGeneratingKeys', function($rootScope, $scope, $state, $interval, $timeout, $translate, consts, crypto, user, co, signUp) {
+module.exports = /*@ngInject*/($rootScope, $scope, $state, $interval, $timeout, $translate, consts, crypto, user, co, signUp) => {
 	if (!user.isAuthenticated())
 		$state.go('login');
 
 	var timePassed = 0;
 	var translations = {};
-	
+
 	$scope.progress = 0;
 	$scope.label = '';
 
@@ -35,7 +35,11 @@ angular.module(primaryApplicationName).controller('CtrlGeneratingKeys', function
 			$scope.label = translations.LB_UPLOADING;
 
 			yield user.syncKeys();
-			yield user.updateKey(res.prv.primaryKey.fingerprint);
+			try {
+				yield user.updateKey(res.prv.primaryKey.fingerprint);
+			} catch (err) {
+				console.error(err);
+			}
 
 			$scope.progress = 100;
 			$scope.label = translations.LB_READY;
@@ -48,4 +52,4 @@ angular.module(primaryApplicationName).controller('CtrlGeneratingKeys', function
 			$scope.label = translations.LB_ERROR;
 		}
 	});
-});
+};
