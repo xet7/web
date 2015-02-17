@@ -57,8 +57,9 @@ var args = process.argv.slice(2);
 
 var plumber = null;
 var isServe = false;
+var isWatching = args.length < 1;
 process.env.IS_PRODUCTION = '';
-if (args.length > 0) {
+if (!isWatching) {
 	plumber = plg.util.noop;
 	if (args[0] === 'production') {
 		console.log('Making a production build...');
@@ -326,7 +327,12 @@ gulp.task('build:styles', function() {
 	return gulp.src(paths.styles.input)
 		.pipe(plumber())
 		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.noop())
-		.pipe(plg.less())
+		// oh yes, gulp is full of hacks and totally weird behavior
+		// the special solution for the special gulp-less plugin
+		.pipe(isWatching ? plg.less().on('error', function(err){
+			utils.logGulpError('Less error', 'gulpfile.js', err);
+			this.emit('end');
+		}) : plg.less())
 		.pipe(plg.autoprefixer('last 2 version', '> 1%'))
 		.pipe(config.isDebugable && !config.isProduction ? plg.sourcemaps.write('.') : plg.util.noop())
 		.pipe(!config.isProduction ? gulp.dest(paths.styles.output) : plg.util.noop())
