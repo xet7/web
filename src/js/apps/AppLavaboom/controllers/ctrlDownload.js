@@ -31,7 +31,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $interval, $tim
 	}, 1000);
 
 	co(function *(){
-		let email = yield inbox.getEmail(emailId);
+		let email = yield inbox.getEmailById(emailId);
 		console.log('downloading file from email', 'email', email);
 
 		$scope.label = translations.LB_DOWNLOADING;

@@ -23,7 +23,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 	var emailsListCache = new Cache(defaultCacheOptions);
 
 	this.invalidateThreadCache = () => {
-		for(let labelName in threadsCaches)
+		for(let labelName of Object.keys(threadsCaches))
 			threadsCaches[labelName].invalidateAll();
 	};
 
@@ -125,7 +125,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 
 		var labelId = self.labelsByName[labelName].id;
 
-		for(let c in threadsCaches)
+		for(let c of Object.keys(threadsCaches))
 			threadsCaches[c].invalidateAll();
 
 		var r =  yield LavaboomAPI.threads.update(threadId, {labels: [labelId]});
@@ -237,7 +237,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 		return yield LavaboomAPI.files.delete(attachmentId);
 	});
 
-	this.getEmail = (emailId) => co(function *(){
+	this.getEmailById = (emailId) => co(function *(){
 		var r = yield LavaboomAPI.emails.get(emailId);
 
 		return r.body.email ? Email.fromEnvelope(r.body.email) : null;
@@ -279,10 +279,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 	});
 
 	$rootScope.whenInitialized(() => {
-		console.log('subscribing...');
 		LavaboomAPI.subscribe('receipt', (msg) => performsThreadsOperation(handleEvent(msg)));
 		LavaboomAPI.subscribe('delivery', (msg) => performsThreadsOperation(handleEvent(msg)));
-		console.log('subscribed!');
 
 		$rootScope.$on('logout', () => {
 			self.invalidateEmailCache();
