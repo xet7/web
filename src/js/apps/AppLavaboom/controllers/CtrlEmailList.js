@@ -22,6 +22,10 @@ module.exports = /*@ngInject*/($scope, $timeout, $stateParams, inbox, consts) =>
 			});
 	}
 
+	$scope.downloadFile = (id) => {
+
+	};
+
 	var markAsReadTimeout = null;
 
 	if ($scope.selectedTid)

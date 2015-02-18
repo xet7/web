@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, consts, co, user, contacts, inbox, router, Attachment, Contact) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, consts, co, user, contacts, inbox, router, Manifest, Attachment, Contact) => {
 	$scope.isXCC = false;
 
 	var threadId = $stateParams.replyThreadId;
@@ -14,7 +14,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 		translations.LB_HIDDEN = $translate.instant('MAIN.COMPOSE.LB_HIDDEN');
 	});
 
-	/*var processAttachment = (attachmentStatus) => co(function *() {
+	var processAttachment = (attachmentStatus) => co(function *() {
 		attachmentStatus.status = 'reading';
 		attachmentStatus.isCancelled = false;
 
@@ -31,9 +31,9 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 		console.log('dropzone added file', attachmentStatus);
 
 		try {
-			attachmentStatus.ext = attachmentStatus.attachment.type.split("/")[0];
+			attachmentStatus.ext = attachmentStatus.attachment.type.split('/')[0];
 		} catch (err) {
-			attachmentStatus.ext = "file";
+			attachmentStatus.ext = 'file';
 		}
 
 		var envelope;
@@ -52,7 +52,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 		attachmentStatus.status = 'uploading';
 		try {
 			r = yield inbox.uploadAttachment(envelope);
-			attachmentStatus.id = r.body.attachment.id;
+			attachmentStatus.id = r.body.file.id;
 			attachmentStatus.status = 'uploaded!';
 		} catch (err) {
 			attachmentStatus.status = 'cannot upload';
@@ -93,7 +93,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 		$scope.attachments.push(attachmentStatus);
 	};
 
-	$scope.deleteAttachment = (attachmentStatus, index) => deleteAttachment(attachmentStatus, index);*/
+	$scope.deleteAttachment = (attachmentStatus, index) => deleteAttachment(attachmentStatus, index);
 
 	$scope.send = () => co(function *() {
 		yield $scope.attachments.map(a => a.processingPromise);
@@ -102,30 +102,29 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 			cc = $scope.form.selected.cc.map(e => e.email),
 			bcc = $scope.form.selected.bcc.map(e => e.email);
 
-		yield inbox.send({
+		let manifest = Manifest.create({
+			fromEmail: user.email,
 			to,
 			cc,
 			bcc,
-			subject: $scope.form.subject,
+			subject: $scope.form.subject
+		});
+		manifest.setBody($scope.form.body);
+		for(let attachmentStatus of $scope.attachments)
+			manifest.addAttachment(attachmentStatus.id, attachmentStatus.attachment.body, attachmentStatus.attachment.name, attachmentStatus.attachment.type);
+
+		yield inbox.send({
 			body: $scope.form.body,
 			attachmentIds: $scope.attachments.map(a => a.id),
 			threadId
-		});
+		}, manifest);
 
-		let emails = new Set([
-			...to,
-			...cc,
-			...bcc
-		]).values();
-
-		yield [...emails]
+		yield manifest.getDestinationEmails()
 			.filter(email => !contacts.getContactByEmail(email))
-			.map(email =>
-				contacts.createContact(new Contact({
-					isSecured: true,
-					email
-				}))
-		);
+			.map(email => contacts.createContact(new Contact({
+				isSecured: true,
+				email
+			})));
 
 		router.hidePopup();
 	});

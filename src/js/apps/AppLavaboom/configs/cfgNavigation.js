@@ -111,7 +111,25 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 				router.createPopup({
 					templateUrl: 'partials/compose.html',
 					controller: 'CtrlCompose',
-					backdrop: true,
+					backdrop: 'static',
+					size: 'lg'
+				});
+			};
+
+			// @ngInject
+			this.onExit = (router) => {
+				router.hidePopup();
+			};
+		},
+		'download': function () {
+			this.url =  '/download/:emailId/:fileId';
+
+			// @ngInject
+			this.onEnter = (router) => {
+				router.createPopup({
+					templateUrl: 'partials/download.html',
+					controller: 'CtrlDownload',
+					backdrop: 'static',
 					size: 'lg'
 				});
 			};

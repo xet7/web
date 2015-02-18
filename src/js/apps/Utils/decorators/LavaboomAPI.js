@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co) => {
-	let propsList = ['info', 'accounts', 'attachments', 'contacts', 'emails', 'labels', 'keys', 'threads', 'tokens'];
+	let propsList = ['info', 'accounts', 'files', 'contacts', 'emails', 'labels', 'keys', 'threads', 'tokens'];
 
 	$delegate.formatError = (callName, error) => {
 		callName = callName.toUpperCase();
