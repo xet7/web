@@ -86,7 +86,7 @@ form.settings{
 		}		
 	}
 
-	[class^="icon-"], [class*=" icon-"]{
+	[class^="icon-"]:not(.field-icon), [class*=" icon-"]:not(.field-icon){
 		color: @lava-gray-light;
 		font-size: 1.3em;
 	}
@@ -259,11 +259,20 @@ form.settings{
 				box-shadow: none;
 				border: 0;
 				height: 200px;
+				&:focus{
+					border: 0;
+					box-shadow: none;
+					outline: 0 none;
+				}
 			}
 
 			.ta-scroll-window.form-control{
 				box-shadow: none;
 				border: 0;
+			}
+
+			.ta-editor{
+				min-height: 200px;
 			}
 		}
 		.dropdown-control{
@@ -413,7 +422,7 @@ form.settings{
 	h4{
 		padding-left: 16px;
 		color: @lava-text;
-		font-weight: 200;
+		.lava-font();
 		margin-top: 2em;
 	}
 }
