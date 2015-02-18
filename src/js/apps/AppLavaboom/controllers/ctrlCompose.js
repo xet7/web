@@ -14,7 +14,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 		translations.LB_HIDDEN = $translate.instant('MAIN.COMPOSE.LB_HIDDEN');
 	});
 
-	/*var processAttachment = (attachmentStatus) => co(function *() {
+	var processAttachment = (attachmentStatus) => co(function *() {
 		attachmentStatus.status = 'reading';
 		attachmentStatus.isCancelled = false;
 
@@ -31,9 +31,9 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 		console.log('dropzone added file', attachmentStatus);
 
 		try {
-			attachmentStatus.ext = attachmentStatus.attachment.type.split("/")[0];
+			attachmentStatus.ext = attachmentStatus.attachment.type.split('/')[0];
 		} catch (err) {
-			attachmentStatus.ext = "file";
+			attachmentStatus.ext = 'file';
 		}
 
 		var envelope;
@@ -93,7 +93,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 		$scope.attachments.push(attachmentStatus);
 	};
 
-	$scope.deleteAttachment = (attachmentStatus, index) => deleteAttachment(attachmentStatus, index);*/
+	$scope.deleteAttachment = (attachmentStatus, index) => deleteAttachment(attachmentStatus, index);
 
 	$scope.send = () => co(function *() {
 		yield $scope.attachments.map(a => a.processingPromise);
