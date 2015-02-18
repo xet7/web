@@ -65,6 +65,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 		return r;
 	});
 
+	//ToDo: manifest for each thread(subject and other meta data)
 	var getThreadsByLabelName = (labelName) => co(function *() {
 		var label = self.labelsByName[labelName];
 
