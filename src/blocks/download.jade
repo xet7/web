@@ -1,6 +1,12 @@
-#downloading-wrapper
-	.progress
-		.progress-bar(role='progressbar', aria-valuenow='{{progress}}', aria-valuemin='0', aria-valuemax='100', style='width: {{progress}}%;')
-			span.sr-only {{progress}}% Complete
+div#compose-wrapper
+	form#compose
+		.filters.row.no-gutter.lava-icon-row.z1
+			.lava-icon-wrapper.pull-right
+				a(href="#", ng-click="hidePopup()")
+					span.icon-close
+		article#compose-body
+			.progress
+				.progress-bar(role='progressbar', aria-valuenow='{{progress}}', aria-valuemin='0', aria-valuemax='100', style='width: {{progress}}%;')
+					span.sr-only {{progress}}% Complete
 
-	p.lead(ng-bind="label")
+			p.lead(ng-bind="label")

@@ -111,7 +111,7 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 				router.createPopup({
 					templateUrl: 'partials/compose.html',
 					controller: 'CtrlCompose',
-					backdrop: true,
+					backdrop: 'static',
 					size: 'lg'
 				});
 			};
@@ -129,7 +129,7 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 				router.createPopup({
 					templateUrl: 'partials/download.html',
 					controller: 'CtrlDownload',
-					backdrop: true,
+					backdrop: 'static',
 					size: 'lg'
 				});
 			};

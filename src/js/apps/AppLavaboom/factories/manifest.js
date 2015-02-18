@@ -36,7 +36,7 @@ module.exports = /*@ngInject*/() => {
 				id: id,
 				hash: hash(data),
 				filename: fileName,
-				content_type: contentType,
+				content_type: contentType ? contentType : 'application/octet-stream',
 				charset: 'urf-8',
 				filesize: data.length
 			});

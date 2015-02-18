@@ -22,6 +22,7 @@
 	LB_DOWNLOADING = "downloading..."
 	LB_DECRYPTING = "decrypting..."
 	LB_TAKES_MORE = "action will take some more time..."
+	LB_COMPLETED = "completed!"
 
 [GLOBAL]
 	USERNAME = "username"

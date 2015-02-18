@@ -14,5 +14,6 @@ module.exports = {
 	INBOX_THREADS_CACHE_TTL: 60 * 1000,
 	INBOX_EMAILS_CACHE_TTL: 60 * 1000,
 	SET_READ_AFTER_TIMEOUT: 3000,
-	KEYS_BACKUP_README: 'https://lavaboom.com/placeholder/help/backup-file'
+	KEYS_BACKUP_README: 'https://lavaboom.com/placeholder/help/backup-file',
+	POPUP_AUTO_HIDE_DELAY: 500
 };
