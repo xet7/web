@@ -8,11 +8,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $interval, $tim
 	$scope.label = '';
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_ACQUIRING = $translate.instant('INBOX.LB_ACQUIRING');
-		translations.LB_DOWNLOADING = $translate.instant('INBOX.LB_DOWNLOADING');
-		translations.LB_DECRYPTING = $translate.instant('INBOX.LB_DECRYPTING');
-		translations.LB_TAKES_MORE = $translate.instant('INBOX.LB_TAKES_MORE');
-		translations.LB_COMPLETED = $translate.instant('INBOX.LB_COMPLETED');
+		translations.LB_ACQUIRING = $translate.instant('INBOX.DOWNLOAD.LB_ACQUIRING');
+		translations.LB_DOWNLOADING = $translate.instant('INBOX.DOWNLOAD.LB_DOWNLOADING');
+		translations.LB_DECRYPTING = $translate.instant('INBOX.DOWNLOAD.LB_DECRYPTING');
+		translations.LB_TAKES_MORE = $translate.instant('INBOX.DOWNLOAD.LB_TAKES_MORE');
+		translations.LB_COMPLETED = $translate.instant('INBOX.DOWNLOAD.LB_COMPLETED');
 		$scope.label = translations.LB_ACQUIRING;
 	});
 
@@ -44,9 +44,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $interval, $tim
 
 		$scope.progress = 100;
 		$scope.label = translations.LB_COMPLETED;
+		$interval.cancel(progressBarInterval);
 
 		$timeout(() => {
-			//router.hidePopup();
+			router.hidePopup();
 		}, consts.POPUP_AUTO_HIDE_DELAY);
 	});
 };

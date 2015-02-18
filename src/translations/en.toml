@@ -18,6 +18,8 @@
 	LB_SETTINGS = "settings"
 	LB_NO_PRIVATE_KEY_FOUND3 = " and check your key"
 
+[INBOX.DOWNLOAD]
+	TITLE = "Downloading your attachment"
 	LB_ACQUIRING = "Acquiring information..."
 	LB_DOWNLOADING = "downloading..."
 	LB_DECRYPTING = "decrypting..."
