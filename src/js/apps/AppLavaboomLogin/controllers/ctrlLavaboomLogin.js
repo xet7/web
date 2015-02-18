@@ -35,14 +35,17 @@ module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, Lavab
 				yield $state.go('login', {}, {reload: true});
 			} else {
 				$rootScope.isInitialized = true;
-				
+				console.log('opts', opts);
 				if (opts) {
-					yield user.authenticate();
 
-					if (opts.state == 'generateKeys') {
-						yield $state.go('generateKeys');
-					} else if (opts.state == 'backupKeys') {
-						yield $state.go('backupKeys');
+					if (opts.state) {
+						yield user.authenticate();
+
+						if (opts.state == 'generateKeys') {
+							yield $state.go('generateKeys');
+						} else if (opts.state == 'backupKeys') {
+							yield $state.go('backupKeys');
+						}
 					}
 				}
 				return {lbDone: translations.LB_SUCCESS};
