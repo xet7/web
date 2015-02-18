@@ -279,8 +279,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 	});
 
 	$rootScope.whenInitialized(() => {
+		console.log('subscribing...');
 		LavaboomAPI.subscribe('receipt', (msg) => performsThreadsOperation(handleEvent(msg)));
 		LavaboomAPI.subscribe('delivery', (msg) => performsThreadsOperation(handleEvent(msg)));
+		console.log('subscribed!');
 
 		$rootScope.$on('logout', () => {
 			self.invalidateEmailCache();

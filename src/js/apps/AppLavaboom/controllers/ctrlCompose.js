@@ -1,5 +1,10 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, consts, co, user, contacts, inbox, router, Manifest, Attachment, Contact) => {
 	$scope.isXCC = false;
+	$scope.toolbar = [
+		['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+		['bold', 'italics'],
+		['justifyLeft', 'justifyCenter', 'justifyRight']
+	];
 
 	var threadId = $stateParams.replyThreadId;
 	var toEmail = $stateParams.to;
@@ -96,6 +101,9 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 	$scope.deleteAttachment = (attachmentStatus, index) => deleteAttachment(attachmentStatus, index);
 
 	$scope.send = () => co(function *() {
+		if (!$scope.__form.$valid || $scope.form.selected.to.length < 1 || $scope.form.body.length < 1)
+			return;
+
 		yield $scope.attachments.map(a => a.processingPromise);
 
 		let to = $scope.form.selected.to.map(e => e.email),
