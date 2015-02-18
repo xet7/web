@@ -120,6 +120,24 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 			this.onExit = (router) => {
 				router.hidePopup();
 			};
+		},
+		'download': function () {
+			this.url =  '/download/:emailId/:fileId';
+
+			// @ngInject
+			this.onEnter = (router) => {
+				router.createPopup({
+					templateUrl: 'partials/download.html',
+					controller: 'CtrlDownload',
+					backdrop: true,
+					size: 'lg'
+				});
+			};
+
+			// @ngInject
+			this.onExit = (router) => {
+				router.hidePopup();
+			};
 		}
 	};
 

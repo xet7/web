@@ -52,7 +52,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 		attachmentStatus.status = 'uploading';
 		try {
 			r = yield inbox.uploadAttachment(envelope);
-			attachmentStatus.id = r.body.attachment.id;
+			attachmentStatus.id = r.body.file.id;
 			attachmentStatus.status = 'uploaded!';
 		} catch (err) {
 			attachmentStatus.status = 'cannot upload';
@@ -110,6 +110,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 			subject: $scope.form.subject
 		});
 		manifest.setBody($scope.form.body);
+		for(let attachmentStatus of $scope.attachments)
+			manifest.addAttachment(attachmentStatus.id, attachmentStatus.attachment.body, attachmentStatus.attachment.name, attachmentStatus.attachment.type);
 
 		yield inbox.send({
 			body: $scope.form.body,

@@ -10,6 +10,7 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest, LavaboomAPI
 		this.date = opt.date_created;
 		this.from = angular.isArray(opt.from) ? opt.from : [opt.from];
 		this.manifest = manifest;
+		this.files = manifest.parts.filter(p => p.id != 'body');
 
 		let fromContact = contacts.getContactByEmail(opt.from);
 
@@ -48,7 +49,7 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest, LavaboomAPI
 			cc: manifest.cc,
 			bcc: manifest.bcc,
 
-			attachments: attachmentIds,
+			files: attachmentIds,
 			thread: threadId
 		});
 	});

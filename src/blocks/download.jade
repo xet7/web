@@ -1,0 +1,6 @@
+#downloading-wrapper
+	.progress
+		.progress-bar(role='progressbar', aria-valuenow='{{progress}}', aria-valuemin='0', aria-valuemax='100', style='width: {{progress}}%;')
+			span.sr-only {{progress}}% Complete
+
+	p.lead(ng-bind="label")

@@ -223,18 +223,23 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 		yield self.requestList('Inbox');
 	});
 
+	this.downloadAttachment = (id) => co(function *(){
+		let res =  yield LavaboomAPI.files.get(id);
+		return (yield crypto.decodeEnvelope(res.body.file, '', 'raw')).data;
+	});
+
 	this.uploadAttachment = (envelope) => co(function *(){
-		return yield LavaboomAPI.attachments.create(envelope);
+		return yield LavaboomAPI.files.create(envelope);
 	});
 
 	this.deleteAttachment = (attachmentId) => co(function *(){
-		return yield LavaboomAPI.attachments.delete(attachmentId);
+		return yield LavaboomAPI.files.delete(attachmentId);
 	});
 
 	this.getEmail = (emailId) => co(function *(){
 		var r = yield LavaboomAPI.emails.get(emailId);
 
-		return r.body.email ? new Email(r.body.email) : null;
+		return r.body.email ? Email.fromEnvelope(r.body.email) : null;
 	});
 
 	this.requestList = (labelName) => {

@@ -18,6 +18,11 @@
 	LB_SETTINGS = "settings"
 	LB_NO_PRIVATE_KEY_FOUND3 = " and check your key"
 
+	LB_ACQUIRING = "Acquiring information..."
+	LB_DOWNLOADING = "downloading..."
+	LB_DECRYPTING = "decrypting..."
+	LB_TAKES_MORE = "action will take some more time..."
+
 [GLOBAL]
 	USERNAME = "username"
 	CURRENT_EMAIL = "your current email address"

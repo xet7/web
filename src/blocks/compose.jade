@@ -44,9 +44,9 @@ div#compose-wrapper
 						span(ng-bind="attachment.attachment.name")
 						br
 						span(ng-bind="attachment.attachment.size | fileSize")
+						br
+						div(ng-bind="attachment.attachment.dateModified | date")
+						br
 						span.text-muted {{attachment.status}}
-						//- div(ng-bind="attachment.attachment.size | fileSize")
-						//- div(ng-bind="attachment.attachment.dateModified | date")
-						//- div(ng-bind="attachment.status")
-						//- button.btn.btn-block.btn-lg.btn-primary(ng-click="deleteAttachment(attachment, $index)", ng-autodisable) delete
+						a.btn.btn-block.btn-lg.btn-primary(type="button", ng-click="deleteAttachment(attachment, $index)", ng-autodisable) delete
 

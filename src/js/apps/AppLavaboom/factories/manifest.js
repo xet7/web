@@ -1,15 +1,15 @@
-module.exports = /*@ngInject*/(co, crypto, user, LavaboomAPI) => {
+module.exports = /*@ngInject*/() => {
 	let Manifest = function (manifest) {
-		let generateId = () => openpgp.util.hexstrdump(openpgp.crypto.random.getRandomBytes(16));
 		let hash = (data) => openpgp.util.hexstrdump(openpgp.crypto.hash.sha256(data));
 
 		let self = this;
 		
-		this.from = manifest.from;
-		this.to = manifest.to;
-		this.cc = manifest.cc ? manifest.cc : [];
-		this.bcc = manifest.bcc ? manifest.bcc : [];
-		this.subject = manifest.subject;
+		this.from = manifest.headers.from;
+		this.to = manifest.headers.to;
+		this.cc = manifest.headers.cc ? manifest.headers.cc : [];
+		this.bcc = manifest.headers.bcc ? manifest.headers.bcc : [];
+		this.subject = manifest.headers.subject;
+		this.parts = manifest.parts;
 
 		this.getDestinationEmails = () => {
 			let emails = new Set([
@@ -20,21 +20,24 @@ module.exports = /*@ngInject*/(co, crypto, user, LavaboomAPI) => {
 
 			return [...emails];
 		};
+
+		this.getFileById = (id) => self.parts.find(p => p.id == id);
 		
 		this.setBody = (data, contentType) => {
 			manifest.parts.push({
 				id: 'body',
 				hash: hash(data),
-				'content-type': contentType
+				content_type: contentType
 			});
 		};
 
-		this.addAttachment = (data, fileName, contentType) => {
+		this.addAttachment = (id, data, fileName, contentType) => {
 			manifest.parts.push({
-				id: generateId(),
+				id: id,
 				hash: hash(data),
 				filename: fileName,
-				'content-type': contentType,
+				content_type: contentType,
+				charset: 'urf-8',
 				filesize: data.length
 			});
 		};
@@ -48,21 +51,22 @@ module.exports = /*@ngInject*/(co, crypto, user, LavaboomAPI) => {
 
 	Manifest.defaultVersion = '1.0.0';
 
-	//let manifest = Manifest.create({fromEmail: user.email, to, cc, bcc, subject});
 	Manifest.create = ({fromEmail, to, cc, bcc, subject}) => {
 		let manifest = {
 			version: Manifest.defaultVersion,
-			from: fromEmail,
-			to,
-			subject: subject,
+			headers: {
+				from: fromEmail,
+				to,
+				subject: subject
+			},
 			parts: []
 		};
 
 		if (cc && cc.length > 0)
-			manifest.cc = cc;
+			manifest.headers.cc = cc;
 
 		if (bcc && bcc.length > 0)
-			manifest.bcc = bcc;
+			manifest.headers.bcc = bcc;
 
 		return new Manifest(manifest);
 	};
