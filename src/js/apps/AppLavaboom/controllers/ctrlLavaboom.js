@@ -18,7 +18,6 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 	});
 
 	$scope.initializeApplication = () => co(function *(){
-		console.log('main app: processing $scope.initializeApplication()');
 		try {
 			var connectionPromise = LavaboomAPI.connect();
 

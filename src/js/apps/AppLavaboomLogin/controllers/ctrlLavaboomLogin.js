@@ -16,7 +16,6 @@ module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, Lavab
 
 	$scope.initializeApplication = (opts) => co(function *(){
 		try {
-			console.log('initializeApplication', opts);
 			var connectionPromise = LavaboomAPI.connect();
 
 			if (!$rootScope.isInitialized)
@@ -24,24 +23,25 @@ module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, Lavab
 
 			loader.incProgress(translations.LB_INITIALIZING_I18N, 1);
 
-			translate.initialize();
+			var translateInitialization = translate.initialize();
 
 			loader.incProgress(translations.LB_INITIALIZING_OPENPGP, 5);
 
 			crypto.initialize();
 
-			yield connectionPromise;
+			yield [connectionPromise, translateInitialization];
 
 			if ($rootScope.isInitialized) {
 				yield $state.go('login', {}, {reload: true});
 			} else {
 				$rootScope.isInitialized = true;
+				
 				if (opts) {
+					yield user.authenticate();
+
 					if (opts.state == 'generateKeys') {
-						yield user.authenticate();
 						yield $state.go('generateKeys');
 					} else if (opts.state == 'backupKeys') {
-						yield user.authenticate();
 						yield $state.go('backupKeys');
 					}
 				}
