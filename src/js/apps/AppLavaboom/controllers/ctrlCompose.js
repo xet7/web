@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, consts, co, user, contacts, inbox, router, Attachment, Contact) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, consts, co, user, contacts, inbox, router, Manifest, Attachment, Contact) => {
 	$scope.isXCC = false;
 
 	var threadId = $stateParams.replyThreadId;
@@ -102,30 +102,27 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 			cc = $scope.form.selected.cc.map(e => e.email),
 			bcc = $scope.form.selected.bcc.map(e => e.email);
 
-		yield inbox.send({
+		let manifest = Manifest.create({
+			fromEmail: user.email,
 			to,
 			cc,
 			bcc,
-			subject: $scope.form.subject,
+			subject: $scope.form.subject
+		});
+		manifest.setBody($scope.form.body);
+
+		yield inbox.send({
 			body: $scope.form.body,
 			attachmentIds: $scope.attachments.map(a => a.id),
 			threadId
-		});
+		}, manifest);
 
-		let emails = new Set([
-			...to,
-			...cc,
-			...bcc
-		]).values();
-
-		yield [...emails]
+		yield manifest.getDestinationEmails()
 			.filter(email => !contacts.getContactByEmail(email))
-			.map(email =>
-				contacts.createContact(new Contact({
-					isSecured: true,
-					email
-				}))
-		);
+			.map(email => contacts.createContact(new Contact({
+				isSecured: true,
+				email
+			})));
 
 		router.hidePopup();
 	});

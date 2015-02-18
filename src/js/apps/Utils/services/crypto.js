@@ -64,7 +64,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		}
 	};
 
-	var decodeByListedFingerprints = (message, fingerprints) => co(function *(){
+	this.decodeByListedFingerprints = (message, fingerprints) => co(function *(){
 		var pgpMessage = openpgp.message.readArmored(message);
 
 		var privateKeys = fingerprints
@@ -90,7 +90,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		return yield openpgp.decryptMessage(privateKeys[0], pgpMessage);
 	});
 
-	var encodeWithKeys = (message, publicKeys) => co(function *(){
+	this.encodeWithKeys = (message, publicKeys) => co(function *(){
 		let mergedPublicKeys = publicKeys.reduce((a, k) => {
 			a = a.concat(openpgp.key.readArmored(k).keys);
 			return a;
@@ -232,8 +232,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 	};
 
 	this.encodeEnvelopeWithKeys = (data, publicKeys, dataFieldName = 'data', prefixName = '') => co(function *(){
-		console.log('encodeEnvelopeWithKeys', data, publicKeys, dataFieldName, prefixName);
-
 		if (!data.encoding)
 			data.encoding = 'raw';
 		if (!data.majorVersion)
@@ -245,7 +243,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 			prefixName = `${prefixName}_`;
 
 		var dataObj = data.encoding == 'json' ? JSON.stringify(data.data) : data.data;
-		var {pgpData, mergedPublicKeys} = yield encodeWithKeys(dataObj, publicKeys);
+		var {pgpData, mergedPublicKeys} = yield self.encodeWithKeys(dataObj, publicKeys);
 
 		var envelope = {
 			pgp_fingerprints: mergedPublicKeys.map(k => k.primaryKey.fingerprint),
@@ -272,7 +270,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 
 		try {
 			message = envelope.pgp_fingerprints && envelope.pgp_fingerprints.length > 0
-				? yield decodeByListedFingerprints(pgpData, envelope.pgp_fingerprints)
+				? yield self.decodeByListedFingerprints(pgpData, envelope.pgp_fingerprints)
 				: pgpData;
 
 			if (envelope.encoding == 'json')
