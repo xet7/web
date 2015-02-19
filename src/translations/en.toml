@@ -200,6 +200,8 @@
 	LB_COMPOSED_MAILS = "Composed Mails"
 	LB_MARKED_AS_SPAM = "Marked as Spam"
 	LB_DELETED_EMAILS = "Deleted Emails"
+	TITLE_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts"
+	LB_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts Enabled"
 
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
