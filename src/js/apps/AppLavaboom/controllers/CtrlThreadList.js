@@ -98,28 +98,24 @@ module.exports = /*@ngInject*/($rootScope, $document, $scope, $state, $timeout, 
         moveThreads(1);
     };
 
-    for (let key of ['h', 'k', 'left', 'up']) {
-        hotkeys.add({
-            combo: key,
-            description: 'Move up',
-            callback: moveUp
-        });
-    }
+    hotkeys.add({
+        combo: ['h', 'k', 'left', 'up'],
+        description: 'Move up',
+        callback: moveUp
+    });
 
-    for (let key of ['j', 'l', 'right', 'down']) {
-        hotkeys.add({
-            combo: key,
-            description: 'Move down',
-            callback: moveDown
-        });
-    }
+    hotkeys.add({
+        combo: ['j', 'l', 'right', 'down'],
+        description: 'Move down',
+        callback: moveDown
+    });
 
     hotkeys.add({
         combo: 'a',
         description: 'Archive selected email',
         callback: (event, key) => {
             event.preventDefault();
-            $scope.deleteThread($scope.selectedTid);
+            //$scope.archive($scope.selectedTid);
         }
     });
 
