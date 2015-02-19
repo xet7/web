@@ -10,6 +10,10 @@ module.exports = /*@ngInject*/(co, user, crypto) => {
 		if (!this.name && this.email)
 			this.name = this.email.split('@')[0].trim();
 
+		this.isCustomName = () => self.name != `${self.firstName.trim()} ${self.lastName.trim()}`;
+
+		this.getFullName = () => self.isCustomName() ? self.name + ` (${self.firstName.trim()} ${self.lastName.trim()})` : self.name;
+
 		this.isMatchEmail = (email) =>
 			(self.email == email) ||
 			(self.privateEmails && self.privateEmails.includes(email)) ||
