@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $document, $scope, $state, $timeout, $interval, $stateParams, user, inbox, consts) => {
+module.exports = /*@ngInject*/($rootScope, $document, $scope, $state, $timeout, $interval, $stateParams, user, inbox, consts, hotkeys) => {
 	$scope.labelName = $stateParams.labelName;
 	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
 	$scope.$state = $state;
@@ -39,27 +39,6 @@ module.exports = /*@ngInject*/($rootScope, $document, $scope, $state, $timeout, 
 		console.log('CtrlThreadList $stateChangeStart', $scope.selectedTid);
 	});
 
-	$document.bind('keydown', (event) => $rootScope.$apply(() => {
-		var delta = 0;
-		if (event.keyIdentifier == 'Up')
-			delta = -1;
-		else if (event.keyIdentifier == 'Down')
-			delta = +1;
-
-		if (delta) {
-			var selectedIndex = $scope.threadsList && $scope.selectedTid !== null
-				? $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid)
-				: -1;
-
-			if ($scope.selectedTid !== null) {
-				selectedIndex = Math.min(Math.max(selectedIndex + delta, 0), $scope.threadsList.length - 1);
-				$scope.selectedTid = $scope.threadsList[selectedIndex].id;
-			}
-
-			event.preventDefault();
-		}
-	}));
-
 	$scope.scroll = () => {
 		if ($scope.isLoading || $scope.isDisabled)
 			return;
@@ -96,4 +75,70 @@ module.exports = /*@ngInject*/($rootScope, $document, $scope, $state, $timeout, 
 	};
 
 	requestList();
+
+    // Add hotkeys
+    var moveThreads = function(delta) {
+        var selectedIndex = $scope.threadsList && $scope.selectedTid !== null
+            ? $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid)
+        : -1;
+        if ($scope.selectedTid !== null) {
+            selectedIndex = Math.min(Math.max(selectedIndex + delta, 0), $scope.threadsList.length - 1);
+            $scope.selectedTid = $scope.threadsList[selectedIndex].id;
+            $scope.selectThread(null, $scope.selectedTid);
+        }
+    };
+
+    var moveUp = function(event, key) {
+        event.preventDefault();
+        moveThreads(-1);
+    };
+
+    var moveDown = function(event, key) {
+        event.preventDefault();
+        moveThreads(1);
+    };
+
+    for (let key of ['h', 'k', 'left', 'up']) {
+        hotkeys.add({
+            combo: key,
+            description: 'Move up',
+            callback: moveUp
+        });
+    }
+
+    for (let key of ['j', 'l', 'right', 'down']) {
+        hotkeys.add({
+            combo: key,
+            description: 'Move down',
+            callback: moveDown
+        });
+    }
+
+    hotkeys.add({
+        combo: 'a',
+        description: 'Archive selected email',
+        callback: (event, key) => {
+            event.preventDefault();
+            $scope.deleteThread($scope.selectedTid);
+        }
+    });
+
+    hotkeys.add({
+        combo: 'd',
+        description: 'Delete selected email',
+        callback: (event, key) => {
+            event.preventDefault();
+            $scope.deleteThread($scope.selectedTid);
+        }
+    });
+
+    hotkeys.add({
+        combo: 'r',
+        description: 'Reply to selected email',
+        callback: (event, key) => {
+            event.preventDefault();
+            $scope.replyThread(event, $scope.selectedTid);
+        }
+    });
+
 };

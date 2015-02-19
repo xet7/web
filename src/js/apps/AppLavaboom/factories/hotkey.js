@@ -1,5 +1,5 @@
-module.exports = /*@ngInject*/(hotkeys) => {
-    var hotkey_list = ['?', '/'];
+module.exports = /*@ngInject*/(hotkeys, user) => {
+    var hotkey_list = ['?', '/', 'esc', 'h', 'k', 'left', 'up', 'j', 'l', 'right', 'down', 'c+n', 'ctrl+enter', 'command+enter', 'i', 'a', 'd', 'r'];
     var previousKeys = [];
 
     var Hotkey = function() {
