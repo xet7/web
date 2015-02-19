@@ -16,6 +16,13 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 			$state.go('main.contacts');
 	}
 
+	$scope.$watchGroup(['details.firstName', 'details.lastName'], () => {
+		var firstName = $scope.details.firstName ? $scope.details.firstName.trim() : '';
+		var lastName = $scope.details.lastName ? $scope.details.lastName.trim() : '';
+
+		$scope.details.name = firstName || lastName ? `${firstName} ${lastName}` : $scope.details.name;
+	});
+
 	function ContactEmail () {
 		this.email =  '';
 		this.isStar = false;
