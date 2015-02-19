@@ -51,6 +51,12 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 		var envelope = yield Contact.toEnvelope(contact);
 		var r = yield LavaboomAPI.contacts.create(envelope);
 
+		if (contact.id) {
+			if (contact.id == 'new')
+				emptyContact = null;
+			deleteLocally(contact.id);
+		}
+
 		contact.id = r.body.contact.id;
 
 		self.peopleList.unshift(contact);
