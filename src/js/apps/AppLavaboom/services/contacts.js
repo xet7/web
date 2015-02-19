@@ -3,11 +3,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 	var emptyContact = null;
 
 	var deleteLocally = (contactId) => {
-		if (self.peopleById[contactId]) {
-			var index = self.peopleList.findIndex(c => c.id == contactId);
-
-			self.peopleList.splice(index, 1);
-			delete self.peopleById[contactId];
+		if (self.people.has(contactId)) {
+			self.people.delete(contactId);
 		}
 	};
 
@@ -24,8 +21,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 			privateEmails: [],
 			businessEmails: []
 		});
-		self.peopleById[id] = emptyContact;
-		self.peopleList.unshift(emptyContact);
+		self.people.set(id, emptyContact);
 
 		$rootScope.$broadcast('contacts-changed');
 
@@ -36,15 +32,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 		var contacts = (yield LavaboomAPI.contacts.list()).body.contacts;
 
 		var list = contacts ? yield co.map(contacts, Contact.fromEnvelope) : [];
-		var map = list.reduce((a, c) => {
-			a[c.id] = c;
-			return a;
-		}, {});
-
-		return {
-			list: list,
-			map: map
-		};
+		return list.reduce((map, c) => {
+			map.set(c.id, c);
+			return map;
+		}, new Map());
 	});
 
 	this.createContact = (contact) => co(function *() {
@@ -52,15 +43,16 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 		var r = yield LavaboomAPI.contacts.create(envelope);
 
 		if (contact.id) {
-			if (contact.id == 'new')
+			if (contact.id == 'new') {
+				delete contact.isNew;
 				emptyContact = null;
+			}
 			deleteLocally(contact.id);
 		}
 
 		contact.id = r.body.contact.id;
 
-		self.peopleList.unshift(contact);
-		self.peopleById[contact.id] = contact;
+		self.people.set(contact.id, contact);
 
 		$rootScope.$broadcast('contacts-changed');
 
@@ -84,20 +76,17 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 	});
 
 	this.initialize = () => co(function*(){
-		var r = yield self.list();
-		self.peopleList = r.list;
-		self.peopleById = r.map;
+		self.people = yield self.list();
 	});
 
-	this.peopleList = [];
-	this.peopleById = {};
+	this.people = new Map();
 
 	this.getContactById = (id) => {
-		return self.peopleById[id];
+		return self.people.get(id);
 	};
 
 	this.getContactByEmail = (email) => {
-		return self.peopleList.find(c => c.isMatchEmail(email));
+		return [...self.people.values()].find(c => c.isMatchEmail(email));
 	};
 
 	this.myself = null;
@@ -108,8 +97,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 			email: user.email,
 			isSecured: true
 		});
-		self.peopleList.push(self.myself);
-		self.peopleById[0] = self.myself;
+
 		$rootScope.$broadcast('contacts-changed');
 	});
 };

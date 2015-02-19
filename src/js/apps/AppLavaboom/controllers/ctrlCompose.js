@@ -141,7 +141,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 	$scope.$bind('contacts-changed', () => {
 		var toEmailContact = toEmail ? new Contact({email: toEmail}) : null;
 
-		$scope.people = contacts.peopleList.reduce((a, c) => {
+		$scope.people = [...contacts.people.values()].reduce((a, c) => {
 			if (c.privateEmails)
 				c.privateEmails.forEach(e => {
 					var newContact = angular.copy(c);

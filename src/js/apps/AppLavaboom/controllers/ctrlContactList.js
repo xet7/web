@@ -12,7 +12,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 	var findContact = (cid) => {
 		var letterIndex = 0;
 		for(let letter of $scope.letters) {
-			console.log('findContact, letter', letter);
 			var index = 0;
 			for (let contact of $scope.people[letter]) {
 				if (contact.id == cid)
@@ -51,7 +50,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 
 		console.log('contacts-changed, $scope.selectedContactId', $scope.selectedContactId, 'oldContactPosition', oldContactPosition);
 
-		$scope.list = contacts.peopleList.filter(c => !c.isPrivate());
+		$scope.list = [...contacts.people.values()].filter(c => !c.isPrivate());
 		$scope.people = _.groupBy($scope.list, contact => {
 			if (contact.isNew)
 				return '+';
