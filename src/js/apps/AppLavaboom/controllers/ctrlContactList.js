@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, user) => {
 	$scope.selectedContactId = null;
 	$scope.searchText = '';
 
@@ -58,7 +58,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 			if (!contact.name)
 				return '?';
 
-			return contact.name[0];
+			return contact.getSortingField(user.settings.contactsSortBy)[0];
 		});
 		$scope.letters = _.sortBy(Object.keys($scope.people), letter => letter);
 

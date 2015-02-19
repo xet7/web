@@ -18,6 +18,14 @@ module.exports = /*@ngInject*/(co, user, crypto) => {
 			(self.email == email) ||
 			(self.privateEmails && self.privateEmails.includes(email)) ||
 			(self.businessEmails && self.businessEmails.includes(email));
+		
+		this.getSortingField = (id) => {
+			if (id === 1)
+				return self.firstName;
+			if (id === 2)
+				return self.lastName;
+			return self.name;
+		};
 
 		this.isPrivate = () => !!self.email;
 	};

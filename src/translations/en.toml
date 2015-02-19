@@ -207,6 +207,11 @@
 	LB_COMPOSED_MAILS = "Composed Mails"
 	LB_MARKED_AS_SPAM = "Marked as Spam"
 	LB_DELETED_EMAILS = "Deleted Emails"
+	TITLE_CONTACTS = "Contacts"
+	LB_SORT_BY = "Sort by"
+	LB_SORT_BY_DISPLAY_NAME = "display name"
+	LB_SORT_BY_FIRST_NAME = "first name"
+	LB_SORT_BY_LAST_NAME = "last name"
 
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
