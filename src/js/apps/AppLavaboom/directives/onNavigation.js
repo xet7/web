@@ -24,6 +24,11 @@ module.exports = /*@ngInject*/($rootScope, $document, $state, router) => {
 				if (delta)
 					scope.onNavigation({delta: delta});
 			}));
+
+			scope.$on('$destroy', () => {
+				bind = false;
+				$document.unbind('keydown');
+			});
 		}
 	};
 };
