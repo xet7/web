@@ -15,6 +15,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			$scope.isLoading = true;
 		}, consts.LOADER_SHOW_DELAY);
 
+		console.log('requestList', $scope.labelName);
 		inbox.requestList($scope.labelName)
 			.then((e) => {
 				$scope.isDisabled = e.list.length < 1;
@@ -40,7 +41,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		return thread.subject.toLowerCase().includes(searchText) || thread.members.some(m => m.toLowerCase().includes(searchText));
 	};
 
-	$scope.$bind(`inbox-threads[${$scope.labelName}]`, () => {
+	$scope.$bind(`inbox-threads`, (e, labelName) => {
+		if (labelName != $scope.labelName)
+			return;
+
 		$scope.threads = angular.copy(inbox.threads);
 		$scope.threadsList = angular.copy(inbox.threadsList);
 
@@ -50,6 +54,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	});
 
 	$rootScope.$on('$stateChangeStart', (e, toState, toParams) => {
+		console.log('CtrlThreadList $stateChangeStart', toState.name, toParams);
+
 		if (toState.name == 'main.inbox.label') {
 			if (toParams.threadId)
 				$scope.selectedTid = toParams.threadId;
@@ -60,8 +66,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 				requestList();
 			}
 		}
-
-		console.log('CtrlThreadList $stateChangeStart', toState.name, toParams);
 	});
 
 	$scope.navigated = (delta) => {

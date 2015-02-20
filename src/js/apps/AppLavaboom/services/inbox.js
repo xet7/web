@@ -60,7 +60,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 
 		var r = yield operation;
 
-		$rootScope.$broadcast(`inbox-threads[${currentLabelName}]`);
+		$rootScope.$broadcast(`inbox-threads`, currentLabelName);
 
 		return r;
 	});
