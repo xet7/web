@@ -62,6 +62,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 	this.updateContact = (contact) => co(function *() {
 		var envelope = yield Contact.toEnvelope(contact);
 		var r = yield LavaboomAPI.contacts.update(contact.id, envelope);
+
+		$rootScope.$broadcast('contacts-changed');
+
 		return r.body.contact.id;
 	});
 
