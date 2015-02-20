@@ -12,37 +12,61 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 	var findContact = (cid) => {
 		var letterIndex = 0;
 		for(let letter of $scope.letters) {
-			var index = 0;
-			for (let contact of $scope.people[letter]) {
-				if (contact.id == cid)
-					return {
-						letterIndex: letterIndex,
-						index: index
-					};
-				index++;
+			var index = $scope.people[letter].findIndex(c => c.id == cid);
+			if (index < 0) {
+				letterIndex++;
+				continue;
 			}
-			letterIndex++;
+			return {
+				letterIndex: letterIndex,
+				index: index
+			};
 		}
 
 		return null;
 	};
 
-	var nextContactId = (pos) => {
+	var nextContactId = (pos, delta = 0) => {
 		var peopleByLetter;
 
 		if ($scope.letters.length < 1)
 			return null;
 
 		if (pos.letterIndex > $scope.letters.length - 1) {
-			peopleByLetter = $scope.people[$scope.letters[$scope.letters.length - 1]];
-			return peopleByLetter[peopleByLetter.length -1].id;
+			pos.letterIndex = $scope.letters.length - 1;
+
+			peopleByLetter = $scope.people[$scope.letters[pos.letterIndex]];
+			pos.index = peopleByLetter.length - 1;
+		} else peopleByLetter = $scope.people[$scope.letters[pos.letterIndex]];
+
+		pos.index += delta;
+
+		if (pos.index > peopleByLetter.length - 1) {
+			if (pos.letterIndex < $scope.letters.length - 1) {
+				peopleByLetter = $scope.people[$scope.letters[pos.letterIndex + 1]];
+				return peopleByLetter[0].id;
+			}
+			return peopleByLetter[peopleByLetter.length - 1].id;
+		}
+		if (pos.index < 0) {
+			if (pos.letterIndex > 0) {
+				peopleByLetter = $scope.people[$scope.letters[pos.letterIndex - 1]];
+				return peopleByLetter[peopleByLetter.length - 1].id;
+			}
+			return peopleByLetter[0].id;
 		}
 
-		peopleByLetter = $scope.people[$scope.letters[pos.letterIndex]];
-		if (pos.index > peopleByLetter.length - 1)
-			return peopleByLetter[peopleByLetter.length - 1].id;
-
 		return peopleByLetter[pos.index].id;
+	};
+	$scope.navigated = (delta) => {
+		console.log('navigated', delta);
+
+		var oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
+
+		if (oldContactPosition) {
+			var cid = nextContactId(oldContactPosition, delta);
+			$state.go('main.contacts.profile', {contactId: cid});
+		}
 	};
 
 	$scope.$bind('contacts-changed', () => {

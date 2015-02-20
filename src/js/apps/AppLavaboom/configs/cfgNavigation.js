@@ -42,10 +42,6 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 			url: '/label/:labelName?threadId',
 
 			views: {
-				'threads@main.inbox': {
-					templateUrl: 'partials/inbox/threads.html',
-					controller: 'CtrlThreadList'
-				},
 				'emails@main.inbox': {
 					templateUrl: 'partials/inbox/emails.html',
 					controller: 'CtrlEmailList'
