@@ -1,5 +1,6 @@
-module.exports = /*@ngInject*/($rootScope, $document) => {
+module.exports = /*@ngInject*/($rootScope, $document, $state, router) => {
 	let bind = false;
+
 	return {
 		restrict : 'A',
 		scope: {
@@ -9,7 +10,11 @@ module.exports = /*@ngInject*/($rootScope, $document) => {
 			if (bind)
 				return;
 			bind = true;
+
 			$document.bind('keydown', (event) => $rootScope.$apply(() => {
+				if (router.isPopupState($state.current.name))
+					return;
+
 				var delta = 0;
 				if (event.keyIdentifier == 'Up')
 					delta = -1;
