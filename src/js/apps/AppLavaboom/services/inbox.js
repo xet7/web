@@ -83,10 +83,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 		};
 
 		if (threads) {
-			result = Object.keys(threads).reduce((a, i) => {
-				var thread = new Thread(threads[i]);
-				a.map[thread.id] = thread;
-				a.list.push(thread);
+			result = (yield threads.map(t => Thread.fromEnvelope(t))).reduce((a, t) => {
+				a.map[t.id] = t;
+				a.list.push(t);
 				return a;
 			}, result);
 		}
@@ -97,7 +96,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 	this.getThreadById = (threadId) => co(function *() {
 		var thread = (yield LavaboomAPI.threads.get(threadId)).body.thread;
 
-		return thread ? new Thread(thread) : null;
+		return thread ? yield Thread.fromEnvelope(thread) : null;
 	});
 
 	this.requestDelete = (threadId) => performsThreadsOperation(co(function *() {
@@ -180,7 +179,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 	);
 
 	this.setThreadReadStatus = (threadId) => co(function *(){
-		if (self.threads[threadId].is_read)
+		if (self.threads[threadId].isRead)
 			return;
 
 		yield LavaboomAPI.threads.update(threadId, {
@@ -188,7 +187,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 			labels: self.threads[threadId].labels
 		});
 
-		self.threads[threadId].is_read = true;
+		self.threads[threadId].isRead = true;
 
 		var labels = yield self.getLabels();
 		self.labelsByName = labels.byName;

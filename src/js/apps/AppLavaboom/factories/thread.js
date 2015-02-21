@@ -1,5 +1,5 @@
-module.exports = /*@ngInject*/($injector, $rootScope, $translate) => {
-	var translations = {};
+module.exports = /*@ngInject*/($injector, $rootScope, $translate, co, user, crypto, Manifest) => {
+	let translations = {};
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
 		translations.LB_AND_ONE_OTHER = $translate.instant('LOADER.LB_AND_ONE_OTHER');
@@ -7,12 +7,13 @@ module.exports = /*@ngInject*/($injector, $rootScope, $translate) => {
 		translations.LB_AND_OTHERS = $translate.instant('LOADER.LB_AND_OTHERS');
 	});
 
-	return function(opt) {
-		var self = this;
-		var inbox = $injector.get('inbox');
+	let Thread = function(opt, manifest) {
+		let self = this;
+		let inbox = $injector.get('inbox');
 
 		this.id = opt.id;
-		this.subject = opt.name;
+		this.subject = manifest && manifest.subject ? manifest.subject : opt.name;
+
 		this.created = opt.date_created;
 		this.modified = opt.date_modified;
 		this.members = opt.members;
@@ -31,4 +32,12 @@ module.exports = /*@ngInject*/($injector, $rootScope, $translate) => {
 		this.isRead = opt.is_read;
 		this.isEncrypted = true;
 	};
+
+	Thread.fromEnvelope = (envelope) => co(function *() {
+		let manifestRaw = yield crypto.decodeByListedFingerprints(envelope.manifest, [user.key.id]);
+
+		return new Thread(envelope, Manifest.createFromJson(manifestRaw));
+	});
+	
+	return Thread;
 };
