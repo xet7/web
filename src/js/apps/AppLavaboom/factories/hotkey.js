@@ -12,8 +12,6 @@ module.exports = /*@ngInject*/($translate, hotkeys, user) => {
 
         var key = angular.isArray(option.combo) ? option.combo[0] : option.combo;
         var current_key = hotkeys.get(key);
-        console.log(option.combo);
-        console.log(current_key);
         if (current_key)
             hotkeys.del(current_key);
         if (hotkey_list.indexOf(option.combo) == -1) {
