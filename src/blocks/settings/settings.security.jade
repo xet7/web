@@ -56,3 +56,10 @@
 					.text-control.btn-control
 						.btn.btn-block.btn-primary(ng-click="exportKeys()", ng-disabled="!keys || keys.length < 1") {{'MAIN.SETTINGS.SECURITY.BTN_EXPORT_KEYS' | translate}}
 						.btn.btn-block.btn-primary(ng-click="importKeys()") {{'MAIN.SETTINGS.SECURITY.BTN_IMPORT_KEYS' | translate}}
+			ul.list-group
+			li.list-group-item
+				label {{'MAIN.SETTINGS.SECURITY.LAVABOOM_SYNC' | translate}}
+				.control
+					label.switch
+						input(type='checkbox', ng-model="settings.isLavaboomSynced")
+						i

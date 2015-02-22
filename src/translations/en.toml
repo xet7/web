@@ -230,6 +230,7 @@
 	BTN_EXPORT_KEYS = "Export keys"
 	BTN_IMPORT_KEYS = "Import keys"
 	LB_DECRYPTED = "Decrypted"
+	LAVABOOM_SYNC = "Lavaboom Sync"
 
 [MAIN.CONTACTS]
 	PLC_SEARCH_CONTACTS = "Search Contacts"
