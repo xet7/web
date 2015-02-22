@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $state, inbox, user, hotkeys) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $state, inbox, user, Hotkey) => {
 	$scope.$state = $state;
 
 	$scope.$bind('inbox-labels', () => {
@@ -20,22 +20,22 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, inbox, user, hotkeys)
         document.getElementById('top-search').blur();
     };
 
-    hotkeys.add({
+    Hotkey.addHotkey({
         combo: '/',
-        description: 'Focus on search',
+        description: 'HOTKEY.HK_FOCUS_ON_SEARCH',
         callback: focusOnSearch
     });
 
-    hotkeys.add({
+    Hotkey.addHotkey({
         combo: 'esc',
-        description: 'Leave from search',
+        description: 'HOTKEY.HK_LEAVE_FROM_SEARCH',
         callback: leaveFromSearch,
         allowIn: ['INPUT']
     });
 
-    hotkeys.add({
+    Hotkey.addHotkey({
         combo: 'c+n',
-        description: 'Compose new email',
+        description: 'HOTKEY.HK_COMPOSE_EMAIL',
         callback: (event, key) => {
             event.preventDefault();
             $rootScope.showPopup('compose');

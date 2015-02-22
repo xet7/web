@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $document, $scope, $state, $timeout, $interval, $stateParams, user, inbox, consts, hotkeys) => {
+module.exports = /*@ngInject*/($rootScope, $document, $scope, $state, $timeout, $interval, $stateParams, user, inbox, consts, Hotkey) => {
 	$scope.labelName = $stateParams.labelName;
 	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
 	$scope.$state = $state;
@@ -98,39 +98,39 @@ module.exports = /*@ngInject*/($rootScope, $document, $scope, $state, $timeout, 
         moveThreads(1);
     };
 
-    hotkeys.add({
+    Hotkey.addHotkey({
         combo: ['h', 'k', 'left', 'up'],
-        description: 'Move up',
+        description: 'HOTKEY.HK_MOVE_UP',
         callback: moveUp
     });
 
-    hotkeys.add({
+    Hotkey.addHotkey({
         combo: ['j', 'l', 'right', 'down'],
-        description: 'Move down',
+        description: 'HOTKEY.HK_MOVE_DOWN',
         callback: moveDown
     });
 
-    hotkeys.add({
+    Hotkey.addHotkey({
         combo: 'a',
-        description: 'Archive selected email',
+        description: 'HOTKEY.HK_ARCHIVE_EMAIL',
         callback: (event, key) => {
             event.preventDefault();
             //$scope.archive($scope.selectedTid);
         }
     });
 
-    hotkeys.add({
+    Hotkey.addHotkey({
         combo: 'd',
-        description: 'Delete selected email',
+        description: 'HOTKEY.HK_DELETE_EMAIL',
         callback: (event, key) => {
             event.preventDefault();
             $scope.deleteThread($scope.selectedTid);
         }
     });
 
-    hotkeys.add({
+    Hotkey.addHotkey({
         combo: 'r',
-        description: 'Reply to selected email',
+        description: 'HOTKEY.HK_REPLY_EMAIL',
         callback: (event, key) => {
             event.preventDefault();
             $scope.replyThread(event, $scope.selectedTid);
