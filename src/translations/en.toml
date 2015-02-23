@@ -192,6 +192,9 @@
 	LB_PRIVATE = "private"
 	LB_BUSINESS = "business"
 	LB_HIDDEN = "hidden"
+	LB_WARNING = "You are about to send an unencrypted email, are you sure?"
+	BTN_CONFIRM = "I understand the risk"
+	BTN_REJECT = "No"
 
 [MAIN.SETTINGS.MENU]
 	KEYS = "Keys"

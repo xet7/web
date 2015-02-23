@@ -21,9 +21,7 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest, LavaboomAPI
 	};
 
 	Email.toEnvelope = ({body, attachmentIds, threadId}, manifest) => co(function *() {
-		if (!manifest)
-			throw new Error('manifest required');
-		if (!manifest.isValid())
+		if (manifest && manifest.isValid && !manifest.isValid())
 			throw new Error('invalid manifest');
 
 		if (!attachmentIds)
@@ -31,27 +29,46 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest, LavaboomAPI
 		if (!threadId)
 			threadId = null;
 
-		let res = yield manifest.to.map(toEmail => LavaboomAPI.keys.get(toEmail));
-		let publicKeysValues = new Map([user.key, ...res.map(r => r.body.key)].map(k => [k.id, k.key])).values();
+		let res = yield manifest.to.map(toEmail => co.def(LavaboomAPI.keys.get(toEmail), () => null));
+		let isSecured = !res.some(r => !r);
+		let publicKeysValues = new Map([
+			user.key, ...res.filter(r => !!r).map(r => r.body.key)
+		].map(k => [k.id, k.key])).values();
 		let publicKeys = [...publicKeysValues];
-		let manifestString = manifest.stringify();
 
-		let [envelope, manifestEncoded] = yield [
-			crypto.encodeEnvelopeWithKeys({data: body}, publicKeys, 'body', 'body'),
-			crypto.encodeWithKeys(manifestString, publicKeys)
-		];
+		if (isSecured) {
+			let manifestString = manifest.stringify();
 
-		return angular.extend({}, envelope, {
-			kind: 'manifest',
-			manifest: manifestEncoded.pgpData,
+			let [envelope, manifestEncoded] = yield [
+				crypto.encodeEnvelopeWithKeys({data: body}, publicKeys, 'body', 'body'),
+				crypto.encodeWithKeys(manifestString, publicKeys)
+			];
+
+			return angular.extend({}, envelope, {
+				kind: 'manifest',
+				manifest: manifestEncoded.pgpData,
+
+				to: manifest.to,
+				cc: manifest.cc,
+				bcc: manifest.bcc,
+
+				files: attachmentIds,
+				thread: threadId
+			});
+		}
+
+		return {
+			kind: 'raw',
 
 			to: manifest.to,
 			cc: manifest.cc,
 			bcc: manifest.bcc,
+			subject: manifest.subject,
+			body: body,
 
 			files: attachmentIds,
 			thread: threadId
-		});
+		};
 	});
 
 	Email.fromEnvelope = (envelope) => co(function *() {

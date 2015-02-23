@@ -1,4 +1,5 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, consts, co, user, contacts, inbox, router, Manifest, Attachment, Contact) => {
+	$scope.isWarning = false;
 	$scope.isXCC = false;
 	$scope.toolbar = [
 		['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
@@ -100,6 +101,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 
 	$scope.deleteAttachment = (attachmentStatus, index) => deleteAttachment(attachmentStatus, index);
 
+	let manifest = null;
+
 	$scope.send = () => co(function *() {
 		if (!$scope.__form.$valid || $scope.form.selected.to.length < 1 || $scope.form.body.length < 1)
 			return;
@@ -110,7 +113,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 			cc = $scope.form.selected.cc.map(e => e.email),
 			bcc = $scope.form.selected.bcc.map(e => e.email);
 
-		let manifest = Manifest.create({
+		manifest = Manifest.create({
 			fromEmail: user.email,
 			to,
 			cc,
@@ -121,11 +124,25 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 		for(let attachmentStatus of $scope.attachments)
 			manifest.addAttachment(attachmentStatus.id, attachmentStatus.attachment.body, attachmentStatus.attachment.name, attachmentStatus.attachment.type);
 
-		yield inbox.send({
+		var sendStatus = yield inbox.send({
 			body: $scope.form.body,
 			attachmentIds: $scope.attachments.map(a => a.id),
 			threadId
 		}, manifest);
+
+		console.log('compose send status', sendStatus);
+
+		if (sendStatus.isEncrypted) {
+			yield $scope.confirm();
+		} else {
+			$scope.isWarning = true;
+		}
+	});
+
+	$scope.confirm = () => co(function *(){
+		$scope.isWarning = false;
+
+		yield inbox.confirmSend();
 
 		yield manifest.getDestinationEmails()
 			.filter(email => !contacts.getContactByEmail(email))
@@ -134,17 +151,26 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 				email
 			})));
 
+		manifest = null;
+
 		router.hidePopup();
 	});
 
+	$scope.reject = () => {
+		$scope.isWarning = false;
+
+		inbox.rejectSend();
+		manifest = null;
+	};
+
 
 	$scope.$bind('contacts-changed', () => {
-		var toEmailContact = toEmail ? new Contact({email: toEmail}) : null;
+		let toEmailContact = toEmail ? new Contact({email: toEmail}) : null;
 
 		$scope.people = [...contacts.people.values()].reduce((a, c) => {
 			if (c.privateEmails)
 				c.privateEmails.forEach(e => {
-					var newContact = angular.copy(c);
+					let newContact = angular.copy(c);
 					newContact.label = translations.LB_PRIVATE;
 					newContact.email = e.email;
 					a.push(newContact);
@@ -152,14 +178,14 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 
 			if (c.businessEmails)
 				c.businessEmails.forEach(e => {
-					var newContact = angular.copy(c);
+					let newContact = angular.copy(c);
 					newContact.label = translations.LB_BUSINESS;
 					newContact.email = e.email;
 					a.push(newContact);
 				});
 
 			if (c.email) {
-				var newContact = angular.copy(c);
+				let newContact = angular.copy(c);
 				newContact.label = translations.LB_HIDDEN;
 				newContact.email = c.email;
 				a.push(newContact);
@@ -168,14 +194,14 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 			return a;
 		}, []).concat(toEmailContact ? [toEmailContact] : []);
 
-		var bindUserSignature = () => {
+		let bindUserSignature = () => {
 			if (user.settings.isSignatureEnabled && user.settings.signatureHtml)
 				$scope.form.body = $scope.form.body + user.settings.signatureHtml;
 		};
 
 		if (threadId) {
 			co(function *() {
-				var thread = yield inbox.getThreadById(threadId);
+				let thread = yield inbox.getThreadById(threadId);
 
 				$scope.form = {
 					person: {},
@@ -219,7 +245,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 	$scope.taggingTokens = 'SPACE|,|/';
 
 	$scope.tagTransform = function (newTag) {
-		var p = newTag.split('@');
+		let p = newTag.split('@');
 		if (p.length > 1)
 			return {
 				name: p[0].trim(),

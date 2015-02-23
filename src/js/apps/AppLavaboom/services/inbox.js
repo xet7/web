@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, LavaboomAPI, user, crypto, contacts, Cache, Email, Thread, Label) {
+module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts, co, LavaboomAPI, user, crypto, contacts, Cache, Email, Thread, Label) {
 	var self = this;
 
 	this.offset = 0;
@@ -269,13 +269,27 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 		return r.body.key;
 	});
 
-	this.send = (opts, manifest) => co(function * () {
-		var envelope = yield Email.toEnvelope(opts, manifest);
+	var sendEnvelope = null;
 
-		var res = yield LavaboomAPI.emails.create(envelope);
+	this.send = (opts, manifest) => co(function * () {
+		sendEnvelope = yield Email.toEnvelope(opts, manifest);
+
+		return {
+			isEncrypted: sendEnvelope.kind == 'manifest'
+		};
+	});
+
+	this.confirmSend = () =>  co(function * () {
+		var res = yield LavaboomAPI.emails.create(sendEnvelope);
+
+		sendEnvelope = null;
 
 		return res.body.id;
 	});
+
+	this.rejectSend = () => {
+		sendEnvelope = null;
+	};
 
 	$rootScope.whenInitialized(() => {
 		LavaboomAPI.subscribe('receipt', (msg) => performsThreadsOperation(handleEvent(msg)));
