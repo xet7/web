@@ -136,7 +136,7 @@
 	LB_SYNC_INTRO = "Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Nulla quis lorem ut libero malesuada feugiat."
 	LB_SYNC1 = "We want to offer the users the option to activate Lavaboom Sync, basically backing up their key ring on our servers. Lavaboom Sync can work with or without a sync passphrase (similar to how Chrome works)"
 	LB_SYNC2 = "Every Account has a field called settings that is simply a key value store to allow for flexible storage of misc stuff. Your task is, if Lavaboom Sync is activated, to store the user's keyring to Account.settings."
-	LB_ENABLE_LB_SYNC = "Eable Lavaboom Sync"
+	LB_ENABLE_LB_SYNC = "Enable Lavaboom Sync"
 	BTN_NEXT = "You're almost done"
 
 [LOGIN.GENERATING_KEYS]

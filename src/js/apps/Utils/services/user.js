@@ -158,16 +158,16 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 				self.key = res.body.key;
 
-				crypto.options.isPrivateComputer = isPrivateComputer;
-				crypto.authenticateDefault(password);
-
-				$rootScope.$broadcast('user-authenticated');
-
 				res = yield LavaboomAPI.accounts.get('me');
 				var settings = res.body.user.settings;
 				if(settings.isLavaboomSynced){
 					cryptoKeys.importKeys(settings.keyring);
 				}
+
+				crypto.options.isPrivateComputer = isPrivateComputer;
+				crypto.authenticateDefault(password);
+
+				$rootScope.$broadcast('user-authenticated');
 			} catch (err) {
 				$rootScope.$broadcast('user-authentication-error', err);
 				throw err;
