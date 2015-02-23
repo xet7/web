@@ -1,0 +1,30 @@
+form.steps-form.ng-cloak(ng-class="{'errors': currentErrorMessage}", ng-submit="doLavaboomSync()", ng-autodisable)
+	p.lead.pack {{'LOGIN.LAVABOOM_SYNC.TITLE' | translate}}
+
+	p.text-center.steps
+		span.icon-unread.active
+		span.icon-unread.active
+		span.icon-unread.active
+		span.icon-unread.active
+		span.icon-unread.active
+		span.icon-unread.active
+		span.icon-unread
+
+	p {{'LOGIN.LAVABOOM_SYNC.LB_SYNC1' | translate}}
+
+	hr.blank
+	
+	div.info
+		span.icon-info-circle
+		p {{'LOGIN.LAVABOOM_SYNC.LB_SYNC2' | translate}}
+
+	hr.blank
+
+	.checkbox
+		input#check1(type='checkbox', name="check1", ng-model="form.isLavaboomSynced")
+		label(for='check1') {{'LOGIN.LAVABOOM_SYNC.LB_ENABLE_LB_SYNC' | translate}}
+
+	hr.spacer
+
+	footer
+		button.btn.btn-block.btn-lg.btn-primary(type="submit") {{'LOGIN.LAVABOOM_SYNC.BTN_NEXT' | translate}}
