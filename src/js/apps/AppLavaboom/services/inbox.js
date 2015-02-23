@@ -141,7 +141,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 		if (thread.isLabel(labelName)) {
 			console.log('label found - remove');
 
-			threadsCaches[labelName].invalidateAll();
+			thread.labels.forEach(lid =>
+				threadsCaches[self.labelsById[lid].name].invalidateAll()
+			);
 
 			var newLabels = thread.removeLabel(labelName);
 			var r = yield LavaboomAPI.threads.update(threadId, {labels: newLabels});
