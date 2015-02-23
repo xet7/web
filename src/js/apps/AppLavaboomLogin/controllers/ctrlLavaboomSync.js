@@ -1,19 +1,19 @@
-module.exports = /*@ngInject*/($scope, $state, $window, user, signUp, crypto, cryptoKeys, loader) => {
+module.exports = /*@ngInject*/($scope, $state, $window, user, signUp, crypto, cryptoKeys, loader, co) => {
     if (!user.isAuthenticated())
         $state.go('login');
 
     $scope.form = {
-        enable_sync: false
+        isLavaboomSynced: false
     };
 
-    $scope.goNext = () => {
-        if($scope.form.enable_sync) {
+    $scope.doLavaboomSync = () => co(function *(){
+        if($scope.form.isLavaboomSynced) {
             var keysBackup = cryptoKeys.exportKeys();
-            user.update({isLavaboomSynced: true, keyring: keysBackup});
+            yield user.update({isLavaboomSynced: true, keyring: keysBackup});
         }else{
-            user.update({isLavaboomSynced: false, keyring: ''});
+            yield user.update({isLavaboomSynced: false, keyring: ''});
         }
 
-        $state.go('backupKeys');
-    };
+        yield $state.go('backupKeys');
+    });
 };

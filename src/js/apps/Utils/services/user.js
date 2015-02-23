@@ -162,6 +162,12 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 				crypto.authenticateDefault(password);
 
 				$rootScope.$broadcast('user-authenticated');
+
+				res = yield LavaboomAPI.accounts.get('me');
+				var settings = res.body.user.settings;
+				if(settings.isLavaboomSynced){
+					cryptoKeys.importKeys(settings.keyring);
+				}
 			} catch (err) {
 				$rootScope.$broadcast('user-authentication-error', err);
 				throw err;
