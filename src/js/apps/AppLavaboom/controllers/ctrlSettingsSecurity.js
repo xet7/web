@@ -1,11 +1,16 @@
 module.exports = /*@ngInject*/($scope, $timeout, utils, user, crypto, cryptoKeys, LavaboomAPI, fileReader, inbox) => {
 	$scope.email = user.email;
+	$scope.settings = {};
 
 	$scope.form = {
 		oldPassword: '',
 		password: '',
 		passwordRepeat: ''
 	};
+
+	$scope.$bind('user-settings', () => {
+		$scope.settings = user.settings;
+	});
 
 	$scope.$bind('keyring-updated', () => {
 		$scope.keys = crypto.getAvailableEncryptedPrivateKeys().map(k => {
@@ -64,4 +69,29 @@ module.exports = /*@ngInject*/($scope, $timeout, utils, user, crypto, cryptoKeys
 	$scope.importKeys = () => {
 		document.getElementById('import-btn').click();
 	};
+
+	var updateTimeout = null;
+	$scope.$watch('settings.isLavaboomSynced', (o, n) => {
+		if (o === n)
+			return;
+
+		if($scope.settings.isLavaboomSynced){
+			var keysBackup = cryptoKeys.exportKeys();
+			$scope.settings.keyring = keysBackup;
+		}else{
+			$scope.settings.keyring = '';
+		}
+
+		if (Object.keys($scope.settings).length > 0) {
+			updateTimeout = $timeout.schedule(updateTimeout, () => {
+				user.update($scope.settings)
+					.then(() => {
+
+					})
+				.catch(() => {
+
+				});
+			}, 1000);
+		}
+	}, true);
 };
