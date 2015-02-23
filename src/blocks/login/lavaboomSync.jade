@@ -1,0 +1,28 @@
+form.steps-form.ng-cloak(ng-class="{'errors': currentErrorMessage}")
+	p.lead.pack {{'LOGIN.LAVABOOM_SYNC.TITLE' | translate}}
+
+	p.text-center.steps
+		span.icon-unread.active
+		span.icon-unread.active
+		span.icon-unread.active
+		span.icon-unread.active
+		span.icon-unread.active
+		span.icon-unread
+
+	div.info
+		span.icon-info-circle
+		p {{'LOGIN.LAVABOOM_SYNC.LB_SYNC_INTRO' | translate}}
+
+	hr.spacer
+
+	ul.list-unstyled
+		li.table-list
+			span.icon-lock-hallow.cell.shadow
+			div.cell
+				h1.pack {{'LOGIN.LAVABOOM_SYNC.LB_WHAT_IS' | translate}}
+				p {{'LOGIN.LAVABOOM_SYNC.LB_SYNC1' | translate}}
+				p {{'LOGIN.GENERATE_KEYS.LB_SYNC2' | translate}}
+	hr.spacer
+
+	footer
+		button.btn.btn-block.btn-lg.btn-primary(ui-sref="backupKey") {{'LOGIN.LAVABOOM_SYNC.BTN_NEXT' | translate}}
