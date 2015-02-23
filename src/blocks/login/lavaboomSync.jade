@@ -9,19 +9,20 @@ form.steps-form.ng-cloak(ng-class="{'errors': currentErrorMessage}")
 		span.icon-unread.active
 		span.icon-unread
 
+	p {{'LOGIN.LAVABOOM_SYNC.LB_SYNC1' | translate}}
+
+	hr.blank
+	
 	div.info
 		span.icon-info-circle
-		p {{'LOGIN.LAVABOOM_SYNC.LB_SYNC_INTRO' | translate}}
+		p {{'LOGIN.LAVABOOM_SYNC.LB_SYNC2' | translate}}
 
-	hr.spacer
+	hr.blank
 
-	ul.list-unstyled
-		li.table-list
-			span.icon-lock-hallow.cell.shadow
-			div.cell
-				h1.pack {{'LOGIN.LAVABOOM_SYNC.LB_WHAT_IS' | translate}}
-				p {{'LOGIN.LAVABOOM_SYNC.LB_SYNC1' | translate}}
-				p {{'LOGIN.GENERATE_KEYS.LB_SYNC2' | translate}}
+	.checkbox
+		input#check2(type='checkbox', name="enable_sync", ng-model="form.enable_sync")
+		label(for='enable_sync') {{'LOGIN.LAVABOOM_SYNC.LB_ENABLE_LB_SYNC' | translate}}
+
 	hr.spacer
 
 	footer
