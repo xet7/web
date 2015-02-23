@@ -7,6 +7,7 @@ form.steps-form.ng-cloak(ng-class="{'errors': currentErrorMessage}")
 		span.icon-unread.active
 		span.icon-unread.active
 		span.icon-unread.active
+		span.icon-unread.active
 		span.icon-unread
 
 	p {{'LOGIN.LAVABOOM_SYNC.LB_SYNC1' | translate}}
@@ -20,10 +21,10 @@ form.steps-form.ng-cloak(ng-class="{'errors': currentErrorMessage}")
 	hr.blank
 
 	.checkbox
-		input#check2(type='checkbox', name="enable_sync", ng-model="form.enable_sync")
+		input#enable_sync(type='checkbox', name="enable_sync", ng-model="form.enable_sync")
 		label(for='enable_sync') {{'LOGIN.LAVABOOM_SYNC.LB_ENABLE_LB_SYNC' | translate}}
 
 	hr.spacer
 
 	footer
-		button.btn.btn-block.btn-lg.btn-primary(ui-sref="backupKey") {{'LOGIN.LAVABOOM_SYNC.BTN_NEXT' | translate}}
+		button.btn.btn-block.btn-lg.btn-primary(ng-click="goNext()") {{'LOGIN.LAVABOOM_SYNC.BTN_NEXT' | translate}}
