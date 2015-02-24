@@ -29,8 +29,7 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 		});
 
 		crypto.storeKeyring();
-
-		$rootScope.$broadcast('keyring-updated');
+		crypto.initialize(crypto.options);
 	};
 
 	this.exportKeys = (email = null) => {

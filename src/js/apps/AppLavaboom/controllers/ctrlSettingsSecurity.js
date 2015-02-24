@@ -25,6 +25,7 @@ module.exports = /*@ngInject*/($scope, $timeout, utils, user, crypto, cryptoKeys
 				user: k.users[0].userId.userid
 			};
 		});
+		console.log('keyring-updated', $scope.keys);
 
 		$scope.isAnyUndecryptedKeys = $scope.keys.some(k => !k.isDecrypted);
 	});

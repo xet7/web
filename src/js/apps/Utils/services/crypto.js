@@ -19,13 +19,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		return keyring;
 	};
 
-	var sessionDecryptedStore = new openpgp.Keyring.localstore();
-	sessionDecryptedStore.storage = window.sessionStorage;
-	var localDecryptedStore = new openpgp.Keyring.localstore('openpgp-decrypted-');
-
-	var keyring = wrapOpenpgpKeyring(new openpgp.Keyring());
-	var localKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(localDecryptedStore));
-	var sessionKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(sessionDecryptedStore));
+	var keyring = null, localKeyring = null, sessionKeyring = null;
 
 	this.options = {};
 
@@ -104,14 +98,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 
 	this.getAvailableSourceEmails = () => getAvailableEmails(keyring.privateKeys);
 
-	this.getAvailablePublicKeysForSourceEmails = () => {
-		var emails = getAvailableEmails(keyring.privateKeys);
-		return emails.reduce((a, email) => {
-			a[email] = keyring.publicKeys.getForAddress(email);
-			return a;
-		}, {});
-	};
-
 	this.getAvailableEncryptedPrivateKeys = () => {
 		return keyring.privateKeys.keys;
 	};
@@ -136,10 +122,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		return keyring.privateKeys.findByFingerprint(fingerprint);
 	};
 
-	this.getEncryptedPrivateKeyByFingerprint = (fingerprint) => {
-		return keyring.privateKeys.findByFingerprint(fingerprint);
-	};
-
 	this.importPublicKey = (publicKey) => {
 		keyring.publicKeys.importKey(publicKey);
 	};
@@ -160,8 +142,19 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 
 		if (!isInitialized) {
 			openpgp.initWorker('/vendor/openpgp.worker.js');
+
 			isInitialized = true;
 		}
+
+		var sessionDecryptedStore = new openpgp.Keyring.localstore();
+		sessionDecryptedStore.storage = window.sessionStorage;
+		var localDecryptedStore = new openpgp.Keyring.localstore('openpgp-decrypted-');
+
+		keyring = wrapOpenpgpKeyring(new openpgp.Keyring());
+		localKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(localDecryptedStore));
+		sessionKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(sessionDecryptedStore));
+
+		$rootScope.$broadcast('keyring-updated');
 	};
 
 	this.generateKeys = (nameEmail, password, numBits) => {
