@@ -83,9 +83,11 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 		};
 
 		if (threads) {
-			result = (yield threads.map(t => Thread.fromEnvelope(t))).reduce((a, t) => {
-				a.map[t.id] = t;
-				a.list.push(t);
+			result = (yield threads.map(t => co.def(Thread.fromEnvelope(t), () => null))).reduce((a, t) => {
+				//if (t) {
+					a.map[t.id] = t;
+					a.list.push(t);
+				//}
 				return a;
 			}, result);
 		}

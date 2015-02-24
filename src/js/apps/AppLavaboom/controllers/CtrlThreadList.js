@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, $stateParams, user, inbox, consts) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, $stateParams, co, user, inbox, consts) => {
 	$scope.labelName = $stateParams.labelName;
 	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
 	$scope.$state = $state;
@@ -7,24 +7,28 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 
 	$scope.searchText = '';
 	$scope.isLoading = false;
+	$scope.isLoadingSign = false;
 	$scope.isDisabled = true;
 	$scope.isInitialLoad = true;
 
 	var requestList = () => {
+		$scope.isLoading = true;
 		var t = $timeout(() => {
-			$scope.isLoading = true;
+			$scope.isLoadingSign = true;
 		}, consts.LOADER_SHOW_DELAY);
 
-		console.log('requestList', $scope.labelName);
-		inbox.requestList($scope.labelName)
-			.then((e) => {
+		co(function *(){
+			try {
+				let e = yield inbox.requestList($scope.labelName);
 				$scope.isDisabled = e.list.length < 1;
-			})
-			.finally(() => {
+			} catch (err) {
+				$scope.isDisabled = true;
+			} finally {
 				$scope.isLoading = false;
-				$scope.isDisabled = false;
+				$scope.isLoadingSign = false;
 				$timeout.cancel(t);
-			});
+			}
+		});
 	};
 
 	$scope.selectThread = (event, tid) => {
@@ -49,7 +53,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		$scope.threadsList = angular.copy(inbox.threadsList);
 
 		$scope.isLoading = false;
-		$scope.isDisabled = false;
+		$scope.isLoadingSign = false;
 		$scope.isInitialLoad = false;
 	});
 
