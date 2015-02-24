@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $interval, $timeout, $translate, consts, co, inbox, router) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $interval, $timeout, $translate, consts, co, inbox, router, saver) => {
 	let [emailId, fileId] = [$stateParams.emailId, $stateParams.fileId];
 
 	var timePassed = 0;
@@ -38,9 +38,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $interval, $tim
 		let fileData = yield inbox.downloadAttachment(fileId);
 
 		let manifestFile = email.manifest.getFileById(fileId);
-
-		var blob = new Blob([fileData], {type: `${manifestFile.content_type};charset=${manifestFile.charset}`});
-		saveAs(blob, manifestFile.filename);
+		saver.saveAs(fileData, manifestFile.filename);
 
 		$scope.progress = 100;
 		$scope.label = translations.LB_COMPLETED;

@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $state, $window, user, signUp, crypto, cryptoKeys, loader) => {
+module.exports = /*@ngInject*/($scope, $state, $window, user, signUp, crypto, cryptoKeys, loader, saver) => {
 	if (!user.isAuthenticated())
 		$state.go('login');
 
@@ -18,9 +18,8 @@ module.exports = /*@ngInject*/($scope, $state, $window, user, signUp, crypto, cr
 	};
 
 	$scope.backup = () => {
-		var keysBackup = cryptoKeys.exportKeys();
-		var blob = new Blob([keysBackup], {type: 'text/json;charset=utf-8'});
-		saveAs(blob, cryptoKeys.getExportFilename(keysBackup, user.name));
+		let keysBackup = cryptoKeys.exportKeys();
+		saver.saveAs(keysBackup, cryptoKeys.getExportFilename(keysBackup, user.name));
 
 		navigateMainApplication();
 	};
