@@ -59,6 +59,8 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest, LavaboomAPI
 
 		let manifestString = manifest.stringify();
 
+		console.log('manifest string', manifestString);
+
 		let manifestEncoded = yield crypto.encodeWithKeys(manifestString, [user.key.key]);
 
 		return {

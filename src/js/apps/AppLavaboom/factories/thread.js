@@ -39,6 +39,8 @@ module.exports = /*@ngInject*/($injector, $rootScope, $translate, co, user, cryp
 
 		let manifestRaw = yield crypto.decodeByListedFingerprints(envelope.manifest, [user.key.id]);
 
+		console.log('thread manifest', manifestRaw);
+
 		return new Thread(envelope, Manifest.createFromJson(manifestRaw));
 	});
 	
