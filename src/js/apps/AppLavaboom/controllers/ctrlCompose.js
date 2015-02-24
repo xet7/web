@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, consts, co, user, contacts, inbox, router, Manifest, Attachment, Contact) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, consts, co, user, contacts, inbox, router, Manifest, Attachment, Contact, Hotkey) => {
 	$scope.isWarning = false;
 	$scope.isXCC = false;
 	$scope.toolbar = [
@@ -259,4 +259,15 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, con
 			sec: 1
 		};
 	};
+
+    // Add hotkeys
+	Hotkey.addHotkey({
+        combo: ['ctrl+enter', 'command+enter'],
+        description: 'Send an email',
+        callback: (event, key) => {
+            event.preventDefault();
+            $scope.send();
+        },
+        allowIn: ['INPUT', 'SELECT', 'TEXTAREA', 'P', 'DIV']
+    });
 };

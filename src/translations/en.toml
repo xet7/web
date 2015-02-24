@@ -224,7 +224,8 @@
 	LB_SORT_BY_DISPLAY_NAME = "display name"
 	LB_SORT_BY_FIRST_NAME = "first name"
 	LB_SORT_BY_LAST_NAME = "last name"
-
+	TITLE_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts"
+	LB_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts Enabled"
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
 	TITLE_KEYS_MANAGEMENT = "Manage your keys"
@@ -263,3 +264,14 @@
 	LB_NEW_CONTACT_SHORT = "+"
 	LB_EMPTY_CONTACT_SHORT = "?"
 	PLC_EMAIL = "Enter email address"
+
+[HOTKEY]
+    HK_CHEATSHEET           = "Show/Hide cheatsheet"
+    HK_FOCUS_ON_SEARCH      = "Focus on Search"
+    HK_LEAVE_FROM_SEARCH    = "Leave from Search"
+    HK_COMPOSE_EMAIL        = "Compose new email"
+    HK_MOVE_UP              = "Move up"
+    HK_MOVE_DOWN            = "Move down"
+    HK_ARCHIVE_EMAIL        = "Archive email"
+    HK_REPLY_EMAIL          = "Reply email"
+    HK_DELETE_EMAIL         = "Delete email"

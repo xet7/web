@@ -77,6 +77,20 @@
 						ui-select-match {{$select.selected.name}}
 						ui-select-choices(repeat='item in notImplemented')
 							span(ng-click='item.selected=item', ng-bind='item.name')
+<<<<<<< HEAD
+		h4 {{'MAIN.SETTINGS.GENERAL.TITLE_KEYBOARD_SHORTCUTS' | translate}}
+		ul.list-group
+			li.list-group-item
+				label {{'MAIN.SETTINGS.GENERAL.LB_KEYBOARD_SHORTCUTS' | translate}}
+				.control
+					label.switch
+						input(type='checkbox', ng-model="settings.isHotkeyEnabled")
+						i
+		br
+		ul.list-group(ng-show="status")
+			li.list-group-item
+				label(ng-bind="status")
+=======
 		h4 {{'MAIN.SETTINGS.GENERAL.TITLE_CONTACTS' | translate}}
 		ul.list-group
 			li.list-group-item
@@ -89,3 +103,4 @@
 						ui-select-choices(repeat='item in sortBy')
 							span(ng-click='item.selected=item', ng-bind='item.name')
 							span.dropdown-icon(ng-class='item.icon')
+>>>>>>> develop

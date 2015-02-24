@@ -1,9 +1,16 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, translate, user) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeout, translate, user, Hotkey) => {
 	$scope.form = {
 		selectedLanguage: null,
 		contactsSortBy: null
 	};
 	$scope.languages = [];
+    $scope.settings = {};
+
+    $rootScope.hotkeys = [];
+
+    $scope.$bind('user-settings', () => {
+        $scope.settings = user.settings;
+    });
 
 	var translations = {};
 
@@ -40,8 +47,34 @@ module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, transl
 			translate.switchLanguage($scope.form.selectedLanguage.langCode);
 	});
 
-	$scope.$watch('form.contactsSortBy', () => {
-		if ($scope.form.contactsSortBy)
-			user.update({contactsSortBy: $scope.sortBy.findIndex(e => e.name == $scope.form.contactsSortBy.name)});
-	});
+    $scope.$watch('settings.isHotkeyEnabled', () => {
+        Hotkey.toggleHotkeys($scope.settings.isHotkeyEnabled);
+    });
+
+    var clearTimeout = null;
+    $scope.$watch('status', () => {
+        if ($scope.status) {
+            clearTimeout = $timeout.schedule(clearTimeout, () => {
+                $scope.status = '';
+            }, 1000);
+        }
+    });
+
+    var updateTimeout = null;
+    $scope.$watch('settings', (o, n) => {
+        if (o === n) return;
+
+        if (Object.keys($scope.settings).length > 0) {
+            updateTimeout = $timeout.schedule(updateTimeout, () => {
+                user.update($scope.settings)
+                .then(() => {
+                    $scope.status = 'saved!';
+                })
+                .catch(() => {
+                    $scope.status = 'ops...';
+                });
+            }, 1000);
+        }
+    }, true);
+
 };

@@ -11,7 +11,8 @@ application.create(
 		'lavaboom.api',
 		'ui.router',
 		'pascalprecht.translate',
-		'angular-co'
+		'angular-co',
+        'cfp.hotkeys'
 	]
 );
 

@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, $stateParams, co, user, inbox, consts) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, $stateParams, co, user, inbox, consts, Hotkey) => {
 	$scope.labelName = $stateParams.labelName;
 	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
 	$scope.$state = $state;
@@ -106,4 +106,66 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	};
 
 	requestList();
+
+    // Add hotkeys
+    var moveThreads = function(delta) {
+        var selectedIndex = $scope.threadsList && $scope.selectedTid !== null
+            ? $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid)
+        : -1;
+        if ($scope.selectedTid !== null) {
+            selectedIndex = Math.min(Math.max(selectedIndex + delta, 0), $scope.threadsList.length - 1);
+            $scope.selectedTid = $scope.threadsList[selectedIndex].id;
+            $scope.selectThread(null, $scope.selectedTid);
+        }
+    };
+
+    var moveUp = function(event, key) {
+        event.preventDefault();
+        moveThreads(-1);
+    };
+
+    var moveDown = function(event, key) {
+        event.preventDefault();
+        moveThreads(1);
+    };
+
+    Hotkey.addHotkey({
+        combo: ['h', 'k', 'left', 'up'],
+        description: 'HOTKEY.HK_MOVE_UP',
+        callback: moveUp
+    });
+
+    Hotkey.addHotkey({
+        combo: ['j', 'l', 'right', 'down'],
+        description: 'HOTKEY.HK_MOVE_DOWN',
+        callback: moveDown
+    });
+
+    Hotkey.addHotkey({
+        combo: 'a',
+        description: 'HOTKEY.HK_ARCHIVE_EMAIL',
+        callback: (event, key) => {
+            event.preventDefault();
+            //$scope.archive($scope.selectedTid);
+        }
+    });
+
+    Hotkey.addHotkey({
+        combo: 'd',
+        description: 'HOTKEY.HK_DELETE_EMAIL',
+        callback: (event, key) => {
+            event.preventDefault();
+            $scope.deleteThread($scope.selectedTid);
+        }
+    });
+
+    Hotkey.addHotkey({
+        combo: 'r',
+        description: 'HOTKEY.HK_REPLY_EMAIL',
+        callback: (event, key) => {
+            event.preventDefault();
+            $scope.replyThread(event, $scope.selectedTid);
+        }
+    });
+
 };
