@@ -32,4 +32,5 @@ This most likely will cause build failure. Currently you will have to terminate 
 
 **Attention**
 
-Please work in your own branch for any feature(feature/*, branched out from develop), make sure your code passes all JsHint tests, compiles and works without any errors under develop and production targets.
+1. Please work in your own branch for any feature(feature/*, branched out from develop), make sure your code passes all JsHint tests, compiles and works without any errors under develop and production targets.
+2. For any text strings use i18n toml files in src/translations/[lang-code].toml
