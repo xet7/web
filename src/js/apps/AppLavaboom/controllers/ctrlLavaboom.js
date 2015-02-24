@@ -35,7 +35,9 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 			yield [connectionPromise, translateInitialization];
 			loader.incProgress(translations.LB_LOADING, 5);
 
-			yield [user.gatherUserInformation(), inbox.initialize(), contacts.initialize()];
+			yield user.gatherUserInformation();
+
+			yield [inbox.initialize(), contacts.initialize()];
 
 			if ($state.current.name == 'empty')
 				yield $state.go('main.inbox.label', {labelName: 'Inbox', threadId: null}, {reload: true});
