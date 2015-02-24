@@ -33,10 +33,11 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 			crypto.initialize();
 
 			yield [connectionPromise, translateInitialization];
-			loader.incProgress(translations.LB_LOADING, 5);
 
+			loader.incProgress(translations.LB_AUTHENTICATING, 5);
 			yield user.gatherUserInformation();
 
+			loader.incProgress(translations.LB_LOADING, 5);
 			yield [inbox.initialize(), contacts.initialize()];
 
 			if ($state.current.name == 'empty')
