@@ -1,4 +1,5 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, consts, co, user, contacts, inbox, router, Manifest, Attachment, Contact, Hotkey) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
+							   consts, co, user, contacts, inbox, router, Manifest, Attachment, Contact, Hotkey) => {
 	$scope.isWarning = false;
 	$scope.isXCC = false;
 	$scope.toolbar = [
