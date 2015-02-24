@@ -18,7 +18,7 @@ module.exports = /*@ngInject*/($scope, $state, $window, user, signUp, crypto, cr
 	};
 
 	$scope.backup = () => {
-		let keysBackup = cryptoKeys.exportKeys();
+		let keysBackup = cryptoKeys.exportKeys(user.email);
 		saver.saveAs(keysBackup, cryptoKeys.getExportFilename(keysBackup, user.name));
 
 		navigateMainApplication();
