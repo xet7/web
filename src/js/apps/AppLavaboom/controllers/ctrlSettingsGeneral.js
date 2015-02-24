@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeout, translate, hotkeys, user, Hotkey) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeout, translate, user, Hotkey) => {
 	$scope.form = {
 		selectedLanguage: null
 	};

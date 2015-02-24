@@ -1,5 +1,5 @@
-module.exports = /*@ngInject*/($translate, hotkeys, user) => {
-    var hotkey_list = ['?'];
+module.exports = /*@ngInject*/($translate, hotkeys) => {
+    var hotkeyList = ['?'];
     var previousKeys = [];
 
     var Hotkey = function() {
@@ -11,11 +11,11 @@ module.exports = /*@ngInject*/($translate, hotkeys, user) => {
             return;
 
         var key = angular.isArray(option.combo) ? option.combo[0] : option.combo;
-        var current_key = hotkeys.get(key);
-        if (current_key)
-            hotkeys.del(current_key);
-        if (hotkey_list.indexOf(option.combo) == -1) {
-            hotkey_list.push(option.combo);
+        var currentKey = hotkeys.get(key);
+        if (currentKey)
+            hotkeys.del(currentKey);
+        if (!hotkeyList.includes(option.combo)) {
+            hotkeyList.push(option.combo);
         }
 
         option.description = $translate.instant(option.description);
@@ -30,7 +30,7 @@ module.exports = /*@ngInject*/($translate, hotkeys, user) => {
             }
             previousKeys.length = 0;
         } else {
-            for (let key of hotkey_list) {
+            for (let key of hotkeyList) {
                 var hotkey = hotkeys.get(key);
                 if (hotkey) {
                     previousKeys.push(hotkey);
