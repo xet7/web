@@ -47,6 +47,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeo
 			translate.switchLanguage($scope.form.selectedLanguage.langCode);
 	});
 
+	$scope.$watch('form.contactsSortBy', () => {
+		if ($scope.form.contactsSortBy)
+			user.update({contactsSortBy: $scope.sortBy.findIndex(e => e.name == $scope.form.contactsSortBy.name)});
+	});
+
     $scope.$watch('settings.isHotkeyEnabled', () => {
         Hotkey.toggleHotkeys($scope.settings.isHotkeyEnabled);
     });
