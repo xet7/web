@@ -1,17 +1,6 @@
 module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts, co, LavaboomAPI, user, crypto, contacts, Cache, Email, Thread, Label) {
 	var self = this;
 
-	this.offset = 0;
-	this.limit = 15;
-	this.emails = [];
-	this.selected = null;
-
-	this.labelName = '';
-	this.labelsById = {};
-	this.labelsByName = {};
-	this.threads = {};
-	this.threadsList = [];
-
 	var defaultCacheOptions = {
 		ttl: consts.INBOX_THREADS_CACHE_TTL
 	};
@@ -23,11 +12,14 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	var emailsListCache = new Cache(defaultCacheOptions);
 
 	this.invalidateThreadCache = () => {
-		for(let labelName of Object.keys(threadsCaches))
+		for(let labelName of Object.keys(threadsCaches)) {
+			console.log('invalidate thread cache for label', labelName, '...');
 			threadsCaches[labelName].invalidateAll();
+		}
 	};
 
 	this.invalidateEmailCache = () => {
+		console.log('invalidate email cache...');
 		emailsListCache.invalidateAll();
 	};
 
@@ -213,6 +205,17 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	});
 
 	this.initialize = () => co(function *(){
+		self.offset = 0;
+		self.limit = 15;
+		self.emails = [];
+		self.selected = null;
+
+		self.labelName = '';
+		self.labelsById = {};
+		self.labelsByName = {};
+		self.threads = {};
+		self.threadsList = [];
+
 		var labels = yield self.getLabels();
 
 		if (!labels.byName.Drafts) {

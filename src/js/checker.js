@@ -5,7 +5,7 @@
 		console.log('checker', url);
 		this.check = () => new Promise((resolve, reject) => {
 			if (token) {
-				var api = new Lavaboom(url, null, 'http');
+				var api = Lavaboom.getInstance(url, null, 'http');
 				api.authToken = token;
 
 				api.connect()
