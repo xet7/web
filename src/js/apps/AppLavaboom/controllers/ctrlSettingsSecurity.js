@@ -49,25 +49,15 @@ module.exports = /*@ngInject*/($scope, $timeout, utils, user, crypto, cryptoKeys
 			});
 	};
 
-	$scope.getFile = function(file) {
-		fileReader.readAsText(file, $scope)
-			.then(jsonBackup => {
-				cryptoKeys.importKeys(jsonBackup);
-				inbox.invalidateEmailCache();
-			})
-			.catch(error => {
-				console.error(error);
-			});
-	};
-
 	$scope.exportKeys = () => {
 		var keysBackup = cryptoKeys.exportKeys();
 		var blob = new Blob([keysBackup], {type: 'text/json;charset=utf-8'});
 		saveAs(blob, cryptoKeys.getExportFilename(keysBackup, user.name));
 	};
 
-	$scope.importKeys = () => {
-		document.getElementById('import-btn').click();
+	$scope.importKeys = (data) => {
+		cryptoKeys.importKeys(data);
+		inbox.invalidateEmailCache();
 	};
 
 	var updateTimeout = null;
