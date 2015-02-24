@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, LavaboomAPI, user, crypto, contacts, Cache, Email, Thread, Label) {
+module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts, co, LavaboomAPI, user, crypto, contacts, Cache, Email, Thread, Label) {
 	var self = this;
 
 	this.offset = 0;
@@ -23,7 +23,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 	var emailsListCache = new Cache(defaultCacheOptions);
 
 	this.invalidateThreadCache = () => {
-		for(let labelName in threadsCaches)
+		for(let labelName of Object.keys(threadsCaches))
 			threadsCaches[labelName].invalidateAll();
 	};
 
@@ -60,11 +60,12 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 
 		var r = yield operation;
 
-		$rootScope.$broadcast(`inbox-threads[${currentLabelName}]`);
+		$rootScope.$broadcast(`inbox-threads`, currentLabelName);
 
 		return r;
 	});
 
+	//ToDo: manifest for each thread(subject and other meta data)
 	var getThreadsByLabelName = (labelName) => co(function *() {
 		var label = self.labelsByName[labelName];
 
@@ -82,10 +83,12 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 		};
 
 		if (threads) {
-			result = Object.keys(threads).reduce((a, i) => {
-				var thread = new Thread(threads[i]);
-				a.map[thread.id] = thread;
-				a.list.push(thread);
+			result = (yield threads.map(t => co.def(Thread.fromEnvelope(t), (e) => {console.log(e.stack);return null;}))).reduce((a, t) => {
+				console.log('t', t);
+				if (t) {
+					a.map[t.id] = t;
+					a.list.push(t);
+				}
 				return a;
 			}, result);
 		}
@@ -96,7 +99,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 	this.getThreadById = (threadId) => co(function *() {
 		var thread = (yield LavaboomAPI.threads.get(threadId)).body.thread;
 
-		return thread ? new Thread(thread) : null;
+		return thread ? yield Thread.fromEnvelope(thread) : null;
 	});
 
 	this.requestDelete = (threadId) => performsThreadsOperation(co(function *() {
@@ -124,7 +127,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 
 		var labelId = self.labelsByName[labelName].id;
 
-		for(let c in threadsCaches)
+		for(let c of Object.keys(threadsCaches))
 			threadsCaches[c].invalidateAll();
 
 		var r =  yield LavaboomAPI.threads.update(threadId, {labels: [labelId]});
@@ -141,7 +144,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 		if (thread.isLabel(labelName)) {
 			console.log('label found - remove');
 
-			threadsCaches[labelName].invalidateAll();
+			thread.labels.forEach(lid =>
+				threadsCaches[self.labelsById[lid].name].invalidateAll()
+			);
 
 			var newLabels = thread.removeLabel(labelName);
 			var r = yield LavaboomAPI.threads.update(threadId, {labels: newLabels});
@@ -179,7 +184,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 	);
 
 	this.setThreadReadStatus = (threadId) => co(function *(){
-		if (self.threads[threadId].is_read)
+		if (self.threads[threadId].isRead)
 			return;
 
 		yield LavaboomAPI.threads.update(threadId, {
@@ -187,7 +192,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 			labels: self.threads[threadId].labels
 		});
 
-		self.threads[threadId].is_read = true;
+		self.threads[threadId].isRead = true;
 
 		var labels = yield self.getLabels();
 		self.labelsByName = labels.byName;
@@ -223,18 +228,23 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 		yield self.requestList('Inbox');
 	});
 
+	this.downloadAttachment = (id) => co(function *(){
+		let res =  yield LavaboomAPI.files.get(id);
+		return (yield crypto.decodeEnvelope(res.body.file, '', 'raw')).data;
+	});
+
 	this.uploadAttachment = (envelope) => co(function *(){
-		return yield LavaboomAPI.attachments.create(envelope);
+		return yield LavaboomAPI.files.create(envelope);
 	});
 
 	this.deleteAttachment = (attachmentId) => co(function *(){
-		return yield LavaboomAPI.attachments.delete(attachmentId);
+		return yield LavaboomAPI.files.delete(attachmentId);
 	});
 
-	this.getEmail = (emailId) => co(function *(){
+	this.getEmailById = (emailId) => co(function *(){
 		var r = yield LavaboomAPI.emails.get(emailId);
 
-		return r.body.email ? new Email(r.body.email) : null;
+		return r.body.email ? Email.fromEnvelope(r.body.email) : null;
 	});
 
 	this.requestList = (labelName) => {
@@ -264,13 +274,27 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, consts, co, Lav
 		return r.body.key;
 	});
 
-	this.send = (opts) => co(function * () {
-		var envelope = yield Email.toEnvelope(opts);
+	var sendEnvelope = null;
 
-		var res = yield LavaboomAPI.emails.create(envelope);
+	this.send = (opts, manifest) => co(function * () {
+		sendEnvelope = yield Email.toEnvelope(opts, manifest);
+
+		return {
+			isEncrypted: sendEnvelope.kind == 'manifest'
+		};
+	});
+
+	this.confirmSend = () =>  co(function * () {
+		var res = yield LavaboomAPI.emails.create(sendEnvelope);
+
+		sendEnvelope = null;
 
 		return res.body.id;
 	});
+
+	this.rejectSend = () => {
+		sendEnvelope = null;
+	};
 
 	$rootScope.whenInitialized(() => {
 		LavaboomAPI.subscribe('receipt', (msg) => performsThreadsOperation(handleEvent(msg)));

@@ -18,17 +18,17 @@
 
 									if (!me.body.user.settings || me.body.user.settings.state != 'ok') {
 										console.log('checker: user haven\'t decided with keys');
-										loader.loadLoginApplication({state: 'backupKeys'});
+										loader.loadLoginApplication({state: 'backupKeys', noDelay: true});
 									} else
-										loader.loadMainApplication();
+										loader.loadMainApplication({noDelay: true});
 								})
 								.catch(err => {
 									console.log('checker: keys.get error', err);
-									loader.loadLoginApplication({state: 'generateKeys'});
+									loader.loadLoginApplication({state: 'generateKeys', noDelay: true});
 								});
 						}).catch(function (err) {
 							console.log('checker: accounts.get(me) error', err);
-							loader.loadLoginApplication();
+							loader.loadLoginApplication({noDelay: true});
 							resolve();
 						});
 					})
@@ -38,7 +38,7 @@
 					});
 			} else {
 				console.log('checker: no token found!');
-				loader.loadLoginApplication();
+				loader.loadLoginApplication({noDelay: true});
 				resolve();
 			}
 		});

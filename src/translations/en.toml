@@ -18,6 +18,14 @@
 	LB_SETTINGS = "settings"
 	LB_NO_PRIVATE_KEY_FOUND3 = " and check your key"
 
+[INBOX.DOWNLOAD]
+	TITLE = "Downloading your attachment"
+	LB_ACQUIRING = "Acquiring information..."
+	LB_DOWNLOADING = "downloading..."
+	LB_DECRYPTING = "decrypting..."
+	LB_TAKES_MORE = "action will take some more time..."
+	LB_COMPLETED = "completed!"
+
 [GLOBAL]
 	USERNAME = "username"
 	CURRENT_EMAIL = "your current email address"
@@ -53,8 +61,7 @@
 	LB_INITIALIZING_I18N = "Loading internationalization support..."
 	LB_INITIALIZING_OPENPGP = "Initializing openpgp.js..."
 	LB_AUTHENTICATING = "Authenticating..."
-	LB_LOADING_EMAILS = "Loading emails..."
-	LB_LOADING_CONTACTS = "Loading contacts..."
+	LB_LOADING = "Loading emails && contacts..."
 	LB_DECRYPTING = "Decrypting your inbox..."
 	LB_SUCCESS = "Done!"
 	LB_BYE = "See you soon ;)"
@@ -123,6 +130,15 @@
 	LB_WARNING3 = "This Key is used to decrypt your data. It is like a super-safe password. Keep it safe and do not share it with anyone."
 	BTN_NEXT = "Generate my key pair"
 
+[LOGIN.LAVABOOM_SYNC]
+	TITLE = "Lavaboom Sync"
+	LB_WHAT_IS = "What is Lavaboom Sync?"
+	LB_SYNC_INTRO = "Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Nulla quis lorem ut libero malesuada feugiat."
+	LB_SYNC1 = "We want to offer the users the option to activate Lavaboom Sync, basically backing up their key ring on our servers. Lavaboom Sync can work with or without a sync passphrase (similar to how Chrome works)"
+	LB_SYNC2 = "Every Account has a field called settings that is simply a key value store to allow for flexible storage of misc stuff. Your task is, if Lavaboom Sync is activated, to store the user's keyring to Account.settings."
+	LB_ENABLE_LB_SYNC = "Enable Lavaboom Sync"
+	BTN_NEXT = "You're almost done"
+
 [LOGIN.GENERATING_KEYS]
 	LB_GENERATING = "Generating your Keys..."
 	LB_UPLOADING = "Uploading Public Key..."
@@ -185,6 +201,9 @@
 	LB_PRIVATE = "private"
 	LB_BUSINESS = "business"
 	LB_HIDDEN = "hidden"
+	LB_WARNING = "You are about to send an unencrypted email, are you sure?"
+	BTN_CONFIRM = "I understand the risk"
+	BTN_REJECT = "No"
 
 [MAIN.SETTINGS.MENU]
 	KEYS = "Keys"
@@ -200,9 +219,13 @@
 	LB_COMPOSED_MAILS = "Composed Mails"
 	LB_MARKED_AS_SPAM = "Marked as Spam"
 	LB_DELETED_EMAILS = "Deleted Emails"
+	TITLE_CONTACTS = "Contacts"
+	LB_SORT_BY = "Sort by"
+	LB_SORT_BY_DISPLAY_NAME = "display name"
+	LB_SORT_BY_FIRST_NAME = "first name"
+	LB_SORT_BY_LAST_NAME = "last name"
 	TITLE_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts"
 	LB_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts Enabled"
-
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
 	TITLE_KEYS_MANAGEMENT = "Manage your keys"
@@ -220,6 +243,7 @@
 	BTN_EXPORT_KEYS = "Export keys"
 	BTN_IMPORT_KEYS = "Import keys"
 	LB_DECRYPTED = "Decrypted"
+	LAVABOOM_SYNC = "Lavaboom Sync"
 
 [MAIN.CONTACTS]
 	PLC_SEARCH_CONTACTS = "Search Contacts"

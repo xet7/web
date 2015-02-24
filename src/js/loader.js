@@ -112,7 +112,7 @@
 
 	const
 		DEBUG_DELAY = 0,
-		APP_TRANSITION_DELAY = 1000;
+		APP_TRANSITION_DELAY = 500;
 
 	var loadedScripts = {};
 
@@ -226,7 +226,7 @@
 					.then(r => {
 						console.log('loader: initialized application', app.appName, 'with result', r);
 
-						showContainer(app, opts.lbDone ? opts.lbDone : (r && r.lbDone ? r.lbDone : null))
+						showContainer(app, opts.lbDone ? opts.lbDone : (r && r.lbDone ? r.lbDone : null), opts.noDelay ? true : false)
 							.then(() => {
 								if (rootScope.onApplicationReady)
 									rootScope.$apply(() => {

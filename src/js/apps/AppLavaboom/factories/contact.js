@@ -10,10 +10,22 @@ module.exports = /*@ngInject*/(co, user, crypto) => {
 		if (!this.name && this.email)
 			this.name = this.email.split('@')[0].trim();
 
+		this.isCustomName = () => self.firstName && self.lastName && self.name != `${self.firstName.trim()} ${self.lastName.trim()}`;
+
+		this.getFullName = () => self.isCustomName() ? self.name + ` (${self.firstName.trim()} ${self.lastName.trim()})` : self.name;
+
 		this.isMatchEmail = (email) =>
 			(self.email == email) ||
 			(self.privateEmails && self.privateEmails.includes(email)) ||
 			(self.businessEmails && self.businessEmails.includes(email));
+		
+		this.getSortingField = (id) => {
+			if (id === 1)
+				return self.firstName;
+			if (id === 2)
+				return self.lastName;
+			return self.name;
+		};
 
 		this.isPrivate = () => !!self.email;
 	};

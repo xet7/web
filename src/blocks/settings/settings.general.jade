@@ -77,6 +77,7 @@
 						ui-select-match {{$select.selected.name}}
 						ui-select-choices(repeat='item in notImplemented')
 							span(ng-click='item.selected=item', ng-bind='item.name')
+<<<<<<< HEAD
 		h4 {{'MAIN.SETTINGS.GENERAL.TITLE_KEYBOARD_SHORTCUTS' | translate}}
 		ul.list-group
 			li.list-group-item
@@ -89,3 +90,17 @@
 		ul.list-group(ng-show="status")
 			li.list-group-item
 				label(ng-bind="status")
+=======
+		h4 {{'MAIN.SETTINGS.GENERAL.TITLE_CONTACTS' | translate}}
+		ul.list-group
+			li.list-group-item
+				.dropdown-control
+					label {{'MAIN.SETTINGS.GENERAL.LB_SORT_BY' | translate}}
+					ui-select(ng-model='form.contactsSortBy', search-enabled='false')
+						ui-select-match
+							| {{$select.selected.name}}
+							span(ng-class='item.icon')
+						ui-select-choices(repeat='item in sortBy')
+							span(ng-click='item.selected=item', ng-bind='item.name')
+							span.dropdown-icon(ng-class='item.icon')
+>>>>>>> develop

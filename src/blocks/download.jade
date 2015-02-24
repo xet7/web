@@ -1,0 +1,14 @@
+div
+	form
+		.filters.row.no-gutter.lava-icon-row.z1.lava-modal-header
+			span.pull-left.modal-heading {{'INBOX.DOWNLOAD.TITLE' | translate}}
+			.lava-icon-wrapper.pull-right
+				a(href="#", ng-click="hidePopup()")
+					span.icon-close
+		.row.lava-modal-content
+			div.col-xs-12.col-xs-offset-6
+				hr.spacer
+				.progress
+					.progress-bar(role='progressbar', aria-valuenow='{{progress}}', aria-valuemin='0', aria-valuemax='100', style='width: {{progress}}%;')
+				p.text-center(ng-bind="label")
+				hr.spacer

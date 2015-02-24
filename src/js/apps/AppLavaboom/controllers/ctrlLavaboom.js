@@ -9,8 +9,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 		translations.LB_INITIALIZING_OPENPGP = $translate.instant('LOADER.LB_INITIALIZING_OPENPGP');
 		translations.LB_AUTHENTICATING = $translate.instant('LOADER.LB_AUTHENTICATING');
 		translations.LB_DECRYPTING = $translate.instant('LOADER.LB_DECRYPTING');
-		translations.LB_LOADING_EMAILS = $translate.instant('LOADER.LB_LOADING_EMAILS');
-		translations.LB_LOADING_CONTACTS = $translate.instant('LOADER.LB_LOADING_CONTACTS');
+		translations.LB_LOADING = $translate.instant('LOADER.LB_LOADING');
 		translations.LB_INITIALIZATION_FAILED = $translate.instant('LOADER.LB_INITIALIZATION_FAILED');
 		translations.LB_SUCCESS = $translate.instant('LOADER.LB_SUCCESS');
 
@@ -19,7 +18,6 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 	});
 
 	$scope.initializeApplication = () => co(function *(){
-		console.log('main app: processing $scope.initializeApplication()');
 		try {
 			var connectionPromise = LavaboomAPI.connect();
 
@@ -28,24 +26,19 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 
 			loader.incProgress(translations.LB_INITIALIZING_I18N, 1);
 
-			translate.initialize();
+			var translateInitialization = translate.initialize();
 
 			loader.incProgress(translations.LB_INITIALIZING_OPENPGP, 1);
 
 			crypto.initialize();
 
-			loader.incProgress(translations.LB_AUTHENTICATING, 5);
+			yield [connectionPromise, translateInitialization];
 
-			yield connectionPromise;
+			loader.incProgress(translations.LB_AUTHENTICATING, 5);
 			yield user.gatherUserInformation();
 
-			loader.incProgress(translations.LB_LOADING_EMAILS, 5);
-
-			yield inbox.initialize();
-
-			loader.incProgress(translations.LB_LOADING_CONTACTS, 5);
-
-			yield contacts.initialize();
+			loader.incProgress(translations.LB_LOADING, 5);
+			yield [inbox.initialize(), contacts.initialize()];
 
 			if ($state.current.name == 'empty')
 				yield $state.go('main.inbox.label', {labelName: 'Inbox', threadId: null}, {reload: true});

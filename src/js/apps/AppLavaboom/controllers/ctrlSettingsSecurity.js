@@ -1,11 +1,16 @@
-module.exports = /*@ngInject*/($scope, $timeout, utils, user, crypto, cryptoKeys, LavaboomAPI, fileReader, inbox) => {
+module.exports = /*@ngInject*/($scope, $timeout, utils, user, crypto, cryptoKeys, LavaboomAPI, fileReader, inbox, saver) => {
 	$scope.email = user.email;
+	$scope.settings = {};
 
 	$scope.form = {
 		oldPassword: '',
 		password: '',
 		passwordRepeat: ''
 	};
+
+	$scope.$bind('user-settings', () => {
+		$scope.settings = user.settings;
+	});
 
 	$scope.$bind('keyring-updated', () => {
 		$scope.keys = crypto.getAvailableEncryptedPrivateKeys().map(k => {
@@ -44,24 +49,38 @@ module.exports = /*@ngInject*/($scope, $timeout, utils, user, crypto, cryptoKeys
 			});
 	};
 
-	$scope.getFile = function(file) {
-		fileReader.readAsText(file, $scope)
-			.then(jsonBackup => {
-				cryptoKeys.importKeys(jsonBackup);
-				inbox.invalidateEmailCache();
-			})
-			.catch(error => {
-				console.error(error);
-			});
-	};
-
 	$scope.exportKeys = () => {
-		var keysBackup = cryptoKeys.exportKeys();
-		var blob = new Blob([keysBackup], {type: 'text/json;charset=utf-8'});
-		saveAs(blob, cryptoKeys.getExportFilename(keysBackup, user.name));
+		let keysBackup = cryptoKeys.exportKeys();
+		saver.saveAs(keysBackup, cryptoKeys.getExportFilename(keysBackup, user.name));
 	};
 
-	$scope.importKeys = () => {
-		document.getElementById('import-btn').click();
+	$scope.importKeys = (data) => {
+		cryptoKeys.importKeys(data);
+		inbox.invalidateEmailCache();
 	};
+
+	var updateTimeout = null;
+	$scope.$watch('settings.isLavaboomSynced', (o, n) => {
+		if (o === n)
+			return;
+
+		if($scope.settings.isLavaboomSynced){
+			var keysBackup = cryptoKeys.exportKeys();
+			$scope.settings.keyring = keysBackup;
+		}else{
+			$scope.settings.keyring = '';
+		}
+
+		if (Object.keys($scope.settings).length > 0) {
+			updateTimeout = $timeout.schedule(updateTimeout, () => {
+				user.update($scope.settings)
+					.then(() => {
+
+					})
+				.catch(() => {
+
+				});
+			}, 1000);
+		}
+	}, true);
 };

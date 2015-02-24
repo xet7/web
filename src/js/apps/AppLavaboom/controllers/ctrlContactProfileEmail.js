@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $interval, $translate, co, inbox) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $interval, $translate, co, inbox, saver) => {
 	var translations = {};
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
@@ -25,9 +25,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $interval, $transla
 	});
 
 	$scope.downloadPublicKey = () => {
-		console.log('downloadPublicKey', $scope.currentEmail);
-		var blob = new Blob([$scope.currentEmail.key.key], {type: 'text/plain;charset=utf-8'});
-		saveAs(blob, `${$scope.currentEmail.email}-publicKey.txt`);
+		saver.saveAs($scope.currentEmail.key.key, `${$scope.currentEmail.email}-publicKey.txt`);
 	};
 
 	$scope.$watch('currentEmail.email', () => {

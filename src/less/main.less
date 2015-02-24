@@ -36,9 +36,11 @@
 	
 	.actions{
 		top: 0;
+		.z2();
 	}
 	.main-settings-view, .main-view{
 		.pos-rel();
+		.z1();
 		height: 100%;
 		// padding: 10px;
 		padding-top: @filter-height;
@@ -186,6 +188,15 @@
 	}
 }
 
+p.hyphenate{
+	word-break: break-word;
+	-webkit-hyphens: auto;
+	-moz-hyphens: auto;
+	-ms-hyphens: auto;
+	-o-hyphens: auto;
+	hyphens: auto;
+}
+
 .table-list{
 	display: table;
 	.cell{
@@ -201,4 +212,15 @@
 
 .serif{
 	font-family: @font-family-serif;
+}
+
+.lava-modal-header{
+	.modal-heading{
+		line-height: 2.8em;
+		padding-left: 1.3em;
+	}
+}
+
+.lava-modal-content{
+	padding-top: @filter-height + 25px;
 }
