@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest, LavaboomAPI) => {
+module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest) => {
 	let Email = function(opt, manifest) {
 		this.id =  opt.id;
 		this.threadId = opt.thread;
@@ -13,8 +13,9 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest, LavaboomAPI
 		this.files = manifest.parts.filter(p => p.id != 'body');
 
 		let fromContact = contacts.getContactByEmail(opt.from);
+		console.log('Email', fromContact, opt.from);
 
-		this.fromName = fromContact ? fromContact.name : opt.from;
+		this.fromName = fromContact ? fromContact.getFullName() : opt.from;
 		this.preview = opt.preview;
 		this.body = opt.body;
 		this.attachments = opt.attachments ? opt.attachments : [];
