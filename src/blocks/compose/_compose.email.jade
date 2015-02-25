@@ -8,12 +8,13 @@
 			span(class="icon-lock {{$item.getSecureClass()}}")
 		ui-select-choices(repeat="personEmail in people | filter: personFilter($select.search) track by personEmail.email")
 			div(ng-if="!personEmail.isEmpty && personEmail.isTag")
-				div {{personEmail.getDisplayName()}}
+				div(ng-show="!personEmail.isHidden()") {{personEmail.getDisplayName()}}
 				small {{personEmail.getLabel()}} {{'MAIN.COMPOSE.LB_EMAIL' | translate}}:
 					span {{personEmail.email}}
-					span(class="icon-lock {{personEmail.getSecureClass()}}")
+					img(src="/img/loader.svg", ng-show="personEmail.isLoadingKey()")
+					span(class="icon-lock {{personEmail.getSecureClass()}}", ng-show="!personEmail.isLoadingKey()")
 			div(ng-if="!personEmail.isEmpty && !personEmail.isTag")
-				div(ng-bind-html="personEmail.getDisplayName() | highlight: $select.search")
+				div(ng-show="!personEmail.isHidden()", ng-bind-html="personEmail.getDisplayName() | highlight: $select.search")
 				small {{personEmail.getLabel()}} {{'MAIN.COMPOSE.LB_EMAIL' | translate}}:
 					span(ng-bind-html="personEmail.email | highlight: $select.search")
 					span(class="icon-lock {{personEmail.getSecureClass()}}")

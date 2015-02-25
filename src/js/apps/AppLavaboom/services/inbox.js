@@ -279,8 +279,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 	var sendEnvelope = null;
 
-	this.send = (opts, manifest) => co(function * () {
-		sendEnvelope = yield Email.toEnvelope(opts, manifest);
+	this.send = (opts, manifest, keys) => co(function * () {
+		sendEnvelope = yield Email.toEnvelope(opts, manifest, keys);
 
 		return {
 			isEncrypted: sendEnvelope.kind == 'manifest'

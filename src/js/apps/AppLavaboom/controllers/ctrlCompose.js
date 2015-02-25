@@ -103,12 +103,14 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 		yield $scope.attachments.map(a => a.processingPromise);
 
-		let to = $scope.form.selected.to.map(e => e.email)/*,
+		let to = $scope.form.selected.to.map(e => e.email),
 			cc = $scope.form.selected.cc.map(e => e.email),
-			bcc = $scope.form.selected.bcc.map(e => e.email)*/;
+			bcc = $scope.form.selected.bcc.map(e => e.email);
 
-		console.log('to', to);
-		/*
+		let keys = yield ([...$scope.form.selected.to, ...$scope.form.selected.cc, ...$scope.form.selected.bcc].reduce((a, e) => {
+			a[e.email] = e.loadKey();
+			return a;
+		}, {}));
 
 		manifest = Manifest.create({
 			fromEmail: user.email,
@@ -125,7 +127,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			body: $scope.form.body,
 			attachmentIds: $scope.attachments.map(a => a.id),
 			threadId
-		}, manifest);
+		}, manifest, keys);
 
 		console.log('compose send status', sendStatus);
 
@@ -133,7 +135,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			yield $scope.confirm();
 		} else {
 			$scope.isWarning = true;
-		}*/
+		}
 	});
 
 	$scope.confirm = () => co(function *(){
@@ -144,7 +146,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		yield manifest.getDestinationEmails()
 			.filter(email => !contacts.getContactByEmail(email))
 			.map(email => {
-				let contact = new Contact();
+				let contact = new Contact({name: 'hidden'});
 				contact.hiddenEmail = hiddenContacts[email];
 				return contacts.createContact(contact);
 			});
@@ -168,6 +170,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		$scope.people = [...contacts.people.values()].reduce((a, c) => {
 			a = a.concat(c.privateEmails);
 			a = a.concat(c.businessEmails);
+			if (c.hiddenEmail)
+				a.push(c.hiddenEmail);
 
 			return a;
 		}, []).concat(toEmailContact ? [toEmailContact] : []);
@@ -222,6 +226,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 	$scope.taggingTokens = 'SPACE|,|/';
 
+	let newHiddenContact = null;
 	$scope.tagTransform = function (newTag) {
 		try {
 			console.log('tag transform', newTag);
@@ -241,12 +246,17 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 					isEmpty: true
 				};
 
-			let newHiddenContact = new ContactEmail(null, {
+			if (newHiddenContact)
+				newHiddenContact.cancelKeyLoading();
+
+			newHiddenContact = new ContactEmail(null, {
 				isTag: true,
 				name,
 				email,
 				isNew: true
 			}, 'hidden');
+
+			newHiddenContact.loadKey();
 
 			hiddenContacts[newHiddenContact.email] = newHiddenContact;
 			return newHiddenContact;
