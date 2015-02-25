@@ -18,7 +18,11 @@
 
 									if (!me.body.user.settings || me.body.user.settings.state != 'ok') {
 										console.log('checker: user haven\'t decided with keys');
-										loader.loadLoginApplication({state: 'backupKeys', noDelay: true});
+										if (me.body.user.settings.state == 'backupKeys') {
+											loader.loadLoginApplication({state: 'backupKeys', noDelay: true});
+										} else {
+											loader.loadLoginApplication({state: 'lavaboomSync', noDelay: true});
+										}
 									} else
 										loader.loadMainApplication({noDelay: true});
 								})
