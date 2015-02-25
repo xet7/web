@@ -7,6 +7,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		['bold', 'italics'],
 		['justifyLeft', 'justifyCenter', 'justifyRight']
 	];
+	let hiddenContacts = {};
 
 	var threadId = $stateParams.replyThreadId;
 	var toEmail = $stateParams.to;
@@ -102,9 +103,12 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 		yield $scope.attachments.map(a => a.processingPromise);
 
-		let to = $scope.form.selected.to.map(e => e.email),
+		let to = $scope.form.selected.to.map(e => e.email)/*,
 			cc = $scope.form.selected.cc.map(e => e.email),
-			bcc = $scope.form.selected.bcc.map(e => e.email);
+			bcc = $scope.form.selected.bcc.map(e => e.email)*/;
+
+		console.log('to', to);
+		/*
 
 		manifest = Manifest.create({
 			fromEmail: user.email,
@@ -129,7 +133,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			yield $scope.confirm();
 		} else {
 			$scope.isWarning = true;
-		}
+		}*/
 	});
 
 	$scope.confirm = () => co(function *(){
@@ -139,10 +143,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 		yield manifest.getDestinationEmails()
 			.filter(email => !contacts.getContactByEmail(email))
-			.map(email => contacts.createContact(new Contact({
-				isSecured: true,
-				email
-			})));
+			.map(email => {
+				let contact = new Contact();
+				contact.hiddenEmail = hiddenContacts[email];
+				return contacts.createContact(contact);
+			});
 
 		manifest = null;
 
@@ -219,19 +224,32 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 	$scope.tagTransform = function (newTag) {
 		let p = newTag.split('@');
-		if (p.length > 1)
-			return new ContactEmail(null, {
-				name: p[0].trim(),
-				email: `${p[0].trim()}@${p[1].trim()}`,
-				isNew: true
-			}, 'hidden');
 
-		return new ContactEmail(null, {
-			name: newTag.trim(),
-			email: `${newTag.trim()}@${consts.ROOT_DOMAIN}`,
+		let [name, email] = p.length > 1
+			? [p[0].trim(), `${p[0].trim()}@${p[1].trim()}`]
+			: [newTag.trim(), `${newTag.trim()}@${consts.ROOT_DOMAIN}`];
+
+		if (contacts.getContactByEmail(email))
+			return {
+				isEmpty: true
+			};
+
+		let newHiddenContact = new ContactEmail(null, {
+			isTag: true,
+			name,
+			email,
 			isNew: true
 		}, 'hidden');
+
+		hiddenContacts[newHiddenContact.email] = newHiddenContact;
+		return newHiddenContact;
 	};
+
+	$scope.personFilter = (text) =>
+		(person) => person && !person.isEmpty &&
+			person.getDisplayName().toLowerCase().includes(text) ||
+			person.name.toLowerCase().includes(text) ||
+			person.email.toLowerCase().includes(text);
 
     // Add hotkeys
 	Hotkey.addHotkey({

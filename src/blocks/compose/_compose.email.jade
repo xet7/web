@@ -6,10 +6,15 @@
 		ui-select-match(placeholder="{{'MAIN.COMPOSE.PLC_SELECT_PERSON' | translate}}", ng-class="$item.name")
 			| {{$item.getDisplayName()}} &#60;{{$item.email}}&#62; ({{$item.getLabel()}} )
 			span(class="icon-lock {{$item.getSecureClass()}}")
-		ui-select-choices(repeat="person in people")
-			div(ng-show="person.isTag", ng-bind-html="person.getDisplayName() + ' ' + $select.taggingLabel | highlight: $select.search")
-			div(ng-show="!person.isTag", ng-bind-html="person.getDisplayName() | highlight: $select.search")
-			small
-				| {{person.getLabel()}} {{'MAIN.COMPOSE.LB_EMAIL' | translate}}: {{person.email}}
-				span(class="icon-lock {{person.getSecureClass()}}")
+		ui-select-choices(repeat="personEmail in people | filter: personFilter($select.search)")
+			div(ng-if="!personEmail.isEmpty && personEmail.isTag")
+				div(ng-bind-html="personEmail.getDisplayName()")
+				small {{personEmail.getLabel()}} {{'MAIN.COMPOSE.LB_EMAIL' | translate}}:
+					span(ng-bind-html="personEmail.email")
+					span(class="icon-lock {{personEmail.getSecureClass()}}")
+			div(ng-if="!personEmail.isEmpty && !personEmail.isTag")
+				div(ng-bind-html="personEmail.getDisplayName() | highlight: $select.search")
+				small {{personEmail.getLabel()}} {{'MAIN.COMPOSE.LB_EMAIL' | translate}}:
+					span(ng-bind-html="personEmail.email | highlight: $select.search")
+					span(class="icon-lock {{personEmail.getSecureClass()}}")
 	span.icon-close.pull-right(ng-click="#{defs.click}")

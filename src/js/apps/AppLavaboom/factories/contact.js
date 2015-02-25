@@ -4,9 +4,6 @@ module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
 
 		angular.extend(this, opt);
 
-		if (!this.name && this.email)
-			this.name = this.email.split('@')[0].trim();
-
 		this.hiddenEmail = this.hiddenEmail ? new ContactEmail(this, this.hiddenEmail, 'hidden') : null;
 		this.privateEmails = this.privateEmails ? this.privateEmails.map(e => new ContactEmail(this, e, 'private')) : [];
 		this.businessEmails = this.businessEmails ? this.businessEmails.map(e => new ContactEmail(this, e, 'business')) : [];
@@ -16,9 +13,9 @@ module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
 		this.getFullName = () => self.isCustomName() ? self.name + ` (${self.firstName.trim()} ${self.lastName.trim()})` : self.name;
 
 		this.isMatchEmail = (email) =>
-		(self.email == email) ||
-		(self.privateEmails && self.privateEmails.includes(email)) ||
-		(self.businessEmails && self.businessEmails.includes(email));
+			(self.hiddenEmail && self.hiddenEmail.email == email) ||
+			(self.privateEmails && self.privateEmails.some(e => e.email == email)) ||
+			(self.businessEmails && self.businessEmails.some(e => e.email == email));
 
 		this.getSortingField = (id) => {
 			if (id === 1)
