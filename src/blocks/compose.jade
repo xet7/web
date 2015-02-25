@@ -54,4 +54,5 @@ div#compose-wrapper
 						br
 						span.text-muted {{attachment.status}}
 						a.btn.btn-block.btn-lg.btn-primary(type="button", ng-click="deleteAttachment(attachment, $index)", ng-autodisable) delete
+		.mask(ng-show="isWarning", ng-click="reject()")
 
