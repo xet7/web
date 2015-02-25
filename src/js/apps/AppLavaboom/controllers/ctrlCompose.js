@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
-							   consts, co, user, contacts, inbox, router, Manifest, Attachment, Contact, Hotkey) => {
+							   consts, co, user, contacts, inbox, router, Manifest, Attachment, Contact, Hotkey, ContactEmail) => {
 	$scope.isWarning = false;
 	$scope.isXCC = false;
 	$scope.toolbar = [
@@ -220,17 +220,17 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.tagTransform = function (newTag) {
 		let p = newTag.split('@');
 		if (p.length > 1)
-			return {
+			return new ContactEmail(null, {
 				name: p[0].trim(),
 				email: `${p[0].trim()}@${p[1].trim()}`,
-				sec: 1
-			};
+				isNew: true
+			}, 'hidden');
 
-		return {
+		return new ContactEmail(null, {
 			name: newTag.trim(),
 			email: `${newTag.trim()}@${consts.ROOT_DOMAIN}`,
-			sec: 1
-		};
+			isNew: true
+		}, 'hidden');
 	};
 
     // Add hotkeys
