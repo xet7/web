@@ -282,4 +282,16 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 			minorVersion: envelope[`${prefixName}version_minor`]
 		};
 	});
+
+	this.removeKeys = () => {
+		let removeAll = (storage) => {
+			delete storage['openpgp-private-keys'];
+			delete storage['openpgp-public-keys'];
+			delete storage['openpgp-decrypted-private-keys'];
+			delete storage['openpgp-decrypted-public-keys'];
+		};
+
+		removeAll(localStorage);
+		removeAll(sessionStorage);
+	};
 };
