@@ -91,7 +91,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 	this.gatherUserInformation = () => co(function * () {
 		yield self.authenticate();
+
 		yield self.syncKeys();
+		if (self.settings.isLavaboomSynced)
+			cryptoKeys.importKeys(self.settings.keyring);
 
 		var res = yield LavaboomAPI.keys.get(self.email);
 		self.key = res.body.key;
@@ -156,10 +159,11 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 				self.key = res.body.key;
 
 				res = yield LavaboomAPI.accounts.get('me');
-				var settings = res.body.user.settings;
-				if(settings.isLavaboomSynced){
-					cryptoKeys.importKeys(settings.keyring);
-				}
+				self.settings = res.body.user.settings ? res.body.user.settings : {};
+				setupUserBasicInformation(res.body.user.name);
+
+				if (self.settings.isLavaboomSynced)
+					cryptoKeys.importKeys(self.settings.keyring);
 
 				crypto.options.isPrivateComputer = isPrivateComputer;
 				crypto.authenticateByEmail(self.email, password);
