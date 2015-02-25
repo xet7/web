@@ -43,6 +43,8 @@ module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, Lavab
 
 						if (opts.state == 'generateKeys') {
 							yield $state.go('generateKeys');
+						} else if (opts.state == 'lavaboomSync') {
+							yield $state.go('lavaboomSync');
 						} else if (opts.state == 'backupKeys') {
 							yield $state.go('backupKeys');
 						}

@@ -10,7 +10,7 @@ module.exports = /*@ngInject*/($scope, $state, $window, user, signUp, crypto, cr
 		user.update({state: 'ok'});
 
 		crypto.options.isPrivateComputer = $scope.form.isPrivateComputer;
-		crypto.authenticateDefault(signUp.password);
+		crypto.authenticateByEmail(user.email, signUp.password);
 
 		loader.resetProgress();
 		loader.showLoader(true);
@@ -18,7 +18,7 @@ module.exports = /*@ngInject*/($scope, $state, $window, user, signUp, crypto, cr
 	};
 
 	$scope.backup = () => {
-		let keysBackup = cryptoKeys.exportKeys();
+		let keysBackup = cryptoKeys.exportKeys(user.email);
 		saver.saveAs(keysBackup, cryptoKeys.getExportFilename(keysBackup, user.name));
 
 		navigateMainApplication();

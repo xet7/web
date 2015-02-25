@@ -57,20 +57,17 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 			return a;
 		}, {}) : {};
 
-		var publicKeys = crypto.getAvailablePublicKeysForSourceEmails();
+		var publicKeys = crypto.getAvailablePublicKeysForEmail(self.email);
 
 		var keysCreationPromises = [];
 
-		Object.keys(publicKeys).forEach(email => {
-			var keysForEmail = publicKeys[email];
-			keysForEmail.forEach(key => {
-				if (!keysByFingerprint[key.primaryKey.fingerprint]) {
-					console.log(`Importing key with fingerprint '${key.primaryKey.fingerprint}' to the server...`);
+		publicKeys.forEach(key => {
+			if (!keysByFingerprint[key.primaryKey.fingerprint]) {
+				console.log(`Importing key with fingerprint '${key.primaryKey.fingerprint}' to the server...`);
 
-					keysCreationPromises.push(LavaboomAPI.keys.create(key.armor()));
-				} else
-					console.log(`Key with fingerprint '${key.primaryKey.fingerprint}' already imported...`);
-			});
+				keysCreationPromises.push(LavaboomAPI.keys.create(key.armor()));
+			} else
+				console.log(`Key with fingerprint '${key.primaryKey.fingerprint}' already imported...`);
 		});
 
 		yield keysCreationPromises;
@@ -165,7 +162,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 				}
 
 				crypto.options.isPrivateComputer = isPrivateComputer;
-				crypto.authenticateDefault(password);
+				crypto.authenticateByEmail(self.email, password);
 
 				$rootScope.$broadcast('user-authenticated');
 			} catch (err) {
@@ -175,13 +172,16 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		});
 	};
 
+	this.removeTokens = () => {
+		delete localStorage.lavaboomToken;
+		delete sessionStorage.lavaboomToken;
+	};
+
 	this.logout = () => {
 		$rootScope.$broadcast('logout');
 
-		if (localStorage.lavaboomToken)
-			delete localStorage.lavaboomToken;
-		if (sessionStorage.lavaboomToken)
-			delete sessionStorage.lavaboomToken;
+		self.removeTokens();
+		crypto.removeSensitiveKeys();
 
 		LavaboomAPI.setAuthToken('');
 		isAuthenticated = false;

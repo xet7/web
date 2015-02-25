@@ -79,10 +79,18 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 	});
 
 	this.initialize = () => co(function*(){
+		emptyContact = null;
+
+		if (user.isAuthenticated()) {
+			self.myself = new Contact({
+				name: user.name,
+				email: user.email,
+				isSecured: true
+			});
+		} else
+			self.myself = null;
 		self.people = yield self.list();
 	});
-
-	this.people = new Map();
 
 	this.getContactById = (id) => {
 		return self.people.get(id);
@@ -91,8 +99,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 	this.getContactByEmail = (email) => {
 		return [...self.people.values()].find(c => c.isMatchEmail(email));
 	};
-
-	this.myself = null;
 
 	$rootScope.$on('user-authenticated', () => {
 		self.myself = new Contact({

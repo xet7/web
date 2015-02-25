@@ -31,11 +31,9 @@ var source = require('vinyl-source-stream');
 var lazypipe = require('lazypipe');
 var domain = require('domain');
 
-var to5 = require('gulp-6to5');
-
 // Browserify the mighty one
 var browserify = require('browserify'),
-	to5ify = require('6to5ify'),
+	babelify = require('babelify'),
 	browserifyNgAnnotate = require('browserify-ngannotate'),
 	bulkify = require('bulkify'),
 	uglifyify = require('uglifyify'),
@@ -250,7 +248,7 @@ var browserifyBundle = function(filename) {
 					basedir: __dirname,
 					debug: config.isDebugable
 				})
-					.transform(ownCodebaseTransform(to5ify), {runtime: true})
+					.transform(ownCodebaseTransform(babelify), {externalHelpers: true})
 					.transform(ownCodebaseTransform(bulkify))
 					.transform(ownCodebaseTransform(envify))
 					.transform(ownCodebaseTransform(brfs));
@@ -416,7 +414,7 @@ gulp.task('clean', function () {
 gulp.task('tests', function() {
 	return gulp.src(paths.tests.unit.input)
 		.pipe(plumber())
-		.pipe(to5())
+		.pipe(plg.babel())
 		.pipe(gulp.dest(os.tmpdir()))
 		.pipe(plg.jasmine());
 });
