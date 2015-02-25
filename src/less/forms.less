@@ -57,6 +57,19 @@
 	}
 }
 
+// buttons
+.btn{
+	background-image: none !important;
+	bodrer: 0;
+	&:active{
+		transform: traslateZ (.4em);
+	}
+}
+.btn-primary{
+	background: @lava;
+	border-color: transparent;
+}
+
 form.settings{
 	// position: relative;
 	// height: 100%;
@@ -66,15 +79,10 @@ form.settings{
 		top: 13px;
 	}
 
-	.btn-primary{
-		background: @lava;
-		border-color: transparent;
-	}
-
 	.btn, input, textarea, label{
 		.lava-font();
 		color: @lava-gray;
-		&.btn-danger{
+		&.btn-danger, &.btn-primary{
 			color: #FFF;
 		}
 	}
