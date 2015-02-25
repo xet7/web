@@ -283,15 +283,28 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		};
 	});
 
-	this.removeKeys = () => {
-		let removeAll = (storage) => {
-			delete storage['openpgp-private-keys'];
-			delete storage['openpgp-public-keys'];
-			delete storage['openpgp-decrypted-private-keys'];
-			delete storage['openpgp-decrypted-public-keys'];
-		};
+	let removeEncryptedKeys = (storage) => {
+		delete storage['openpgp-private-keys'];
+		delete storage['openpgp-public-keys'];
+	};
 
-		removeAll(localStorage);
-		removeAll(sessionStorage);
+	let removeDecryptedKeys = (storage) => {
+		delete storage['openpgp-decrypted-private-keys'];
+		delete storage['openpgp-decrypted-public-keys'];
+	};
+
+	let removeKeys = (storage) => {
+		removeEncryptedKeys(storage);
+		removeDecryptedKeys(storage);
+	};
+
+	this.removeAllKeys = () => {
+		removeKeys(localStorage);
+		removeKeys(sessionStorage);
+	};
+
+	this.removeSensitiveKeys = () => {
+		removeDecryptedKeys(localStorage);
+		removeKeys(sessionStorage);
 	};
 };

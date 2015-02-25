@@ -172,13 +172,16 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		});
 	};
 
+	this.removeTokens = () => {
+		delete localStorage.lavaboomToken;
+		delete sessionStorage.lavaboomToken;
+	};
+
 	this.logout = () => {
 		$rootScope.$broadcast('logout');
 
-		if (localStorage.lavaboomToken)
-			delete localStorage.lavaboomToken;
-		if (sessionStorage.lavaboomToken)
-			delete sessionStorage.lavaboomToken;
+		self.removeTokens();
+		crypto.removeSensitiveKeys();
 
 		LavaboomAPI.setAuthToken('');
 		isAuthenticated = false;
