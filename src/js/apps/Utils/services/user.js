@@ -162,7 +162,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 				}
 
 				crypto.options.isPrivateComputer = isPrivateComputer;
-				crypto.authenticateDefault(password);
+				crypto.authenticateByEmail(self.email, password);
 
 				$rootScope.$broadcast('user-authenticated');
 			} catch (err) {

@@ -199,10 +199,11 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		}
 	};
 
-	this.authenticateDefault = (password) => {
+	this.authenticateByEmail = (email, password) => {
 		let decryptedFingerprints = [];
 		let failedFingerprints = [];
-		keyring.privateKeys.keys.forEach(privateKey => {
+
+		keyring.privateKeys.getForAddress(email).forEach(privateKey => {
 			if (self.authenticate(privateKey, password))
 				decryptedFingerprints.push(privateKey.primaryKey.fingerprint);
 			else
