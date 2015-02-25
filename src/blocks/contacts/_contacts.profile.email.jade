@@ -1,12 +1,13 @@
 li.list-group-item
 	div.input-group
-		input.form-control(type="email", name="email-{{$index}}", ng-model="currentEmail.email", required,
+		input.form-control(type="text", name="email-{{$index}}", ng-model="currentEmail.name", required,
 			placeholder="{{'MAIN.CONTACTS.PLC_EMAIL' | translate}}", tooltip="{{tooltip}}", tooltip-trigger="focus", tooltip-placement="right")
 		div.input-group-btn
 			button.btn.tggl(type="button", ng-model="currentEmail.isStar", btn-checkbox="", btn-checkbox-true="1", btn-checkbox-false="0")
 				span.icon-star-outline
 			a.btn
-				span.icon-lock
+				span.icon-lock(ng-show="currentEmail.isSecured()")
+				span.icon-unlock(ng-show="!currentEmail.isSecured()")
 	li.list-group-item
 		div
 			div.input-group.with-label

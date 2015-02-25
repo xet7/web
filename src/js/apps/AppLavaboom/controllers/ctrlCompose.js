@@ -13,14 +13,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 	$scope.attachments = [];
 
-	var translations = {};
-
-	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_PRIVATE = $translate.instant('MAIN.COMPOSE.LB_PRIVATE');
-		translations.LB_BUSINESS = $translate.instant('MAIN.COMPOSE.LB_BUSINESS');
-		translations.LB_HIDDEN = $translate.instant('MAIN.COMPOSE.LB_HIDDEN');
-	});
-
 	var processAttachment = (attachmentStatus) => co(function *() {
 		attachmentStatus.status = 'reading';
 		attachmentStatus.isCancelled = false;
@@ -169,28 +161,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		let toEmailContact = toEmail ? new Contact({email: toEmail}) : null;
 
 		$scope.people = [...contacts.people.values()].reduce((a, c) => {
-			if (c.privateEmails)
-				c.privateEmails.forEach(e => {
-					let newContact = angular.copy(c);
-					newContact.label = translations.LB_PRIVATE;
-					newContact.email = e.email;
-					a.push(newContact);
-				});
-
-			if (c.businessEmails)
-				c.businessEmails.forEach(e => {
-					let newContact = angular.copy(c);
-					newContact.label = translations.LB_BUSINESS;
-					newContact.email = e.email;
-					a.push(newContact);
-				});
-
-			if (c.email) {
-				let newContact = angular.copy(c);
-				newContact.label = translations.LB_HIDDEN;
-				newContact.email = c.email;
-				a.push(newContact);
-			}
+			a = a.concat(c.privateEmails);
+			a = a.concat(c.businessEmails);
 
 			return a;
 		}, []).concat(toEmailContact ? [toEmailContact] : []);

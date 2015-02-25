@@ -17,9 +17,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 			id: id,
 			isSecured: true,
 			isNew: true,
-			name: 'New contact',
-			privateEmails: [],
-			businessEmails: []
+			name: 'New contact'
 		});
 		self.people.set(id, emptyContact);
 
