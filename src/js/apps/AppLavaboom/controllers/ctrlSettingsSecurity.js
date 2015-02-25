@@ -25,6 +25,7 @@ module.exports = /*@ngInject*/($scope, $timeout, utils, user, crypto, cryptoKeys
 				user: k.users[0].userId.userid
 			};
 		});
+		console.log('keyring-updated', $scope.keys);
 
 		$scope.isAnyUndecryptedKeys = $scope.keys.some(k => !k.isDecrypted);
 	});
@@ -65,7 +66,7 @@ module.exports = /*@ngInject*/($scope, $timeout, utils, user, crypto, cryptoKeys
 			return;
 
 		if($scope.settings.isLavaboomSynced){
-			var keysBackup = cryptoKeys.exportKeys();
+			var keysBackup = cryptoKeys.exportKeys(user.email);
 			$scope.settings.keyring = keysBackup;
 		}else{
 			$scope.settings.keyring = '';
@@ -77,9 +78,9 @@ module.exports = /*@ngInject*/($scope, $timeout, utils, user, crypto, cryptoKeys
 					.then(() => {
 
 					})
-				.catch(() => {
+					.catch(() => {
 
-				});
+					});
 			}, 1000);
 		}
 	}, true);

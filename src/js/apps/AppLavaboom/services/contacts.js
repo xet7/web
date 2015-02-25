@@ -80,7 +80,15 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 
 	this.initialize = () => co(function*(){
 		emptyContact = null;
-		self.myself = null;
+
+		if (user.isAuthenticated()) {
+			self.myself = new Contact({
+				name: user.name,
+				email: user.email,
+				isSecured: true
+			});
+		} else
+			self.myself = null;
 		self.people = yield self.list();
 	});
 
