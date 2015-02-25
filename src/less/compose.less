@@ -2,12 +2,41 @@
 
 }
 #compose{
+
+	background-color: @lava-gray;
 	
 	.text-primary{
 		color: @lava-login-lava !important;
 	}
 	
-	header{
+	&.warning{
+		.pos-rel();
+		header, article, footer{
+			// .opacity(.8);
+		}
+		.mask{
+			.pos-abs;
+			.fill-abs();
+			// .z1();
+			cursor: pointer;
+			background-color: @lava-fadeouts;
+		}
+	}
+	hgroup {
+		.pack();
+		.text-right();
+		
+		.z2();
+		line-height: @filter-height;
+		> * {
+			margin-left: .5em;
+			span.icon-sent{
+				line-height: .6em;
+				padding-right: .4em;
+			}
+		}
+	}
+	header {
 		padding: @filter-height 1.75em 0;
 		background-color: @lava-compose-header;
 		color: @lava-compose-header-fg !important;

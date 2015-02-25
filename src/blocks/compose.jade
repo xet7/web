@@ -1,22 +1,21 @@
 - var defs = {};
 div#compose-wrapper
-	form#compose(name="__form")
+	form#compose(name="__form", ng-class="{ warning: isWarning }")
 		.filters.row.no-gutter.lava-icon-row.z1
-			.lava-icon-wrapper.pull-right
+			hgroup(ng-show="isWarning")
+				label {{'MAIN.COMPOSE.LB_WARNING' | translate}}
+				a.btn.btn-primary.btn-sm(type="button", ng-click="confirm()")
+					span.icon-sent
+					span {{'MAIN.COMPOSE.BTN_CONFIRM' | translate}}
+				a.btn.btn-default.btn-sm(type="button", ng-click="reject()") {{'MAIN.COMPOSE.BTN_REJECT' | translate}}
+			.lava-icon-wrapper.pull-right(ng-hide="isWarning")
 				a(type="button", ng-click="isXCC = !isXCC", ng-disabled="isWarning")
 					span.icon-tick
 				a(type="submit", ng-click="send()", ng-disabled="isWarning")
 					span.icon-sent
 				a(type="button", ng-click="hidePopup()")
 					span.icon-close
-
 		header#compose-header
-			.table-list(ng-show="isWarning")
-				.cell.label
-					label.text-primary {{'MAIN.COMPOSE.LB_WARNING' | translate}}
-				.cell.fields
-					a.btn.btn-block.btn-lg.btn-primary(type="button", ng-click="confirm()") {{'MAIN.COMPOSE.BTN_CONFIRM' | translate}}
-					a.btn.btn-block.btn-lg.btn-default(type="button", ng-click="reject()") {{'MAIN.COMPOSE.BTN_REJECT' | translate}}
 			.table-list
 				- defs = {model: "form.selected.to", label: "{{'MAIN.COMPOSE.LB_TO' | translate}}", click: "clearTo()", required: true};
 				include ./compose/_compose.email.jade
