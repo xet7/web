@@ -59,9 +59,9 @@
 			}
 			label {
 				color: @lava-compose-header-fg;
-				font-weight: @base-font-weight;
+				.lava-font();
 				line-height: 1em;
-				font-size: 14px;
+				font-size: @compose-font-size;
 				padding-top: 12px;
 				padding-bottom: 6px;
 
@@ -71,6 +71,10 @@
 
 	.dropdown-control.cell{
 		width: 100%;
+		> div {
+			display: inline-block;
+			width: auto !important;
+		}
 	}
 
 	.ta-toolbar{
@@ -83,13 +87,22 @@
 		.btn-group{
 			display: inline-block;
 			float: none;
+			
 			i{
 				line-height: inherit;
-				color: @lava-compose-header-fg !important;
 			}
 			.btn{
 				border: 0;
 				background: transparent none;
+				color: @lava-compose-header-fg;
+				&:active, &.active{
+					border: 0;
+					background: transparent none;
+					box-shadow: none;
+					> * {
+						color: @lava;
+					}
+				}
 			}
 		}
 	}
@@ -103,16 +116,21 @@
 	}
 
 	.ui-select-container{
-		font-size: 14px;
+		font-size: @compose-font-size;
 		border: 0;
 		box-shadow: none;
 		background-color: transparent;
+		padding: 0;
+		.lava-font();
 		.btn-default{
 			color: @lava-compose-header-fg;
 			border: 0 none;
-			background-color: transparent;
-			border-radius: 2px;
-			font-weight: @light-font-weight;
+			background-color: @lava-compose-tags-bg;
+			border-radius: .2rem;
+			margin-right: .5rem !important
+			.lava-font();
+			font-size: @compose-font-size;
+			padding: .5rem 1rem;
 			// padding-right: 1em;
 			&:hover, &.btn-primary{
 				background-color: @lava-compose-tags-bg;
@@ -127,9 +145,9 @@
 
 		.icon-lock{
 			color: @lava-login-lava;
-			font-size: 1.24em;
+			font-size: 1.3em;
 			vertical-align: middle;
-			padding-left: 6px;
+			padding-left: .6rem;
 			position: relative;
 			top: -1px;
 		}
@@ -145,25 +163,29 @@
 			speak: none;
 			font-size: 0;
 			font-style: normal;
-			font-weight: normal;
+			
 			font-variant: normal;
 			text-transform: none;
 			line-height: 1;
 			margin-left: 7px;
 
+			text-shadow: none;
+
+			color: @lava-compose-header-fg;
+
 			&:before{
 				position: relative;
-				top: 3px;
-				left: -1px;
+				top: .4rem;
+				left: -.1rem;
 				content: "\73";
-				font-size: 12px;
+				font-size: @compose-font-size;
 			}
 
 			/* Better Font Rendering =========== */
 			-webkit-font-smoothing: antialiased;
 			-moz-osx-font-smoothing: grayscale;
 			content: '7';
-			.opacity(0);
+			.opacity(7);
 			transition: .2s opacity;
 		}
 	}
@@ -171,6 +193,7 @@
 	.ui-select-bootstrap.dropdown{
 		.btn-block{
 			.text-left();
+			display: inline-block;
 		}
 	}
 
@@ -183,13 +206,13 @@
 		box-shadow: none !important;
 		outline: 0 !important;
 		border: 0 !important;
-		padding: .5em 1.25em;
+		padding: .5em 1.75em;
 		border-radius: 0;
 		height: auto;
 	}
 }
 
 .modal-backdrop.fade.in{
-	background-color: fadeout(@lava-gray-darkest, 10%);
+	background-color: @lava-fadeouts;
 	bottom: 0;
 }
