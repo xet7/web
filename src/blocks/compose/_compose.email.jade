@@ -2,15 +2,15 @@
 	label #{defs.label}:
 .cell.fields
 	ui-select(multiple="", theme="bootstrap", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}",
-		tagging="tagTransform", tagging-tokens="tagginTokens", reset-search-input="true", ng-model="#{defs.model}")
+		tagging="tagTransform", tagging-tokens="{{taggingTokens}}", reset-search-input="true", ng-model="#{defs.model}")
 		ui-select-match(placeholder="{{'MAIN.COMPOSE.PLC_SELECT_PERSON' | translate}}", ng-class="$item.name")
 			| {{$item.getDisplayName()}} &#60;{{$item.email}}&#62; ({{$item.getLabel()}} )
 			span(class="icon-lock {{$item.getSecureClass()}}")
-		ui-select-choices(repeat="personEmail in people | filter: personFilter($select.search)")
+		ui-select-choices(repeat="personEmail in people | filter: personFilter($select.search) track by personEmail.email")
 			div(ng-if="!personEmail.isEmpty && personEmail.isTag")
-				div(ng-bind-html="personEmail.getDisplayName()")
+				div {{personEmail.getDisplayName()}}
 				small {{personEmail.getLabel()}} {{'MAIN.COMPOSE.LB_EMAIL' | translate}}:
-					span(ng-bind-html="personEmail.email")
+					span {{personEmail.email}}
 					span(class="icon-lock {{personEmail.getSecureClass()}}")
 			div(ng-if="!personEmail.isEmpty && !personEmail.isTag")
 				div(ng-bind-html="personEmail.getDisplayName() | highlight: $select.search")

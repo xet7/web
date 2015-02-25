@@ -223,33 +223,48 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.taggingTokens = 'SPACE|,|/';
 
 	$scope.tagTransform = function (newTag) {
-		let p = newTag.split('@');
+		try {
+			console.log('tag transform', newTag);
+			if (!newTag)
+				return {
+					isEmpty: true
+				};
 
-		let [name, email] = p.length > 1
-			? [p[0].trim(), `${p[0].trim()}@${p[1].trim()}`]
-			: [newTag.trim(), `${newTag.trim()}@${consts.ROOT_DOMAIN}`];
+			let p = newTag.split('@');
 
-		if (contacts.getContactByEmail(email))
-			return {
-				isEmpty: true
-			};
+			let [name, email] = p.length > 1
+				? [p[0].trim(), `${p[0].trim()}@${p[1].trim()}`]
+				: [newTag.trim(), `${newTag.trim()}@${consts.ROOT_DOMAIN}`];
 
-		let newHiddenContact = new ContactEmail(null, {
-			isTag: true,
-			name,
-			email,
-			isNew: true
-		}, 'hidden');
+			if (contacts.getContactByEmail(email))
+				return {
+					isEmpty: true
+				};
 
-		hiddenContacts[newHiddenContact.email] = newHiddenContact;
-		return newHiddenContact;
+			let newHiddenContact = new ContactEmail(null, {
+				isTag: true,
+				name,
+				email,
+				isNew: true
+			}, 'hidden');
+
+			hiddenContacts[newHiddenContact.email] = newHiddenContact;
+			return newHiddenContact;
+		} catch (e)
+		{
+			console.error('tag transform error', e);
+		}
 	};
 
 	$scope.personFilter = (text) =>
-		(person) => person && !person.isEmpty &&
-			person.getDisplayName().toLowerCase().includes(text) ||
-			person.name.toLowerCase().includes(text) ||
-			person.email.toLowerCase().includes(text);
+		(person) =>
+			person &&
+			!person.isEmpty &&
+			!$scope.form.selected.to.some(e => e.email == person.email) && (
+				person.getDisplayName().toLowerCase().includes(text) ||
+				person.name.toLowerCase().includes(text) ||
+				person.email.toLowerCase().includes(text)
+			);
 
     // Add hotkeys
 	Hotkey.addHotkey({
