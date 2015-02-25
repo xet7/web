@@ -1,5 +1,0 @@
-[application]
-	dependencies = [
-		'../../bower_components/angular-messages/angular-messages.js',
-        '../../bower_components/angular-autodisable/angular-autodisable.js'
-	]
