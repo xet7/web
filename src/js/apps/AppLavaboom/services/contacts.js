@@ -89,7 +89,14 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 			});
 		} else
 			self.myself = null;
-		self.people = yield self.list();
+
+		$rootScope.$bind('keyring-updated', () => {
+			self.people = new Map();
+			co(function *(){
+				self.people = yield self.list();
+				$rootScope.$broadcast('contacts-changed');
+			});
+		});
 	});
 
 	this.getContactById = (id) => {

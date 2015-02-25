@@ -50,13 +50,17 @@ module.exports = /*@ngInject*/(co, user, crypto) => {
 
 		switch (data.majorVersion) {
 			default:
-				return new Contact(angular.extend({}, {
+				let c =  new Contact(angular.extend({}, {
 					id: envelope.id,
 					name: envelope.name,
 					isSecured: true,
 					dateCreated: envelope.date_created,
 					dateModified: envelope.date_modified
 				}, data.data));
+
+				console.log('contact', c);
+
+				return c;
 		}
 	});
 

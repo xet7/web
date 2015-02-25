@@ -210,6 +210,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 				failedFingerprints.push(privateKey.primaryKey.fingerprint);
 		});
 
+		if (decryptedFingerprints.length > 0)
+			$rootScope.$broadcast('keyring-updated');
+
 		return {
 			decryptedFingerprints: decryptedFingerprints,
 			failedFingerprints: failedFingerprints
@@ -221,6 +224,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 			return false;
 
 		self.changePassword(privateKey, '', self.options.isPrivateComputer ? 'local' : 'session');
+
+		$rootScope.$broadcast('keyring-updated');
 
 		return true;
 	};
