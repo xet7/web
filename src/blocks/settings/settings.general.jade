@@ -41,7 +41,7 @@
 				.dropdown-control
 					label {{'MAIN.SETTINGS.GENERAL.LB_LANGUAGE' | translate}}
 					ui-select(ng-model='form.selectedLanguage', search-enabled='false')
-						ui-select-match {{$select.selected.name}}
+						ui-select-match(placeholder='Select a language') {{$select.selected.name}}
 						ui-select-choices(repeat='item in languages')
 							span(ng-bind='item.name')
 			li.list-group-item

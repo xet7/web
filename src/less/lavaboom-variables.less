@@ -298,6 +298,19 @@ body{
 	transform:skew(8deg) rotate(3deg);
 }
 
+.placeholder(@c : @lava-login-gray){
+	&::-moz-placeholder {
+		color: @c;
+	  	opacity: 1;
+	}
+	&:-ms-input-placeholder {
+	  	color: @c;
+	}
+	&::-webkit-input-placeholder {
+	  	color: @c;
+	}
+}
+
 .email-formatting{
 	h1{
 		.h4();
