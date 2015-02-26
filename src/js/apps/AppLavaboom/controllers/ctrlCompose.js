@@ -235,6 +235,12 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		try {
 			console.log('tag transform', newTag);
 
+			if (!newTag) {
+				if (newHiddenContact)
+					newHiddenContact.cancelKeyLoading();
+				return null;
+			}
+
 			let p = newTag.split('@');
 
 			let [name, email] = p.length > 1
@@ -249,9 +255,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			}
 
 			if (contacts.getContactByEmail(email))
-				return {
-					isEmpty: true
-				};
+				return null;
 
 			newHiddenContact = new ContactEmail(null, {
 				isTag: true,
@@ -275,7 +279,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			text = text.toLowerCase();
 
 			return person &&
-				!person.isEmpty &&
 				!$scope.form.selected.to.some(e => e.email == person.email) && (
 					person.getDisplayName().toLowerCase().includes(text) ||
 					person.name.toLowerCase().includes(text) ||
