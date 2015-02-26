@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, ContactEmail) => {
 	$scope.contactId = $stateParams.contactId;
 
 	var translations = {};
@@ -25,19 +25,12 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 		}
 	});
 
-	function ContactEmail () {
-		this.email =  '';
-		this.isStar = false;
-		this.isCollapsed = true;
-		this.key = null;
-	}
-
 	$scope.addNewPrivateEmail = () => {
-		$scope.details.privateEmails.push(new ContactEmail());
+		$scope.details.privateEmails.push(new ContactEmail($scope.details, {}, 'private'));
 	};
 
 	$scope.addNewBusinessEmail = () => {
-		$scope.details.businessEmails.push(new ContactEmail());
+		$scope.details.businessEmails.push(new ContactEmail($scope.details, {}, 'business'));
 	};
 
 	$scope.saveThisContact = () => co(function *(){

@@ -19,10 +19,10 @@ div#compose-wrapper
 			.table-list
 				- defs = {model: "form.selected.to", label: "{{'MAIN.COMPOSE.LB_TO' | translate}}", click: "clearTo()", required: true};
 				include ./compose/_compose.email.jade
-			.table-list(ng-show="isXCC")
+			.table-list(ng-if="isXCC")
 				- defs = {model: "form.selected.cc", label: "{{'MAIN.COMPOSE.LB_CC' | translate}}", click: "clearCC()"};
 				include ./compose/_compose.email.jade
-			.table-list(ng-show="isXCC")
+			.table-list(ng-if="isXCC")
 				- defs = {model: "form.selected.bcc", label: "{{'MAIN.COMPOSE.LB_BCC' | translate}}", click: "clearBCC()"};
 				include ./compose/_compose.email.jade
 			.table-list

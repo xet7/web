@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest, LavaboomAPI) => {
+module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest) => {
 	let Email = function(opt, manifest) {
 		this.id =  opt.id;
 		this.threadId = opt.thread;
@@ -13,14 +13,15 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest, LavaboomAPI
 		this.files = manifest.parts.filter(p => p.id != 'body');
 
 		let fromContact = contacts.getContactByEmail(opt.from);
+		console.log('Email', fromContact, opt.from);
 
-		this.fromName = fromContact ? fromContact.name : opt.from;
+		this.fromName = fromContact ? fromContact.getFullName() : opt.from;
 		this.preview = opt.preview;
 		this.body = opt.body;
 		this.attachments = opt.attachments ? opt.attachments : [];
 	};
 
-	Email.toEnvelope = ({body, attachmentIds, threadId}, manifest) => co(function *() {
+	Email.toEnvelope = ({body, attachmentIds, threadId}, manifest, keys) => co(function *() {
 		if (manifest && manifest.isValid && !manifest.isValid())
 			throw new Error('invalid manifest');
 
@@ -29,14 +30,14 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest, LavaboomAPI
 		if (!threadId)
 			threadId = null;
 
-		let res = yield manifest.to.map(toEmail => co.def(LavaboomAPI.keys.get(toEmail), () => null));
-		let isSecured = !res.some(r => !r);
-		let publicKeysValues = new Map([
-			user.key, ...res.filter(r => !!r).map(r => r.body.key)
-		].map(k => [k.id, k.key])).values();
-		let publicKeys = [...publicKeysValues];
+		let isSecured = !Object.keys(keys).some(e => !keys[e]);
 
 		if (isSecured) {
+			keys[user.email] = user.key.key;
+			let publicKeysValues = Object.keys(keys).filter(e => keys[e]).map(e => keys[e]);
+			console.log('publicKeysValues', publicKeysValues);
+			let publicKeys = [...publicKeysValues];
+
 			let manifestString = manifest.stringify();
 
 			let [envelope, manifestEncoded] = yield [
@@ -56,16 +57,8 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest, LavaboomAPI
 				thread: threadId
 			});
 		}
-
-		let manifestString = manifest.stringify();
-
-		console.log('manifest string', manifestString);
-
-		let manifestEncoded = yield crypto.encodeWithKeys(manifestString, [user.key.key]);
-
 		return {
 			kind: 'raw',
-			manifest: manifestEncoded.pgpData,
 
 			to: manifest.to,
 			cc: manifest.cc,
@@ -83,8 +76,8 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest, LavaboomAPI
 
 		try {
 			let [bodyData, manifestRawData] = yield [
-				crypto.decodeByListedFingerprints(envelope.body, envelope.pgp_fingerprints),
-				crypto.decodeByListedFingerprints(envelope.manifest, envelope.pgp_fingerprints)
+				crypto.decodeRaw(envelope.body),
+				crypto.decodeRaw(envelope.manifest)
 			];
 			body = {state: 'ok', data: bodyData};
 			manifestRaw = manifestRawData;
@@ -94,7 +87,7 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest, LavaboomAPI
 		}
 
 		let email = new Email(angular.extend({}, envelope, {
-			isEncrypted: envelope.pgp_fingerprints.length > 0,
+			isEncrypted: true,
 			body: body,
 			preview: body
 		}), manifestRaw ? Manifest.createFromJson(manifestRaw) : null);

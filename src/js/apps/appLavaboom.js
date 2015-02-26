@@ -20,7 +20,8 @@ application.create(
 		'infinite-scroll',
 		'angular-co',
 		'ngAutodisable',
-		'cfp.hotkeys'
+		'cfp.hotkeys',
+		'angularMoment'
 	]
 );
 

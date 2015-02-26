@@ -58,30 +58,30 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		}
 	};
 
-	this.decodeByListedFingerprints = (message, fingerprints) => co(function *(){
+	let getDecryptedPrivateKeys = () => {
+		let keys = new Map();
+		let getDecryptedKeysFromKeyring = (keyring) => keyring.privateKeys.keys.reduce((keys, k) => {
+			if (k.primaryKey.isDecrypted)
+				keys.set(k.primaryKey.fingerprint, k);
+			return keys;
+		}, keys);
+
+		getDecryptedKeysFromKeyring(localKeyring);
+		getDecryptedKeysFromKeyring(sessionKeyring);
+		getDecryptedKeysFromKeyring(keyring);
+
+		return [...keys.values()];
+	};
+
+	this.decodeRaw = (message) => co(function *(){
 		let pgpMessage = openpgp.message.readArmored(message);
+		let decryptResults = yield getDecryptedPrivateKeys().map(key => co.def(openpgp.decryptMessage(key, pgpMessage), null));
 
-		let privateKeys = fingerprints
-			.map((fingerprint) => {
-				let privateKey = keyring.privateKeys.findByFingerprint(fingerprint);
-
-				if (!privateKey || !privateKey.primaryKey.isDecrypted)
-					privateKey = sessionKeyring.privateKeys.findByFingerprint(fingerprint);
-
-				if (!privateKey || !privateKey.primaryKey.isDecrypted)
-					privateKey = localKeyring.privateKeys.findByFingerprint(fingerprint);
-
-				if (privateKey && privateKey.primaryKey.isDecrypted)
-					return privateKey;
-
-				return null;
-			}, {})
-			.filter(k => k);
-
-		if (!privateKeys || privateKeys.length < 1)
+		let r = decryptResults.find(r => r);
+		if (!r)
 			throw new Error('no_private_key');
 
-		return yield openpgp.decryptMessage(privateKeys[0], pgpMessage);
+		return r;
 	});
 
 	this.encodeWithKeys = (message, publicKeys) => co(function *(){
@@ -210,6 +210,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 				failedFingerprints.push(privateKey.primaryKey.fingerprint);
 		});
 
+		if (decryptedFingerprints.length > 0)
+			$rootScope.$broadcast('keyring-updated');
+
 		return {
 			decryptedFingerprints: decryptedFingerprints,
 			failedFingerprints: failedFingerprints
@@ -221,6 +224,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 			return false;
 
 		self.changePassword(privateKey, '', self.options.isPrivateComputer ? 'local' : 'session');
+
+		$rootScope.$broadcast('keyring-updated');
 
 		return true;
 	};
@@ -263,9 +268,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		let state = 'ok';
 
 		try {
-			message = envelope.pgp_fingerprints && envelope.pgp_fingerprints.length > 0
-				? yield self.decodeByListedFingerprints(pgpData, envelope.pgp_fingerprints)
-				: pgpData;
+			message = yield self.decodeRaw(pgpData);
 
 			if (envelope.encoding == 'json')
 				message = JSON.parse(message);

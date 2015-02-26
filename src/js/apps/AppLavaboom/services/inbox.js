@@ -75,7 +75,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 		};
 
 		if (threads) {
-			result = (yield threads.map(t => co.def(Thread.fromEnvelope(t), (e) => {console.log(e.stack);return null;}))).reduce((a, t) => {
+			result = (yield threads.map(t => co.def(Thread.fromEnvelope(t), null))).reduce((a, t) => {
 				console.log('t', t);
 				if (t) {
 					a.map[t.id] = t;
@@ -279,8 +279,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 	var sendEnvelope = null;
 
-	this.send = (opts, manifest) => co(function * () {
-		sendEnvelope = yield Email.toEnvelope(opts, manifest);
+	this.send = (opts, manifest, keys) => co(function * () {
+		sendEnvelope = yield Email.toEnvelope(opts, manifest, keys);
 
 		return {
 			isEncrypted: sendEnvelope.kind == 'manifest'

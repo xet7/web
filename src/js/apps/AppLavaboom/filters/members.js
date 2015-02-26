@@ -11,7 +11,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, contacts) => {
 		var members = membersList
 			? membersList.map(email => {
 				var contact = contacts.getContactByEmail(email);
-				return contact ? contact.name : email;
+				return contact ? contact.getFullName() : email;
 			})
 			: [];
 

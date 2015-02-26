@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
-							   consts, co, user, contacts, inbox, router, Manifest, Attachment, Contact, Hotkey) => {
+							   consts, co, user, contacts, inbox, router, Manifest, Attachment, Contact, Hotkey, ContactEmail) => {
 	$scope.isWarning = false;
 	$scope.isXCC = false;
 	$scope.toolbar = [
@@ -7,19 +7,12 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		['bold', 'italics'],
 		['justifyLeft', 'justifyCenter', 'justifyRight']
 	];
+	let hiddenContacts = {};
 
 	var threadId = $stateParams.replyThreadId;
 	var toEmail = $stateParams.to;
 
 	$scope.attachments = [];
-
-	var translations = {};
-
-	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_PRIVATE = $translate.instant('MAIN.COMPOSE.LB_PRIVATE');
-		translations.LB_BUSINESS = $translate.instant('MAIN.COMPOSE.LB_BUSINESS');
-		translations.LB_HIDDEN = $translate.instant('MAIN.COMPOSE.LB_HIDDEN');
-	});
 
 	var processAttachment = (attachmentStatus) => co(function *() {
 		attachmentStatus.status = 'reading';
@@ -114,6 +107,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			cc = $scope.form.selected.cc.map(e => e.email),
 			bcc = $scope.form.selected.bcc.map(e => e.email);
 
+		let keys = yield ([...$scope.form.selected.to, ...$scope.form.selected.cc, ...$scope.form.selected.bcc].reduce((a, e) => {
+			a[e.email] = e.loadKey();
+			return a;
+		}, {}));
+
 		manifest = Manifest.create({
 			fromEmail: user.email,
 			to,
@@ -129,7 +127,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			body: $scope.form.body,
 			attachmentIds: $scope.attachments.map(a => a.id),
 			threadId
-		}, manifest);
+		}, manifest, keys);
 
 		console.log('compose send status', sendStatus);
 
@@ -147,10 +145,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 		yield manifest.getDestinationEmails()
 			.filter(email => !contacts.getContactByEmail(email))
-			.map(email => contacts.createContact(new Contact({
-				isSecured: true,
-				email
-			})));
+			.map(email => {
+				let contact = new Contact({name: 'hidden'});
+				contact.hiddenEmail = hiddenContacts[email];
+				return contacts.createContact(contact);
+			});
 
 		manifest = null;
 
@@ -164,36 +163,22 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		manifest = null;
 	};
 
-
 	$scope.$bind('contacts-changed', () => {
 		let toEmailContact = toEmail ? new Contact({email: toEmail}) : null;
 
-		$scope.people = [...contacts.people.values()].reduce((a, c) => {
-			if (c.privateEmails)
-				c.privateEmails.forEach(e => {
-					let newContact = angular.copy(c);
-					newContact.label = translations.LB_PRIVATE;
-					newContact.email = e.email;
-					a.push(newContact);
-				});
-
-			if (c.businessEmails)
-				c.businessEmails.forEach(e => {
-					let newContact = angular.copy(c);
-					newContact.label = translations.LB_BUSINESS;
-					newContact.email = e.email;
-					a.push(newContact);
-				});
-
-			if (c.email) {
-				let newContact = angular.copy(c);
-				newContact.label = translations.LB_HIDDEN;
-				newContact.email = c.email;
-				a.push(newContact);
-			}
+		let map = [...contacts.people.values()].reduce((a, c) => {
+			c.privateEmails.forEach(e => a.set(e.email, e));
+			c.businessEmails.forEach(e => a.set(e.email, e));
+			if (c.hiddenEmail)
+				a.set(c.hiddenEmail.email, c.hiddenEmail);
 
 			return a;
-		}, []).concat(toEmailContact ? [toEmailContact] : []);
+		}, new Map());
+		if (toEmailContact)
+			map.set(toEmailContact.email, toEmailContact);
+
+		$scope.people = [...map.values()];
+		console.log('$scope.people', $scope.people);
 
 		let bindUserSignature = () => {
 			if (user.settings.isSignatureEnabled && user.settings.signatureHtml)
@@ -245,21 +230,54 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 	$scope.taggingTokens = 'SPACE|,|/';
 
+	let newHiddenContact = null;
 	$scope.tagTransform = function (newTag) {
-		let p = newTag.split('@');
-		if (p.length > 1)
-			return {
-				name: p[0].trim(),
-				email: `${p[0].trim()}@${p[1].trim()}`,
-				sec: 1
-			};
+		if (!newTag) {
+			if (newHiddenContact)
+				newHiddenContact.cancelKeyLoading();
+			return null;
+		}
 
-		return {
-			name: newTag.trim(),
-			email: `${newTag.trim()}@${consts.ROOT_DOMAIN}`,
-			sec: 1
-		};
+		let p = newTag.split('@');
+
+		let [name, email] = p.length > 1
+			? [p[0].trim(), `${p[0].trim()}@${p[1].trim()}`]
+			: [newTag.trim(), `${newTag.trim()}@${consts.ROOT_DOMAIN}`];
+
+		if (newHiddenContact) {
+			if (newHiddenContact.email == email)
+				return newHiddenContact;
+
+			newHiddenContact.cancelKeyLoading();
+		}
+
+		if (contacts.getContactByEmail(email))
+			return null;
+
+		newHiddenContact = new ContactEmail(null, {
+			isTag: true,
+			name,
+			email,
+			isNew: true
+		}, 'hidden');
+
+		newHiddenContact.loadKey();
+
+		hiddenContacts[newHiddenContact.email] = newHiddenContact;
+		return newHiddenContact;
 	};
+
+	$scope.personFilter = (text) =>
+		(person) => {
+			text = text.toLowerCase();
+
+			return person &&
+				!$scope.form.selected.to.some(e => e.email == person.email) && (
+					person.getDisplayName().toLowerCase().includes(text) ||
+					person.name.toLowerCase().includes(text) ||
+					person.email.toLowerCase().includes(text)
+				);
+		};
 
     // Add hotkeys
 	Hotkey.addHotkey({

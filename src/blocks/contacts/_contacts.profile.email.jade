@@ -1,21 +1,22 @@
 li.list-group-item
 	div.input-group
-		input.form-control(type="email", name="email-{{$index}}", ng-model="currentEmail.email", required,
-			placeholder="{{'MAIN.CONTACTS.PLC_EMAIL' | translate}}", tooltip="{{tooltip}}", tooltip-trigger="focus", tooltip-placement="right")
+		input.form-control(type="text", name="email-{{$index}}", ng-model="currentEmail.name", required,
+			placeholder="{{'MAIN.CONTACTS.PLC_EMAIL' | translate}}", tooltip="{{currentEmail.getTooltip()}}", tooltip-trigger="focus", tooltip-placement="right")
 		div.input-group-btn
 			button.btn.tggl(type="button", ng-model="currentEmail.isStar", btn-checkbox="", btn-checkbox-true="1", btn-checkbox-false="0")
 				span.icon-star-outline
 			a.btn
-				span.icon-lock
+				span.icon-lock(ng-show="currentEmail.isSecured()")
+				span.icon-unlock(ng-show="!currentEmail.isSecured()")
 	li.list-group-item
 		div
 			div.input-group.with-label
 				label {{'MAIN.CONTACTS.LB_KEY_ID' | translate}}
 				input.form-control(disabled, type="text", ng-model="currentEmail.key.id")
 				div.input-group-btn
-					button.btn.btn-default(type="button", ng-click="currentEmail.isCollapsed = !currentEmail.isCollapsed")
+					button.btn.btn-default(type="button", ng-click="currentEmail.switchCollapse()")
 						span.icon-chevron-down
-		div.child-item(collapse="currentEmail.isCollapsed")
+		div.child-item(collapse="currentEmail.isCollapsed()")
 			.text-control
 				label {{'MAIN.CONTACTS.LB_LENGTH' | translate}}
 				input.field-icon.form-control(disabled, ng-model="currentEmail.key.length")
