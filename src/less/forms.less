@@ -320,6 +320,9 @@ form.settings{
 				button{
 					padding-right: 17px;
 				}
+				.pull-left{
+					float: none !important;
+				}
 			}
 			.caret{
 				border: 0;
@@ -382,6 +385,15 @@ form.settings{
 			.ui-select-bootstrap > .ui-select-choices{
 				padding: 0;
 				margin: 0;
+			}
+			.ui-select-match{
+				&.ng-hide{
+					display: block !important;
+				}
+			}
+			.ui-select-match-text.pull-left{
+				float: none !important;
+				padding-right: 2rem;
 			}
 
 			.col-sm-2{
