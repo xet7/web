@@ -73,7 +73,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		return [...keys.values()];
 	};
 
-	this.decodeByListedFingerprints = (message) => co(function *(){
+	this.decodeRaw = (message) => co(function *(){
 		let pgpMessage = openpgp.message.readArmored(message);
 		let decryptResults = yield getDecryptedPrivateKeys().map(key => co.def(openpgp.decryptMessage(key, pgpMessage), null));
 
@@ -268,7 +268,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		let state = 'ok';
 
 		try {
-			message = yield self.decodeByListedFingerprints(pgpData);
+			message = yield self.decodeRaw(pgpData);
 
 			if (envelope.encoding == 'json')
 				message = JSON.parse(message);

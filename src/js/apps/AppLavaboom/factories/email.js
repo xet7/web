@@ -76,8 +76,8 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest) => {
 
 		try {
 			let [bodyData, manifestRawData] = yield [
-				crypto.decodeByListedFingerprints(envelope.body),
-				crypto.decodeByListedFingerprints(envelope.manifest)
+				crypto.decodeRaw(envelope.body),
+				crypto.decodeRaw(envelope.manifest)
 			];
 			body = {state: 'ok', data: bodyData};
 			manifestRaw = manifestRawData;
