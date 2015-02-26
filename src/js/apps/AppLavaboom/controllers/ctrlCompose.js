@@ -232,46 +232,39 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 	let newHiddenContact = null;
 	$scope.tagTransform = function (newTag) {
-		try {
-			console.log('tag transform', newTag);
-
-			if (!newTag) {
-				if (newHiddenContact)
-					newHiddenContact.cancelKeyLoading();
-				return null;
-			}
-
-			let p = newTag.split('@');
-
-			let [name, email] = p.length > 1
-				? [p[0].trim(), `${p[0].trim()}@${p[1].trim()}`]
-				: [newTag.trim(), `${newTag.trim()}@${consts.ROOT_DOMAIN}`];
-
-			if (newHiddenContact) {
-				if (newHiddenContact.email == email)
-					return newHiddenContact;
-
+		if (!newTag) {
+			if (newHiddenContact)
 				newHiddenContact.cancelKeyLoading();
-			}
-
-			if (contacts.getContactByEmail(email))
-				return null;
-
-			newHiddenContact = new ContactEmail(null, {
-				isTag: true,
-				name,
-				email,
-				isNew: true
-			}, 'hidden');
-
-			newHiddenContact.loadKey();
-
-			hiddenContacts[newHiddenContact.email] = newHiddenContact;
-			return newHiddenContact;
-		} catch (e)
-		{
-			console.error('tag transform error', e);
+			return null;
 		}
+
+		let p = newTag.split('@');
+
+		let [name, email] = p.length > 1
+			? [p[0].trim(), `${p[0].trim()}@${p[1].trim()}`]
+			: [newTag.trim(), `${newTag.trim()}@${consts.ROOT_DOMAIN}`];
+
+		if (newHiddenContact) {
+			if (newHiddenContact.email == email)
+				return newHiddenContact;
+
+			newHiddenContact.cancelKeyLoading();
+		}
+
+		if (contacts.getContactByEmail(email))
+			return null;
+
+		newHiddenContact = new ContactEmail(null, {
+			isTag: true,
+			name,
+			email,
+			isNew: true
+		}, 'hidden');
+
+		newHiddenContact.loadKey();
+
+		hiddenContacts[newHiddenContact.email] = newHiddenContact;
+		return newHiddenContact;
 	};
 
 	$scope.personFilter = (text) =>
