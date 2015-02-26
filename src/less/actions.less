@@ -33,7 +33,7 @@
 			line-height: @filter-height - 3;
 			// color: @lava-gray-light;
 		}
-		a:not(.btn){
+		a:not(.btn), button{
 			color: @lava-gray-light;
 			&:hover{
 				color: @lava-gray-lighter;
@@ -52,5 +52,17 @@
 				outline: none;
 			}
 			width: @actions-search-width;
+		}
+
+		button{
+			background: transparent none;
+			border: 0;
+			outline: 0;
+			
+			&:active, &:hover{
+				background: transparent none;
+				border: 0;
+				outline: 0;
+			}
 		}
 	}

@@ -122,6 +122,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		});
 
 		this.cancelKeyLoading = () => {
+			console.log('cancelKeyLoading for email', self.email, new Error(''));
 			if (t)
 				$timeout.cancel(t);
 			isLoadingKey = false;

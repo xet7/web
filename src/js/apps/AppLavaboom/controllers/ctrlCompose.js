@@ -149,7 +149,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		yield manifest.getDestinationEmails()
 			.filter(email => !contacts.getContactByEmail(email))
 			.map(email => {
-				let contact = new Contact({name: 'hidden'});
+				let contact = new Contact({name: '$hidden'});
 				contact.hiddenEmail = hiddenContacts[email];
 				return contacts.createContact(contact);
 			});
@@ -235,11 +235,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 	let newHiddenContact = null;
 	$scope.tagTransform = function (newTag) {
-		if (!newTag) {
-			if (newHiddenContact)
-				newHiddenContact.cancelKeyLoading();
+		if (!newTag)
 			return null;
-		}
 
 		let p = newTag.split('@');
 
@@ -248,11 +245,15 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			: [newTag.trim(), `${newTag.trim()}@${consts.ROOT_DOMAIN}`];
 
 		if (newHiddenContact) {
+			console.log('!', '|'+newHiddenContact.email+'|', '|'+email+'|');
 			if (newHiddenContact.email == email)
 				return newHiddenContact;
 
 			newHiddenContact.cancelKeyLoading();
 		}
+
+		if (hiddenContacts[email])
+			return hiddenContacts[email];
 
 		if (contacts.getContactByEmail(email))
 			return null;

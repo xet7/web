@@ -4,7 +4,7 @@
 			span.icon-search
 		input#top-search.search.col-xs-13(placeholder="{{'MAIN.CONTACTS.PLC_SEARCH_CONTACTS' | translate}}", ng-model="searchText")
 		.lava-icon-wrapper.col-xs-8.text-right
-			a(href="#", ng-click="newContact()", ng-autodisable)
+			button.clear(href="#", ng-click="newContact()", ng-autodisable)
 				span.icon-plus
 			a(href="#")
 				span.icon-star
