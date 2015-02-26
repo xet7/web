@@ -32,7 +32,7 @@
 							p.subject(ng-bind="thread.subject")
 							//p.summary(ng-bind-html="thread.headerEmail.preview ? thread.headerEmail.preview.data.text : 'INBOX.NO_PREVIEW_AVAILABLE' | translate")
 						.col-xs-5.when
-							span.date.lava-icon-row(ng-bind="thread.modified | humanDate")
+							span.date.lava-icon-row(ng-bind="thread.modified | amCalendar")
 							br
 							br
 							.lava-icon-row

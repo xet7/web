@@ -11,5 +11,8 @@
 		'../../bower_components/textAngular/dist/textAngular-sanitize.min.js',
         '../../bower_components/textAngular/dist/textAngular.min.js',
         '../../bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
-        '../../bower_components/angular-hotkeys/build/hotkeys.js'
+        '../../bower_components/angular-hotkeys/build/hotkeys.js',
+
+        '../../bower_components/moment/moment.js',
+        '../../bower_components/angular-moment/angular-moment.js'
 	]
