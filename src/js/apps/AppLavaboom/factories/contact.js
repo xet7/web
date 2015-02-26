@@ -26,7 +26,7 @@ module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
 			return self.name;
 		};
 
-		this.isPrivate = () => !!self.hiddenEmail;
+		this.isPrivate = () => !!self.hiddenEmail || self.name == '$hidden';
 
 		this.isSecured = () => {
 			if (self.hiddenEmail && !self.hiddenEmail.isSecured())
@@ -67,6 +67,8 @@ module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
 
 	Contact.fromEnvelope = (envelope) => co(function *() {
 		var data = yield crypto.decodeEnvelope(envelope, 'data');
+
+		console.log('Contact.fromEnvelope data', data);
 
 		switch (data.majorVersion) {
 			default:

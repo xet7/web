@@ -146,7 +146,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		yield manifest.getDestinationEmails()
 			.filter(email => !contacts.getContactByEmail(email))
 			.map(email => {
-				let contact = new Contact({name: 'hidden'});
+				let contact = new Contact({name: '$hidden'});
 				contact.hiddenEmail = hiddenContacts[email];
 				return contacts.createContact(contact);
 			});
@@ -250,6 +250,9 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 			newHiddenContact.cancelKeyLoading();
 		}
+
+		if (hiddenContacts[email])
+			return hiddenContacts[email];
 
 		if (contacts.getContactByEmail(email))
 			return null;

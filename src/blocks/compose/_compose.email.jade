@@ -5,7 +5,8 @@
 		tagging="tagTransform", tagging-tokens="{{taggingTokens}}", reset-search-input="true", ng-model="#{defs.model}")
 		ui-select-match(placeholder="{{'MAIN.COMPOSE.PLC_SELECT_PERSON' | translate}}", ng-class="$item.name")
 			| {{$item.getDisplayName()}} &#60;{{$item.email}}&#62; ({{$item.getLabel()}} )
-			span(class="icon-lock {{$item.getSecureClass()}}")
+			img(src="/img/loader.svg", ng-show="$item.isLoadingKey()")
+			span(class="icon-lock {{$item.getSecureClass()}}", ng-show="!$item.isLoadingKey()")
 		ui-select-choices(repeat="personEmail in people | filter: personFilter($select.search)")
 			div(ng-if="personEmail && personEmail.isTag")
 				div(ng-show="!personEmail.isHidden()") {{personEmail.getDisplayName()}}
