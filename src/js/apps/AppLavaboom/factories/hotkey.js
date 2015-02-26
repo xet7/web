@@ -42,6 +42,8 @@ module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
             }
         }
         hotkeyList = ['?'];
+
+        console.log('Hotkeys', 'Removed all hotkeys');
     };
 
     Hotkey.addGlobalHotkeys = () => {
@@ -148,6 +150,8 @@ module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
             },
             allowIn: ['INPUT']
         });
+
+        console.log('Hotkeys', 'Added global hotkeys');
     };
 
     return Hotkey;
