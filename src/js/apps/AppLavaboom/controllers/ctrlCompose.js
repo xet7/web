@@ -232,11 +232,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 	let newHiddenContact = null;
 	$scope.tagTransform = function (newTag) {
-		if (!newTag) {
-			if (newHiddenContact)
-				newHiddenContact.cancelKeyLoading();
+		if (!newTag)
 			return null;
-		}
 
 		let p = newTag.split('@');
 
@@ -245,6 +242,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			: [newTag.trim(), `${newTag.trim()}@${consts.ROOT_DOMAIN}`];
 
 		if (newHiddenContact) {
+			console.log('!', '|'+newHiddenContact.email+'|', '|'+email+'|');
 			if (newHiddenContact.email == email)
 				return newHiddenContact;
 
