@@ -28,7 +28,7 @@ module.exports = {
 		output: output + 'img/'
 	},
 	fonts: {
-		input: 'src/fonts/*',
+		input: 'src/fonts/**/*',
 		output: output + 'css/fonts/'
 	},
 	markup: {
