@@ -163,7 +163,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		manifest = null;
 	};
 
-
 	$scope.$bind('contacts-changed', () => {
 		let toEmailContact = toEmail ? new Contact({email: toEmail}) : null;
 
@@ -249,8 +248,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				newHiddenContact.cancelKeyLoading();
 			}
 
-			/*if (contacts.getContactByEmail(email))
-				return null;*/
+			if (contacts.getContactByEmail(email))
+				return {
+					isEmpty: true
+				};
 
 			newHiddenContact = new ContactEmail(null, {
 				isTag: true,
@@ -273,15 +274,13 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		(person) => {
 			text = text.toLowerCase();
 
-			let r =  person && (
-				person.getDisplayName().toLowerCase().includes(text) ||
-				person.name.toLowerCase().includes(text) ||
-				person.email.toLowerCase().includes(text)
-			);
-
-			console.log('person filter', person, text, r);
-
-			return r;
+			return person &&
+				!person.isEmpty &&
+				!$scope.form.selected.to.some(e => e.email == person.email) && (
+					person.getDisplayName().toLowerCase().includes(text) ||
+					person.name.toLowerCase().includes(text) ||
+					person.email.toLowerCase().includes(text)
+				);
 		};
 
     // Add hotkeys
