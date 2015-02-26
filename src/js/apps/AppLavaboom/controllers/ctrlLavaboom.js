@@ -44,6 +44,8 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 				yield $state.go('main.inbox.label', {labelName: 'Inbox', threadId: null}, {reload: true});
 
 			$rootScope.isInitialized = true;
+
+			Hotkey.toggleHotkeys(user.settings.isHotkeyEnabled);
 			return {lbDone: translations.LB_SUCCESS};
 		} catch (error) {
 			throw {message: translations.LB_INITIALIZATION_FAILED, error: error};

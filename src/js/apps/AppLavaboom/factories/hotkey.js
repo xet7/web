@@ -47,7 +47,7 @@ module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
     Hotkey.addGlobalHotkeys = () => {
         Hotkey.addHotkey({
             combo: ['c', 'n'],
-            description: 'HOTKEY.HK_COMPOSE_EMAIL',
+            description: 'HOTKEY.COMPOSE_EMAIL',
             callback: (event, key) => {
                 event.preventDefault();
                 $rootScope.showPopup('compose');
@@ -56,7 +56,7 @@ module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
 
         Hotkey.addHotkey({
             combo: ['ctrl+i', 'command+i'],
-            description: 'HOTKEY.HK_GOTO_INBOX',
+            description: 'HOTKEY.GOTO_INBOX',
             callback: (event, key) => {
                 event.preventDefault();
                 $state.go('main.inbox.label', {labelName: 'Inbox'});
@@ -65,7 +65,7 @@ module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
 
         Hotkey.addHotkey({
             combo: ['ctrl+d', 'command+d'],
-            description: 'HOTKEY.HK_GOTO_DRAFTS',
+            description: 'HOTKEY.GOTO_DRAFTS',
             callback: (event, key) => {
                 event.preventDefault();
                 $state.go('main.inbox.label', {labelName: 'Drafts'});
@@ -74,7 +74,7 @@ module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
 
         Hotkey.addHotkey({
             combo: ['ctrl+s', 'command+s'],
-            description: 'HOTKEY.HK_GOTO_SENT',
+            description: 'HOTKEY.GOTO_SENT',
             callback: (event, key) => {
                 event.preventDefault();
                 $state.go('main.inbox.label', {labelName: 'Sent'});
@@ -83,7 +83,7 @@ module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
 
         Hotkey.addHotkey({
             combo: ['ctrl+m', 'command+m'],
-            description: 'HOTKEY.HK_GOTO_SPAM',
+            description: 'HOTKEY.GOTO_SPAM',
             callback: (event, key) => {
                 event.preventDefault();
                 $state.go('main.inbox.label', {labelName: 'Spam'});
@@ -92,7 +92,7 @@ module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
 
         Hotkey.addHotkey({
             combo: ['ctrl+t', 'command+t'],
-            description: 'HOTKEY.HK_GOTO_STARRED',
+            description: 'HOTKEY.GOTO_STARRED',
             callback: (event, key) => {
                 event.preventDefault();
                 $state.go('main.inbox.label', {labelName: 'Starred'});
@@ -101,7 +101,7 @@ module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
 
         Hotkey.addHotkey({
             combo: ['ctrl+h', 'command+h'],
-            description: 'HOTKEY.HK_GOTO_TRASH',
+            description: 'HOTKEY.GOTO_TRASH',
             callback: (event, key) => {
                 event.preventDefault();
                 $state.go('main.inbox.label', {labelName: 'Trash'});
@@ -110,7 +110,7 @@ module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
 
         Hotkey.addHotkey({
             combo: ['ctrl+c', 'command+c'],
-            description: 'HOTKEY.HK_GOTO_CONTACTS',
+            description: 'HOTKEY.GOTO_CONTACTS',
             callback: (event, key) => {
                 event.preventDefault();
                 $state.go('main.contacts');
@@ -119,7 +119,7 @@ module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
 
         Hotkey.addHotkey({
             combo: ['ctrl+e', 'command+e'],
-            description: 'HOTKEY.HK_GOTO_SETTINGS',
+            description: 'HOTKEY.GOTO_SETTINGS',
             callback: (event, key) => {
                 event.preventDefault();
                 $state.go('main.settings.general');
@@ -128,7 +128,7 @@ module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
 
         Hotkey.addHotkey({
             combo: '/',
-            description: 'HOTKEY.HK_FOCUS_ON_SEARCH',
+            description: 'HOTKEY.FOCUS_ON_SEARCH',
             callback: (event, key) => {
                 if($rootScope.isPopupState($state.current.name) === false){
                     event.preventDefault();
@@ -139,7 +139,7 @@ module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
 
         Hotkey.addHotkey({
             combo: 'esc',
-            description: 'HOTKEY.HK_LEAVE_FROM_SEARCH',
+            description: 'HOTKEY.LEAVE_FROM_SEARCH',
             callback: (event, key) => {
                 if($rootScope.isPopupState($state.current.name) === false) {
                     event.preventDefault();

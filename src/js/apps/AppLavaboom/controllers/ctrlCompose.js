@@ -264,7 +264,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
     // Add hotkeys
 	Hotkey.addHotkey({
         combo: ['ctrl+enter', 'command+enter'],
-        description: 'Send an email',
+        description: 'HOTKEY.SEND_EMAIL',
         callback: (event, key) => {
             event.preventDefault();
             $scope.send();
