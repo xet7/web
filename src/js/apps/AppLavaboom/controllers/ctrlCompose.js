@@ -167,14 +167,19 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.$bind('contacts-changed', () => {
 		let toEmailContact = toEmail ? new Contact({email: toEmail}) : null;
 
-		$scope.people = [...contacts.people.values()].reduce((a, c) => {
-			a = a.concat(c.privateEmails);
-			a = a.concat(c.businessEmails);
+		let map = [...contacts.people.values()].reduce((a, c) => {
+			c.privateEmails.forEach(e => a.set(e.email, e));
+			c.businessEmails.forEach(e => a.set(e.email, e));
 			if (c.hiddenEmail)
-				a.push(c.hiddenEmail);
+				a.set(c.hiddenEmail.email, c.hiddenEmail);
 
 			return a;
-		}, []).concat(toEmailContact ? [toEmailContact] : []);
+		}, new Map());
+		if (toEmailContact)
+			map.set(toEmailContact.email, toEmailContact);
+
+		$scope.people = [...map.values()];
+		console.log('$scope.people', $scope.people);
 
 		let bindUserSignature = () => {
 			if (user.settings.isSignatureEnabled && user.settings.signatureHtml)
@@ -230,13 +235,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.tagTransform = function (newTag) {
 		try {
 			console.log('tag transform', newTag);
-			if (!newTag) {
-				if (newHiddenContact)
-					newHiddenContact.cancelKeyLoading();
-				return {
-					isEmpty: true
-				};
-			}
 
 			let p = newTag.split('@');
 
@@ -251,10 +249,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				newHiddenContact.cancelKeyLoading();
 			}
 
-			if (contacts.getContactByEmail(email))
-				return {
-					isEmpty: true
-				};
+			/*if (contacts.getContactByEmail(email))
+				return null;*/
 
 			newHiddenContact = new ContactEmail(null, {
 				isTag: true,
@@ -274,14 +270,19 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	};
 
 	$scope.personFilter = (text) =>
-		(person) =>
-			person &&
-			!person.isEmpty &&
-			!$scope.form.selected.to.some(e => e.email == person.email) && (
+		(person) => {
+			text = text.toLowerCase();
+
+			let r =  person && (
 				person.getDisplayName().toLowerCase().includes(text) ||
 				person.name.toLowerCase().includes(text) ||
 				person.email.toLowerCase().includes(text)
 			);
+
+			console.log('person filter', person, text, r);
+
+			return r;
+		};
 
     // Add hotkeys
 	Hotkey.addHotkey({
