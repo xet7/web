@@ -1,6 +1,13 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, user) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, user, crypto) => {
 	$scope.selectedContactId = null;
 	$scope.searchText = '';
+
+	{
+		let key = crypto.getDecryptedPrivateKeyByFingerprint(user.key.id);
+		$scope.isDecryptedKey = key && key.primaryKey.isDecrypted;
+
+		console.log('$scope.isDecryptedKey', key, $scope.isDecryptedKey);
+	}
 
 	var translations = {};
 
