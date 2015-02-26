@@ -28,16 +28,17 @@ div#compose-wrapper
 			.table-list
 				.cell.label
 					label {{'MAIN.COMPOSE.LB_FROM' | translate}}:
-				.dropdown-control.cell
-					ui-select(ng-model='form.selected.from', search-enabled='false', style="width: 50%;")
-						ui-select-match {{$select.selected.email}}
-						ui-select-choices(repeat='item in form.fromEmails')
-							span(ng-click='item.selected=item', ng-bind-html='item.email')
+				.cell.fields
+					input.form-control.col-xs-24.from-email(type='text', name="from", ng-model='form.fromEmails[0].email', disabled)
+					//- ui-select(ng-model='form.selected.from', search-enabled='false')
+					//- 	ui-select-match {{$select.selected.email}}
+					//- 	ui-select-choices(repeat='item in form.fromEmails')
+					//- 		span(ng-click='item.selected=item', ng-bind-html='item.email')
 			.table-list
 				.cell.label
 					label.text-primary {{'MAIN.COMPOSE.LB_SUBJECT' | translate}}:
 				.cell.fields
-					input#subject.form-control.text-primary.col-xs-24(type="text", name="subject", auto-complete="off", ng-model="form.subject").text-primary
+					input#subject.form-control.text-primary.col-xs-24(type="text", name="subject", auto-complete="off", ng-model="form.subject")
 
 		article#compose-body
 			text-angular(ng-model="form.body", name="body", ta-file-drop="onFileDrop", ta-toolbar="toolbar", ta-min-text="1")

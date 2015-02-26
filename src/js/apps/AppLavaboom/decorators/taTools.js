@@ -1,20 +1,22 @@
 module.exports = /*@ngInject*/($delegate) => {
-	$delegate.bold.iconclass = 'icon-bold';
-	$delegate.italics.iconclass = 'icon-italic';
-	$delegate.underline.iconclass = 'icon-underline';
-	$delegate.ul.iconclass = 'icon-list-ul';
-	$delegate.ol.iconclass = 'icon-list-ol';
+	$delegate.bold.iconclass = 'icon-format-bold';
+	$delegate.italics.iconclass = 'icon-format-italic';
+	$delegate.underline.iconclass = 'icon-format-underline';
+	$delegate.ul.iconclass = 'icon-format-list-bulleted';
+	$delegate.ol.iconclass = 'icon-format-list-numbered';
 	$delegate.undo.iconclass = 'icon-undo';
 	$delegate.redo.iconclass = 'icon-repeat';
-	$delegate.justifyLeft.iconclass = 'icon-align-left';
-	$delegate.justifyRight.iconclass = 'icon-align-right';
-	$delegate.justifyCenter.iconclass = 'icon-align-center';
+	$delegate.justifyLeft.iconclass = 'icon-format-align-left';
+	$delegate.justifyRight.iconclass = 'icon-format-align-right';
+	$delegate.justifyCenter.iconclass = 'icon-format-align-center';
 	$delegate.clear.iconclass = 'icon-ban-circle';
-	$delegate.insertLink.iconclass = 'icon-link';
+	$delegate.insertImage.iconclass = 'icon-format-photo';
+	$delegate.indent.iconclass = 'icon-format-indent';
+	$delegate.outdent.iconclass = 'icon-format-dedent';
 	// $delegate.unlink.iconclass = 'icon-link red';
 	// $delegate.insertImage.iconclass = 'icon-picture';
 	// there is no quote icon in old font-awesome so we change to text as follows
 	// delete $delegate.quote.iconclass;
-	// $delegate.quote.buttontext = 'quote';
+	$delegate.quote.iconclass = 'icon-format-quote';
 	return $delegate;
 };

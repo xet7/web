@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'lavaboom';
-	src:url('fonts/lavaboom.eot?6es2lf');
-	src:url('fonts/lavaboom.eot?#iefix6es2lf') format('embedded-opentype'),
-		url('fonts/lavaboom.woff?6es2lf') format('woff'),
-		url('fonts/lavaboom.ttf?6es2lf') format('truetype'),
-		url('fonts/lavaboom.svg?6es2lf#lavaboom') format('svg');
+	src:url('fonts/lavaboom.eot?-p5zicp');
+	src:url('fonts/lavaboom.eot?#iefix-p5zicp') format('embedded-opentype'),
+		url('fonts/lavaboom.woff?-p5zicp') format('woff'),
+		url('fonts/lavaboom.ttf?-p5zicp') format('truetype'),
+		url('fonts/lavaboom.svg?-p5zicp#lavaboom') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -23,12 +23,44 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
-.icon-text-format:before {
-	content: "\e601";
-}
-
 .icon-format-list-bulleted:before {
 	content: "\e602";
+}
+
+.icon-format-bold:before {
+	content: "\f032";
+}
+
+.icon-format-italic:before {
+	content: "\f033";
+}
+
+.icon-format-align-center:before {
+	content: "\f037";
+}
+
+.icon-format-align-left:before {
+	content: "\f036";
+}
+
+.icon-format-align-right:before {
+	content: "\f038";
+}
+
+.icon-format-align-justify:before {
+	content: "\f039";
+}
+
+.icon-format-list:before {
+	content: "\f03a";
+}
+
+.icon-format-dedent:before {
+	content: "\f03b";
+}
+
+.icon-format-indent:before {
+	content: "\f03c";
 }
 
 .icon-format-list-numbered:before {
@@ -43,44 +75,28 @@
 	content: "\e605";
 }
 
-.icon-photo:before {
+.icon-format-photo:before {
 	content: "\e606";
 }
 
-.icon-bold:before {
-	content: "\f032";
-}
-
-.icon-italic:before {
-	content: "\f033";
-}
-
-.icon-align-center:before {
-	content: "\f037";
-}
-
-.icon-align-left:before {
-	content: "\f036";
-}
-
-.icon-align-right:before {
-	content: "\f038";
-}
-
-.icon-align-justify:before {
-	content: "\f039";
-}
-
-.icon-list:before {
-	content: "\f03a";
-}
-
-.icon-dedent:before {
-	content: "\f03b";
-}
-
-.icon-indent:before {
+.icon-format-indent:before {
 	content: "\f03c";
+}
+
+.icon-format-list-numbered:before {
+	content: "\e603";
+}
+
+.icon-format-quote:before {
+	content: "\e604";
+}
+
+.icon-format-underline:before {
+	content: "\e605";
+}
+
+.icon-format-photo:before {
+	content: "\e606";
 }
 
 .icon-plus:before {

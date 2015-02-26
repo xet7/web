@@ -110,6 +110,7 @@
 //content css
 body{
 	.lava-font();
+	-webkit-font-smoothing: antialiased;
 }
 
 #content{
@@ -295,6 +296,25 @@ body{
 	right:10px; 
     left:auto;
 	transform:skew(8deg) rotate(3deg);
+}
+
+.email-formatting{
+	h1{
+		.h4();
+	}
+	h2{
+		.h5();
+	}
+	h3{
+		.h6();
+	}
+	blockquote{
+		border-left: 3px solid @lava;
+		font-size: 1em;
+	}
+	img {
+		.img-responsive();
+	}
 }
 
 .select2 > .select2-choice.ui-select-match {
