@@ -169,14 +169,21 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.$bind('contacts-changed', () => {
 		let toEmailContact = toEmail ? new Contact({email: toEmail}) : null;
 
-		let map = [...contacts.people.values()].reduce((a, c) => {
-			c.privateEmails.forEach(e => a.set(e.email, e));
-			c.businessEmails.forEach(e => a.set(e.email, e));
+		let people = [...contacts.people.values()];
+		let map = people.reduce((a, c) => {
 			if (c.hiddenEmail)
 				a.set(c.hiddenEmail.email, c.hiddenEmail);
 
 			return a;
 		}, new Map());
+
+		map = people.reduce((a, c) => {
+			c.privateEmails.forEach(e => a.set(e.email, e));
+			c.businessEmails.forEach(e => a.set(e.email, e));
+
+			return a;
+		}, map);
+
 		if (toEmailContact)
 			map.set(toEmailContact.email, toEmailContact);
 
@@ -245,7 +252,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			: [newTag.trim(), `${newTag.trim()}@${consts.ROOT_DOMAIN}`];
 
 		if (newHiddenContact) {
-			console.log('!', '|'+newHiddenContact.email+'|', '|'+email+'|');
 			if (newHiddenContact.email == email)
 				return newHiddenContact;
 
