@@ -57,8 +57,10 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest) => {
 				thread: threadId
 			});
 		}
+
 		return {
 			kind: 'raw',
+			content_type: 'text/html',
 
 			to: manifest.to,
 			cc: manifest.cc,
