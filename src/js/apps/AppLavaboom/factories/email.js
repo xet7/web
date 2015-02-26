@@ -76,8 +76,8 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest) => {
 
 		try {
 			let [bodyData, manifestRawData] = yield [
-				crypto.decodeByListedFingerprints(envelope.body, envelope.pgp_fingerprints),
-				crypto.decodeByListedFingerprints(envelope.manifest, envelope.pgp_fingerprints)
+				crypto.decodeByListedFingerprints(envelope.body),
+				crypto.decodeByListedFingerprints(envelope.manifest)
 			];
 			body = {state: 'ok', data: bodyData};
 			manifestRaw = manifestRawData;
@@ -87,7 +87,7 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest) => {
 		}
 
 		let email = new Email(angular.extend({}, envelope, {
-			isEncrypted: envelope.pgp_fingerprints.length > 0,
+			isEncrypted: true,
 			body: body,
 			preview: body
 		}), manifestRaw ? Manifest.createFromJson(manifestRaw) : null);

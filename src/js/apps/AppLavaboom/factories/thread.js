@@ -37,7 +37,7 @@ module.exports = /*@ngInject*/($injector, $rootScope, $translate, co, user, cryp
 		if (!envelope.manifest)
 			throw new Error('manifest not found');
 
-		let manifestRaw = yield crypto.decodeByListedFingerprints(envelope.manifest, [user.key.id]);
+		let manifestRaw = yield crypto.decodeByListedFingerprints(envelope.manifest);
 
 		console.log('thread manifest', manifestRaw);
 

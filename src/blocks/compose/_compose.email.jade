@@ -6,7 +6,7 @@
 		ui-select-match(placeholder="{{'MAIN.COMPOSE.PLC_SELECT_PERSON' | translate}}", ng-class="$item.name")
 			| {{$item.getDisplayName()}} &#60;{{$item.email}}&#62; ({{$item.getLabel()}} )
 			span(class="icon-lock {{$item.getSecureClass()}}")
-		ui-select-choices(repeat="personEmail in people | filter: personFilter($select.search) track by personEmail.email")
+		ui-select-choices(repeat="personEmail in people | filter: personFilter($select.search)")
 			div(ng-if="!personEmail.isEmpty && personEmail.isTag")
 				div(ng-show="!personEmail.isHidden()") {{personEmail.getDisplayName()}}
 				small {{personEmail.getLabel()}} {{'MAIN.COMPOSE.LB_EMAIL' | translate}}:
