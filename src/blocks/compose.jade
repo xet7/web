@@ -28,11 +28,12 @@ div#compose-wrapper
 			.table-list
 				.cell.label
 					label {{'MAIN.COMPOSE.LB_FROM' | translate}}:
-				.dropdown-control.cell
-					ui-select(ng-model='form.selected.from', search-enabled='false', style="width: 50%;")
-						ui-select-match {{$select.selected.email}}
-						ui-select-choices(repeat='item in form.fromEmails')
-							span(ng-click='item.selected=item', ng-bind-html='item.email')
+				.cell.fields
+					input(type='text', ng-model='form.selected.from', ng-bind='form.selected.from', disabled)
+					//- ui-select(ng-model='form.selected.from', search-enabled='false')
+					//- 	ui-select-match {{$select.selected.email}}
+					//- 	ui-select-choices(repeat='item in form.fromEmails')
+					//- 		span(ng-click='item.selected=item', ng-bind-html='item.email')
 			.table-list
 				.cell.label
 					label.text-primary {{'MAIN.COMPOSE.LB_SUBJECT' | translate}}:
