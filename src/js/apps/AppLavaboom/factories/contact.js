@@ -76,7 +76,8 @@ module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
 					id: envelope.id,
 					name: envelope.name,
 					dateCreated: envelope.date_created,
-					dateModified: envelope.date_modified
+					dateModified: envelope.date_modified,
+					isDecrypted: !!data.data
 				}, data.data));
 
 				console.log('contact', c);

@@ -265,6 +265,10 @@
 	LB_NEW_CONTACT_SHORT = "+"
 	LB_EMPTY_CONTACT_SHORT = "?"
 	PLC_EMAIL = "Enter email address"
+	LB_NO_PRIVATE_KEY_FOUND1 = "No decrypted private key found for this contact"
+    LB_NO_PRIVATE_KEY_FOUND2 = "Please go to "
+    LB_SETTINGS = "settings"
+    LB_NO_PRIVATE_KEY_FOUND3 = " and check your key"
 
 [HOTKEY]
     CHEATSHEET           = "Show/Hide cheatsheet"

@@ -2,13 +2,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 	$scope.selectedContactId = null;
 	$scope.searchText = '';
 
-	{
-		let key = crypto.getDecryptedPrivateKeyByFingerprint(user.key.id);
-		$scope.isDecryptedKey = key && key.primaryKey.isDecrypted;
-
-		console.log('$scope.isDecryptedKey', key, $scope.isDecryptedKey);
-	}
-
 	var translations = {};
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
