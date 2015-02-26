@@ -18,6 +18,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		let t = null;
 		let isLoadingKey = false;
 		let isLoadedKey = false;
+		let isCollapsed = true;
 
 		let loadKey = () => co(function *() {
 			let key = yield inbox.getKeyForEmail(self.email);
@@ -62,12 +63,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		this.email = opts.email ? opts.email : '';
 		this.name = opts.name ? opts.name : '';
 		this.isStar = opts.isStar ? opts.isStar : false;
-		this.isCollapsed = true;
 		this.key = opts.key;
-
-		let domain = this.email.split('@')[1];
-		if (domain)
-			domain = domain.trim();
 
 		this.isSecured = () => !!self.key;
 		this.getSecureClass = () => `sec-${self.isSecured() ? 1 : 0}`;
@@ -79,19 +75,30 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		this.isNew = () => !!opts.isNew;
 		this.getLabel = () => label;
 		this.getTooltip = () => tooltip;
+		this.isCollapsed = () => isCollapsed;
 
-		this.loadKey = () => co(function *(){
-			if (isLoadedKey)
-				return self.key;
+		this.collapse = () => isCollapsed = true;
+		this.expand = () => isCollapsed = false;
+		this.switchCollapse = () => isCollapsed = !isCollapsed;
 
-			if (isLoadingKey) {
-				try {
-					yield t;
-				} catch (e) {
+		this.loadKey = (isReload = false) => co(function *(){
+			if (!isReload) {
+				if (isLoadedKey)
+					return self.key;
+
+				if (isLoadingKey) {
+					try {
+						yield t;
+					} catch (e) {
+					}
+
+					return self.key;
 				}
-
-				return self.key;
 			}
+
+			let domain = self.email.split('@')[1];
+			if (domain)
+				domain = domain.trim();
 
 			if (domain == consts.ROOT_DOMAIN) {
 				isLoadingKey = true;
@@ -103,6 +110,10 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 					yield t;
 				} catch (e) { }
 			} else {
+				if (t)
+					$timeout.cancel(t);
+				isLoadingKey = false;
+
 				tooltip = '';
 				self.key = null;
 			}
@@ -111,7 +122,8 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		});
 
 		this.cancelKeyLoading = () => {
-			$timeout.cancel(t);
+			if (t)
+				$timeout.cancel(t);
 			isLoadingKey = false;
 		};
 
