@@ -1,15 +1,36 @@
 module.exports = /*@ngInject*/() => {
-	let Manifest = function (manifest) {
-		let hash = (data) => openpgp.util.hexstrdump(openpgp.crypto.hash.sha256(data));
+	const hash = (data) => openpgp.util.hexstrdump(openpgp.crypto.hash.sha256(data));
 
-		let self = this;
+	const ManifestPart = function (manifestPart) {
+		const self = this;
+
+		this.id = manifestPart.id;
+		this.size = manifestPart.size;
+		this.hash = manifestPart.hash;
+
+		this.isValid = (body) => body.length == self.size && hash(body) == self.hash;
+
+		// hack
+		const contentType = manifestPart.content_type || manifestPart['content-type'];
+		if (contentType) {
+			this.contentType = (contentType.defaultValue ? contentType.defaultValue : contentType).toLowerCase();
+			this.charset = (contentType.charset ? contentType.charset : 'utf-8').toLowerCase();
+		} else {
+			this.contentType = 'text/plain';
+			this.charset = 'utf-8';
+		}
+
+		this.isHtml = () => self.contentType.includes('/html');
+	};
+
+	const Manifest = function (manifest) {
+		const self = this;
 		
 		this.from = manifest.headers.from;
 		this.to = manifest.headers.to;
 		this.cc = manifest.headers.cc ? manifest.headers.cc : [];
 		this.bcc = manifest.headers.bcc ? manifest.headers.bcc : [];
 		this.subject = manifest.headers.subject;
-		this.parts = manifest.parts;
 
 		this.getDestinationEmails = () => {
 			let emails = new Set([
@@ -30,6 +51,12 @@ module.exports = /*@ngInject*/() => {
 				content_type: contentType
 			});
 		};
+
+		this.getPart = (id = 'body') => {
+			return new ManifestPart(manifest.parts.find(p => p.id == id));
+		};
+
+		this.files = manifest.parts.filter(p => p.id != 'body').map(p => new ManifestPart(p));
 
 		this.addAttachment = (id, data, fileName, contentType) => {
 			manifest.parts.push({

@@ -10,10 +10,9 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest) => {
 		this.date = opt.date_created;
 		this.from = angular.isArray(opt.from) ? opt.from : [opt.from];
 		this.manifest = manifest;
-		this.files = manifest.parts.filter(p => p.id != 'body');
+		this.files = manifest.files;
 
 		let fromContact = contacts.getContactByEmail(opt.from);
-		console.log('Email', fromContact, opt.from);
 
 		this.fromName = fromContact ? fromContact.getFullName() : opt.from;
 		this.preview = opt.preview;
@@ -35,7 +34,6 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest) => {
 		if (isSecured) {
 			keys[user.email] = user.key.key;
 			let publicKeysValues = Object.keys(keys).filter(e => keys[e]).map(e => keys[e]);
-			console.log('publicKeysValues', publicKeysValues);
 			let publicKeys = [...publicKeysValues];
 
 			let manifestString = manifest.stringify();
@@ -94,7 +92,7 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest) => {
 			preview: body
 		}), manifestRaw ? Manifest.createFromJson(manifestRaw) : null);
 
-		console.log('email decoded', email);
+		console.log('email decoded', email, manifestRaw);
 
 		return email;
 	});
