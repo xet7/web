@@ -32,12 +32,12 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 				};
 
 				tooltip = '';
-				isLoadedKey = true;
 			} catch (err) {
 				tooltip = translations.LB_EMAIL_NOT_FOUND;
 				self.key = null;
 				throw err;
 			} finally {
+				isLoadedKey = true;
 				isLoadingKey = false;
 			}
 		});
@@ -82,6 +82,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 
 		this.loadKey = (isReload = false) => co(function *(){
 			if (!isReload) {
+				console.log('loadKey', isLoadedKey, isLoadingKey, self.key);
 				if (isLoadedKey)
 					return self.key;
 
