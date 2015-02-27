@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest) => {
+module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 	let Email = function(opt, manifest) {
 		this.id =  opt.id;
 		this.threadId = opt.thread;
@@ -8,13 +8,11 @@ module.exports = /*@ngInject*/(co, contacts, crypto, user, Manifest) => {
 			this.subject = 'unknown subject';
 
 		this.date = opt.date_created;
-		this.from = angular.isArray(opt.from) ? opt.from : [opt.from];
 		this.manifest = manifest;
 		this.files = manifest.files;
 
-		let fromContact = contacts.getContactByEmail(opt.from);
-
-		this.fromName = fromContact ? fromContact.getFullName() : opt.from;
+		this.from = manifest.from;
+		this.fromAllPretty = manifest.from.map(e => e.prettyName).join(',');
 		this.preview = opt.preview;
 		this.body = opt.body;
 		this.attachments = opt.attachments ? opt.attachments : [];

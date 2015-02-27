@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/() => {
+module.exports = /*@ngInject*/(contacts) => {
 	const hash = (data) => openpgp.util.hexstrdump(openpgp.crypto.hash.sha256(data));
 
 	const ManifestPart = function (manifestPart) {
@@ -25,8 +25,20 @@ module.exports = /*@ngInject*/() => {
 
 	const Manifest = function (manifest) {
 		const self = this;
-		
-		this.from = manifest.headers.from;
+
+		const formatFrom = (fromAddress) => {
+			const address = fromAddress.address ? fromAddress.address : fromAddress;
+			const fromContact = contacts.getContactByEmail(address);
+			const name = fromAddress.name ? fromAddress.name : (fromContact ? fromContact.getFullName() : '');
+			return {
+				address,
+				name,
+				prettyName: address + (name ? ` (${name})` : '')
+			};
+		};
+
+		this.from = angular.isArray(manifest.headers.from) ? manifest.headers.from.map(e => formatFrom(e)) : [formatFrom(manifest.headers.from)];
+
 		this.to = manifest.headers.to;
 		this.cc = manifest.headers.cc ? manifest.headers.cc : [];
 		this.bcc = manifest.headers.bcc ? manifest.headers.bcc : [];

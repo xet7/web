@@ -24,10 +24,10 @@
 			.col-xs-24
 				header.row.no-gutter
 					.col-xs-21
-						strong(ng-bind="email.fromName")
-						br
+						//strong(ng-bind="email.fromName")
+						//br
 						| {{'MAIN.COMPOSE.LB_FROM' | translate}}:
-						span(ng-repeat="from in email.from", ng-bind="from")
+						strong(ng-bind="email.fromAllPretty")
 						br
 						| {{'MAIN.COMPOSE.LB_SUBJECT' | translate}}:
 						span(ng-bind="email.subject")
