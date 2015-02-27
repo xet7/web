@@ -73,20 +73,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		}
 	});
 
-	$scope.navigated = (delta) => {
-		console.log('navigated', delta);
-
-		var selectedIndex = $scope.threadsList && $scope.selectedTid !== null
-			? $scope.threadsList.findIndex(e => e.id == $scope.selectedTid)
-			: -1;
-
-		if ($scope.selectedTid !== null) {
-			selectedIndex = Math.min(Math.max(selectedIndex + delta, 0), $scope.threadsList.length - 1);
-
-			$state.go('main.inbox.label', {labelName: $scope.labelName, threadId: $scope.threadsList[selectedIndex].id});
-		}
-	};
-
 	$scope.scroll = () => {
 		if ($scope.isLoading || $scope.isDisabled)
 			return;

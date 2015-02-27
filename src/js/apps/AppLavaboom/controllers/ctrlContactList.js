@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, user, crypto) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, user, Hotkey) => {
 	$scope.selectedContactId = null;
 	$scope.searchText = '';
 
@@ -58,16 +58,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 
 		return peopleByLetter[pos.index].id;
 	};
-	$scope.navigated = (delta) => {
-		console.log('navigated', delta);
-
-		var oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
-
-		if (oldContactPosition) {
-			var cid = nextContactId(oldContactPosition, delta);
-			$state.go('main.contacts.profile', {contactId: cid});
-		}
-	};
 
 	$scope.$bind('contacts-changed', () => {
 		var oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
@@ -96,5 +86,43 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 
 	$scope.$bind('$stateChangeSuccess', () => {
 		$scope.selectedContactId = $stateParams.contactId;
+
+		const addHotkeys = () => {
+			const moveContacts = function(delta) {
+				console.log('move contacts', delta);
+				var oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
+
+				if (oldContactPosition) {
+					var cid = nextContactId(oldContactPosition, delta);
+					$state.go('main.contacts.profile', {contactId: cid});
+				}
+			};
+
+			const moveUp = (event, key) => {
+				event.preventDefault();
+				moveContacts(-1);
+			};
+
+			const moveDown = (event, key) => {
+				event.preventDefault();
+				moveContacts(1);
+			};
+
+			console.log('add hotkeys up/down');
+
+			Hotkey.addHotkey({
+				combo: ['h', 'k', 'left', 'up'],
+				description: 'HOTKEY.MOVE_UP',
+				callback: moveUp
+			});
+
+			Hotkey.addHotkey({
+				combo: ['j', 'l', 'right', 'down'],
+				description: 'HOTKEY.MOVE_DOWN',
+				callback: moveDown
+			});
+		};
+
+		addHotkeys();
 	});
 };
