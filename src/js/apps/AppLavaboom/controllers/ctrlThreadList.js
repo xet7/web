@@ -11,22 +11,32 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	$scope.isDisabled = true;
 	$scope.isInitialLoad = true;
 
+	$scope.offset = 0;
+	$scope.limit = 15;
+
 	const requestList = () => {
 		$scope.isLoading = true;
 		let t = $timeout(() => {
 			$scope.isLoadingSign = true;
 		}, consts.LOADER_SHOW_DELAY);
 
+		const labelName = $scope.labelName;
 		co(function *(){
 			try {
-				let e = yield inbox.requestList($scope.labelName);
-				$scope.isDisabled = e.list.length < 1;
+				let e = yield inbox.requestList($scope.labelName, $scope.offset, $scope.limit);
+
+				if (labelName == $scope.labelName) {
+					$scope.isDisabled = e.list.length < 1;
+					$scope.offset += e.list.length;
+				}
 			} catch (err) {
 				$scope.isDisabled = true;
 			} finally {
-				$scope.isLoading = false;
-				$scope.isLoadingSign = false;
-				$timeout.cancel(t);
+				if (labelName == $scope.labelName) {
+					$scope.isLoading = false;
+					$scope.isLoadingSign = false;
+					$timeout.cancel(t);
+				}
 			}
 		});
 	};
@@ -45,13 +55,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		return thread.subject.toLowerCase().includes(searchText) || thread.members.some(m => m.toLowerCase().includes(searchText));
 	};
 
-	$scope.$bind(`inbox-threads`, (e, labelName) => {
-		console.log('!!!!!got inbox-threads', labelName, $scope.labelName);
-		if (labelName != $scope.labelName)
-			return;
-
-		$scope.threads = angular.copy(inbox.threads);
-		$scope.threadsList = angular.copy(inbox.threadsList);
+	$scope.$bind(`inbox-threads`, (e) => {
+		console.log($scope.labelName, inbox.threadsList);
+		$scope.threads = inbox.threads;
+		$scope.threadsList = inbox.threadsList[$scope.labelName];
 
 		$scope.isLoading = false;
 		$scope.isLoadingSign = false;
@@ -64,6 +71,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		if (toState.name == 'main.inbox.label') {
 			$scope.selectedTid = toParams.threadId ? toParams.threadId : null;
 			if (toParams.labelName != $scope.labelName) {
+				$scope.offset = 0;
+				$scope.limit = 15;
 				$scope.threads = {};
 				$scope.threadsList = [];
 				$scope.labelName = toParams.labelName;
