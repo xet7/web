@@ -20,28 +20,27 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		let isLoadedKey = false;
 		let isCollapsed = true;
 
-		let loadKey = () => co(function *() {
-			let key = yield inbox.getKeyForEmail(self.email);
+		let loadKey = () => co(function *(){
+			try {
+				let key = yield inbox.getKeyForEmail(self.email);
 
-			self.key = {
-				id: key.key_id,
-				length: key.length,
-				algos: key.algorithm,
-				key: key.key
-			};
+				self.key = {
+					id: key.key_id,
+					length: key.length,
+					algos: key.algorithm,
+					key: key.key
+				};
 
-			tooltip = '';
-		})
-			.then(() => {
+				tooltip = '';
 				isLoadedKey = true;
-			})
-			.catch(() => {
+			} catch (err) {
 				tooltip = translations.LB_EMAIL_NOT_FOUND;
 				self.key = null;
-			})
-			.finally(() => {
+				throw err;
+			} finally {
 				isLoadingKey = false;
-			});
+			}
+		});
 
 		if (!opts)
 			opts = {};
@@ -102,13 +101,11 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 
 			if (domain == consts.ROOT_DOMAIN) {
 				isLoadingKey = true;
-				t = $timeout.schedule(t, () => {
-					loadKey();
-				}, 1000);
 
-				try {
-					yield t;
-				} catch (e) { }
+				let promise;
+				[t, promise] = $timeout.schedulePromise(t, () => loadKey(), 1000);
+				yield promise;
+				console.log('scheduled promise completed');
 			} else {
 				if (t)
 					$timeout.cancel(t);

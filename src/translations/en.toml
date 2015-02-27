@@ -206,6 +206,8 @@
 	BTN_CONFIRM = "I understand the risk"
 	BTN_REJECT = "No"
 	LB_ERROR = "Error occured"
+	LB_ERROR_NOT_FOUND = "not found"
+	LB_ERROR_UNKNOWN = "unknown"
 
 [MAIN.SETTINGS.MENU]
 	KEYS = "Keys"

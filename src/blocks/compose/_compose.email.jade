@@ -4,17 +4,22 @@
 	ui-select(multiple, theme="bootstrap", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}",
 		tagging="tagTransform", tagging-tokens="{{taggingTokens}}", reset-search-input="true", ng-model="#{defs.model}")
 		ui-select-match(placeholder="{{'MAIN.COMPOSE.PLC_SELECT_PERSON' | translate}}", ng-class="$item.name")
-			| {{$item.getDisplayName()}} &#60;{{$item.email}}&#62; ({{$item.getLabel()}} )
+			| {{$item.getDisplayName()}} &#60;{{$item.email}}&#62; (
+			span(ng-show="$item.isError && $item.isNotFoundError") {{'MAIN.COMPOSE.LB_ERROR_NOT_FOUND' | translate}}
+			span(ng-show="$item.isError && !$item.isNotFoundError") {{'MAIN.COMPOSE.LB_ERROR_UNKNOWN' | translate}}
+			span(ng-show="!$item.isError") {{$item.getLabel()}}
+			|)
 			img(src="/img/loader.svg", ng-show="$item.isLoadingKey()")
 			span(class="icon-lock {{$item.getSecureClass()}}", ng-show="!$item.isLoadingKey()")
 		ui-select-choices(repeat="personEmail in people | filter: personFilter($select.search)")
-			div(ng-if="personEmail && personEmail.isTag")
+			div(ng-if="personEmail && personEmail.isNotFoundError") not found
+			div(ng-if="personEmail && !personEmail.isError && personEmail.isTag")
 				div(ng-show="!personEmail.isHidden()") {{personEmail.getDisplayName()}}
 				small {{personEmail.getLabel()}} {{'MAIN.COMPOSE.LB_EMAIL' | translate}}:
 					span {{personEmail.email}}
 					img(src="/img/loader.svg", ng-show="personEmail.isLoadingKey()")
 					span(class="icon-lock {{personEmail.getSecureClass()}}", ng-show="!personEmail.isLoadingKey()")
-			div(ng-if="personEmail && !personEmail.isTag")
+			div(ng-if="personEmail && !personEmail.isError && !personEmail.isTag")
 				div(ng-show="!personEmail.isHidden()", ng-bind-html="personEmail.getDisplayName() | highlight: $select.search")
 				small {{personEmail.getLabel()}} {{'MAIN.COMPOSE.LB_EMAIL' | translate}}:
 					span(ng-bind-html="personEmail.email | highlight: $select.search")
