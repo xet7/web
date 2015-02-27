@@ -43,6 +43,24 @@ module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
 			return true;
 		};
 
+		this.getEmail = (email) => {
+			if (self.hiddenEmail && self.hiddenEmail.email == email)
+				return self.hiddenEmail;
+
+			if (self.privateEmails) {
+				let e = self.privateEmails.find(e => e.email == email);
+				if (e)
+					return e;
+			}
+			if (self.businessEmails) {
+				let e = self.businessEmails.find(e => e.email == email);
+				if (e)
+					return e;
+			}
+
+			return null;
+		};
+
 		this.getSecureClass = () => `sec-${self.isSecured() ? 1 : 0}`;
 	};
 
