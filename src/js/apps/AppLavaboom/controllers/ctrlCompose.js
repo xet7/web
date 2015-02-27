@@ -1,6 +1,7 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 							   consts, co, user, contacts, inbox, router, Manifest, Attachment, Contact, Hotkey, ContactEmail) => {
 	$scope.isWarning = false;
+	$scope.isError = false;
 	$scope.isXCC = false;
 	$scope.toolbar = [
 		['h1', 'h2', 'h3'],
@@ -126,37 +127,48 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		for(let attachmentStatus of $scope.attachments)
 			manifest.addAttachment(attachmentStatus.id, attachmentStatus.attachment.body, attachmentStatus.attachment.name, attachmentStatus.attachment.type);
 
-		var sendStatus = yield inbox.send({
-			body: $scope.form.body,
-			attachmentIds: $scope.attachments.map(a => a.id),
-			threadId
-		}, manifest, keys);
+		try {
+			$scope.isError = false;
+			var sendStatus = yield inbox.send({
+				body: $scope.form.body,
+				attachmentIds: $scope.attachments.map(a => a.id),
+				threadId
+			}, manifest, keys);
 
-		console.log('compose send status', sendStatus);
+			console.log('compose send status', sendStatus);
 
-		if (sendStatus.isEncrypted) {
-			yield $scope.confirm();
-		} else {
-			$scope.isWarning = true;
+			if (sendStatus.isEncrypted) {
+				yield $scope.confirm();
+			} else {
+				$scope.isWarning = true;
+			}
+		} catch (err) {
+			$scope.isError = true;
+			throw err;
 		}
 	});
 
 	$scope.confirm = () => co(function *(){
-		$scope.isWarning = false;
+		try {
+			$scope.isWarning = false;
 
-		yield inbox.confirmSend();
+			yield inbox.confirmSend();
 
-		yield manifest.getDestinationEmails()
-			.filter(email => !contacts.getContactByEmail(email))
-			.map(email => {
-				let contact = new Contact({name: '$hidden'});
-				contact.hiddenEmail = hiddenContacts[email];
-				return contacts.createContact(contact);
-			});
+			yield manifest.getDestinationEmails()
+				.filter(email => !contacts.getContactByEmail(email))
+				.map(email => {
+					let contact = new Contact({name: '$hidden'});
+					contact.hiddenEmail = hiddenContacts[email];
+					return contacts.createContact(contact);
+				});
 
-		manifest = null;
+			manifest = null;
 
-		router.hidePopup();
+			router.hidePopup();
+		} catch (err) {
+			$scope.isError = true;
+			throw err;
+		}
 	});
 
 	$scope.reject = () => {
@@ -165,6 +177,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		inbox.rejectSend();
 		manifest = null;
 	};
+
+	$scope.clearError = () => co(function *(){
+		$scope.isError = false;
+	});
 
 	let emailTransform = function (email) {
 		if (!email)

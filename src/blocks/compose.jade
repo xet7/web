@@ -8,6 +8,8 @@ div#compose-wrapper
 					span.icon-sent
 					span {{'MAIN.COMPOSE.BTN_CONFIRM' | translate}}
 				a.btn.btn-default.btn-sm(type="button", ng-click="reject()") {{'MAIN.COMPOSE.BTN_REJECT' | translate}}
+			hgroup(ng-show="isError")
+				label {{'MAIN.COMPOSE.LB_ERROR' | translate}}
 			.lava-icon-wrapper.pull-right(ng-hide="isWarning")
 				a(type="button", ng-click="isXCC = !isXCC", ng-disabled="isWarning")
 					span.icon-tick
