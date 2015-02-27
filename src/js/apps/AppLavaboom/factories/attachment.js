@@ -1,6 +1,6 @@
 module.exports = /*@ngInject*/(co, user, crypto, fileReader) => {
 	var Attachment = function(file) {
-		var self = this;
+		const self = this;
 
 		angular.extend(this, {
 			type: file.type,

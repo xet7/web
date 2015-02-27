@@ -119,7 +119,7 @@
 	var Loader = function () {
 		console.log('Initialize loader...');
 
-		var self = this;
+		const self = this;
 
 		var
 		// loader elements

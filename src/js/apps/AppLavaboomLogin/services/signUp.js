@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
-	var self = this;
+	const self = this;
 
 	this.reserve = null;
 	this.plan = null;

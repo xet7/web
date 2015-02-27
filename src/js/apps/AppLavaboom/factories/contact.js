@@ -1,6 +1,6 @@
 module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
 	var Contact = function(opt) {
-		var self = this;
+		const self = this;
 
 		angular.extend(this, opt);
 

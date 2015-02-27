@@ -6,7 +6,7 @@ module.exports = /*@ngInject*/() => {
 	};
 
 	var Label = function(opt) {
-		var self = this;
+		const self = this;
 
 		this.id = opt.id;
 		this.name = opt.name;

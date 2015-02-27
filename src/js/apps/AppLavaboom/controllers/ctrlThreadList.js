@@ -46,6 +46,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	};
 
 	$scope.$bind(`inbox-threads`, (e, labelName) => {
+		console.log('!!!!!got inbox-threads', labelName, $scope.labelName);
 		if (labelName != $scope.labelName)
 			return;
 

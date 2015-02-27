@@ -1,7 +1,7 @@
 module.exports = /*@ngInject*/(co) => {
 	var Cache = function (opts = {}) {
 		var cache = {};
-		var self = this;
+		const self = this;
 
 		this.get = (name) => {
 			var r = cache[name];

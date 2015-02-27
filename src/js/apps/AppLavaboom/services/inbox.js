@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts, co, LavaboomAPI, user, crypto, contacts, Cache, Email, Thread, Label) {
-	var self = this;
+	const self = this;
 
 	var defaultCacheOptions = {
 		ttl: consts.INBOX_THREADS_CACHE_TTL
@@ -47,17 +47,18 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 		}
 	};
 
-	var performsThreadsOperation = (operation) => co(function *() {
+	var performsThreadsOperation = (operation) => {
 		var currentLabelName = self.labelName;
 
-		var r = yield operation;
+		return co(function *() {
+			var r = yield operation;
 
-		$rootScope.$broadcast(`inbox-threads`, currentLabelName);
+			$rootScope.$broadcast(`inbox-threads`, currentLabelName);
 
-		return r;
-	});
+			return r;
+		});
+	};
 
-	//ToDo: manifest for each thread(subject and other meta data)
 	var getThreadsByLabelName = (labelName) => co(function *() {
 		var label = self.labelsByName[labelName];
 
@@ -76,7 +77,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 		if (threads) {
 			result = (yield threads.map(t => co.def(Thread.fromEnvelope(t), null))).reduce((a, t) => {
-				console.log('t', t);
 				if (t) {
 					a.map[t.id] = t;
 					a.list.push(t);

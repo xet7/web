@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, LavaboomAPI, Contact) {
-	var self = this;
+	const self = this;
 	var emptyContact = null;
 
 	var deleteLocally = (contactId) => {
