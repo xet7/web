@@ -118,15 +118,9 @@
 		margin-top: -2px;
 	}
 
-	.form-control::-moz-placeholder {
-		color: @lava-login-gray;
-	  	opacity: 1;
-	}
-	.form-control:-ms-input-placeholder {
-	  	color: @lava-login-gray;
-	}
-	.form-control::-webkit-input-placeholder {
-	  	color: @lava-login-gray;
+	.form-control{
+		.lava-font();
+		.placeholder();
 	}
 
 	.table-list{
