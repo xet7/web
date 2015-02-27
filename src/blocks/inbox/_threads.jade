@@ -1,18 +1,41 @@
 #mail-list.list-pane.ng-cloak(ng-controller="CtrlThreadList")
 	.filters.row.no-gutter.lava-icon-row
-		label.search-icon.col-xs-3(for="top-search")
-			span.icon-search
-		input#top-search.search.col-xs-13(type="text", placeholder="Search Emails", ng-model="searchText")
-		.lava-icon-wrapper.col-xs-8(ng-show="selectedTid !== null")
-			a(href="#")
-				span.icon-arrow-down
-			a(href="#", ng-click="starThread(selectedTid)")
-				span.icon-star(ng-show="selectedTid !== null && threads[selectedTid].isLabel('Starred')")
-				span.icon-star-outline(ng-show="selectedTid !== null && !threads[selectedTid].isLabel('Starred')")
-			a(href="#", ng-click="spamThread(selectedTid)", ng-show="labelName != 'Spam'")
-				span.icon-ban
-			a(href="#", ng-click="deleteThread(selectedTid)")
-				span.icon-trash
+		nav.navbar.navbar-inverse(role="navigation")
+			div
+				ul.nav.navbar-nav.navbar-right(ng-show="selectedTid !== null")
+					//- li
+					//- 	a(href="#", ng-click="starThread(selectedTid)")
+					//- 		span.icon-star(ng-show="selectedTid !== null && threads[selectedTid].isLabel('Starred')")
+					//- 		span.icon-star-outline(ng-show="selectedTid !== null && !threads[selectedTid].isLabel('Starred')")		
+					li.btn-group.dropdown(dropdown="", is-open="status.isopen")
+						button.btn.btn-default.dropdown-toggle(type="button", dropdown-toggle="", ng-disabled="disabled")
+							span.icon-chevron-down
+						ul.dropdown-menu(role="menu")
+							li
+								a(href="#") Action
+							li
+								a(href="#") Another action
+							li
+								a(href="#") Something else here
+							li.divider
+							li
+								a(href="#") Separated link
+					li
+						button.btn.btn-default(ng-click="starThread(selectedTid)")
+							span.icon-star(ng-show="selectedTid !== null && threads[selectedTid].isLabel('Starred')")
+							span.icon-star-outline(ng-show="selectedTid !== null && !threads[selectedTid].isLabel('Starred')")
+					li
+						button.btn.btn-default(ng-click="spamThread(selectedTid)", ng-show="labelName != 'Spam'")
+							span.icon-ban
+					li
+						button.btn.btn-default(ng-click="deleteThread(selectedTid)")
+							span.icon-trash
+				form.navbar-form-alt
+					.form-group
+						.input-group
+							label.search-icon.input-group-addon(for="top-search")
+								span.icon-search
+							input#top-search.search.form-control(type="text", placeholder="Search Emails", ng-model="searchText")
 	.mail-list-group
 		div.pane-status(ng-show="isLoadingSign")
 			img(src="/img/loader.svg")
