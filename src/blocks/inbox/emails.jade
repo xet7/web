@@ -1,22 +1,20 @@
 #mail-thread.details-pane.ng-cloak
 	div.pane-status(ng-if="selectedTid === null")
 		.col-xs-24 {{'INBOX.LB_NOTHING_SELECTED' | translate}}
-	div(ng-if="selectedTid !== null").row.no-gutter.actions.lava-icon-row
-			.col-xs-24
-				.lava-icon-wrapper
-					a(href="#", ng-click="showPopup('compose', {replyThreadId: selectedTid})")
-						span.icon-reply
-					a(href="#", ng-click="showPopup('compose', {replyThreadId: selectedTid})")
-						span.icon-reply-all
-					a(href="#")
-						span.icon-arrow-right
-					//span.spacer
-					//a(href="#")
-						span.icon-star
-					//a(href="#")
-						span.icon-ban
-					//a(href="#")
-						span.icon-trash
+	div
+		.filters.row.no-gutter.lava-icon-row
+			nav.navbar.navbar-inverse(role="navigation", ng-if="selectedTid !== null")
+				div
+					ul.nav.navbar-nav.navbar-right(ng-show="selectedTid !== null")
+						li
+							button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid})")
+								span.icon-reply
+						li
+							button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid})")
+								span.icon-reply-all
+						li
+							button.btn.btn-default
+								span.icon-arrow-right
 	div(ng-if="selectedTid !== null").main-view
 		.pane-status(ng-show="isLoading")
 			img(src="/img/loader.svg")

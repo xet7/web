@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'lavaboom';
-	src:url('fonts/lavaboom.eot?-p5zicp');
-	src:url('fonts/lavaboom.eot?#iefix-p5zicp') format('embedded-opentype'),
-		url('fonts/lavaboom.woff?-p5zicp') format('woff'),
-		url('fonts/lavaboom.ttf?-p5zicp') format('truetype'),
-		url('fonts/lavaboom.svg?-p5zicp#lavaboom') format('svg');
+	src:url('fonts/lavaboom.eot?-suchdr');
+	src:url('fonts/lavaboom.eot?#iefix-suchdr') format('embedded-opentype'),
+		url('fonts/lavaboom.woff?-suchdr') format('woff'),
+		url('fonts/lavaboom.ttf?-suchdr') format('truetype'),
+		url('fonts/lavaboom.svg?-suchdr#lavaboom') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -57,26 +57,6 @@
 
 .icon-format-dedent:before {
 	content: "\f03b";
-}
-
-.icon-format-indent:before {
-	content: "\f03c";
-}
-
-.icon-format-list-numbered:before {
-	content: "\e603";
-}
-
-.icon-format-quote:before {
-	content: "\e604";
-}
-
-.icon-format-underline:before {
-	content: "\e605";
-}
-
-.icon-format-photo:before {
-	content: "\e606";
 }
 
 .icon-format-indent:before {
