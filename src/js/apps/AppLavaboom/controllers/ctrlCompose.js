@@ -149,21 +149,26 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	});
 
 	$scope.confirm = () => co(function *(){
-		$scope.isWarning = false;
+		try {
+			$scope.isWarning = false;
 
-		yield inbox.confirmSend();
+			yield inbox.confirmSend();
 
-		yield manifest.getDestinationEmails()
-			.filter(email => !contacts.getContactByEmail(email))
-			.map(email => {
-				let contact = new Contact({name: '$hidden'});
-				contact.hiddenEmail = hiddenContacts[email];
-				return contacts.createContact(contact);
-			});
+			yield manifest.getDestinationEmails()
+				.filter(email => !contacts.getContactByEmail(email))
+				.map(email => {
+						let contact = new Contact({name: '$hidden'});
+					contact.hiddenEmail = hiddenContacts[email];
+					return contacts.createContact(contact);
+				});
 
-		manifest = null;
+			manifest = null;
 
-		router.hidePopup();
+			router.hidePopup();
+		} catch (err) {
+			$scope.isError = true;
+			throw err;
+		}
 	});
 
 	$scope.reject = () => {
