@@ -281,8 +281,9 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		(person) => {
 			text = text.toLowerCase();
 
+
 			return person &&
-				!$scope.form.selected.to.some(e => e.email == person.email) && (
+				(!$scope.form || !$scope.form.selected.to.some(e => e.email == person.email)) && (
 					person.getDisplayName().toLowerCase().includes(text) ||
 					person.name.toLowerCase().includes(text) ||
 					person.email.toLowerCase().includes(text)
