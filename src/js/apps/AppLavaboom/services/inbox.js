@@ -227,8 +227,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 		self.labelsById = labels.byId;
 
 		$rootScope.$broadcast('inbox-labels');
-
-		yield self.requestList('Inbox');
 	});
 
 	this.downloadAttachment = (id) => co(function *(){
