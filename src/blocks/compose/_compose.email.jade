@@ -12,7 +12,8 @@
 			img(src="/img/loader.svg", ng-show="$item.isLoadingKey()")
 			span(class="icon-lock {{$item.getSecureClass()}}", ng-show="!$item.isLoadingKey()")
 		ui-select-choices(repeat="personEmail in people | filter: personFilter($select.search)")
-			div(ng-if="personEmail && personEmail.isNotFoundError") not found
+			span(ng-show="personEmail && personEmail.isError && personEmail.isNotFoundError") &#60;{{personEmail.email}}&#62; {{'MAIN.COMPOSE.LB_ERROR_NOT_FOUND' | translate}}
+			span(ng-show="personEmail && personEmail.isError && !personEmail.isNotFoundError") &#60;{{personEmail.email}}&#62; {{'MAIN.COMPOSE.LB_ERROR_UNKNOWN' | translate}}
 			div(ng-if="personEmail && !personEmail.isError && personEmail.isTag")
 				div(ng-show="!personEmail.isHidden()") {{personEmail.getDisplayName()}}
 				small {{personEmail.getLabel()}} {{'MAIN.COMPOSE.LB_EMAIL' | translate}}:
