@@ -154,6 +154,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		localKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(localDecryptedStore));
 		sessionKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(sessionDecryptedStore));
 
+		console.log('!broadcasting keyring-updated from crypto.initialize');
 		$rootScope.$broadcast('keyring-updated');
 	};
 
@@ -199,19 +200,30 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		}
 	};
 
+	const authenticate = (privateKey, password) => {
+		if (!applyPasswordToKeyPair(privateKey, password))
+			return false;
+
+		self.changePassword(privateKey, '', self.options.isPrivateComputer ? 'local' : 'session');
+
+		return true;
+	};
+
 	this.authenticateByEmail = (email, password) => {
 		let decryptedFingerprints = [];
 		let failedFingerprints = [];
 
 		keyring.privateKeys.getForAddress(email).forEach(privateKey => {
-			if (self.authenticate(privateKey, password))
+			if (authenticate(privateKey, password))
 				decryptedFingerprints.push(privateKey.primaryKey.fingerprint);
 			else
 				failedFingerprints.push(privateKey.primaryKey.fingerprint);
 		});
 
-		if (decryptedFingerprints.length > 0)
+		if (decryptedFingerprints.length > 0) {
+			console.log('!broadcasting keyring-updated from crypto.authenticateByEmail');
 			$rootScope.$broadcast('keyring-updated');
+		}
 
 		return {
 			decryptedFingerprints: decryptedFingerprints,
@@ -220,11 +232,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 	};
 
 	this.authenticate = (privateKey, password) => {
-		if (!applyPasswordToKeyPair(privateKey, password))
+		if (!authenticate(privateKey, password))
 			return false;
 
-		self.changePassword(privateKey, '', self.options.isPrivateComputer ? 'local' : 'session');
-
+		console.log('!broadcasting keyring-updated from crypto.authenticate');
 		$rootScope.$broadcast('keyring-updated');
 
 		return true;
