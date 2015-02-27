@@ -1,31 +1,6 @@
 #settings-list.list-pane.ng-cloak(ng-controller="CtrlSettingsList")
 	.filters.row.no-gutter.lava-icon-row
-		nav.navbar.navbar-inverse(role="navigation")
-			div
-				ul.nav.navbar-nav.navbar-right
-					//- li
-					//- 	a(href="#", ng-click="starThread(selectedTid)")
-					//- 		span.icon-star(ng-show="selectedTid !== null && threads[selectedTid].isLabel('Starred')")
-					//- 		span.icon-star-outline(ng-show="selectedTid !== null && !threads[selectedTid].isLabel('Starred')")
-					li.btn-group(dropdown="", is-open="status.isopen")
-						button.btn.btn-detault.dropdown-toggle(type="button", dropdown-toggle="", ng-disabled="disabled")
-							span.icon-arrow-down
-						ul.dropdown-menu(role="menu")
-							li
-								a(href="#") Action
-							li
-								a(href="#") Another action
-							li
-								a(href="#") Something else here
-							li.divider
-							li
-								a(href="#") Separated link
-				form.navbar-form-alt
-					.form-group
-						.input-group
-							label.search-icon.input-group-addon(for="top-search")
-								span.icon-search
-							input#top-search.search.form-control(type="text", placeholder="Search Emails", ng-model="searchText")
+		| 
 	.list-group-wrapper.list-group-icons
 		ul.list-group
 			li.list-group-item(ui-sref-active='active')
