@@ -61,6 +61,8 @@
 
 @compose-font-size: 1.3rem;
 
+@lava-form-line-height: 4.2rem;
+
 //birds-eye-view
 .z1{
 	z-index: 100;
@@ -91,7 +93,7 @@
 @mail-thread-width-sm: 100% - @mail-list-width-sm;
 @mail-thread-padding: 15px 0 8px 39px;
 
-@filter-height: 39px;
+@filter-height: 3.9rem;
 
 @mail-list-block-buttons-width: 9%;
 @mail-list-block-summary-width: 67%;
@@ -105,6 +107,32 @@
 
 //animations!!!
 @lava-ease-out-in: cubic-bezier(0.500, -0.215, 0.380, 1.245);
+
+
+
+// Basics of a navbar
+@navbar-height:                    @filter-height;
+@navbar-margin-bottom:             0; //@line-height-computed;
+@navbar-border-radius:             0; //@border-radius-base;
+@navbar-padding-horizontal:        0; //floor((@grid-gutter-width / 2));
+@navbar-padding-vertical:          0; //((@navbar-height - @line-height-computed) / 2);
+@navbar-collapse-max-height:       340px;
+
+// Inverted navbar
+// Reset inverted navbar basics
+@navbar-inverse-color:                      @lava-gray-light;
+@navbar-inverse-bg:                         transparent;
+@navbar-inverse-border:                     transparent;
+
+// Inverted navbar links
+@navbar-inverse-link-color:                 @lava-gray-light;
+@navbar-inverse-link-hover-color:           @lava-gray-lighter;
+@navbar-inverse-link-hover-bg:              transparent;
+@navbar-inverse-link-active-color:          @lava-gray-lighter;
+@navbar-inverse-link-active-bg:             transparent;
+@navbar-inverse-link-disabled-color:        @lava-gray;
+@navbar-inverse-link-disabled-bg:           transparent;
+
 
 
 //content css
@@ -170,6 +198,12 @@ body{
 	}
 }
 
+.vertical-align(@pos : 'relative'){
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
 .line-clamp(@lines){
 	display: -webkit-box;
 	-webkit-line-clamp: @lines;
@@ -211,26 +245,26 @@ body{
 	border-color: transparent;
 }
 
-.lava-icon-row{
-	padding-right: 22px;
-	.text-right();
-	[class^="icon-"],
-	[class*=" icon-"] {
-		display: inline-block;
-		font-size: 18px;
-		// line-height: @filter-height - 3;
-	}
-	> a:not(:first-child), .lava-icon-wrapper > a:not(:first-child){
-		display: inline-block;
-		// width: 1em;
-		padding: 0 0 0 18px;
-	}
+// .lava-icon-row{
+// 	padding-right: 22px;
+// 	.text-right();
+// 	[class^="icon-"],
+// 	[class*=" icon-"] {
+// 		display: inline-block;
+// 		font-size: 18px;
+// 		// line-height: @filter-height - 3;
+// 	}
+// 	> a:not(:first-child), .lava-icon-wrapper > a:not(:first-child){
+// 		display: inline-block;
+// 		// width: 1em;
+// 		padding: 0 0 0 18px;
+// 	}
 
-	.spacer{
-		display: inline-block;
-		width: 15px;
-	}
-}
+// 	.spacer{
+// 		display: inline-block;
+// 		width: 15px;
+// 	}
+// }
 
 .effect7
 {
@@ -302,12 +336,15 @@ body{
 	&::-moz-placeholder {
 		color: @c;
 	  	opacity: 1;
+	  	.lava-font();
 	}
 	&:-ms-input-placeholder {
 	  	color: @c;
+	  	.lava-font();
 	}
 	&::-webkit-input-placeholder {
 	  	color: @c;
+	  	.lava-font();
 	}
 }
 
