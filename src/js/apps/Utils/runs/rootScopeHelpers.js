@@ -1,7 +1,10 @@
 module.exports = /*@ngInject*/($rootScope, $translate, translate) => {
 	$rootScope.$bind = (bindName, bindHandler) => {
-		$rootScope.$on(bindName, bindHandler);
+		let r = $rootScope.$on(bindName, bindHandler);
+
 		bindHandler();
+
+		return r;
 	};
 
 	$rootScope.switchLanguage = (langKey) => {

@@ -84,7 +84,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 		yield $state.go('main.contacts.profile', {contactId: 'new'});
 	});
 
-	$scope.$bind('$stateChangeSuccess', () => {
+	let stateChangeSuccess = $scope.$bind('$stateChangeSuccess', () => {
 		$scope.selectedContactId = $stateParams.contactId;
 
 		const addHotkeys = () => {
@@ -124,5 +124,9 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 		};
 
 		addHotkeys();
+	});
+
+	$scope.$on('$destroy', () => {
+		stateChangeSuccess();
 	});
 };
