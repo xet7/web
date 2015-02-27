@@ -61,8 +61,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		console.log('CtrlThreadList $stateChangeStart', toState.name, toParams);
 
 		if (toState.name == 'main.inbox.label') {
-			if (toParams.threadId)
-				$scope.selectedTid = toParams.threadId;
+			$scope.selectedTid = toParams.threadId ? toParams.threadId : null;
 			if (toParams.labelName != $scope.labelName) {
 				$scope.threads = {};
 				$scope.threadsList = [];
