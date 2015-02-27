@@ -2,12 +2,12 @@
 .main-view
 	.row.main-panel
 		section.pane-status(ng-show="!details") {{'MAIN.CONTACTS.LB_NOTHING_FOUND' | translate}}
-		section.pane-status(ng-show="details && !details.isDecrypted") {{'MAIN.CONTACTS.LB_NO_PRIVATE_KEY_FOUND1' | translate}}
+		section.pane-status(ng-show="details && !details.isDecrypted && !details.isNew") {{'MAIN.CONTACTS.LB_NO_PRIVATE_KEY_FOUND1' | translate}}
 			div {{'MAIN.CONTACTS.LB_NO_PRIVATE_KEY_FOUND2' | translate}}
 				a(ui-sref="main.settings.security") {{'MAIN.CONTACTS.LB_SETTINGS' | translate}}
 				| {{'MAIN.CONTACTS.LB_NO_PRIVATE_KEY_FOUND3' | translate}}
 		form.settings.col-md-12.col-md-offset-6.col-xs-22.col-xs-offset-1(
-			name="__form", ng-show="details && details.isDecrypted", ng-submit="__form.$valid && saveThisContact()", novalidate)
+			name="__form", ng-show="details && (details.isDecrypted || details.isNew)", ng-submit="__form.$valid && saveThisContact()", novalidate)
 			h4(ng-show="details.isNew", ng-bind="details.name | defaultValue:('MAIN.CONTACTS.LB_NEW_CONTACT' | translate)")
 			h4(ng-show="!details.isNew", ng-bind="details.name | defaultValue:('MAIN.CONTACTS.LB_CONTACT_NAME' | translate)")
 			.row

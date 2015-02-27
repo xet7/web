@@ -1,18 +1,18 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, user, crypto) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, user, Hotkey) => {
 	$scope.selectedContactId = null;
 	$scope.searchText = '';
 
-	var translations = {};
+	let translations = {};
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
 		translations.LB_NEW_CONTACT_SHORT = $translate.instant('MAIN.CONTACTS.LB_NEW_CONTACT');
 		translations.LB_EMPTY_CONTACT_SHORT = $translate.instant('MAIN.CONTACTS.LB_EMPTY_CONTACT');
 	});
 
-	var findContact = (cid) => {
-		var letterIndex = 0;
+	const findContact = (cid) => {
+		let letterIndex = 0;
 		for(let letter of $scope.letters) {
-			var index = $scope.people[letter].findIndex(c => c.id == cid);
+			let index = $scope.people[letter].findIndex(c => c.id == cid);
 			if (index < 0) {
 				letterIndex++;
 				continue;
@@ -26,8 +26,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 		return null;
 	};
 
-	var nextContactId = (pos, delta = 0) => {
-		var peopleByLetter;
+	const nextContactId = (pos, delta = 0) => {
+		let peopleByLetter;
 
 		if ($scope.letters.length < 1)
 			return null;
@@ -58,19 +58,9 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 
 		return peopleByLetter[pos.index].id;
 	};
-	$scope.navigated = (delta) => {
-		console.log('navigated', delta);
-
-		var oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
-
-		if (oldContactPosition) {
-			var cid = nextContactId(oldContactPosition, delta);
-			$state.go('main.contacts.profile', {contactId: cid});
-		}
-	};
 
 	$scope.$bind('contacts-changed', () => {
-		var oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
+		let oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
 
 		console.log('contacts-changed, $scope.selectedContactId', $scope.selectedContactId, 'oldContactPosition', oldContactPosition);
 
@@ -94,7 +84,49 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 		yield $state.go('main.contacts.profile', {contactId: 'new'});
 	});
 
-	$scope.$bind('$stateChangeSuccess', () => {
+	const stateChangeSuccess = $scope.$bind('$stateChangeSuccess', () => {
 		$scope.selectedContactId = $stateParams.contactId;
+
+		const addHotkeys = () => {
+			const moveContacts = function(delta) {
+				console.log('move contacts', delta);
+				let oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
+
+				if (oldContactPosition) {
+					let cid = nextContactId(oldContactPosition, delta);
+					$state.go('main.contacts.profile', {contactId: cid});
+				}
+			};
+
+			const moveUp = (event, key) => {
+				event.preventDefault();
+				moveContacts(-1);
+			};
+
+			const moveDown = (event, key) => {
+				event.preventDefault();
+				moveContacts(1);
+			};
+
+			console.log('add hotkeys up/down');
+
+			Hotkey.addHotkey({
+				combo: ['h', 'k', 'left', 'up'],
+				description: 'HOTKEY.MOVE_UP',
+				callback: moveUp
+			});
+
+			Hotkey.addHotkey({
+				combo: ['j', 'l', 'right', 'down'],
+				description: 'HOTKEY.MOVE_DOWN',
+				callback: moveDown
+			});
+		};
+
+		addHotkeys();
+	});
+
+	$scope.$on('$destroy', () => {
+		stateChangeSuccess();
 	});
 };
