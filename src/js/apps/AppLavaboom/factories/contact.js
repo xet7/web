@@ -4,6 +4,9 @@ module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
 
 		angular.extend(this, opt);
 
+		if (this.isNew)
+			this.isDecrypted = true;
+
 		this.hiddenEmail = this.hiddenEmail ? new ContactEmail(this, this.hiddenEmail, 'hidden') : null;
 		this.privateEmails = this.privateEmails ? this.privateEmails.map(e => new ContactEmail(this, e, 'private')) : [];
 		this.businessEmails = this.businessEmails ? this.businessEmails.map(e => new ContactEmail(this, e, 'business')) : [];
