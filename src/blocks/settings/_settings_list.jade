@@ -1,17 +1,31 @@
 #settings-list.list-pane.ng-cloak(ng-controller="CtrlSettingsList")
 	.filters.row.no-gutter.lava-icon-row
-		//- label.search-icon.col-xs-3(for='top-search')
-		//- 	span.icon-search
-		//- input#top-search.search.col-xs-13(placeholder='Search Emails')
-		//- .lava-icon-wrapper.col-xs-8
-		//- 	a(href='#')
-		//- 		span.icon-arrow-down
-		//- 	a(href='#')
-		//- 		span.icon-star
-		//- 	a(href='#')
-		//- 		span.icon-ban
-		//- 	a(href='#')
-		//- 		span.icon-trash
+		nav.navbar.navbar-inverse(role="navigation")
+			div
+				ul.nav.navbar-nav.navbar-right
+					//- li
+					//- 	a(href="#", ng-click="starThread(selectedTid)")
+					//- 		span.icon-star(ng-show="selectedTid !== null && threads[selectedTid].isLabel('Starred')")
+					//- 		span.icon-star-outline(ng-show="selectedTid !== null && !threads[selectedTid].isLabel('Starred')")
+					li.btn-group(dropdown="", is-open="status.isopen")
+						button.btn.btn-detault.dropdown-toggle(type="button", dropdown-toggle="", ng-disabled="disabled")
+							span.icon-arrow-down
+						ul.dropdown-menu(role="menu")
+							li
+								a(href="#") Action
+							li
+								a(href="#") Another action
+							li
+								a(href="#") Something else here
+							li.divider
+							li
+								a(href="#") Separated link
+				form.navbar-form-alt
+					.form-group
+						.input-group
+							label.search-icon.input-group-addon(for="top-search")
+								span.icon-search
+							input#top-search.search.form-control(type="text", placeholder="Search Emails", ng-model="searchText")
 	.list-group-wrapper.list-group-icons
 		ul.list-group
 			li.list-group-item(ui-sref-active='active')
@@ -30,3 +44,19 @@
 				a(ui-sref='main.settings.plan')
 					i.icon.icon-lavaboom
 					span {{'MAIN.SETTINGS.MENU.SUBSCRIPTION' | translate}}
+			//- li.list-group-item
+			//- 	div
+			//- 		.btn-group(dropdown="", is-open="status.isopen")
+			//- 			button.btn.btn-primary.dropdown-toggle(type="button", dropdown-toggle="", ng-disabled="disabled")
+			//- 				| Button dropdown
+			//- 				span.caret
+			//- 			ul.dropdown-menu(role="menu")
+			//- 				li
+			//- 					a(href="#") Action
+			//- 				li
+			//- 					a(href="#") Another action
+			//- 				li
+			//- 					a(href="#") Something else here
+			//- 				li.divider
+			//- 				li
+			//- 					a(href="#") Separated link
