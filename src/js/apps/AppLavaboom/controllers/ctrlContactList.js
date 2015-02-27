@@ -2,17 +2,17 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 	$scope.selectedContactId = null;
 	$scope.searchText = '';
 
-	var translations = {};
+	let translations = {};
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
 		translations.LB_NEW_CONTACT_SHORT = $translate.instant('MAIN.CONTACTS.LB_NEW_CONTACT');
 		translations.LB_EMPTY_CONTACT_SHORT = $translate.instant('MAIN.CONTACTS.LB_EMPTY_CONTACT');
 	});
 
-	var findContact = (cid) => {
-		var letterIndex = 0;
+	const findContact = (cid) => {
+		let letterIndex = 0;
 		for(let letter of $scope.letters) {
-			var index = $scope.people[letter].findIndex(c => c.id == cid);
+			let index = $scope.people[letter].findIndex(c => c.id == cid);
 			if (index < 0) {
 				letterIndex++;
 				continue;
@@ -26,8 +26,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 		return null;
 	};
 
-	var nextContactId = (pos, delta = 0) => {
-		var peopleByLetter;
+	const nextContactId = (pos, delta = 0) => {
+		let peopleByLetter;
 
 		if ($scope.letters.length < 1)
 			return null;
@@ -60,7 +60,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 	};
 
 	$scope.$bind('contacts-changed', () => {
-		var oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
+		let oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
 
 		console.log('contacts-changed, $scope.selectedContactId', $scope.selectedContactId, 'oldContactPosition', oldContactPosition);
 
@@ -84,16 +84,16 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 		yield $state.go('main.contacts.profile', {contactId: 'new'});
 	});
 
-	let stateChangeSuccess = $scope.$bind('$stateChangeSuccess', () => {
+	const stateChangeSuccess = $scope.$bind('$stateChangeSuccess', () => {
 		$scope.selectedContactId = $stateParams.contactId;
 
 		const addHotkeys = () => {
 			const moveContacts = function(delta) {
 				console.log('move contacts', delta);
-				var oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
+				let oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
 
 				if (oldContactPosition) {
-					var cid = nextContactId(oldContactPosition, delta);
+					let cid = nextContactId(oldContactPosition, delta);
 					$state.go('main.contacts.profile', {contactId: cid});
 				}
 			};

@@ -11,9 +11,9 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	$scope.isDisabled = true;
 	$scope.isInitialLoad = true;
 
-	var requestList = () => {
+	const requestList = () => {
 		$scope.isLoading = true;
-		var t = $timeout(() => {
+		let t = $timeout(() => {
 			$scope.isLoadingSign = true;
 		}, consts.LOADER_SHOW_DELAY);
 
@@ -41,7 +41,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	};
 
 	$scope.searchFilter = (thread) => {
-		var searchText = $scope.searchText.toLowerCase();
+		let searchText = $scope.searchText.toLowerCase();
 		return thread.subject.toLowerCase().includes(searchText) || thread.members.some(m => m.toLowerCase().includes(searchText));
 	};
 
@@ -95,28 +95,28 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	requestList();
 
     // Add hotkeys
-    var moveThreads = function(delta) {
-        var selectedIndex = $scope.threadsList && $scope.selectedTid !== null
-            ? $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid)
-        : -1;
-        if ($scope.selectedTid !== null) {
-            selectedIndex = Math.min(Math.max(selectedIndex + delta, 0), $scope.threadsList.length - 1);
-            $scope.selectedTid = $scope.threadsList[selectedIndex].id;
-            $scope.selectThread(null, $scope.selectedTid);
-        }
-    };
+	const addHotkeys = () => {
+		const moveThreads = (delta) => {
+			let selectedIndex = $scope.threadsList && $scope.selectedTid !== null
+				? $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid)
+				: -1;
+			if ($scope.selectedTid !== null) {
+				selectedIndex = Math.min(Math.max(selectedIndex + delta, 0), $scope.threadsList.length - 1);
+				$scope.selectedTid = $scope.threadsList[selectedIndex].id;
+				$scope.selectThread(null, $scope.selectedTid);
+			}
+		};
 
-    var moveUp = function(event, key) {
-        event.preventDefault();
-        moveThreads(-1);
-    };
+		const moveUp = (event, key) => {
+			event.preventDefault();
+			moveThreads(-1);
+		};
 
-    var moveDown = function(event, key) {
-        event.preventDefault();
-        moveThreads(1);
-    };
-
-	var addHotkeys = function() {
+		const moveDown = (event, key) => {
+			event.preventDefault();
+			moveThreads(1);
+		};
+		
 		Hotkey.addHotkey({
 			combo: ['h', 'k', 'left', 'up'],
 			description: 'HOTKEY.MOVE_UP',
