@@ -317,8 +317,11 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		removeKeys(sessionStorage);
 	};
 
-	this.removeSensitiveKeys = () => {
+	this.removeSensitiveKeys = (isTriggerUpdateEvent = false) => {
 		removeDecryptedKeys(localStorage);
 		removeKeys(sessionStorage);
+
+		if (isTriggerUpdateEvent)
+			self.initialize();
 	};
 };

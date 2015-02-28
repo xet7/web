@@ -50,6 +50,10 @@ module.exports = /*@ngInject*/($scope, $timeout, utils, user, crypto, cryptoKeys
 			});
 	};
 
+	$scope.removeDecryptedKeys = () => {
+		crypto.removeSensitiveKeys(true);
+	};
+
 	$scope.exportKeys = () => {
 		let keysBackup = cryptoKeys.exportKeys();
 		saver.saveAs(keysBackup, cryptoKeys.getExportFilename(keysBackup, user.name));
