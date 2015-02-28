@@ -20,7 +20,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 				const emailsPromise = inbox.getEmailsByThreadId($scope.selectedTid);
 
 				const thread = yield threadPromise;
-				console.log('!thread', thread, thread.isLabel($scope.labelName));
+
 				if (!thread || !thread.isLabel($scope.labelName)) {
 					yield $state.go('main.inbox.label', {labelName: $scope.labelName, threadId: null});
 					return;

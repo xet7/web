@@ -60,8 +60,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		$scope.threads = inbox.threads;
 		$scope.threadsList = inbox.threadsList[$scope.labelName];
 
-		console.log('$scope.threadsList', $scope.threadsList);
-
 		if (!$scope.threadsList || $scope.threadsList.length < 1)
 			$state.go('main.inbox.label', {labelName: $scope.labelName});
 
