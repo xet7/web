@@ -8,14 +8,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 		labelNames.forEach(labelName => {
 			self.labelsByName[labelName].addUnreadThreadId(event.thread);
 		});
-
-		let thread = yield self.getThreadById(event.thread);
-
-		labelNames.forEach(labelName => {
-			self.threads[thread.id] = thread;
-			self.threadsList[labelName].unshift(thread);
-			self.threadsList[labelName] = _.uniq(self.threadsList[labelName], t => t.id);
-		});
 	});
 
 	const getThreadsByLabelName = (labelName, offset, limit) => co(function *() {
@@ -132,14 +124,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 		self.labelsById = {};
 		self.labelsByName = {};
-		self.threads = {};
 
 		let labels = yield self.getLabels();
-
-		self.threadsList = Object.keys(labels.byName).reduce((a, name) => {
-			a[name] = [];
-			return a;
-		}, {});
 
 		if (!labels.byName.Drafts) {
 			yield LavaboomAPI.labels.create({name: 'Drafts'});
@@ -172,17 +158,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	});
 
 	this.requestList = (labelName, offset, limit) => {
-		if (offset === 0)
-			self.threadsList[labelName] = [];
-
-		return co(function * (){
-			let e = yield getThreadsByLabelName(labelName, offset, limit);
-
-			self.threads = angular.extend(self.threads, e.map);
-			self.threadsList[labelName] = _.uniq(self.threadsList[labelName].concat(e.list), t => t.id);
-
-			return e;
-		});
+		return  getThreadsByLabelName(labelName, offset, limit);
 	};
 
 	this.getKeyForEmail = (email) => co(function * () {

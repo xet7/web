@@ -1,5 +1,8 @@
 module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Cache) => {
-	const self = this;
+	const self = $delegate;
+
+	self.threads = {};
+	self.threadsList = {};
 
 	/*
 	wait for AWAIT_FOR_ITEM_CONCURRENT msec when Inbox.getThreadById called and there is pending Inbox.requestList
@@ -18,33 +21,40 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		});
 	};
 
-	const performThreadsOperation = (operation) => function *() {
-		let r = yield co(operation);
-
-		$rootScope.$broadcast(`inbox-threads`);
-
-		return r;
-	};
-
-	const proxyThreadsMethodCall = (call, proxy) => {
-		proxyMethodCall(call, performThreadsOperation(proxy));
-	};
-
 	let threadsById = new Cache(DEFAULT_CACHE_OPTIONS);
 	let threadsListByLabelName = new Cache(DEFAULT_CACHE_OPTIONS);
+
+	proxyMethodCall('initialize', function *(initialize, args){
+		yield initialize(...args);
+
+		self.threads = {};
+		self.threadsList = Object.keys(self.labelsByName).reduce((a, name) => {
+			a[name] = [];
+			return a;
+		}, {});
+	});
 
 	proxyMethodCall('getLabels', function *(getLabels, args) {
 		return yield getLabels(...args);
 	});
 
-	proxyThreadsMethodCall('requestList', function *(requestList, args) {
+	proxyMethodCall('requestList', function *(requestList, args) {
 		const [labelName, offset, limit] = args;
+
+		if (offset === 0)
+			self.threadsList[labelName] = [];
 
 		let res = threadsListByLabelName.get(labelName);
 		if (!res)
 			threadsListByLabelName.put(labelName, yield requestList(...args));
+		res = threadsListByLabelName.get(labelName);
 
-		return threadsListByLabelName.get(labelName);
+		self.threads = angular.extend(self.threads, res.map);
+		self.threadsList[labelName] = _.uniq(self.threadsList[labelName].concat(res.list), t => t.id);
+
+		$rootScope.$broadcast(`inbox-threads`);
+
+		return res;
 	});
 
 	$delegate.invalidateThreadCache = () => {
