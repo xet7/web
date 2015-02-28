@@ -1,7 +1,7 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $stateParams, inbox, consts) => {
-	$scope.isLoading = false;
-
 	console.log('loading emails list', $stateParams.threadId);
+
+	$scope.isLoading = false;
 
 	$scope.selectedTid = $stateParams.threadId;
 	$scope.emails = [];
@@ -22,10 +22,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $stateParams, inbox
 			});
 	}
 
-	$scope.downloadFile = (id) => {
-
-	};
-
 	let markAsReadTimeout = null;
 	let emails = null;
 
@@ -35,7 +31,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $stateParams, inbox
 	});
 
 	$rootScope.$on('emails-list-restore', () => {
-		console.log('restore!');
 		$scope.emails = emails;
 	});
 
