@@ -23,18 +23,20 @@
 	width: @mail-thread-width;
 	margin-left: @mail-list-width;
 	.z3();
-	box-shadow:  -3px 0px 14px 0 rgba(0, 0, 0, 0.19);
 	position: absolute;
-	top:0;
-	bottom: 0;
-	overflow-x: hidden;
-	overflow-y: auto;
+	height: 100%;
+	overflow-y: hidden;
+    overflow-x: hidden;
+    .z1();
+	.scrollbars();
+	box-shadow:  -3px 0px 14px 0 rgba(0, 0, 0, 0.19);
+	
 	@media (max-width: @screen-md-max) {
 		width: @mail-thread-width-sm;
 		margin-left: @mail-list-width-sm;
 	}
 	
-	.actions{
+	.actions, .filters{
 		top: 0;
 		.z2();
 	}
@@ -44,8 +46,10 @@
 		height: 100%;
 		// padding: 10px;
 		margin-top: @filter-height;
-		> .settings-panel, .main-panel{
-			position: relative;
+		overflow: auto;
+		> .settings-panel, > .main-panel{
+			.no-gutter();
+			// position: relative;
 			height: 100%;
 			overflow: auto;
 			padding-bottom: @filter-height + 25px;
