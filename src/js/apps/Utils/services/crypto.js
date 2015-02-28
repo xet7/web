@@ -74,6 +74,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 	};
 
 	this.decodeRaw = (message) => co(function *(){
+		if (!message)
+			throw new Error('nothing_to_decrypt');
+
 		let pgpMessage = openpgp.message.readArmored(message);
 		let decryptResults = yield getDecryptedPrivateKeys().map(key => co.def(openpgp.decryptMessage(key, pgpMessage), null));
 

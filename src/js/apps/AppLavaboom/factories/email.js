@@ -9,10 +9,12 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 
 		this.date = opt.date_created;
 		this.manifest = manifest;
-		this.files = manifest.files;
+		this.files = manifest ? manifest.files : [];
 
-		this.from = manifest.from;
-		this.fromAllPretty = manifest.from.map(e => e.prettyName).join(',');
+		this.from = manifest ? manifest.from
+			: (angular.isArray(opt.from) ? opt.from : [opt.from]);
+		this.fromAllPretty = manifest ? manifest.from.map(e => e.prettyName).join(',')
+			: (angular.isArray(opt.from) ? opt.from.join(',') : opt.from);
 		this.preview = opt.preview;
 		this.body = opt.body;
 		this.attachments = opt.attachments ? opt.attachments : [];
