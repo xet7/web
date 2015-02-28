@@ -60,9 +60,25 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		$scope.threads = inbox.threads;
 		$scope.threadsList = inbox.threadsList[$scope.labelName];
 
+		console.log('$scope.threadsList', $scope.threadsList);
+
+		if (!$scope.threadsList || $scope.threadsList.length < 1)
+			$state.go('main.inbox.label', {labelName: $scope.labelName});
+
 		$scope.isLoading = false;
 		$scope.isLoadingSign = false;
 		$scope.isInitialLoad = false;
+	});
+
+	$scope.$watch('filteredThreadsList', (o, n) => {
+		if (o == n)
+			return;
+
+		const r = $scope.filteredThreadsList.find(t => t.id == $scope.selectedTid);
+		if (!r)
+			$rootScope.$broadcast('emails-list-hide');
+		else
+			$rootScope.$broadcast('emails-list-restore');
 	});
 
 	$rootScope.$on('$stateChangeStart', (e, toState, toParams) => {

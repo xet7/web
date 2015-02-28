@@ -34,14 +34,11 @@ module.exports = /*@ngInject*/($injector, $rootScope, $translate, co, user, cryp
 	};
 
 	Thread.fromEnvelope = (envelope) => co(function *() {
-		if (!envelope.manifest)
-			throw new Error('manifest not found');
-
-		let manifestRaw = yield crypto.decodeRaw(envelope.manifest);
+		let manifestRaw = yield co.def(crypto.decodeRaw(envelope.manifest), null);
 
 		console.log('thread manifest', manifestRaw);
 
-		return new Thread(envelope, Manifest.createFromJson(manifestRaw));
+		return new Thread(envelope, manifestRaw ? Manifest.createFromJson(manifestRaw) : null);
 	});
 	
 	return Thread;

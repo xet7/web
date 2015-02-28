@@ -230,6 +230,7 @@
 	LB_SORT_BY_LAST_NAME = "last name"
 	TITLE_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts"
 	LB_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts Enabled"
+
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
 	TITLE_KEYS_MANAGEMENT = "Manage your keys"
@@ -244,6 +245,7 @@
 	LB_PASSPHRASE = "Enter your passphrase"
 	LB_PASSPHRASE_NOTE = "In order to remember your passphrase please select \"private computer\" checkbox when you sign in to the lavaboom"
 	LB_KEY_NOTE = "Don't see your key? Private key required in order to read emails and view contacts, please import private key"
+	BTN_REMOVE_DECRYPTED_KEYS = "Remove decrypted keys"
 	BTN_EXPORT_KEYS = "Export keys"
 	BTN_IMPORT_KEYS = "Import keys"
 	LB_DECRYPTED = "Decrypted"
