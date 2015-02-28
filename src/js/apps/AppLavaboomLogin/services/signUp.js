@@ -64,8 +64,6 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
 					state: 'incomplete'
 				});
 
-			console.log('!settings', settings);
-
 			yield user.update(settings);
 		});
 	};

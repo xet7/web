@@ -187,6 +187,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	this.logout = () => {
 		$rootScope.$broadcast('logout');
 
+		self.settings = {};
 		self.removeTokens();
 		crypto.removeSensitiveKeys();
 
