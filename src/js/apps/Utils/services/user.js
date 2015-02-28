@@ -14,6 +14,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 	// information about user from API
 	this.settings = {};
+	this.defaultSettings = {
+		isHotkeyEnabled: true
+	};
 
 	// primary key
 	this.key = null;
