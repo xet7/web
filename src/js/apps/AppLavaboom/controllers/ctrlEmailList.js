@@ -1,8 +1,9 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $stateParams, inbox, consts) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParams, co, inbox, consts) => {
 	console.log('loading emails list', $stateParams.threadId);
 
 	$scope.isLoading = false;
 
+	$scope.labelName = $stateParams.labelName;
 	$scope.selectedTid = $stateParams.threadId;
 	$scope.emails = [];
 
@@ -12,14 +13,25 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $stateParams, inbox
 		}, consts.LOADER_SHOW_DELAY);
 
 		$scope.emails = [];
-		inbox.getEmailsByThreadId($scope.selectedTid)
-			.then(emails => {
-				$scope.emails = emails;
-			})
-			.finally(() => {
+
+		co(function *(){
+			try {
+				const threadPromise = inbox.getThreadById($scope.selectedTid);
+				const emailsPromise = inbox.getEmailsByThreadId($scope.selectedTid);
+
+				const thread = yield threadPromise;
+				console.log('!thread', thread, thread.isLabel($scope.labelName));
+				if (!thread || !thread.isLabel($scope.labelName)) {
+					yield $state.go('main.inbox.label', {labelName: $scope.labelName, threadId: null});
+					return;
+				}
+
+				$scope.emails = yield emailsPromise;
+			} finally {
 				$timeout.cancel(t);
 				$scope.isLoading = false;
-			});
+			}
+		});
 	}
 
 	let markAsReadTimeout = null;
