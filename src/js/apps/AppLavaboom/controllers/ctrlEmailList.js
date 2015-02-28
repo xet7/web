@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $timeout, $stateParams, inbox, consts) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $stateParams, inbox, consts) => {
 	$scope.isLoading = false;
 
 	console.log('loading emails list', $stateParams.threadId);
@@ -26,7 +26,18 @@ module.exports = /*@ngInject*/($scope, $timeout, $stateParams, inbox, consts) =>
 
 	};
 
-	var markAsReadTimeout = null;
+	let markAsReadTimeout = null;
+	let emails = null;
+
+	$rootScope.$on('emails-list-hide', () => {
+		emails = $scope.emails;
+		$scope.emails = [];
+	});
+
+	$rootScope.$on('emails-list-restore', () => {
+		console.log('restore!');
+		$scope.emails = emails;
+	});
 
 	if ($scope.selectedTid)
 		markAsReadTimeout = $timeout(() => {
