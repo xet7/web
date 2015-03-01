@@ -80,7 +80,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		cache.put('labels', res);
 
 		return res;
-	});
+	}, true);
 
 	const requestListProxy = function *(requestList, args) {
 		let [labelName, offset, limit] = args;
@@ -115,7 +115,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 
 		// todo: get rid of uniq(api bug)
 		return _.uniq(value.list, t => t.id).slice(offset, offset + limit);
-	});
+	}, true);
 
 	self.requestListDirect = proxy.unbindedMethodCall('requestList', function *(requestList, args) {
 		let [labelName, offset, limit] = args;
@@ -124,7 +124,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 
 		// todo: get rid of uniq(api bug)
 		return _.uniq(value.list, t => t.id).slice(offset, offset + limit);
-	});
+	}, true);
 
 	proxy.methodCall('getThreadById', function *(getThreadById, args) {
 		const [threadId] = args;
@@ -148,7 +148,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		});
 
 		return thread;
-	});
+	}, true);
 
 	const requestModifyLabelProxy = function *(requestModifyLabel, args){
 		const [thread] = args;
@@ -223,7 +223,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 			emailsCache.put(threadId, yield getEmailsByThreadId(...args));
 
 		return emailsCache.get(threadId);
-	});
+	}, true);
 
 	proxy.methodCall('getEmailById', function *(getEmailById, args) {
 		const [emailId] = args;
@@ -233,7 +233,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 			email = yield getEmailById(...args);
 
 		return email;
-	});
+	}, true);
 
 	proxy.methodCall('__handleEvent', function *(__handleEvent, args) {
 		const [event] = args;
