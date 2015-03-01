@@ -1,5 +1,7 @@
-module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Cache) => {
+module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Cache, Proxy) => {
 	const self = $delegate;
+
+	const proxy = new Proxy($delegate);
 
 	self.threads = {};
 	self.threadsList = {};
@@ -10,13 +12,6 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 	 */
 	const AWAIT_FOR_ITEM_CONCURRENT = 500;
 	let pendingListRequest = null;
-
-	const proxyMethodCall = (call, proxy) => {
-		const original = $delegate[call];
-		$delegate[call] = (...args) => co(function *(){
-			return yield co(proxy(original, args));
-		});
-	};
 
 	const CACHE_UNFOLD = {
 		unfold: item => item.id
@@ -69,19 +64,19 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		thread.labels = newLabels;
 	});
 
-	proxyMethodCall('initialize', function *(initialize, args){
+	proxy.methodCall('initialize', function *(initialize, args){
 		const res = yield initialize(...args);
 		return res;
 	});
 
-	proxyMethodCall('createLabel', function *(createLabel, args) {
+	proxy.methodCall('createLabel', function *(createLabel, args) {
 		const res = yield createLabel(...args);
 		cache.invalidate('labels');
 
 		return yield self.getLabels();
 	});
 
-	proxyMethodCall('getLabels', function *(getLabels, args) {
+	proxy.methodCall('getLabels', function *(getLabels, args) {
 		let res = cache.get('labels');
 		if (res)
 			return res;
@@ -92,7 +87,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		return res;
 	});
 
-	proxyMethodCall('requestList', function *(requestList, args) {
+	proxy.methodCall('requestList', function *(requestList, args) {
 		const [labelName, offset, limit] = args;
 
 		console.log('requestList proxy:', labelName, offset, limit);
@@ -122,7 +117,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		return res;
 	});
 
-	proxyMethodCall('getThreadById', function *(getThreadById, args) {
+	proxy.methodCall('getThreadById', function *(getThreadById, args) {
 		const [threadId] = args;
 
 		/*if (pendingListRequest)
@@ -145,7 +140,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		return thread;
 	});
 
-	const requestModifyLabelProxy = function *(requestModifyLabel, args){
+	const requestModifyLabelproxy = function *(requestModifyLabel, args){
 		const [thread] = args;
 
 		const labels = yield self.getLabels();
@@ -176,7 +171,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		return newLabels;
 	};
 
-	proxyMethodCall('requestDeleteForcefully', function *(requestDeleteForcefully, args) {
+	proxy.methodCall('requestDeleteForcefully', function *(requestDeleteForcefully, args) {
 		const res = yield requestDeleteForcefully(...args);
 
 		const [thread] = args;
@@ -199,13 +194,13 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		return res;
 	});
 
-	proxyMethodCall('requestSetLabel', requestModifyLabelProxy);
+	proxy.methodCall('requestSetLabel', requestModifyLabelproxy);
 
-	proxyMethodCall('requestRemoveLabel', requestModifyLabelProxy);
+	proxy.methodCall('requestRemoveLabel', requestModifyLabelproxy);
 
-	proxyMethodCall('requestAddLabel', requestModifyLabelProxy);
+	proxy.methodCall('requestAddLabel', requestModifyLabelproxy);
 
-	proxyMethodCall('setThreadReadStatus', function *(setThreadReadStatus, args){
+	proxy.methodCall('setThreadReadStatus', function *(setThreadReadStatus, args){
 		const [threadId] = args;
 
 		const thread = threadsCache.getById(threadId);
@@ -220,7 +215,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		yield self.getLabels();
 	});
 
-	proxyMethodCall('getEmailsByThreadId', function *(getEmailsByThreadId, args) {
+	proxy.methodCall('getEmailsByThreadId', function *(getEmailsByThreadId, args) {
 		const [threadId] = args;
 
 		if (!emailsCache.get(threadId))
@@ -229,7 +224,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		return emailsCache.get(threadId);
 	});
 
-	proxyMethodCall('getEmailById', function *(getEmailById, args) {
+	proxy.methodCall('getEmailById', function *(getEmailById, args) {
 		const [emailId] = args;
 
 		let email = emailsCache.getById(emailId);
@@ -239,7 +234,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		return email;
 	});
 
-	proxyMethodCall('__handleEvent', function *(__handleEvent, args) {
+	proxy.methodCall('__handleEvent', function *(__handleEvent, args) {
 		cache.invalidate('labels');
 
 		yield __handleEvent(...args);
