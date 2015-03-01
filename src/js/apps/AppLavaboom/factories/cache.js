@@ -85,11 +85,21 @@ module.exports = /*@ngInject*/(co) => {
 				});
 		};
 
-		this.unshift = (key, item) => {
-			if (!cacheByKey[key])
+		this.unshiftOnlyIfKeyIsPreset = (key, item) => {
+			const r = cacheByKey[key];
+			if (!r)
 				return false;
 
-			opts.list(cacheByKey[key].value).unshift(item);
+			const now = new Date();
+
+			if (now - r.time > opts.ttl) {
+				console.log('cache(3) ', name, 'invalidate:', now, r.time);
+				self.invalidate(key);
+
+				return null;
+			}
+
+			opts.list(r.value).unshift(item);
 
 			if (opts.unfold) {
 				const id = opts.unfold(item);
@@ -98,6 +108,8 @@ module.exports = /*@ngInject*/(co) => {
 					key: key
 				};
 			}
+
+			return true;
 		};
 
 		this.invalidate = (key) => {

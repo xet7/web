@@ -19,7 +19,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 	});
 	let threadsCache = new Cache('threads cache', angular.extend({},
 		{
-			ttl: consts.INBOX_THREADS_CACHE_TTL
+			ttl: 15000
 		},
 		{
 			list: value => value.list
@@ -33,7 +33,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		CACHE_UNFOLD
 	));
 
-	const updateThreadLabelsById = (thread, labelsById, newLabels) => co(function *(){
+	const updateThreadLabels = (thread, labelsById, newLabels) => co(function *(){
 		// remove labels that do not exist in updated thread
 		thread.labels.forEach(lid => {
 			if (newLabels.includes(lid))
@@ -136,7 +136,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 
 		thread.labels.forEach(labelId => {
 			const labelName = labels.byId[labelId].name;
-			threadsCache.unshift(labelName, thread);
+			threadsCache.unshiftOnlyIfKeyIsPreset(labelName, thread);
 
 			$rootScope.$broadcast(`inbox-threads`, labelName);
 		});
@@ -157,7 +157,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		if (oldThread) {
 			const labelsRes = yield self.getLabels();
 
-			yield updateThreadLabelsById(oldThread, labelsRes.byId, newLabels);
+			yield updateThreadLabels(oldThread, labelsRes.byId, newLabels);
 		}
 
 		for(let labelName of allLabels) {
@@ -198,12 +198,13 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		const [threadId] = args;
 
 		const thread = threadsCache.getById(threadId);
-		if (thread.isRead)
+		if (thread && thread.isRead)
 			return;
 
 		yield setThreadReadStatus(...args);
 
-		thread.isRead = true;
+		if (thread)
+			thread.isRead = true;
 
 		cache.invalidate('labels');
 		yield self.getLabels();

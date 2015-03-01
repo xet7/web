@@ -6,8 +6,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 		const labels = yield self.getLabels();
 
-		self.getThreadById(event.thread);
-
 		const labelNames = event.labels.map(lid => labels.byId[lid].name);
 		labelNames.forEach(labelName => {
 			labels.byName[labelName].addUnreadThreadId(event.thread);
