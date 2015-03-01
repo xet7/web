@@ -27,7 +27,6 @@
 	},
 	"undef": true,
 	"latedef": true,
-	"unused": "vars",
 	"-W002": false,
 	"-W014": false
 }

@@ -7,7 +7,7 @@ module.exports = /*@ngInject*/($injector, $rootScope, $translate, co, user, cryp
 		translations.LB_AND_OTHERS = $translate.instant('LOADER.LB_AND_OTHERS');
 	});
 
-	let Thread = function(opt, manifest) {
+	let Thread = function(opt, manifest, labels) {
 		let self = this;
 		let inbox = $injector.get('inbox');
 
@@ -20,13 +20,13 @@ module.exports = /*@ngInject*/($injector, $rootScope, $translate, co, user, cryp
 		this.labels = opt.labels;
 		this.attachmentsCount = opt.attachments_count;
 
-		this.isLabel = (labelName) => this.labels.some(lid => inbox.labelsById[lid] && inbox.labelsById[lid].name == labelName);
+		this.isLabel = (labelName) => this.labels.some(lid => labels.byId[lid] && labels.byId[lid].name == labelName);
 		this.addLabel = (labelName) => {
-			return _.union(self.labels, [inbox.labelsByName[labelName].id]);
+			return _.union(self.labels, [labels.byName[labelName].id]);
 		};
 
 		this.removeLabel = (labelName) => {
-			return self.labels.filter(x => x != inbox.labelsByName[labelName].id);
+			return self.labels.filter(x => x != labels.byName[labelName].id);
 		};
 
 		this.isRead = opt.is_read;
@@ -34,11 +34,15 @@ module.exports = /*@ngInject*/($injector, $rootScope, $translate, co, user, cryp
 	};
 
 	Thread.fromEnvelope = (envelope) => co(function *() {
+		let inbox = $injector.get('inbox');
+
 		let manifestRaw = yield co.def(crypto.decodeRaw(envelope.manifest), null);
+
+		const labels = yield inbox.getLabels();
 
 		console.log('thread manifest', manifestRaw);
 
-		return new Thread(envelope, manifestRaw ? Manifest.createFromJson(manifestRaw) : null);
+		return new Thread(envelope, manifestRaw ? Manifest.createFromJson(manifestRaw) : null, labels);
 	});
 	
 	return Thread;

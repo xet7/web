@@ -19,14 +19,23 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 				const threadPromise = inbox.getThreadById($scope.selectedTid);
 				const emailsPromise = inbox.getEmailsByThreadId($scope.selectedTid);
 
-				const thread = yield threadPromise;
-				console.log('!thread', thread, thread.isLabel($scope.labelName));
+				const thread = yield co.def(threadPromise, null);
+
 				if (!thread || !thread.isLabel($scope.labelName)) {
 					yield $state.go('main.inbox.label', {labelName: $scope.labelName, threadId: null});
 					return;
 				}
 
 				$scope.emails = yield emailsPromise;
+
+				const markAsReadTimeout = $timeout(() => {
+						inbox.setThreadReadStatus($scope.selectedTid);
+					}, consts.SET_READ_AFTER_TIMEOUT);
+
+				$scope.$on('$destroy', () => {
+					if (markAsReadTimeout)
+						$timeout.cancel(markAsReadTimeout);
+				});
 			} finally {
 				$timeout.cancel(t);
 				$scope.isLoading = false;
@@ -34,25 +43,16 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 		});
 	}
 
-	let markAsReadTimeout = null;
 	let emails = null;
 
 	$rootScope.$on('emails-list-hide', () => {
+		console.log('emails-list-hide');
 		emails = $scope.emails;
 		$scope.emails = [];
 	});
 
 	$rootScope.$on('emails-list-restore', () => {
+		console.log('emails-list-restore');
 		$scope.emails = emails;
-	});
-
-	if ($scope.selectedTid)
-		markAsReadTimeout = $timeout(() => {
-			inbox.setThreadReadStatus($scope.selectedTid);
-		}, consts.SET_READ_AFTER_TIMEOUT);
-
-	$scope.$on('$destroy', () => {
-		if (markAsReadTimeout)
-			$timeout.cancel(markAsReadTimeout);
 	});
 };

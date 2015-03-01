@@ -1,20 +1,26 @@
 module.exports = /*@ngInject*/(co) => {
-	var Cache = function (opts = {}) {
-		var cache = {};
+	const Cache = function (name, opts = {}) {
+		let cacheByKey = {};
+		let cacheById = {};
 		const self = this;
 
-		this.get = (name) => {
-			var r = cache[name];
+		console.log('construct Cache instance name: ', name, 'options:', opts);
+
+		if (!opts.unfold)
+			opts.unfold = null;
+		if (!opts.list)
+			opts.list = value => value;
+		
+		this.get = (key) => {
+			const r = cacheByKey[key];
 			if (!r)
 				return null;
 
-			var now = new Date();
+			const now = new Date();
 
 			if (now - r.time > opts.ttl) {
-				if (opts.isInvalidateWholeCache)
-					self.invalidateAll();
-				else
-					self.invalidate(name);
+				console.log('cache(1) ', name, 'invalidate:', now, r.time);
+				self.invalidate(key);
 
 				return null;
 			}
@@ -22,35 +28,106 @@ module.exports = /*@ngInject*/(co) => {
 			return r.value;
 		};
 
-		this.put = (name, value) => {
-			cache[name] = {
-				value: value,
-				time: new Date()
-			};
+		this.getById = (id) => {
+			const r = cacheById[id];
+			if (!r)
+				return null;
+
+			const rList = cacheByKey[r.key];
+
+			const now = new Date();
+
+			if (now - rList.time > opts.ttl) {
+				self.invalidate(r.key);
+
+				return null;
+			}
+
+			return r.value;
 		};
 
-		this.invalidate = (name) => {
-			if (cache[name])
-				delete cache[name];
+		this.removeById = (id) => {
+			for(let key of Object.keys(cacheByKey)) {
+				const list = opts.list(cacheByKey[key].value);
+				let index = list.findIndex(item => opts.unfold(item) == id);
+				if (index > -1)
+					list.splice(index, 1);
+			}
+			delete cacheById[id];
+		};
+
+		this.exposeIds = () => {
+			return Object.keys(cacheById).reduce((a, id) => {
+				a[id] = cacheById[id].value;
+				return a;
+			}, {});
+		};
+
+		this.exposeKeys = (key) => {
+			return cacheByKey[key] ? cacheByKey[key].value : null;
+		};
+
+		this.put = (key, value) => {
+			const date = new Date();
+
+			cacheByKey[key] = {
+				value: value,
+				time: date
+			};
+
+			if (opts.unfold)
+				opts.list(value).forEach(item => {
+					const id = opts.unfold(item);
+					cacheById[id] = {
+						value: item,
+						key: key
+					};
+				});
+		};
+
+		this.unshiftOnlyIfKeyIsPreset = (key, item) => {
+			const r = cacheByKey[key];
+			if (!r)
+				return false;
+
+			const now = new Date();
+
+			if (now - r.time > opts.ttl) {
+				console.log('cache(3) ', name, 'invalidate:', now, r.time);
+				self.invalidate(key);
+
+				return null;
+			}
+
+			opts.list(r.value).unshift(item);
+
+			if (opts.unfold) {
+				const id = opts.unfold(item);
+				cacheById[id] = {
+					value: item,
+					key: key
+				};
+			}
+
+			return true;
+		};
+
+		this.invalidate = (key) => {
+			if (cacheByKey[key]) {
+				const value = cacheByKey[key].value;
+				if (opts.unfold)
+					opts.list(value).forEach(item => {
+						const id = opts.unfold(item);
+						delete cacheById[id];
+					});
+				delete cacheByKey[key];
+			}
 		};
 
 		this.invalidateAll = () => {
-			cache = {};
+			cacheByKey = {};
+			cacheById = {};
 		};
-
-		this.call = (promiseInvoker, args) => co(function* (){
-			var key = JSON.stringify(args);
-
-			var r = self.get(key);
-			if (r)
-				return r;
-
-			r = yield promiseInvoker.apply(this, args);
-
-			self.put(key, r);
-
-			return r;
-		});
 	};
 
 	return Cache;

@@ -5,6 +5,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 
 	console.log('CtrlThreadList loaded', $scope.selectedTid);
 
+	$scope.threads = {};
+	$scope.threadsList = [];
 	$scope.searchText = '';
 	$scope.isLoading = false;
 	$scope.isLoadingSign = false;
@@ -13,6 +15,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 
 	$scope.offset = 0;
 	$scope.limit = 15;
+
+	let isWatching = false;
 
 	const requestList = () => {
 		$scope.isLoading = true;
@@ -23,11 +27,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		const labelName = $scope.labelName;
 		co(function *(){
 			try {
-				let e = yield inbox.requestList($scope.labelName, $scope.offset, $scope.limit);
+				const list = yield inbox.requestList($scope.labelName, $scope.offset, $scope.limit);
 
 				if (labelName == $scope.labelName) {
-					$scope.isDisabled = e.list.length < 1;
-					$scope.offset += e.list.length;
+					$scope.isDisabled = list.length < 1;
+					$scope.offset += list.length;
 				}
 			} catch (err) {
 				$scope.isDisabled = true;
@@ -55,30 +59,42 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		return thread.subject.toLowerCase().includes(searchText) || thread.members.some(m => m.toLowerCase().includes(searchText));
 	};
 
-	$scope.$bind(`inbox-threads`, (e) => {
-		console.log($scope.labelName, inbox.threadsList);
-		$scope.threads = inbox.threads;
-		$scope.threadsList = inbox.threadsList[$scope.labelName];
-
-		console.log('$scope.threadsList', $scope.threadsList);
-
-		if (!$scope.threadsList || $scope.threadsList.length < 1)
-			$state.go('main.inbox.label', {labelName: $scope.labelName});
-
-		$scope.isLoading = false;
-		$scope.isLoadingSign = false;
-		$scope.isInitialLoad = false;
-	});
-
-	$scope.$watch('filteredThreadsList', (o, n) => {
-		if (o == n)
+	$rootScope.$on(`inbox-threads`, (e, labelName) => {
+		if (labelName != $scope.labelName) {
+			console.log(`inbox-threads data has been rejected label should match to `, $scope.labelName);
 			return;
+		}
 
-		const r = $scope.filteredThreadsList.find(t => t.id == $scope.selectedTid);
-		if (!r)
-			$rootScope.$broadcast('emails-list-hide');
-		else
-			$rootScope.$broadcast('emails-list-restore');
+		co (function *(){
+			$scope.threadsList = yield inbox.requestListDirect($scope.labelName, 0, $scope.limit);
+			if (!$scope.threadsList || $scope.threadsList.length < 1)
+				$state.go('main.inbox.label', {labelName: $scope.labelName});
+
+			$scope.threads = $scope.threadsList.reduce((a, t) => {
+				a[t.id] = t;
+				return a;
+			}, {});
+
+			$scope.isLoading = false;
+			$scope.isLoadingSign = false;
+			$scope.isInitialLoad = false;
+
+			if (!isWatching) {
+				$scope.$watch('filteredThreadsList', (o, n) => {
+					if (o == n)
+						return;
+
+					console.log('$scope.filteredThreadsList', $scope.filteredThreadsList, 'original', $scope.threadsList);
+
+					const r = $scope.filteredThreadsList.find(t => t.id == $scope.selectedTid);
+					if (!r)
+						$rootScope.$broadcast('emails-list-hide');
+					else
+						$rootScope.$broadcast('emails-list-restore');
+				});
+				isWatching = true;
+			}
+		});
 	});
 
 	$rootScope.$on('$stateChangeStart', (e, toState, toParams) => {
@@ -92,6 +108,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 				$scope.threads = {};
 				$scope.threadsList = [];
 				$scope.labelName = toParams.labelName;
+				isWatching = false;
 				requestList();
 			}
 			addHotkeys();
@@ -106,15 +123,18 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	};
 
 	$scope.spamThread = (tid) => {
-		inbox.requestSetLabel(tid, 'Spam');
+		console.log('$scope.spamThread', tid, $scope.threads);
+		inbox.requestSetLabel($scope.threads[tid], 'Spam');
 	};
 
 	$scope.deleteThread = (tid) => {
-		inbox.requestDelete(tid);
+		console.log('$scope.deleteThread', tid, $scope.threads);
+		inbox.requestDelete($scope.threads[tid]);
 	};
 
 	$scope.starThread = (tid) => {
-		inbox.requestSwitchLabel(tid, 'Starred');
+		console.log('$scope.starThread', tid, $scope.threads);
+		inbox.requestSwitchLabel($scope.threads[tid], 'Starred');
 	};
 
 	requestList();
