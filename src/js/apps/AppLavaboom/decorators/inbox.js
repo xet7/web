@@ -108,7 +108,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		$rootScope.$broadcast(`inbox-threads`, {
 			labelName,
 			list: threadsCache.exposeKeys(labelName),
-			map: _.uniq(threadsCache.exposeIds(), t => t.id)
+			map: threadsCache.exposeIds()
 		});
 
 		return res;
