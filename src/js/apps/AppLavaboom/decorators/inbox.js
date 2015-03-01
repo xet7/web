@@ -22,12 +22,18 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		});
 	};
 
+	const CACHE_UNFOLD = {
+		unfold: item => item.id
+	};
+
 	let cache = new Cache('default cache', DEFAULT_CACHE_OPTIONS);
 	let threadsCache = new Cache('threads cache', angular.extend({},
 		DEFAULT_CACHE_OPTIONS,
-		{
-			unfold: item => item.id
-		}
+		CACHE_UNFOLD
+	));
+	let emailsCache = new Cache('emails cache', angular.extend({},
+		DEFAULT_CACHE_OPTIONS,
+		CACHE_UNFOLD
 	));
 
 	const updateThreadLabelsById = (thread, labelsById, newLabels) => co(function *(){
@@ -212,6 +218,25 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		yield self.getLabels();
 	});
 
+	proxyMethodCall('getEmailsByThreadId', function *(getEmailsByThreadId, args) {
+		const [threadId] = args;
+
+		if (!emailsCache.get(threadId))
+			emailsCache.put(threadId, yield getEmailsByThreadId(...args));
+
+		return emailsCache.get(threadId);
+	});
+
+	proxyMethodCall('getEmailById', function *(getEmailById, args) {
+		const [emailId] = args;
+
+		let email = emailsCache.getById(emailId);
+		if (!email)
+			email = yield getEmailById(...args);
+
+		return email;
+	});
+
 	proxyMethodCall('__handleEvent', function *(__handleEvent, args) {
 		cache.invalidate('labels');
 
@@ -219,9 +244,11 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 	});
 
 	$delegate.invalidateThreadCache = () => {
+		threadsCache.invalidateAll();
 	};
 
 	$delegate.invalidateEmailCache = () => {
+		emailsCache.invalidateAll();
 	};
 
 	$rootScope.whenInitialized(() => {
