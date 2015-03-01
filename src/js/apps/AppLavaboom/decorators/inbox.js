@@ -262,6 +262,11 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 	};
 
 	$rootScope.whenInitialized(() => {
+		$rootScope.$on('keyring-updated', () => {
+			cache.invalidateAll();
+			self.invalidateEmailCache();
+			self.invalidateThreadCache();
+		});
 		$rootScope.$on('logout', () => {
 			self.invalidateEmailCache();
 			self.invalidateThreadCache();
