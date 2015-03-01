@@ -92,9 +92,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	});
 
 	this.initialize = () => co(function *(){
-		self.emails = [];
-		self.selected = null;
-
 		let labels = yield self.getLabels();
 
 		if (!labels.byName.Drafts)
