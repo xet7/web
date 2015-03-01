@@ -11,10 +11,6 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 	const AWAIT_FOR_ITEM_CONCURRENT = 500;
 	let pendingListRequest = null;
 
-	const DEFAULT_CACHE_OPTIONS = {
-		ttl: consts.INBOX_THREADS_CACHE_TTL
-	};
-
 	const proxyMethodCall = (call, proxy) => {
 		const original = $delegate[call];
 		$delegate[call] = (...args) => co(function *(){
@@ -26,13 +22,19 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		unfold: item => item.id
 	};
 
-	let cache = new Cache('default cache', DEFAULT_CACHE_OPTIONS);
+	let cache = new Cache('default cache', {
+		ttl: consts.INBOX_LABELS_CACHE_TTL
+	});
 	let threadsCache = new Cache('threads cache', angular.extend({},
-		DEFAULT_CACHE_OPTIONS,
+		{
+			ttl: consts.INBOX_THREADS_CACHE_TTL
+		},
 		CACHE_UNFOLD
 	));
 	let emailsCache = new Cache('emails cache', angular.extend({},
-		DEFAULT_CACHE_OPTIONS,
+		{
+			ttl: consts.INBOX_EMAILS_CACHE_TTL
+		},
 		CACHE_UNFOLD
 	));
 
