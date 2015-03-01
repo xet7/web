@@ -3,9 +3,6 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 
 	const proxy = new Proxy($delegate);
 
-	self.threads = {};
-	self.threadsList = {};
-
 	/*
 	wait for AWAIT_FOR_ITEM_CONCURRENT msec when Inbox.getThreadById called and there is pending Inbox.requestList
 	if no update available invoke Inbox.getThreadById to pull the actual data
