@@ -14,7 +14,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	$scope.isInitialLoad = true;
 
 	$scope.offset = 0;
-	$scope.limit = 15;
+	$scope.limit = 8;
 
 	const requestList = () => {
 		$scope.isLoading = true;
@@ -93,7 +93,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			$scope.selectedTid = toParams.threadId ? toParams.threadId : null;
 			if (toParams.labelName != $scope.labelName) {
 				$scope.offset = 0;
-				$scope.limit = 15;
+				$scope.limit = 8;
 				$scope.threads = {};
 				$scope.threadsList = [];
 				$scope.labelName = toParams.labelName;

@@ -4,9 +4,11 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	const handleEvent = (event) => co(function *(){
 		console.log('got server event', event);
 
-		const labelNames = event.labels.map(lid => self.labelsById[lid].name);
+		const labels = yield self.getLabels();
+
+		const labelNames = event.labels.map(lid => labels.byId[lid].name);
 		labelNames.forEach(labelName => {
-			self.labelsByName[labelName].addUnreadThreadId(event.thread);
+			labels.byName[labelName].addUnreadThreadId(event.thread);
 		});
 	});
 
@@ -17,9 +19,11 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	});
 
 	this.requestDelete = (thread) => co(function *() {
-		const trashLabelId = self.labelsByName.Trash.id;
-		const spamLabelId = self.labelsByName.Spam.id;
-		const draftsLabelId = self.labelsByName.Drafts.id;
+		const labels = yield self.getLabels();
+
+		const trashLabelId = labels.byName.Trash.id;
+		const spamLabelId = labels.byName.Spam.id;
+		const draftsLabelId = labels.byName.Drafts.id;
 
 		const lbs = thread.labels;
 		return lbs.includes(trashLabelId) || lbs.includes(spamLabelId) || lbs.includes(draftsLabelId)
@@ -32,7 +36,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	});
 
 	this.requestSetLabel = (thread, labelName) => co(function *() {
-		let labelId = self.labelsByName[labelName].id;
+		const labels = yield self.getLabels();
+		let labelId = labels.byName[labelName].id;
 
 		const newLabels = [labelId];
 		yield LavaboomAPI.threads.update(thread.id, {labels: newLabels});
@@ -78,12 +83,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 			is_read: true,
 			labels: thread.labels
 		});
-
-		const labels = yield self.getLabels();
-		self.labelsByName = labels.byName;
-		self.labelsById = labels.byId;
-
-		$rootScope.$broadcast('inbox-labels');
 	});
 
 	this.getLabels = () => co(function *() {
@@ -99,20 +98,16 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 		self.emails = [];
 		self.selected = null;
 
-		self.labelsById = {};
-		self.labelsByName = {};
-
 		let labels = yield self.getLabels();
 
-		if (!labels.byName.Drafts) {
-			yield LavaboomAPI.labels.create({name: 'Drafts'});
-			labels = yield self.getLabels();
-		}
+		if (!labels.byName.Drafts)
+			yield self.createLabel('Drafts');
+		else
+			$rootScope.$broadcast('inbox-labels', labels);
+	});
 
-		self.labelsByName = labels.byName;
-		self.labelsById = labels.byId;
-
-		$rootScope.$broadcast('inbox-labels');
+	this.createLabel = (name) => co(function *(){
+		yield LavaboomAPI.labels.create({name});
 	});
 
 	this.downloadAttachment = (id) => co(function *(){
@@ -135,7 +130,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	});
 
 	this.requestList = (labelName, offset, limit) => co(function *() {
-		const label = self.labelsByName[labelName];
+		const labels = yield self.getLabels();
+		const label = labels.byName[labelName];
 
 		const threads = (yield LavaboomAPI.threads.list({
 			label: label.id,
