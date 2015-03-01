@@ -47,7 +47,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		});
 
 		// add new labels
-		newLabels.labels.forEach(lid => {
+		newLabels.forEach(lid => {
 			if (thread.labels.includes(lid))
 				return;
 
@@ -59,15 +59,6 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		});
 
 		thread.labels = newLabels;
-	});
-
-	const updateThreadLabels = (thread, newLabelNames) => co(function *(){
-		const labelsRes = yield self.getLabels();
-		const labelsByName = labelsRes.byName;
-
-		const newLabels = newLabelNames.map(labelName => labelsByName[labelName].id);
-
-		return yield updateThreadLabelsById(thread, labelsRes.byId, newLabels);
 	});
 
 	proxyMethodCall('initialize', function *(initialize, args){
@@ -133,20 +124,27 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		const [thread] = args;
 
 		const newLabels = yield requestModifyLabel(...args);
-		const setLabels = new Set(...thread.labels.map(labelId => self.labelsById[labelId].name), ...newLabels);
-		const allLabels = setLabels.values();
+		const setLabels = new Set([...thread.labels.map(labelId => self.labelsById[labelId].name), ...newLabels.map(labelId => self.labelsById[labelId].name)]);
+		const allLabels = [...setLabels.values()];
 
 		// update cache if any
 		const oldThread = threadsCache.getById(thread.id);
-		if (oldThread)
-			updateThreadLabels(oldThread, newLabels);
+		if (oldThread) {
+			const labelsRes = yield self.getLabels();
+
+			yield updateThreadLabelsById(oldThread, labelsRes.byId, newLabels);
+		}
 
 		for(let labelName of allLabels) {
-			$rootScope.$broadcast(`inbox-threads`, {
-				labelName,
-				list: threadsCache.exposeKeys(labelName),
-				map: threadsCache.exposeIds()
-			});
+			console.log('requestModifyLabel proxy label update: ', labelName);
+
+			const list = threadsCache.exposeKeys(labelName);
+			if (list)
+				$rootScope.$broadcast(`inbox-threads`, {
+					labelName,
+					list: list,
+					map: threadsCache.exposeIds()
+				});
 		}
 
 		return newLabels;

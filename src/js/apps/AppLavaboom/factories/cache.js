@@ -76,7 +76,7 @@ module.exports = /*@ngInject*/(co) => {
 		};
 
 		this.exposeKeys = (key) => {
-			return cacheByKey[key].value;
+			return cacheByKey[key] ? cacheByKey[key].value : null;
 		};
 
 		this.put = (key, value) => {
