@@ -16,6 +16,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	$scope.offset = 0;
 	$scope.limit = 15;
 
+	let isWatching = false;
+
 	const requestList = () => {
 		$scope.isLoading = true;
 		let t = $timeout(() => {
@@ -64,7 +66,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		}
 
 		co (function *(){
-			$scope.threadsList = yield inbox.requestList($scope.labelName, 0, $scope.limit, true);
+			$scope.threadsList = yield inbox.requestListDirect($scope.labelName, 0, $scope.limit);
 			if (!$scope.threadsList || $scope.threadsList.length < 1)
 				$state.go('main.inbox.label', {labelName: $scope.labelName});
 
@@ -76,18 +78,23 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			$scope.isLoading = false;
 			$scope.isLoadingSign = false;
 			$scope.isInitialLoad = false;
+
+			if (!isWatching) {
+				$scope.$watch('filteredThreadsList', (o, n) => {
+					if (o == n)
+						return;
+
+					console.log('$scope.filteredThreadsList', $scope.filteredThreadsList, 'original', $scope.threadsList);
+
+					const r = $scope.filteredThreadsList.find(t => t.id == $scope.selectedTid);
+					if (!r)
+						$rootScope.$broadcast('emails-list-hide');
+					else
+						$rootScope.$broadcast('emails-list-restore');
+				});
+				isWatching = true;
+			}
 		});
-	});
-
-	$scope.$watch('filteredThreadsList', (o, n) => {
-		if (o == n)
-			return;
-
-		const r = $scope.filteredThreadsList.find(t => t.id == $scope.selectedTid);
-		if (!r)
-			$rootScope.$broadcast('emails-list-hide');
-		else
-			$rootScope.$broadcast('emails-list-restore');
 	});
 
 	$rootScope.$on('$stateChangeStart', (e, toState, toParams) => {
@@ -101,6 +108,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 				$scope.threads = {};
 				$scope.threadsList = [];
 				$scope.labelName = toParams.labelName;
+				isWatching = false;
 				requestList();
 			}
 			addHotkeys();

@@ -8,18 +8,18 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 	if no update available invoke Inbox.getThreadById to pull the actual data
 	 */
 	const AWAIT_FOR_ITEM_CONCURRENT = 500;
-	let pendingListRequest = null;
+	let pendingListRequests = {};
 
 	const CACHE_UNFOLD = {
 		unfold: item => item.id
 	};
 
 	let cache = new Cache('default cache', {
-		ttl: consts.INBOX_LABELS_CACHE_TTL
+		ttl: 15000
 	});
 	let threadsCache = new Cache('threads cache', angular.extend({},
 		{
-			ttl: 15000
+			ttl: consts.INBOX_THREADS_CACHE_TTL
 		},
 		{
 			list: value => value.list
@@ -64,11 +64,6 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		thread.labels = newLabels;
 	});
 
-	proxy.methodCall('initialize', function *(initialize, args){
-		const res = yield initialize(...args);
-		return res;
-	});
-
 	proxy.methodCall('createLabel', function *(createLabel, args) {
 		const res = yield createLabel(...args);
 		cache.invalidate('labels');
@@ -87,22 +82,15 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		return res;
 	});
 
-	proxy.methodCall('requestList', function *(requestList, args) {
-		let [labelName, offset, limit, direct] = args;
-		if (!direct)
-			direct = false;
+	const requestListProxy = function *(requestList, args) {
+		let [labelName, offset, limit] = args;
 
-		console.log('proxy requestList', labelName, offset, limit, direct);
+		console.log('proxy requestList', labelName, offset, limit);
 
 		let value = threadsCache.get(labelName);
-		if (!value || (!value.isEnd && offset >= value.list.length))
-		{
-			let newList = yield co(function *(){
-				pendingListRequest = requestList(...args);
-				const res = yield pendingListRequest;
-				pendingListRequest = null;
-				return res;
-			});
+		if (!value || (!value.isEnd && offset >= value.list.length)) {
+			console.log('doing requestList api call with args', args, new Error());
+			let newList = yield requestList(...args);
 			if (!newList)
 				newList = [];
 
@@ -113,11 +101,29 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		}
 
 		value = threadsCache.get(labelName);
+		console.log('requestList cache value is', value);
 
-		if (!direct)
-			$rootScope.$broadcast(`inbox-threads`, labelName);
+		return value;
+	};
 
-		return value.list.slice(offset, offset + limit);
+	proxy.methodCall('requestList', function *(requestList, args) {
+		let [labelName, offset, limit] = args;
+
+		const value = yield requestListProxy(requestList, args);
+
+		$rootScope.$broadcast(`inbox-threads`, labelName);
+
+		// todo: get rid of uniq(api bug)
+		return _.uniq(value.list, t => t.id).slice(offset, offset + limit);
+	});
+
+	self.requestListDirect = proxy.unbindedMethodCall('requestList', function *(requestList, args) {
+		let [labelName, offset, limit] = args;
+
+		const value = yield requestListProxy(requestList, args);
+
+		// todo: get rid of uniq(api bug)
+		return _.uniq(value.list, t => t.id).slice(offset, offset + limit);
 	});
 
 	proxy.methodCall('getThreadById', function *(getThreadById, args) {
@@ -231,6 +237,17 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 
 	proxy.methodCall('__handleEvent', function *(__handleEvent, args) {
 		const [event] = args;
+
+		const labels = cache.get('labels');
+		console.log('__handleEvent', labels);
+		if (labels) {
+			const labelNames = event.labels.map(lid => labels.byId[lid].name);
+			labelNames.forEach(labelName => {
+				labels.byName[labelName].addUnreadThreadId(event.thread);
+			});
+		} else
+			yield self.getLabels();
+
 		yield self.getThreadById(event.thread);
 
 		yield __handleEvent(...args);

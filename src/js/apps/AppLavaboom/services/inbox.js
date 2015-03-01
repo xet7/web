@@ -3,13 +3,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 	this.__handleEvent = (event) => co(function *(){
 		console.log('got server event', event);
-
-		const labels = yield self.getLabels();
-
-		const labelNames = event.labels.map(lid => labels.byId[lid].name);
-		labelNames.forEach(labelName => {
-			labels.byName[labelName].addUnreadThreadId(event.thread);
-		});
 	});
 
 	this.getThreadById = (threadId) => co(function *() {
@@ -131,7 +124,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 		return res.body.email ? Email.fromEnvelope(res.body.email) : null;
 	});
 
-	this.requestList = (labelName, offset, limit, isDirect) => co(function *() {
+	this.requestList = (labelName, offset, limit) => co(function *() {
 		const labels = yield self.getLabels();
 		const label = labels.byName[labelName];
 
