@@ -1,7 +1,6 @@
 module.exports = /*@ngInject*/(co) => {
 	const Cache = function (name, opts = {}) {
 		let cacheByKey = {};
-		let cacheByKeyTags = {};
 		let cacheById = {};
 		const self = this;
 
@@ -9,6 +8,8 @@ module.exports = /*@ngInject*/(co) => {
 
 		if (!opts.unfold)
 			opts.unfold = null;
+		if (!opts.list)
+			opts.list = value => value;
 		
 		this.get = (key) => {
 			const r = cacheByKey[key];
@@ -25,29 +26,6 @@ module.exports = /*@ngInject*/(co) => {
 			}
 
 			return r.value;
-		};
-
-		this.getTagged = (key, tags) => {
-			const now = new Date();
-
-			const byKey = cacheByKey[key];
-			if (!byKey || now - byKey.time > opts.ttl) {
-				console.log('cache(2) ', name, 'invalidate:', now, byKey);
-				self.invalidate(key);
-
-				return null;
-			}
-
-			const r = cacheByKeyTags[key];
-			if (!r)
-				return null;
-
-			const taggedKey = tags.join(':');
-			const v = r[taggedKey];
-			if (!v)
-				return null;
-
-			return v;
 		};
 
 		this.getById = (id) => {
@@ -70,19 +48,10 @@ module.exports = /*@ngInject*/(co) => {
 
 		this.removeById = (id) => {
 			for(let key of Object.keys(cacheByKey)) {
-				const list = cacheByKey[key].value;
+				const list = opts.list(cacheByKey[key].value);
 				let index = list.findIndex(item => opts.unfold(item) == id);
 				if (index > -1)
 					list.splice(index, 1);
-			}
-			for(let key of Object.keys(cacheByKeyTags)) {
-				const taggedLists = cacheByKeyTags[key];
-				for(let taggedKey of Object.keys(taggedLists)) {
-					const taggedList = taggedLists[taggedKey];
-					let index = taggedList.findIndex(item => opts.unfold(item) == id);
-					if (index > -1)
-						taggedList.splice(index, 1);
-				}
 			}
 			delete cacheById[id];
 		};
@@ -107,7 +76,7 @@ module.exports = /*@ngInject*/(co) => {
 			};
 
 			if (opts.unfold)
-				value.forEach(item => {
+				opts.list(value).forEach(item => {
 					const id = opts.unfold(item);
 					cacheById[id] = {
 						value: item,
@@ -116,38 +85,34 @@ module.exports = /*@ngInject*/(co) => {
 				});
 		};
 
-		this.putTagged = (key, tags, value) => {
-			const taggedKey = tags.join(':');
-			if (!cacheByKeyTags[key])
-				cacheByKeyTags[key] = {};
+		this.unshift = (key, item) => {
+			if (!cacheByKey[key])
+				return false;
 
-			cacheByKeyTags[key][taggedKey] = value;
+			opts.list(cacheByKey[key].value).unshift(item);
 
-			if (opts.unfold)
-				value.forEach(item => {
-					const id = opts.unfold(item);
-					cacheById[id] = {
-						value: item,
-						key: key
-					};
-				});
+			if (opts.unfold) {
+				const id = opts.unfold(item);
+				cacheById[id] = {
+					value: item,
+					key: key
+				};
+			}
 		};
 
 		this.invalidate = (key) => {
 			if (cacheByKey[key]) {
 				const value = cacheByKey[key].value;
 				if (opts.unfold)
-					value.forEach(item => {
+					opts.list(value).forEach(item => {
 						const id = opts.unfold(item);
 						delete cacheById[id];
 					});
 				delete cacheByKey[key];
-				delete cacheByKeyTags[key];
 			}
 		};
 
 		this.invalidateAll = () => {
-			cacheByKeyTags = {};
 			cacheByKey = {};
 			cacheById = {};
 		};

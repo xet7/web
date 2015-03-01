@@ -1,8 +1,6 @@
 module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts, co, LavaboomAPI, user, crypto, contacts, Email, Thread, Label) {
 	const self = this;
 
-	this.limit = 15;
-
 	this.__handleEvent = (event) => co(function *(){
 		console.log('got server event', event);
 
@@ -135,7 +133,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 		return res.body.email ? Email.fromEnvelope(res.body.email) : null;
 	});
 
-	this.requestList = (labelName, offset, limit) => co(function *() {
+	this.requestList = (labelName, offset, limit, isDirect) => co(function *() {
 		const labels = yield self.getLabels();
 		const label = labels.byName[labelName];
 

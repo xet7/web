@@ -14,7 +14,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	$scope.isInitialLoad = true;
 
 	$scope.offset = 0;
-	$scope.limit = 8;
+	$scope.limit = 15;
 
 	const requestList = () => {
 		$scope.isLoading = true;
@@ -57,22 +57,26 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		return thread.subject.toLowerCase().includes(searchText) || thread.members.some(m => m.toLowerCase().includes(searchText));
 	};
 
-	$rootScope.$on(`inbox-threads`, (e, threads) => {
-		console.log(`inbox-threads data`, threads);
-		if (threads.labelName != $scope.labelName) {
+	$rootScope.$on(`inbox-threads`, (e, labelName) => {
+		if (labelName != $scope.labelName) {
 			console.log(`inbox-threads data has been rejected label should match to `, $scope.labelName);
 			return;
 		}
 
-		$scope.threads = threads.map;
-		$scope.threadsList = threads.list;
+		co (function *(){
+			$scope.threadsList = yield inbox.requestList($scope.labelName, 0, $scope.limit, true);
+			if (!$scope.threadsList || $scope.threadsList.length < 1)
+				$state.go('main.inbox.label', {labelName: $scope.labelName});
 
-		if (!$scope.threadsList || $scope.threadsList.length < 1)
-			$state.go('main.inbox.label', {labelName: $scope.labelName});
+			$scope.threads = $scope.threadsList.reduce((a, t) => {
+				a[t.id] = t;
+				return a;
+			}, {});
 
-		$scope.isLoading = false;
-		$scope.isLoadingSign = false;
-		$scope.isInitialLoad = false;
+			$scope.isLoading = false;
+			$scope.isLoadingSign = false;
+			$scope.isInitialLoad = false;
+		});
 	});
 
 	$scope.$watch('filteredThreadsList', (o, n) => {
@@ -93,7 +97,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			$scope.selectedTid = toParams.threadId ? toParams.threadId : null;
 			if (toParams.labelName != $scope.labelName) {
 				$scope.offset = 0;
-				$scope.limit = 8;
+				$scope.limit = 15;
 				$scope.threads = {};
 				$scope.threadsList = [];
 				$scope.labelName = toParams.labelName;

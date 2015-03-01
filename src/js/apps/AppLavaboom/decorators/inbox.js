@@ -21,6 +21,9 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		{
 			ttl: consts.INBOX_THREADS_CACHE_TTL
 		},
+		{
+			list: value => value.list
+		},
 		CACHE_UNFOLD
 	));
 	let emailsCache = new Cache('emails cache', angular.extend({},
@@ -40,9 +43,9 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 
 			const threads = threadsCache.get(labelName);
 			if (threads) {
-				const index = threads.findIndex(thread => thread.id == thread.id);
+				const index = threads.list.findIndex(thread => thread.id == thread.id);
 				if (index > -1)
-					threads.splice(index, 1);
+					threads.list.splice(index, 1);
 			}
 		});
 
@@ -55,7 +58,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 
 			const threads = threadsCache.get(labelName);
 			if (threads)
-				threads.push(thread);
+				threads.list.push(thread);
 		});
 
 		thread.labels = newLabels;
@@ -85,33 +88,34 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 	});
 
 	proxy.methodCall('requestList', function *(requestList, args) {
-		const [labelName, offset, limit] = args;
+		let [labelName, offset, limit, direct] = args;
+		if (!direct)
+			direct = false;
 
-		console.log('requestList proxy:', labelName, offset, limit);
-		let res = threadsCache.getTagged(labelName, [offset, limit]);
-		console.log('requestList proxy: cache value', res);
-		if (!res) {
-			const newList = yield co(function *(){
+		let value = threadsCache.get(labelName);
+		if (!value || (!value.isEnd && offset >= value.list.length))
+		{
+			let newList = yield co(function *(){
 				pendingListRequest = requestList(...args);
 				const res = yield pendingListRequest;
 				pendingListRequest = null;
 				return res;
 			});
+			if (!newList)
+				newList = [];
 
-			threadsCache.putTagged(labelName, [offset, limit], newList);
-			const list = threadsCache.get(labelName);
-			threadsCache.put(labelName, list ? _.uniq(list.concat(newList), t => t.id) : newList);
+			threadsCache.put(labelName, {
+				list: value && value.list ? _.uniq(value.list.concat(newList), t => t.id) : newList,
+				isEnd: newList.length < limit
+			});
 		}
 
-		res = threadsCache.getTagged(labelName, [offset, limit]);
+		value = threadsCache.get(labelName);
 
-		$rootScope.$broadcast(`inbox-threads`, {
-			labelName,
-			list: threadsCache.exposeKeys(labelName),
-			map: threadsCache.exposeIds()
-		});
+		if (!direct)
+			$rootScope.$broadcast(`inbox-threads`, labelName);
 
-		return res;
+		return value.list.slice(offset, offset + limit);
 	});
 
 	proxy.methodCall('getThreadById', function *(getThreadById, args) {
@@ -125,19 +129,20 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 			return r;
 
 		const thread = yield getThreadById(...args);
+
 		const labels = yield self.getLabels();
 
-		yield thread.labels.map(labelId => {
+		thread.labels.forEach(labelId => {
 			const labelName = labels.byId[labelId].name;
-			threadsCache.invalidate(labelName);
+			threadsCache.unshift(labelName, thread);
 
-			return self.requestList(labelName, 0, self.limit);
+			$rootScope.$broadcast(`inbox-threads`, labelName);
 		});
 
 		return thread;
 	});
 
-	const requestModifyLabelproxy = function *(requestModifyLabel, args){
+	const requestModifyLabelProxy = function *(requestModifyLabel, args){
 		const [thread] = args;
 
 		const labels = yield self.getLabels();
@@ -156,13 +161,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		for(let labelName of allLabels) {
 			console.log('requestModifyLabel proxy label update: ', labelName);
 
-			const list = threadsCache.exposeKeys(labelName);
-			if (list)
-				$rootScope.$broadcast(`inbox-threads`, {
-					labelName,
-					list: list,
-					map: threadsCache.exposeIds()
-				});
+			$rootScope.$broadcast(`inbox-threads`, labelName);
 		}
 
 		return newLabels;
@@ -181,21 +180,17 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 			const labelName = labelsRes.byId[labelId].name;
 
 			console.log('requestDeleteForcefully broadcast inbox-threads for', labelName);
-			$rootScope.$broadcast(`inbox-threads`, {
-				labelName,
-				list: threadsCache.exposeKeys(labelName),
-				map: threadsCache.exposeIds()
-			});
+			$rootScope.$broadcast(`inbox-threads`, labelName);
 		});
 
 		return res;
 	});
 
-	proxy.methodCall('requestSetLabel', requestModifyLabelproxy);
+	proxy.methodCall('requestSetLabel', requestModifyLabelProxy);
 
-	proxy.methodCall('requestRemoveLabel', requestModifyLabelproxy);
+	proxy.methodCall('requestRemoveLabel', requestModifyLabelProxy);
 
-	proxy.methodCall('requestAddLabel', requestModifyLabelproxy);
+	proxy.methodCall('requestAddLabel', requestModifyLabelProxy);
 
 	proxy.methodCall('setThreadReadStatus', function *(setThreadReadStatus, args){
 		const [threadId] = args;
@@ -232,7 +227,8 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 	});
 
 	proxy.methodCall('__handleEvent', function *(__handleEvent, args) {
-		cache.invalidate('labels');
+		const [event] = args;
+		yield self.getThreadById(event.thread);
 
 		yield __handleEvent(...args);
 	});
