@@ -23,8 +23,12 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 		const lbs = thread.labels;
 		return lbs.includes(trashLabelId) || lbs.includes(spamLabelId) || lbs.includes(draftsLabelId)
-			? yield LavaboomAPI.threads.delete(thread.id)
-			: yield self.requestSetLabel(thread.id, 'Trash');
+			? yield self.requestDeleteForcefully(thread)
+			: yield self.requestSetLabel(thread, 'Trash');
+	});
+
+	this.requestDeleteForcefully = (thread) => co(function *() {
+		yield LavaboomAPI.threads.delete(thread.id);
 	});
 
 	this.requestSetLabel = (thread, labelName) => co(function *() {

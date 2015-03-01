@@ -150,6 +150,29 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		return newLabels;
 	};
 
+	proxyMethodCall('requestDeleteForcefully', function *(requestDeleteForcefully, args) {
+		const res = yield requestDeleteForcefully(...args);
+
+		const [thread] = args;
+
+		threadsCache.removeById(thread.id);
+
+		const labelsRes = yield self.getLabels();
+
+		thread.labels.forEach(labelId => {
+			const labelName = labelsRes.byId[labelId].name;
+
+			console.log('requestDeleteForcefully broadcast inbox-threads for', labelName);
+			$rootScope.$broadcast(`inbox-threads`, {
+				labelName,
+				list: threadsCache.exposeKeys(labelName),
+				map: threadsCache.exposeIds()
+			});
+		});
+
+		return res;
+	});
+
 	proxyMethodCall('requestSetLabel', requestModifyLabelProxy);
 
 	proxyMethodCall('requestRemoveLabel', requestModifyLabelProxy);

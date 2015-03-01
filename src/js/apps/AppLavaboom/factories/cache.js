@@ -68,6 +68,25 @@ module.exports = /*@ngInject*/(co) => {
 			return r.value;
 		};
 
+		this.removeById = (id) => {
+			for(let key of Object.keys(cacheByKey)) {
+				const list = cacheByKey[key].value;
+				let index = list.findIndex(item => opts.unfold(item) == id);
+				if (index > -1)
+					list.splice(index, 1);
+			}
+			for(let key of Object.keys(cacheByKeyTags)) {
+				const taggedLists = cacheByKeyTags[key];
+				for(let taggedKey of Object.keys(taggedLists)) {
+					const taggedList = taggedLists[taggedKey];
+					let index = taggedList.findIndex(item => opts.unfold(item) == id);
+					if (index > -1)
+						taggedList.splice(index, 1);
+				}
+			}
+			delete cacheById[id];
+		};
+
 		this.exposeIds = () => {
 			return Object.keys(cacheById).reduce((a, id) => {
 				a[id] = cacheById[id].value;
