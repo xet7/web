@@ -70,10 +70,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		const res = yield createLabel(...args);
 		cache.invalidate('labels');
 
-		const labels = yield self.getLabels();
-		$rootScope.$broadcast('inbox-labels', labels);
-
-		return res;
+		return yield self.getLabels();
 	});
 
 	proxyMethodCall('getLabels', function *(getLabels, args) {
@@ -127,7 +124,17 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		if (r)
 			return r;
 
-		return yield getThreadById(...args);
+		const thread = yield getThreadById(...args);
+		const labels = yield self.getLabels();
+
+		yield thread.labels.map(labelId => {
+			const labelName = labels.byId[labelId].name;
+			threadsCache.invalidate(labelName);
+
+			return self.requestList(labelName, 0, self.limit);
+		});
+
+		return thread;
 	});
 
 	const requestModifyLabelProxy = function *(requestModifyLabel, args){
@@ -202,10 +209,14 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		thread.isRead = true;
 
 		cache.invalidate('labels');
-		const labels = yield self.getLabels();
-		$rootScope.$broadcast('inbox-labels', labels);
+		yield self.getLabels();
 	});
 
+	proxyMethodCall('__handleEvent', function *(__handleEvent, args) {
+		cache.invalidate('labels');
+
+		yield __handleEvent(...args);
+	});
 
 	$delegate.invalidateThreadCache = () => {
 	};

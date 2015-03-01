@@ -1,10 +1,14 @@
 module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts, co, LavaboomAPI, user, crypto, contacts, Email, Thread, Label) {
 	const self = this;
 
-	const handleEvent = (event) => co(function *(){
+	this.limit = 15;
+
+	this.__handleEvent = (event) => co(function *(){
 		console.log('got server event', event);
 
 		const labels = yield self.getLabels();
+
+		self.getThreadById(event.thread);
 
 		const labelNames = event.labels.map(lid => labels.byId[lid].name);
 		labelNames.forEach(labelName => {
@@ -88,10 +92,14 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	this.getLabels = () => co(function *() {
 		const labels = (yield LavaboomAPI.labels.list()).body.labels;
 
-		return labels.reduce((a, label) => {
+		const r = labels.reduce((a, label) => {
 			a.byName[label.name] = a.byId[label.id] = new Label(label);
 			return a;
 		}, {byName: {}, byId: {}});
+
+		$rootScope.$broadcast('inbox-labels', r);
+
+		return r;
 	});
 
 	this.initialize = () => co(function *(){
@@ -102,8 +110,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 		if (!labels.byName.Drafts)
 			yield self.createLabel('Drafts');
-		else
-			$rootScope.$broadcast('inbox-labels', labels);
 	});
 
 	this.createLabel = (name) => co(function *(){
@@ -172,7 +178,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	};
 
 	$rootScope.whenInitialized(() => {
-		LavaboomAPI.subscribe('receipt', (msg) => handleEvent(msg));
-		LavaboomAPI.subscribe('delivery', (msg) => handleEvent(msg));
+		LavaboomAPI.subscribe('receipt', (msg) => self.__handleEvent(msg));
+		LavaboomAPI.subscribe('delivery', (msg) => self.__handleEvent(msg));
 	});
 };
