@@ -10,97 +10,70 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 		});
 	});
 
-	const getThreadsByLabelName = (labelName, offset, limit) => co(function *() {
-		const label = self.labelsByName[labelName];
-
-		const threads = (yield LavaboomAPI.threads.list({
-			label: label.id,
-			attachments_count: true,
-			sort: '-date_modified',
-			offset: offset,
-			limit: limit
-		})).body.threads;
-
-		const result = {
-			list: [],
-			map: {}
-		};
-
-		if (threads) {
-			return (yield threads.map(t => co.def(Thread.fromEnvelope(t), null))).reduce((a, t) => {
-				if (t) {
-					a.map[t.id] = t;
-					a.list.push(t);
-				}
-				return a;
-			}, result);
-		}
-
-		return result;
-	});
-
 	this.getThreadById = (threadId) => co(function *() {
 		const thread = (yield LavaboomAPI.threads.get(threadId)).body.thread;
 
 		return thread ? yield Thread.fromEnvelope(thread) : null;
 	});
 
-	this.requestDelete = (threadId) => co(function *() {
-		const thread = self.threads[threadId];
+	this.requestDelete = (thread) => co(function *() {
 		const trashLabelId = self.labelsByName.Trash.id;
 		const spamLabelId = self.labelsByName.Spam.id;
 		const draftsLabelId = self.labelsByName.Drafts.id;
 
 		const lbs = thread.labels;
 		return lbs.includes(trashLabelId) || lbs.includes(spamLabelId) || lbs.includes(draftsLabelId)
-			? yield LavaboomAPI.threads.delete(threadId)
-			: yield self.requestSetLabel(threadId, 'Trash');
+			? yield LavaboomAPI.threads.delete(thread.id)
+			: yield self.requestSetLabel(thread.id, 'Trash');
 	});
 
-	this.requestSetLabel = (threadId, labelName) => co(function *() {
+	this.requestSetLabel = (thread, labelName) => co(function *() {
 		let labelId = self.labelsByName[labelName].id;
 
-		return yield LavaboomAPI.threads.update(threadId, {labels: [labelId]});
+		const newLabels = [labelId];
+		yield LavaboomAPI.threads.update(thread.id, {labels: newLabels});
+
+		return newLabels;
 	});
 
-	this.requestSwitchLabel = (threadId, labelName) => co(function *() {
-		let thread = self.threads[threadId];
-
+	this.requestSwitchLabel = (thread, labelName) => co(function *() {
 		if (thread.isLabel(labelName)) {
 			console.log('label found - remove');
-
-			let newLabels = thread.removeLabel(labelName);
-			return yield LavaboomAPI.threads.update(threadId, {labels: newLabels});
+			return yield self.requestRemoveLabel(thread, labelName);
 		} else {
 			console.log('label not found - add');
-			return yield self.requestAddLabel(threadId, labelName);
+			return yield self.requestAddLabel(thread, labelName);
 		}
 	});
 
-	this.requestAddLabel = (threadId, labelName) => co(function *() {
-		const thread = self.threads[threadId];
+	this.requestRemoveLabel = (thread, labelName) => co(function *() {
+		let newLabels = thread.removeLabel(labelName);
+		yield LavaboomAPI.threads.update(thread.id, {labels: newLabels});
 
+		return newLabels;
+	});
+
+	this.requestAddLabel = (thread, labelName) => co(function *() {
 		const newLabels = thread.addLabel(labelName);
-		return yield LavaboomAPI.threads.update(threadId, {labels: newLabels});
+		yield LavaboomAPI.threads.update(thread.id, {labels: newLabels});
+
+		return newLabels;
 	});
 
 	this.getEmailsByThreadId = (threadId) => co(function *() {
 		const emails = (yield LavaboomAPI.emails.list({thread: threadId})).body.emails;
 
-		return yield (emails ? emails : []).map(e => Email.fromEnvelope(e));
+		return emails ? yield emails.map(e => Email.fromEnvelope(e)) : [];
 	});
 
 	this.setThreadReadStatus = (threadId) => co(function *(){
-		const thread = self.threads[threadId];
-		if (thread.isRead)
-			return;
+		// hack
+		const thread = (yield LavaboomAPI.threads.get(threadId)).body.thread;
 
 		yield LavaboomAPI.threads.update(threadId, {
 			is_read: true,
 			labels: thread.labels
 		});
-
-		thread.isRead = true;
 
 		const labels = yield self.getLabels();
 		self.labelsByName = labels.byName;
@@ -157,9 +130,19 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 		return res.body.email ? Email.fromEnvelope(res.body.email) : null;
 	});
 
-	this.requestList = (labelName, offset, limit) => {
-		return  getThreadsByLabelName(labelName, offset, limit);
-	};
+	this.requestList = (labelName, offset, limit) => co(function *() {
+		const label = self.labelsByName[labelName];
+
+		const threads = (yield LavaboomAPI.threads.list({
+			label: label.id,
+			attachments_count: true,
+			sort: '-date_modified',
+			offset: offset,
+			limit: limit
+		})).body.threads;
+
+		return threads ? yield threads.map(t => co.def(Thread.fromEnvelope(t), null)) : [];
+	});
 
 	this.getKeyForEmail = (email) => co(function * () {
 		const res = yield LavaboomAPI.keys.get(email);

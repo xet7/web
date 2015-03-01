@@ -5,6 +5,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 
 	console.log('CtrlThreadList loaded', $scope.selectedTid);
 
+	$scope.threads = {};
+	$scope.threadsList = [];
 	$scope.searchText = '';
 	$scope.isLoading = false;
 	$scope.isLoadingSign = false;
@@ -23,11 +25,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		const labelName = $scope.labelName;
 		co(function *(){
 			try {
-				let e = yield inbox.requestList($scope.labelName, $scope.offset, $scope.limit);
+				const list = yield inbox.requestList($scope.labelName, $scope.offset, $scope.limit);
 
 				if (labelName == $scope.labelName) {
-					$scope.isDisabled = e.list.length < 1;
-					$scope.offset += e.list.length;
+					$scope.isDisabled = list.length < 1;
+					$scope.offset += list.length;
 				}
 			} catch (err) {
 				$scope.isDisabled = true;
@@ -55,10 +57,15 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		return thread.subject.toLowerCase().includes(searchText) || thread.members.some(m => m.toLowerCase().includes(searchText));
 	};
 
-	$scope.$bind(`inbox-threads`, (e) => {
-		console.log($scope.labelName, inbox.threadsList);
-		$scope.threads = inbox.threads;
-		$scope.threadsList = inbox.threadsList[$scope.labelName];
+	$rootScope.$on(`inbox-threads`, (e, threads) => {
+		console.log(`inbox-threads data`, threads);
+		if (threads.labelName != $scope.labelName) {
+			console.log(`inbox-threads data has been rejected label should match to `, $scope.labelName);
+			return;
+		}
+
+		$scope.threads = threads.map;
+		$scope.threadsList = threads.list;
 
 		if (!$scope.threadsList || $scope.threadsList.length < 1)
 			$state.go('main.inbox.label', {labelName: $scope.labelName});
@@ -104,15 +111,15 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	};
 
 	$scope.spamThread = (tid) => {
-		inbox.requestSetLabel(tid, 'Spam');
+		inbox.requestSetLabel($scope.threads[tid], 'Spam');
 	};
 
 	$scope.deleteThread = (tid) => {
-		inbox.requestDelete(tid);
+		inbox.requestDelete($scope.threads[tid]);
 	};
 
 	$scope.starThread = (tid) => {
-		inbox.requestSwitchLabel(tid, 'Starred');
+		inbox.requestSwitchLabel($scope.threads[tid], 'Starred');
 	};
 
 	requestList();
