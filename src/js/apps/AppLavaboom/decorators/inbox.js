@@ -43,7 +43,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 
 			const threads = threadsCache.get(labelName);
 			if (threads) {
-				const index = threads.list.findIndex(thread => thread.id == thread.id);
+				const index = threads.list.findIndex(curThread => curThread.id == thread.id);
 				if (index > -1)
 					threads.list.splice(index, 1);
 			}
@@ -91,6 +91,8 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		let [labelName, offset, limit, direct] = args;
 		if (!direct)
 			direct = false;
+
+		console.log('proxy requestList', labelName, offset, limit, direct);
 
 		let value = threadsCache.get(labelName);
 		if (!value || (!value.isEnd && offset >= value.list.length))
