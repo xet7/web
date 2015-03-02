@@ -276,6 +276,14 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 	$scope.taggingTokens = 'SPACE|,|/';
 
+	$scope.tagClicked = (select, item, model) => {
+		const index = model.findIndex(c => c.email == item.email);
+		if (index > -1) {
+			model.splice(index, 1);
+			select.search = item.getTag();
+		}
+	};
+
 	let newHiddenContact = null;
 	$scope.tagTransform = function (newTag) {
 		if (!newTag)
@@ -302,6 +310,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 		newHiddenContact = new ContactEmail(null, {
 			isTag: true,
+			tag: newTag,
 			name,
 			email,
 			isNew: true

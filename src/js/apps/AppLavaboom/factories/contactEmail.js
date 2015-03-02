@@ -19,6 +19,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		let isLoadingKey = false;
 		let isLoadedKey = false;
 		let isCollapsed = true;
+		let tag = opts.tag;
 
 		let loadKey = () => co(function *(){
 			try {
@@ -75,6 +76,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		this.getLabel = () => label;
 		this.getTooltip = () => tooltip;
 		this.isCollapsed = () => isCollapsed;
+		this.getTag = () => tag;
 
 		this.collapse = () => isCollapsed = true;
 		this.expand = () => isCollapsed = false;
