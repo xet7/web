@@ -1,4 +1,4 @@
-module.exports = /*ngInject*/(hotkeysProvider) => {
+module.exports = /*@ngInject*/(hotkeysProvider) => {
     hotkeysProvider.templateTitle = 'Keyboard shortcuts';
     hotkeysProvider.template =  '<div class="cfp-hotkeys-container fade" ng-class="{in: helpVisible}" style="display: none;"><div class="cfp-hotkeys">' +
                                     '<h4 class="cfp-hotkeys-title">{{ title }}</h4>' +
