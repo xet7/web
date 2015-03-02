@@ -65,16 +65,35 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 		console.log('contacts-changed, $scope.selectedContactId', $scope.selectedContactId, 'oldContactPosition', oldContactPosition);
 
 		$scope.list = [...contacts.people.values()].filter(c => !c.isPrivate());
-		$scope.people = _.groupBy($scope.list, contact => {
+
+		const group = (map, letter, item) => {
+			if (!map[letter])
+				map[letter] = [];
+			map[letter].push(item);
+			return map;
+		};
+
+		$scope.people = $scope.list.reduce((a, contact) => {
 			if (contact.isNew)
-				return '+';
+				return group(a, '+', contact);
 
 			if (!contact.name)
-				return '?';
+				return group(a, '?', contact);
 
-			return contact.getSortingField(user.settings.contactsSortBy)[0];
+			return group(a, contact.getSortingField(user.settings.contactsSortBy)[0], contact);
+		}, {});
+
+		Object.keys($scope.people).forEach(letter => {
+			$scope.people[letter].sort((a, b) => {
+				a = a.getFullName();
+				b = b.getFullName();
+				if (a < b) return -1;
+				if (a > b) return 1;
+				return 0;
+			});
 		});
-		$scope.letters = _.sortBy(Object.keys($scope.people), letter => letter);
+
+		$scope.letters = Object.keys($scope.people).sort();
 
 		if (oldContactPosition !== null)
 			$state.go('main.contacts.profile', {contactId: nextContactId(oldContactPosition)});
