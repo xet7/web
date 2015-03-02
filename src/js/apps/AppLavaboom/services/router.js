@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/function ($rootScope, $state, $modal, $timeout) {
-	var self = this;
+	const self = this;
 
 	var isInitialized = false;
 	var delayedPopup = null;

@@ -6,6 +6,7 @@
 @lava-gray-lighter: #D9D9D9;
 @lava-gray-lightest: lighten(@lava-gray-lighter, 10%);
 @lava-gray-dark: #61666F;
+@lava-gray-darkest: darken(@lava-gray-dark, 20%);
 @lava-red: #E74F2F;
 @lava-blue: #3388BF;
 @lava-text: #525964;
@@ -28,6 +29,9 @@
 @lava-login-gray-darker: #282B2F;		//very dark grey (background) #282B2F
 @lava-login-box-shadow: 0px 0px 6px 6px rgba(0, 0, 0, 0.1);
 @lava-login-error-bg: #4A3936;
+
+
+@lava-fadeouts: fadeout(@lava-gray-darkest, 40%);
 
 
 //bootstrap overrides
@@ -54,6 +58,10 @@
 
 @light-font-weight: 100;
 @base-font-weight: 300;
+
+@compose-font-size: 1.3rem;
+
+@lava-form-line-height: 4.2rem;
 
 //birds-eye-view
 .z1{
@@ -85,7 +93,7 @@
 @mail-thread-width-sm: 100% - @mail-list-width-sm;
 @mail-thread-padding: 15px 0 8px 39px;
 
-@filter-height: 39px;
+@filter-height: 3.9rem;
 
 @mail-list-block-buttons-width: 9%;
 @mail-list-block-summary-width: 67%;
@@ -101,9 +109,36 @@
 @lava-ease-out-in: cubic-bezier(0.500, -0.215, 0.380, 1.245);
 
 
+
+// Basics of a navbar
+@navbar-height:                    @filter-height;
+@navbar-margin-bottom:             0; //@line-height-computed;
+@navbar-border-radius:             0; //@border-radius-base;
+@navbar-padding-horizontal:        0; //floor((@grid-gutter-width / 2));
+@navbar-padding-vertical:          0; //((@navbar-height - @line-height-computed) / 2);
+@navbar-collapse-max-height:       340px;
+
+// Inverted navbar
+// Reset inverted navbar basics
+@navbar-inverse-color:                      @lava-gray-light;
+@navbar-inverse-bg:                         transparent;
+@navbar-inverse-border:                     transparent;
+
+// Inverted navbar links
+@navbar-inverse-link-color:                 @lava-gray-light;
+@navbar-inverse-link-hover-color:           @lava-gray-lighter;
+@navbar-inverse-link-hover-bg:              transparent;
+@navbar-inverse-link-active-color:          @lava-gray-lighter;
+@navbar-inverse-link-active-bg:             transparent;
+@navbar-inverse-link-disabled-color:        @lava-gray;
+@navbar-inverse-link-disabled-bg:           transparent;
+
+
+
 //content css
 body{
 	.lava-font();
+	-webkit-font-smoothing: antialiased;
 }
 
 #content{
@@ -163,6 +198,12 @@ body{
 	}
 }
 
+.vertical-align(@pos : 'relative'){
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
 .line-clamp(@lines){
 	display: -webkit-box;
 	-webkit-line-clamp: @lines;
@@ -192,11 +233,11 @@ body{
 	}
 }
 
-.row.no-gutter {
-	margin: 0;
+.no-gutter {
+	margin: 0 !important;
 	> [class*='col-'] {
-	  padding-right:0;
-	  padding-left:0;
+	  padding-right:0 !important;
+	  padding-left:0 !important;
 	}
 }
 
@@ -204,26 +245,26 @@ body{
 	border-color: transparent;
 }
 
-.lava-icon-row{
-	padding-right: 22px;
-	.text-right();
-	[class^="icon-"],
-	[class*=" icon-"] {
-		display: inline-block;
-		font-size: 18px;
-		// line-height: @filter-height - 3;
-	}
-	> a:not(:first-child), .lava-icon-wrapper > a:not(:first-child){
-		display: inline-block;
-		// width: 1em;
-		padding: 0 0 0 18px;
-	}
+// .lava-icon-row{
+// 	padding-right: 22px;
+// 	.text-right();
+// 	[class^="icon-"],
+// 	[class*=" icon-"] {
+// 		display: inline-block;
+// 		font-size: 18px;
+// 		// line-height: @filter-height - 3;
+// 	}
+// 	> a:not(:first-child), .lava-icon-wrapper > a:not(:first-child){
+// 		display: inline-block;
+// 		// width: 1em;
+// 		padding: 0 0 0 18px;
+// 	}
 
-	.spacer{
-		display: inline-block;
-		width: 15px;
-	}
-}
+// 	.spacer{
+// 		display: inline-block;
+// 		width: 15px;
+// 	}
+// }
 
 .effect7
 {
@@ -289,6 +330,41 @@ body{
 	right:10px; 
     left:auto;
 	transform:skew(8deg) rotate(3deg);
+}
+
+.placeholder(@c : @lava-login-gray){
+	&::-moz-placeholder {
+		color: @c;
+	  	opacity: 1;
+	  	.lava-font();
+	}
+	&:-ms-input-placeholder {
+	  	color: @c;
+	  	.lava-font();
+	}
+	&::-webkit-input-placeholder {
+	  	color: @c;
+	  	.lava-font();
+	}
+}
+
+.email-formatting{
+	h1{
+		.h4();
+	}
+	h2{
+		.h5();
+	}
+	h3{
+		.h6();
+	}
+	blockquote{
+		border-left: 3px solid @lava;
+		font-size: 1em;
+	}
+	img {
+		.img-responsive();
+	}
 }
 
 .select2 > .select2-choice.ui-select-match {

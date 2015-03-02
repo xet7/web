@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
-	var self = this;
+	const self = this;
 
 	this.reserve = null;
 	this.plan = null;
@@ -58,7 +58,8 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
 			yield user.signIn(self.tokenSignup.username, password, true);
 
 			var settings = angular.extend({},
-				self.details, {
+				self.details,
+				user.defaultSettings, {
 					isSubscribedToNews: (self.reserve ? self.reserve.isNews : false) || self.tokenSignup.isNews,
 					state: 'incomplete'
 				});

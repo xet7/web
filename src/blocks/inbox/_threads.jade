@@ -1,0 +1,64 @@
+#mail-list.list-pane.ng-cloak(ng-controller="CtrlThreadList")
+	.filters.row.no-gutter.lava-icon-row
+		nav.navbar.navbar-inverse(role="navigation")
+			div
+				ul.nav.navbar-nav.navbar-right(ng-show="selectedTid !== null")
+					//- li
+					//- 	a(href="#", ng-click="starThread(selectedTid)")
+					//- 		span.icon-star(ng-show="selectedTid !== null && threads[selectedTid].isLabel('Starred')")
+					//- 		span.icon-star-outline(ng-show="selectedTid !== null && !threads[selectedTid].isLabel('Starred')")		
+					li.btn-group.dropdown(dropdown="", is-open="status.isopen")
+						button.btn.btn-default.dropdown-toggle(type="button", dropdown-toggle="", ng-disabled="disabled")
+							span.icon-chevron-down
+						ul.dropdown-menu(role="menu")
+							li
+								a(href="#") Action
+							li
+								a(href="#") Another action
+							li
+								a(href="#") Something else here
+							li.divider
+							li
+								a(href="#") Separated link
+					li
+						button.btn.btn-default(ng-click="starThread(selectedTid)")
+							span.icon-star(ng-show="selectedTid !== null && threads[selectedTid].isLabel('Starred')")
+							span.icon-star-outline(ng-show="selectedTid !== null && !threads[selectedTid].isLabel('Starred')")
+					li
+						button.btn.btn-default(ng-click="spamThread(selectedTid)", ng-show="labelName != 'Spam'")
+							span.icon-ban
+					li
+						button.btn.btn-default(ng-click="deleteThread(selectedTid)")
+							span.icon-trash
+				form.navbar-form-alt
+					.form-group
+						.input-group
+							label.search-icon.input-group-addon(for="top-search")
+								span.icon-search
+							input#top-search.search.form-control(type="text", placeholder="Search Emails", ng-model="searchText")
+	.mail-list-group
+		div.pane-status(ng-show="isLoadingSign")
+			img(src="/img/loader.svg")
+		div.pane-status(ng-show="!isLoadingSign && threadsList.length < 1") {{'INBOX.LB_NOTHING_FOUND' | translate}}
+		div(infinite-scroll="scroll()", infinite-scroll-disabled="isLoading || isDisabled", infinite-scroll-parent="true")
+			div(ng-repeat="thread in threadsList | filter: searchFilter as filteredThreadsList track by thread.id", ng-class="{active: selectedTid == thread.id}", ng-click="selectThread(thread.id)")
+				.mail-list-item
+					.row.no-gutter
+						.col-xs-3.clear.buttons.text-center
+							span.icon-star(ng-show="thread.isLabel('Starred')")
+							span.icon-star-outline(ng-show="!thread.isLabel('Starred')")
+							//span.icon-reply
+							//span.icon-arrow-right
+						.col-xs-16.pack
+							h5(ng-bind="thread.members | members")
+							p.subject(ng-bind="thread.subject")
+							//p.summary(ng-bind-html="thread.headerEmail.preview ? thread.headerEmail.preview.data.text : 'INBOX.NO_PREVIEW_AVAILABLE' | translate")
+						.col-xs-5.when
+							span.date.lava-icon-row(ng-bind="thread.modified | amCalendar")
+							br
+							br
+							.lava-icon-row
+								a(ng-show="thread.attachmentsCount > 0")
+									span.icon-paper-clip
+								a(ng-show="thread.isEncrypted")
+									span.icon-lock

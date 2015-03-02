@@ -2,15 +2,12 @@
 	var Promise = require('./helpers/promise-polyfill');
 
 	const
-		SRC_APP_LAVABOOM_LOGIN_VENDOR = '/js/appLavaboomLogin-vendor.js',
 		SRC_APP_LAVABOOM_MAIN_VENDOR = '/js/appLavaboom-vendor.js',
 		SRC_OPENPGP = '/vendor/openpgp.js',
 		SRC_APP_LAVABOOM_LOGIN = '/js/appLavaboomLogin.js',
 		SRC_APP_LAVABOOM_MAIN = '/js/appLavaboom.js',
 		SRC_UTILS = '/js/utils.js',
 		SRC_UTILS_VENDOR = '/js/utils-vendor.js',
-		SRC_CHECKER = '/js/checker.js',
-		SRC_CHECKER_VENDOR = '/js/checker-vendor.js',
 		SRC_TEMPLATE_CACHE = '/js/templates.js';
 
 	const
@@ -29,12 +26,12 @@
 			afterProgressValue: 30,
 			scripts: [
 				{
-					src: SRC_CHECKER_VENDOR,
-					progressText: 'Loading system libraries(1)...'
+					src: SRC_UTILS_VENDOR,
+					progressText: 'Loading Lavaboom utils(1)...'
 				},
 				{
-					src: SRC_CHECKER,
-					progressText: 'Loading system libraries(2)...'
+					src: SRC_UTILS,
+					progressText: 'Loading Lavaboom utils(2)...'
 				}
 			]
 		},
@@ -47,18 +44,6 @@
 			afterProgressText: 'Please wait...',
 			afterProgressValue: 90,
 			scripts: [
-				{
-					src: SRC_UTILS_VENDOR,
-					progressText: 'Loading Lavaboom utils...'
-				},
-				{
-					src: SRC_UTILS,
-					progressText: 'Loading Lavaboom utils...'
-				},
-				{
-					src: SRC_APP_LAVABOOM_LOGIN_VENDOR,
-					progressText: 'Loading system libraries(3)...'
-				},
 				{
 					src: SRC_OPENPGP,
 					progressText: 'Loading openpgp.js...'
@@ -80,20 +65,8 @@
 			afterProgressValue: 50,
 			scripts: [
 				{
-					src: SRC_UTILS_VENDOR,
-					progressText: 'Loading Lavaboom utils...'
-				},
-				{
-					src: SRC_UTILS,
-					progressText: 'Loading Lavaboom utils...'
-				},
-				{
-					src: SRC_APP_LAVABOOM_LOGIN_VENDOR,
-					progressText: 'Loading system libraries(3)...'
-				},
-				{
 					src: SRC_APP_LAVABOOM_MAIN_VENDOR,
-					progressText: 'Loading system libraries(4)...'
+					progressText: 'Loading system libraries...'
 				},
 				{
 					src: SRC_OPENPGP,
@@ -112,7 +85,7 @@
 
 	const
 		DEBUG_DELAY = 0,
-		APP_TRANSITION_DELAY = 1000;
+		APP_TRANSITION_DELAY = 500;
 
 	var loadedScripts = {};
 
@@ -146,7 +119,7 @@
 	var Loader = function () {
 		console.log('Initialize loader...');
 
-		var self = this;
+		const self = this;
 
 		var
 		// loader elements
@@ -226,7 +199,7 @@
 					.then(r => {
 						console.log('loader: initialized application', app.appName, 'with result', r);
 
-						showContainer(app, opts.lbDone ? opts.lbDone : (r && r.lbDone ? r.lbDone : null))
+						showContainer(app, opts.lbDone ? opts.lbDone : (r && r.lbDone ? r.lbDone : null), opts.noDelay ? true : false)
 							.then(() => {
 								if (rootScope.onApplicationReady)
 									rootScope.$apply(() => {

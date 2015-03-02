@@ -2,15 +2,6 @@
 	.lava-font();
 	font-size: 13px;
 
-	p{
-		word-break: break-word;
-		-webkit-hyphens: auto;
-		-moz-hyphens: auto;
-		-ms-hyphens: auto;
-		-o-hyphens: auto;
-		hyphens: auto;
-	}
-
 	.main-container, .main-container > .row, .main-content{
 		.pos-rel();
 		height: 100%;
@@ -127,15 +118,9 @@
 		margin-top: -2px;
 	}
 
-	.form-control::-moz-placeholder {
-		color: @lava-login-gray;
-	  	opacity: 1;
-	}
-	.form-control:-ms-input-placeholder {
-	  	color: @lava-login-gray;
-	}
-	.form-control::-webkit-input-placeholder {
-	  	color: @lava-login-gray;
+	.form-control{
+		.lava-font();
+		.placeholder();
 	}
 
 	.table-list{

@@ -1,53 +1,61 @@
 - var defs = {};
 div#compose-wrapper
-	form#compose
+	form#compose(name="__form", ng-class="{ warning: isWarning }")
 		.filters.row.no-gutter.lava-icon-row.z1
-			.lava-icon-wrapper.pull-right
-				a(href="#", ng-click="isXCC = !isXCC")
-					span.icon-tick
-				a(href="#", ng-click="send()", ng-autodisable=)
+			hgroup(ng-show="isWarning")
+				label {{'MAIN.COMPOSE.LB_WARNING' | translate}}
+				a.btn.btn-primary.btn-sm(type="button", ng-click="confirm()")
 					span.icon-sent
-				a(href="#", ng-click="hidePopup()")
+					span {{'MAIN.COMPOSE.BTN_CONFIRM' | translate}}
+				a.btn.btn-default.btn-sm(type="button", ng-click="reject()") {{'MAIN.COMPOSE.BTN_REJECT' | translate}}
+			hgroup(ng-show="isError")
+				label {{'MAIN.COMPOSE.LB_ERROR' | translate}}
+			.lava-icon-wrapper.pull-right(ng-hide="isWarning")
+				a(type="button", ng-click="isXCC = !isXCC", ng-disabled="isWarning")
+					span.icon-tick
+				a(type="submit", ng-click="send()", ng-disabled="isWarning")
+					span.icon-sent
+				a(type="button", ng-click="hidePopup()")
 					span.icon-close
-
 		header#compose-header
 			.table-list
-				- defs = {model: "form.selected.to", label: "{{'MAIN.COMPOSE.LB_TO' | translate}}", click: "clearTo()"};
+				- defs = {model: "form.selected.to", label: "{{'MAIN.COMPOSE.LB_TO' | translate}}", click: "clearTo()", required: true};
 				include ./compose/_compose.email.jade
-			.table-list(ng-show="isXCC")
+			.table-list(ng-if="isXCC")
 				- defs = {model: "form.selected.cc", label: "{{'MAIN.COMPOSE.LB_CC' | translate}}", click: "clearCC()"};
 				include ./compose/_compose.email.jade
-			.table-list(ng-show="isXCC")
+			.table-list(ng-if="isXCC")
 				- defs = {model: "form.selected.bcc", label: "{{'MAIN.COMPOSE.LB_BCC' | translate}}", click: "clearBCC()"};
 				include ./compose/_compose.email.jade
 			.table-list
 				.cell.label
 					label {{'MAIN.COMPOSE.LB_FROM' | translate}}:
-				.dropdown-control.cell
-					ui-select(ng-model='form.selected.from', search-enabled='false', style="width: 50%;")
-						ui-select-match {{$select.selected.email}}
-						ui-select-choices(repeat='item in form.fromEmails')
-							span(ng-click='item.selected=item', ng-bind-html='item.email')
+				.cell.fields
+					input.form-control.col-xs-24.from-email(type='text', name="from", ng-model='form.fromEmails[0].email', disabled)
+					//- ui-select(ng-model='form.selected.from', search-enabled='false')
+					//- 	ui-select-match {{$select.selected.email}}
+					//- 	ui-select-choices(repeat='item in form.fromEmails')
+					//- 		span(ng-click='item.selected=item', ng-bind-html='item.email')
 			.table-list
 				.cell.label
 					label.text-primary {{'MAIN.COMPOSE.LB_SUBJECT' | translate}}:
 				.cell.fields
-					input#subject.form-control.text-primary.col-xs-24(type="text", name="subject", auto-complete="off", ng-model="form.subject").text-primary
+					input#subject.form-control.text-primary.col-xs-24(type="text", name="subject", auto-complete="off", ng-model="form.subject")
 
 		article#compose-body
-			//ta-file-drop="onFileDrop",
-			div(text-angular="", ng-model="form.body", ta-toolbar="[['h1','h2','h3', 'h4', 'h5', 'h6'],['bold','italics'], ['justifyLeft', 'justifyCenter', 'justifyRight']]")
-		//footer
+			text-angular(ng-model="form.body", name="body", ta-file-drop="onFileDrop", ta-toolbar="toolbar", ta-min-text="1")
+		footer
 			#attachments.row
 				div.col-xs-6(ng-repeat="attachment in attachments")
 					a.attachment(href="test.mov", filetype="{{attachment.ext}}")
 						span.fileCorner
 						span(ng-bind="attachment.attachment.name")
 						br
-						span(ng-bind="attachment.attachment.size | fileSize")
+						span(ng-bind="attachment.attachment.size | filesize")
+						br
+						div(ng-bind="attachment.attachment.dateModified | date")
+						br
 						span.text-muted {{attachment.status}}
-						//- div(ng-bind="attachment.attachment.size | fileSize")
-						//- div(ng-bind="attachment.attachment.dateModified | date")
-						//- div(ng-bind="attachment.status")
-						//- button.btn.btn-block.btn-lg.btn-primary(ng-click="deleteAttachment(attachment, $index)", ng-autodisable) delete
+						a.btn.btn-block.btn-lg.btn-primary(type="button", ng-click="deleteAttachment(attachment, $index)", ng-autodisable) delete
+		.mask(ng-show="isWarning", ng-click="reject()")
 

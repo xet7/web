@@ -1,0 +1,43 @@
+{
+    "ecmaFeatures": {
+        "arrowFunctions": true,
+        "binaryLiterals": true,
+        "blockBindings": true,
+        "defaultParams": true,
+        "forOf": true,
+        "generators": true,
+        "objectLiteralComputedProperties": true,
+        "objectLiteralDuplicateProperties": true,
+        "objectLiteralShorthandMethods": true,
+        "objectLiteralShorthandProperties": true,
+        "octalLiterals": true,
+        "templateStrings": true
+    },
+    "env": {
+        "browser": true
+    },
+    "rules": {
+        "no-console": 0,
+        "quotes": "single",
+        "eqeqeq": 0,
+        "eol-last": 0,
+        "semi": 0,
+        "strict": 0,
+        "curly": 0,
+        "camelcase": 0
+    },
+    "globals": {
+        "_": true,
+        "angular": true,
+        "openpgp": true,
+        "saveAs": true,
+        "Lavaboom": true,
+        "loader": true,
+        "checker": true,
+        "assets": true,
+        "process": true,
+        "require": true,
+        "module": true,
+        "__dirname": true
+    }
+}

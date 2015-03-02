@@ -19,7 +19,9 @@ application.create(
 		'pascalprecht.translate',
 		'infinite-scroll',
 		'angular-co',
-		'ngAutodisable'
+		'ngAutodisable',
+		'cfp.hotkeys',
+		'angularMoment'
 	]
 );
 

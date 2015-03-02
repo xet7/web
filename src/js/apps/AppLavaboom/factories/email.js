@@ -1,72 +1,100 @@
-let chan = require('chan');
-
-module.exports = /*@ngInject*/(co, contacts, crypto, LavaboomAPI, user) => {
-	let Email = function(opt) {
+module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
+	let Email = function(opt, manifest) {
 		this.id =  opt.id;
 		this.threadId = opt.thread;
 		this.isEncrypted = opt.isEncrypted;
-		this.subject = opt.name;
+		this.subject = manifest ? manifest.subject : opt.name;
+		if (!this.subject)
+			this.subject = 'unknown subject';
+
 		this.date = opt.date_created;
-		this.from = opt.from;
+		this.manifest = manifest;
+		this.files = manifest ? manifest.files : [];
 
-		let fromContact = contacts.getContactByEmail(opt.from);
-
-		this.fromName = fromContact ? fromContact.name : opt.from;
+		this.from = manifest ? manifest.from
+			: (angular.isArray(opt.from) ? opt.from : [opt.from]);
+		this.fromAllPretty = manifest ? manifest.from.map(e => e.prettyName).join(',')
+			: (angular.isArray(opt.from) ? opt.from.join(',') : opt.from);
 		this.preview = opt.preview;
 		this.body = opt.body;
-		this.attachments = opt.attachments;
+		this.attachments = opt.attachments ? opt.attachments : [];
 	};
 
-	Email.toEnvelope = ({to, subject, body, cc, bcc, attachmentIds, threadId}) => co(function *() {
-		if (!cc)
-			cc = [];
-		if (!bcc)
-			bcc = [];
+	Email.toEnvelope = ({body, attachmentIds, threadId}, manifest, keys) => co(function *() {
+		if (manifest && manifest.isValid && !manifest.isValid())
+			throw new Error('invalid manifest');
+
 		if (!attachmentIds)
 			attachmentIds = [];
 		if (!threadId)
 			threadId = null;
 
-		let res = yield to.map(toEmail => LavaboomAPI.keys.get(toEmail));
-		let publicKeysValues = (new Map([user.key, ...res.map(r => r.body.key)].map(k => [k.id, k.key]))).values();
+		let isSecured = !Object.keys(keys).some(e => !keys[e]);
 
-		let envelope = yield crypto.encodeEnvelopeWithKeys({data: body}, [...publicKeysValues], 'body', 'body');
-		angular.extend(envelope, {
-			to,
-			cc,
-			bcc,
-			subject,
-			attachments: attachmentIds,
-			thread_id: threadId
-		});
+		if (isSecured) {
+			keys[user.email] = user.key.key;
+			let publicKeysValues = Object.keys(keys).filter(e => keys[e]).map(e => keys[e]);
+			let publicKeys = [...publicKeysValues];
 
-		return envelope;
+			let manifestString = manifest.stringify();
+
+			let [envelope, manifestEncoded] = yield [
+				crypto.encodeEnvelopeWithKeys({data: body}, publicKeys, 'body', 'body'),
+				crypto.encodeWithKeys(manifestString, publicKeys)
+			];
+
+			return angular.extend({}, envelope, {
+				kind: 'manifest',
+				manifest: manifestEncoded.pgpData,
+
+				to: manifest.to,
+				cc: manifest.cc,
+				bcc: manifest.bcc,
+
+				files: attachmentIds,
+				thread: threadId
+			});
+		}
+
+		return {
+			kind: 'raw',
+			content_type: 'text/html',
+
+			to: manifest.to,
+			cc: manifest.cc,
+			bcc: manifest.bcc,
+			subject: manifest.subject,
+			body: body,
+
+			files: attachmentIds,
+			thread: threadId
+		};
 	});
 
 	Email.fromEnvelope = (envelope) => co(function *() {
-		let ch = chan();
-		let isPreviewAvailable = !!envelope.preview;
+		let [body, manifestRaw] = [null, null];
 
-		let [bodyData, previewData] = yield [
-			co.transform(crypto.decodeEnvelope(envelope.body, '', 'raw'), r => {
-				if (!isPreviewAvailable)
-					ch(r);
-				return r;
-			}),
-			isPreviewAvailable ? crypto.decodeEnvelope(envelope.preview, '', 'raw') : ch
-		];
-
-		switch (bodyData.majorVersion) {
-			default:
-				return new Email(angular.extend({}, envelope, {
-					isEncrypted: envelope.body.pgp_fingerprints.length > 0 ||
-						(envelope.preview && envelope.preview.pgp_fingerprints.length) > 0,
-					body: bodyData,
-					preview: previewData
-				}));
+		try {
+			let [bodyData, manifestRawData] = yield [
+				crypto.decodeRaw(envelope.body),
+				crypto.decodeRaw(envelope.manifest)
+			];
+			body = {state: 'ok', data: bodyData};
+			manifestRaw = manifestRawData;
+		} catch (err) {
+			console.error('Email.fromEnvelope decrypt error', err);
+			body = {state: err.message, data: ''};
 		}
 
-		return null;
+		let email = new Email(angular.extend({}, envelope, {
+			isEncrypted: true,
+			body: body,
+			preview: body
+		}), manifestRaw ? Manifest.createFromJson(manifestRaw) : null);
+
+		console.log('email decoded', email, manifestRaw);
+
+		return email;
 	});
 
 	return Email;

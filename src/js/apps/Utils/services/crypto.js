@@ -1,12 +1,12 @@
 module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
-	var self = this;
+	let self = this;
 
-	var wrapOpenpgpKeyring = (keyring) => {
-		var findByFingerprint = (keys, fingerprint) => {
+	let wrapOpenpgpKeyring = (keyring) => {
+		let findByFingerprint = (keys, fingerprint) => {
 			return keys.find(k => k.primaryKey.fingerprint == fingerprint);
 		};
 
-		var findIndexByFingerprint = (keys, fingerprint) => {
+		let findIndexByFingerprint = (keys, fingerprint) => {
 			return keys.findIndex(k => k.primaryKey.fingerprint == fingerprint);
 		};
 
@@ -19,25 +19,19 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		return keyring;
 	};
 
-	var sessionDecryptedStore = new openpgp.Keyring.localstore();
-	sessionDecryptedStore.storage = window.sessionStorage;
-	var localDecryptedStore = new openpgp.Keyring.localstore('openpgp-decrypted-');
-
-	var keyring = wrapOpenpgpKeyring(new openpgp.Keyring());
-	var localKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(localDecryptedStore));
-	var sessionKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(sessionDecryptedStore));
+	let keyring = null, localKeyring = null, sessionKeyring = null;
 
 	this.options = {};
 
-	var getAvailableEmails = (keys) => Object.keys(keys.keys.reduce((a, k) => {
-		var email = k.users[0].userId.userid.match(/<([^>]+)>/)[1];
+	let getAvailableEmails = (keys) => Object.keys(keys.keys.reduce((a, k) => {
+		let email = k.users[0].userId.userid.match(/<([^>]+)>/)[1];
 		a[email] = true;
 		return a;
 	}, {}));
 
-	var isInitialized = false;
+	let isInitialized = false;
 
-	var applyPasswordToKeyPair = (privateKey, password) => {
+	let applyPasswordToKeyPair = (privateKey, password) => {
 		try {
 			return privateKey.decrypt(password);
 		} catch (catchedError) {
@@ -46,13 +40,13 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		}
 	};
 
-	var persistKey = (privateKey, storage = 'local', isDecrypted = false) => {
-		var newKeyArmored = privateKey.armor();
+	let persistKey = (privateKey, storage = 'local', isDecrypted = false) => {
+		let newKeyArmored = privateKey.armor();
 
 		if (storage == 'local') {
-			var selectedKeyring = isDecrypted ? localKeyring : keyring;
+			let selectedKeyring = isDecrypted ? localKeyring : keyring;
 
-			var i = selectedKeyring.privateKeys.findIndexByFingerprint(privateKey.primaryKey.fingerprint);
+			let i = selectedKeyring.privateKeys.findIndexByFingerprint(privateKey.primaryKey.fingerprint);
 			if (i > -1)
 				selectedKeyring.privateKeys.keys.splice(i, 1);
 
@@ -64,33 +58,36 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		}
 	};
 
-	var decodeByListedFingerprints = (message, fingerprints) => co(function *(){
-		var pgpMessage = openpgp.message.readArmored(message);
+	let getDecryptedPrivateKeys = () => {
+		let keys = new Map();
+		let getDecryptedKeysFromKeyring = (keyring) => keyring.privateKeys.keys.reduce((keys, k) => {
+			if (k.primaryKey.isDecrypted)
+				keys.set(k.primaryKey.fingerprint, k);
+			return keys;
+		}, keys);
 
-		var privateKeys = fingerprints
-			.map((fingerprint) => {
-				var privateKey = keyring.privateKeys.findByFingerprint(fingerprint);
+		getDecryptedKeysFromKeyring(localKeyring);
+		getDecryptedKeysFromKeyring(sessionKeyring);
+		getDecryptedKeysFromKeyring(keyring);
 
-				if (!privateKey || !privateKey.primaryKey.isDecrypted)
-					privateKey = sessionKeyring.privateKeys.findByFingerprint(fingerprint);
+		return [...keys.values()];
+	};
 
-				if (!privateKey || !privateKey.primaryKey.isDecrypted)
-					privateKey = localKeyring.privateKeys.findByFingerprint(fingerprint);
+	this.decodeRaw = (message) => co(function *(){
+		if (!message)
+			throw new Error('nothing_to_decrypt');
 
-				if (privateKey && privateKey.primaryKey.isDecrypted)
-					return privateKey;
+		let pgpMessage = openpgp.message.readArmored(message);
+		let decryptResults = yield getDecryptedPrivateKeys().map(key => co.def(openpgp.decryptMessage(key, pgpMessage), null));
 
-				return null;
-			}, {})
-			.filter(k => k);
-
-		if (!privateKeys || privateKeys.length < 1)
+		let r = decryptResults.find(r => r);
+		if (!r)
 			throw new Error('no_private_key');
 
-		return yield openpgp.decryptMessage(privateKeys[0], pgpMessage);
+		return r;
 	});
 
-	var encodeWithKeys = (message, publicKeys) => co(function *(){
+	this.encodeWithKeys = (message, publicKeys) => co(function *(){
 		let mergedPublicKeys = publicKeys.reduce((a, k) => {
 			a = a.concat(openpgp.key.readArmored(k).keys);
 			return a;
@@ -103,14 +100,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 	});
 
 	this.getAvailableSourceEmails = () => getAvailableEmails(keyring.privateKeys);
-
-	this.getAvailablePublicKeysForSourceEmails = () => {
-		var emails = getAvailableEmails(keyring.privateKeys);
-		return emails.reduce((a, email) => {
-			a[email] = keyring.publicKeys.getForAddress(email);
-			return a;
-		}, {});
-	};
 
 	this.getAvailableEncryptedPrivateKeys = () => {
 		return keyring.privateKeys.keys;
@@ -125,7 +114,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 	};
 
 	this.getDecryptedPrivateKeyByFingerprint = (fingerprint) => {
-		var k = localKeyring.privateKeys.findByFingerprint(fingerprint);
+		let k = localKeyring.privateKeys.findByFingerprint(fingerprint);
 		if (k)
 			return k;
 
@@ -133,10 +122,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		if (k)
 			return k;
 
-		return keyring.privateKeys.findByFingerprint(fingerprint);
-	};
-
-	this.getEncryptedPrivateKeyByFingerprint = (fingerprint) => {
 		return keyring.privateKeys.findByFingerprint(fingerprint);
 	};
 
@@ -160,8 +145,20 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 
 		if (!isInitialized) {
 			openpgp.initWorker('/vendor/openpgp.worker.js');
+
 			isInitialized = true;
 		}
+
+		let sessionDecryptedStore = new openpgp.Keyring.localstore();
+		sessionDecryptedStore.storage = window.sessionStorage;
+		let localDecryptedStore = new openpgp.Keyring.localstore('openpgp-decrypted-');
+
+		keyring = wrapOpenpgpKeyring(new openpgp.Keyring());
+		localKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(localDecryptedStore));
+		sessionKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(sessionDecryptedStore));
+
+		console.log('!broadcasting keyring-updated from crypto.initialize');
+		$rootScope.$broadcast('keyring-updated');
 	};
 
 	this.generateKeys = (nameEmail, password, numBits) => {
@@ -171,7 +168,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		console.log('generating keys', nameEmail, password, numBits);
 
 		return co(function *(){
-			var freshKeys = yield openpgp.generateKeyPair({numBits: numBits, userId: nameEmail, passphrase: password});
+			let freshKeys = yield openpgp.generateKeyPair({numBits: numBits, userId: nameEmail, passphrase: password});
 
 			keyring.publicKeys.importKey(freshKeys.publicKeyArmored);
 			keyring.privateKeys.importKey(freshKeys.privateKeyArmored);
@@ -194,7 +191,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 			if (!privateKey || !privateKey.primaryKey.isDecrypted)
 				return false;
 
-			var packets = privateKey.getAllKeyPackets();
+			let packets = privateKey.getAllKeyPackets();
 			packets.forEach(packet => packet.encrypt(newPassword));
 
 			persistKey(privateKey, storage, !newPassword);
@@ -206,23 +203,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		}
 	};
 
-	this.authenticateDefault = (password) => {
-		var decryptedFingerprints = [];
-		var failedFingerprints = [];
-		keyring.privateKeys.keys.forEach(privateKey => {
-			if (self.authenticate(privateKey, password))
-				decryptedFingerprints.push(privateKey.primaryKey.fingerprint);
-			else
-				failedFingerprints.push(privateKey.primaryKey.fingerprint);
-		});
-
-		return {
-			decryptedFingerprints: decryptedFingerprints,
-			failedFingerprints: failedFingerprints
-		};
-	};
-
-	this.authenticate = (privateKey, password) => {
+	const authenticate = (privateKey, password) => {
 		if (!applyPasswordToKeyPair(privateKey, password))
 			return false;
 
@@ -231,9 +212,39 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		return true;
 	};
 
-	this.encodeEnvelopeWithKeys = (data, publicKeys, dataFieldName = 'data', prefixName = '') => co(function *(){
-		console.log('encodeEnvelopeWithKeys', data, publicKeys, dataFieldName, prefixName);
+	this.authenticateByEmail = (email, password) => {
+		let decryptedFingerprints = [];
+		let failedFingerprints = [];
 
+		keyring.privateKeys.getForAddress(email).forEach(privateKey => {
+			if (authenticate(privateKey, password))
+				decryptedFingerprints.push(privateKey.primaryKey.fingerprint);
+			else
+				failedFingerprints.push(privateKey.primaryKey.fingerprint);
+		});
+
+		if (decryptedFingerprints.length > 0) {
+			console.log('!broadcasting keyring-updated from crypto.authenticateByEmail');
+			$rootScope.$broadcast('keyring-updated');
+		}
+
+		return {
+			decryptedFingerprints: decryptedFingerprints,
+			failedFingerprints: failedFingerprints
+		};
+	};
+
+	this.authenticate = (privateKey, password) => {
+		if (!authenticate(privateKey, password))
+			return false;
+
+		console.log('!broadcasting keyring-updated from crypto.authenticate');
+		$rootScope.$broadcast('keyring-updated');
+
+		return true;
+	};
+
+	this.encodeEnvelopeWithKeys = (data, publicKeys, dataFieldName = 'data', prefixName = '') => co(function *(){
 		if (!data.encoding)
 			data.encoding = 'raw';
 		if (!data.majorVersion)
@@ -244,10 +255,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		if (prefixName)
 			prefixName = `${prefixName}_`;
 
-		var dataObj = data.encoding == 'json' ? JSON.stringify(data.data) : data.data;
-		var {pgpData, mergedPublicKeys} = yield encodeWithKeys(dataObj, publicKeys);
+		let dataObj = data.encoding == 'json' ? JSON.stringify(data.data) : data.data;
+		let {pgpData, mergedPublicKeys} = yield self.encodeWithKeys(dataObj, publicKeys);
 
-		var envelope = {
+		let envelope = {
 			pgp_fingerprints: mergedPublicKeys.map(k => k.primaryKey.fingerprint),
 			encoding: data.encoding
 		};
@@ -266,14 +277,12 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		if (encoding)
 			envelope.encoding = encoding;
 
-		var pgpData = envelope.data;
-		var message = null;
-		var state = 'ok';
+		let pgpData = envelope.data;
+		let message = null;
+		let state = 'ok';
 
 		try {
-			message = envelope.pgp_fingerprints && envelope.pgp_fingerprints.length > 0
-				? yield decodeByListedFingerprints(pgpData, envelope.pgp_fingerprints)
-				: pgpData;
+			message = yield self.decodeRaw(pgpData);
 
 			if (envelope.encoding == 'json')
 				message = JSON.parse(message);
@@ -290,4 +299,32 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 			minorVersion: envelope[`${prefixName}version_minor`]
 		};
 	});
+
+	let removeEncryptedKeys = (storage) => {
+		delete storage['openpgp-private-keys'];
+		delete storage['openpgp-public-keys'];
+	};
+
+	let removeDecryptedKeys = (storage) => {
+		delete storage['openpgp-decrypted-private-keys'];
+		delete storage['openpgp-decrypted-public-keys'];
+	};
+
+	let removeKeys = (storage) => {
+		removeEncryptedKeys(storage);
+		removeDecryptedKeys(storage);
+	};
+
+	this.removeAllKeys = () => {
+		removeKeys(localStorage);
+		removeKeys(sessionStorage);
+	};
+
+	this.removeSensitiveKeys = (isTriggerUpdateEvent = false) => {
+		removeDecryptedKeys(localStorage);
+		removeKeys(sessionStorage);
+
+		if (isTriggerUpdateEvent)
+			self.initialize();
+	};
 };

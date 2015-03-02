@@ -1,8 +1,14 @@
-module.exports = /*@ngInject*/($scope, $state, inbox, user) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $state, co, inbox, user) => {
 	$scope.$state = $state;
 
-	$scope.$bind('inbox-labels', () => {
-		$scope.labelsByName = inbox.labelsByName;
+	co(function *(){
+		$scope.labelsByName = (yield inbox.getLabels()).byName;
+	});
+
+	$scope.getThreadForLabel = labelName => inbox.selectedTidByLabelName[labelName] ? inbox.selectedTidByLabelName[labelName] : null;
+
+	$scope.$on('inbox-labels', (e, labels) => {
+		$scope.labelsByName = labels.byName;
 	});
 
 	$scope.logout = () => {

@@ -85,6 +85,12 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 			controller: 'CtrlGeneratingKeys'
 		})
 
+		.state('lavaboomSync', {
+			url: '/sync',
+			templateUrl: 'partials/login/lavaboomSync.html',
+			controller: 'CtrlLavaboomSync'
+		})
+
 		.state('backupKeys', {
 			url: '/backupKeys',
 			templateUrl: 'partials/login/backupKey.html',

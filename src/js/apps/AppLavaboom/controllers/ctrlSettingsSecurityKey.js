@@ -4,9 +4,10 @@ module.exports = /*@ngInject*/($scope, $timeout, consts, crypto) => {
 
 	console.log('CtrlSettingsSecurityKey instantiated with key', $scope.key);
 
-	$scope.$watch('key.decryptPassword', function () {
-		console.log('key', $scope.key);
-
+	$scope.$watch('key.decryptPassword', function (o, n) {
+		if (o == n)
+			return;
+		
 		if ($scope.key) {
 			decodeTimeout = $timeout.schedule(decodeTimeout, () => {
 				var r = false;

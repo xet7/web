@@ -31,11 +31,9 @@ var source = require('vinyl-source-stream');
 var lazypipe = require('lazypipe');
 var domain = require('domain');
 
-var to5 = require('gulp-6to5');
-
 // Browserify the mighty one
 var browserify = require('browserify'),
-	to5ify = require('6to5ify'),
+	babelify = require('babelify'),
 	browserifyNgAnnotate = require('browserify-ngannotate'),
 	bulkify = require('bulkify'),
 	uglifyify = require('uglifyify'),
@@ -57,8 +55,9 @@ var args = process.argv.slice(2);
 
 var plumber = null;
 var isServe = false;
+var isWatching = args.length < 1;
 process.env.IS_PRODUCTION = '';
-if (args.length > 0) {
+if (!isWatching) {
 	plumber = plg.util.noop;
 	if (args[0] === 'production') {
 		console.log('Making a production build...');
@@ -249,7 +248,7 @@ var browserifyBundle = function(filename) {
 					basedir: __dirname,
 					debug: config.isDebugable
 				})
-					.transform(ownCodebaseTransform(to5ify), {runtime: true})
+					.transform(ownCodebaseTransform(babelify), {externalHelpers: true})
 					.transform(ownCodebaseTransform(bulkify))
 					.transform(ownCodebaseTransform(envify))
 					.transform(ownCodebaseTransform(brfs));
@@ -326,7 +325,12 @@ gulp.task('build:styles', function() {
 	return gulp.src(paths.styles.input)
 		.pipe(plumber())
 		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.noop())
-		.pipe(plg.less())
+		// oh yes, gulp is full of hacks and totally weird behavior
+		// the special solution for the special gulp-less plugin
+		.pipe(isWatching ? plg.less().on('error', function(err){
+			utils.logGulpError('Less error', 'gulpfile.js', err);
+			this.emit('end');
+		}) : plg.less())
 		.pipe(plg.autoprefixer('last 2 version', '> 1%'))
 		.pipe(config.isDebugable && !config.isProduction ? plg.sourcemaps.write('.') : plg.util.noop())
 		.pipe(!config.isProduction ? gulp.dest(paths.styles.output) : plg.util.noop())
@@ -410,7 +414,7 @@ gulp.task('clean', function () {
 gulp.task('tests', function() {
 	return gulp.src(paths.tests.unit.input)
 		.pipe(plumber())
-		.pipe(to5())
+		.pipe(plg.babel())
 		.pipe(gulp.dest(os.tmpdir()))
 		.pipe(plg.jasmine());
 });

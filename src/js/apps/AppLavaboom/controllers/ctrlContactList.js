@@ -1,67 +1,97 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, user, Hotkey) => {
 	$scope.selectedContactId = null;
 	$scope.searchText = '';
 
-	var translations = {};
+	let translations = {};
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
 		translations.LB_NEW_CONTACT_SHORT = $translate.instant('MAIN.CONTACTS.LB_NEW_CONTACT');
 		translations.LB_EMPTY_CONTACT_SHORT = $translate.instant('MAIN.CONTACTS.LB_EMPTY_CONTACT');
 	});
 
-	var findContact = (cid) => {
-		var letterIndex = 0;
+	const findContact = (cid) => {
+		let letterIndex = 0;
 		for(let letter of $scope.letters) {
-			console.log('findContact, letter', letter);
-			var index = 0;
-			for (let contact of $scope.people[letter]) {
-				if (contact.id == cid)
-					return {
-						letterIndex: letterIndex,
-						index: index
-					};
-				index++;
+			let index = $scope.people[letter].findIndex(c => c.id == cid);
+			if (index < 0) {
+				letterIndex++;
+				continue;
 			}
-			letterIndex++;
+			return {
+				letterIndex: letterIndex,
+				index: index
+			};
 		}
 
 		return null;
 	};
 
-	var nextContactId = (pos) => {
-		var peopleByLetter;
+	const nextContactId = (pos, delta = 0) => {
+		let peopleByLetter;
 
 		if ($scope.letters.length < 1)
 			return null;
 
 		if (pos.letterIndex > $scope.letters.length - 1) {
-			peopleByLetter = $scope.people[$scope.letters[$scope.letters.length - 1]];
-			return peopleByLetter[peopleByLetter.length -1].id;
-		}
+			pos.letterIndex = $scope.letters.length - 1;
 
-		peopleByLetter = $scope.people[$scope.letters[pos.letterIndex]];
-		if (pos.index > peopleByLetter.length - 1)
+			peopleByLetter = $scope.people[$scope.letters[pos.letterIndex]];
+			pos.index = peopleByLetter.length - 1;
+		} else peopleByLetter = $scope.people[$scope.letters[pos.letterIndex]];
+
+		pos.index += delta;
+
+		if (pos.index > peopleByLetter.length - 1) {
+			if (pos.letterIndex < $scope.letters.length - 1) {
+				peopleByLetter = $scope.people[$scope.letters[pos.letterIndex + 1]];
+				return peopleByLetter[0].id;
+			}
 			return peopleByLetter[peopleByLetter.length - 1].id;
+		}
+		if (pos.index < 0) {
+			if (pos.letterIndex > 0) {
+				peopleByLetter = $scope.people[$scope.letters[pos.letterIndex - 1]];
+				return peopleByLetter[peopleByLetter.length - 1].id;
+			}
+			return peopleByLetter[0].id;
+		}
 
 		return peopleByLetter[pos.index].id;
 	};
 
 	$scope.$bind('contacts-changed', () => {
-		var oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
+		let oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
 
-		console.log('contacts-changed, $scope.selectedContactId', $scope.selectedContactId, 'oldContactPosition', oldContactPosition);
+		$scope.list = [...contacts.people.values()].filter(c => !c.isPrivate());
 
-		$scope.list = contacts.peopleList.filter(c => !c.isPrivate());
-		$scope.people = _.groupBy($scope.list, contact => {
+		const group = (map, letter, item) => {
+			if (!map[letter])
+				map[letter] = [];
+			map[letter].push(item);
+			return map;
+		};
+
+		$scope.people = $scope.list.reduce((a, contact) => {
 			if (contact.isNew)
-				return '+';
+				return group(a, '+', contact);
 
 			if (!contact.name)
-				return '?';
+				return group(a, '?', contact);
 
-			return contact.name[0];
+			return group(a, contact.getSortingField(user.settings.contactsSortBy)[0], contact);
+		}, {});
+
+		Object.keys($scope.people).forEach(letter => {
+			$scope.people[letter].sort((a, b) => {
+				a = a.getFullName();
+				b = b.getFullName();
+				if (a < b) return -1;
+				if (a > b) return 1;
+				return 0;
+			});
 		});
-		$scope.letters = _.sortBy(Object.keys($scope.people), letter => letter);
+
+		$scope.letters = Object.keys($scope.people).sort();
 
 		if (oldContactPosition !== null)
 			$state.go('main.contacts.profile', {contactId: nextContactId(oldContactPosition)});
@@ -71,7 +101,46 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 		yield $state.go('main.contacts.profile', {contactId: 'new'});
 	});
 
-	$scope.$bind('$stateChangeSuccess', () => {
+	const stateChangeSuccess = $scope.$bind('$stateChangeSuccess', () => {
 		$scope.selectedContactId = $stateParams.contactId;
+
+		const addHotkeys = () => {
+			const moveContacts = function(delta) {
+				let oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
+
+				if (oldContactPosition) {
+					let cid = nextContactId(oldContactPosition, delta);
+					$state.go('main.contacts.profile', {contactId: cid});
+				}
+			};
+
+			const moveUp = (event, key) => {
+				event.preventDefault();
+				moveContacts(-1);
+			};
+
+			const moveDown = (event, key) => {
+				event.preventDefault();
+				moveContacts(1);
+			};
+
+			Hotkey.addHotkey({
+				combo: ['h', 'k', 'left', 'up'],
+				description: 'HOTKEY.MOVE_UP',
+				callback: moveUp
+			});
+
+			Hotkey.addHotkey({
+				combo: ['j', 'l', 'right', 'down'],
+				description: 'HOTKEY.MOVE_DOWN',
+				callback: moveDown
+			});
+		};
+
+		addHotkeys();
+	});
+
+	$scope.$on('$destroy', () => {
+		stateChangeSuccess();
 	});
 };

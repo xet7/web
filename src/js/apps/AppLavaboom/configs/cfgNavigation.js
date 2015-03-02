@@ -23,7 +23,7 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 
 			views: {
 				'left-view': {
-					templateUrl: 'partials/left_panel.html',
+					templateUrl: 'partials/navigation.html',
 					controller: 'CtrlNavigation'
 				}
 			}
@@ -42,10 +42,6 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 			url: '/label/:labelName?threadId',
 
 			views: {
-				'threads@main.inbox': {
-					templateUrl: 'partials/inbox/threads.html',
-					controller: 'CtrlThreadList'
-				},
 				'emails@main.inbox': {
 					templateUrl: 'partials/inbox/emails.html',
 					controller: 'CtrlEmailList'
@@ -111,7 +107,25 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 				router.createPopup({
 					templateUrl: 'partials/compose.html',
 					controller: 'CtrlCompose',
-					backdrop: true,
+					backdrop: 'static',
+					size: 'lg'
+				});
+			};
+
+			// @ngInject
+			this.onExit = (router) => {
+				router.hidePopup();
+			};
+		},
+		'download': function () {
+			this.url =  '/download/:emailId/:fileId';
+
+			// @ngInject
+			this.onEnter = (router) => {
+				router.createPopup({
+					templateUrl: 'partials/download.html',
+					controller: 'CtrlDownload',
+					backdrop: 'static',
 					size: 'lg'
 				});
 			};

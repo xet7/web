@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, ContactEmail) => {
 	$scope.contactId = $stateParams.contactId;
 
 	var translations = {};
@@ -16,19 +16,21 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 			$state.go('main.contacts');
 	}
 
-	function ContactEmail () {
-		this.email =  '';
-		this.isStar = false;
-		this.isCollapsed = true;
-		this.key = null;
-	}
+	$scope.$watchGroup(['details.firstName', 'details.lastName'], (newValues, oldValues) => {
+		if (newValues[0] != oldValues[0] || newValues[1] != oldValues[1]) {
+			var firstName = $scope.details.firstName ? $scope.details.firstName.trim() : '';
+			var lastName = $scope.details.lastName ? $scope.details.lastName.trim() : '';
+
+			$scope.details.name = firstName || lastName ? `${firstName} ${lastName}` : $scope.details.name;
+		}
+	});
 
 	$scope.addNewPrivateEmail = () => {
-		$scope.details.privateEmails.push(new ContactEmail());
+		$scope.details.privateEmails.push(new ContactEmail($scope.details, {}, 'private'));
 	};
 
 	$scope.addNewBusinessEmail = () => {
-		$scope.details.businessEmails.push(new ContactEmail());
+		$scope.details.businessEmails.push(new ContactEmail($scope.details, {}, 'business'));
 	};
 
 	$scope.saveThisContact = () => co(function *(){

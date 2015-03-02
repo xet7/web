@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/function($rootScope, $http, $translate, co, consts) {
-	var self = this;
+	const self = this;
 
 	this.settings = {};
 
