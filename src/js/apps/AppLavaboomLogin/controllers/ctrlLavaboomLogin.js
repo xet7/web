@@ -1,6 +1,6 @@
 var chan = require('chan');
 
-angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function($q, $rootScope, $state, $scope, $translate, translate, co, crypto, loader) {
+module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, LavaboomAPI, translate, co, crypto, loader, user) => {
 	var translations = {};
 	var translationsCh = chan();
 
@@ -14,29 +14,46 @@ angular.module(primaryApplicationName).controller('CtrlLavaboomLogin', function(
 			translationsCh(true);
 	});
 
-	$scope.isInitialized = false;
-
-	$scope.initializeApplication = () => co(function *(){
+	$scope.initializeApplication = (opts) => co(function *(){
 		try {
-			if (!$scope.isInitialized)
+			var connectionPromise = LavaboomAPI.connect();
+
+			if (!$rootScope.isInitialized)
 				yield translationsCh;
 
 			loader.incProgress(translations.LB_INITIALIZING_I18N, 1);
 
-			translate.initialize();
+			var translateInitialization = translate.initialize();
 
 			loader.incProgress(translations.LB_INITIALIZING_OPENPGP, 5);
 
 			crypto.initialize();
 
-			if ($scope.isInitialized) {
+			yield [connectionPromise, translateInitialization];
+
+			if ($rootScope.isInitialized) {
 				yield $state.go('login', {}, {reload: true});
 			} else {
-				$scope.isInitialized = true;
+				$rootScope.isInitialized = true;
+				console.log('opts', opts);
+				if (opts) {
+
+					if (opts.state) {
+						yield user.authenticate();
+
+						if (opts.state == 'generateKeys') {
+							yield $state.go('generateKeys');
+						} else if (opts.state == 'lavaboomSync') {
+							yield $state.go('lavaboomSync');
+						} else if (opts.state == 'backupKeys') {
+							yield $state.go('backupKeys');
+						}
+					}
+				}
 				return {lbDone: translations.LB_SUCCESS};
 			}
 		} catch (error) {
 			throw {message: translations.LB_INITIALIZATION_FAILED, error: error};
 		}
 	});
-});
+};

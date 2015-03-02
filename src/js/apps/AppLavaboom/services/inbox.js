@@ -1,201 +1,172 @@
-var chan = require('chan');
+module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts, co, LavaboomAPI, user, crypto, contacts, Email, Thread, Label) {
+	const self = this;
 
-angular.module(primaryApplicationName).service('inbox', function($q, $rootScope, $timeout, co, apiProxy, LavaboomAPI, crypto, contacts, Email, Thread) {
-	var self = this;
+	this.selectedTidByLabelName = {};
 
-	this.offset = 0;
-	this.limit = 15;
-	this.emails = [];
-	this.selected = null;
-	this.totalEmailsCount = 0;
-
-	this.labelName = '';
-	this.labelsByName = [];
-	this.threads = {};
-	this.threadsList = [];
-
-	$timeout(() => {
-		LavaboomAPI.subscribe('receipt', (msg) => {
-			console.log('receipt', msg);
-		});
-
-		LavaboomAPI.subscribe('delivery', (msg) => {
-			console.log('delivery', msg);
-		});
-	}, 3000);
-
-	var deleteThreadLocally = (threadId) => {
-		if (self.threads[threadId]) {
-			delete self.threads[threadId];
-			self.threadsList.splice(self.threadsList.findIndex(thread => thread.id == threadId), 1);
-		}
-	};
-
-	var performsThreadsOperation = (operation) => co(function *() {
-		var currentLabelName = self.labelName;
-
-		var r = yield operation;
-
-		$rootScope.$broadcast(`inbox-threads[${currentLabelName}]`);
-
-		return r;
+	this.__handleEvent = (event) => co(function *(){
+		console.log('got server event', event);
 	});
-
-	var getThreadsByLabelName = function *(labelName) {
-		var label = self.labelsByName[labelName];
-
-		var threads = (yield apiProxy(['threads', 'list'], {
-			label: label.id,
-			attachments_count: true,
-			sort: '-date_modified',
-			offset: self.offset,
-			limit: self.limit
-		})).body.threads;
-
-		if (threads)
-			self.offset += threads.length;
-
-		var result = {
-			list: [],
-			map: {}
-		};
-
-		if (threads) {
-			result = Object.keys(threads).reduce((a, i) => {
-				var thread = new Thread(threads[i]);
-				a.map[thread.id] = thread;
-				a.list.push(thread);
-				return a;
-			}, result);
-		}
-
-		return result;
-	};
 
 	this.getThreadById = (threadId) => co(function *() {
-		var thread = (yield apiProxy(['threads', 'get'], threadId)).body.thread;
+		const thread = (yield LavaboomAPI.threads.get(threadId)).body.thread;
 
-		return thread ? new Thread(thread) : null;
+		return thread ? yield Thread.fromEnvelope(thread) : null;
 	});
 
-	this.requestDelete = (threadId) => performsThreadsOperation(co(function *() {
-		var thread = self.threads[threadId];
-		var trashLabelId = self.labelsByName.Trash.id;
-		var spamLabelId = self.labelsByName.Spam.id;
-		var draftsLabelId = self.labelsByName.Drafts.id;
+	this.requestDelete = (thread) => co(function *() {
+		const labels = yield self.getLabels();
 
-		var r;
-		if (thread.labels.indexOf(trashLabelId) > -1 || thread.labels.indexOf(spamLabelId) > -1 || thread.labels.indexOf(draftsLabelId) > -1)
-			r = yield apiProxy(['threads', 'delete'], threadId);
-		else
-			r = yield self.requestSetLabel(threadId, 'Trash');
+		const trashLabelId = labels.byName.Trash.id;
+		const spamLabelId = labels.byName.Spam.id;
+		const draftsLabelId = labels.byName.Drafts.id;
 
-		deleteThreadLocally(threadId);
-
-		return r;
-	}));
-
-	this.requestSetLabel = (threadId, labelName) => performsThreadsOperation(co(function *() {
-		var currentLabelName = self.labelName;
-
-		var labelId = self.labelsByName[labelName].id;
-		var r =  yield apiProxy(['threads', 'update'], threadId, {labels: [labelId]});
-
-		if (labelName != currentLabelName)
-			deleteThreadLocally(threadId);
-
-		return r;
-	}));
-
-	this.requestAddLabel = (threadId, labelName) => performsThreadsOperation(co(function *() {
-		var labelId = self.labelsByName[labelName].id;
-		var thread = self.threads[threadId];
-
-		return yield apiProxy(['threads', 'update'], threadId, {labels: _.union(thread.labels, [labelId])});
-	}));
-
-	this.getEmailsByThreadId = (threadId, decodeChan) => co(function *() {
-		var emails = (yield apiProxy(['emails', 'list'], {thread: threadId})).body.emails;
-
-		return yield (emails ? emails : []).map(e => Email.fromEnvelope(e));
+		const lbs = thread.labels;
+		return lbs.includes(trashLabelId) || lbs.includes(spamLabelId) || lbs.includes(draftsLabelId)
+			? yield self.requestDeleteForcefully(thread)
+			: yield self.requestSetLabel(thread, 'Trash');
 	});
 
-	this.getLabels = (classes = {}) => co(function *() {
-		var labels = (yield apiProxy(['labels', 'list'])).body.labels;
-
-		return labels.reduce((a, label) => {
-			label.iconClass = `icon-${classes[label.name] ? classes[label.name] :label.name.toLowerCase()}`;
-			a[label.name] = label;
-			return a;
-		}, {});
+	this.requestDeleteForcefully = (thread) => co(function *() {
+		yield LavaboomAPI.threads.delete(thread.id);
 	});
 
-	this.initialize = (decodeChan) => co(function *(){
-		var labelsClasses = {
-			'Drafts': 'draft',
-			'Spam': 'ban',
-			'Starred': 'star'
-		};
+	this.requestSetLabel = (thread, labelName) => co(function *() {
+		const labels = yield self.getLabels();
+		let labelId = labels.byName[labelName].id;
 
-		var labels = yield self.getLabels(labelsClasses);
+		const newLabels = [labelId];
+		yield LavaboomAPI.threads.update(thread.id, {labels: newLabels});
 
-		if (!labels.Drafts) {
-			yield apiProxy(['labels', 'create'], {name: 'Drafts'});
-			labels = yield self.getLabels(labelsClasses);
+		return newLabels;
+	});
+
+	this.requestSwitchLabel = (thread, labelName) => co(function *() {
+		if (thread.isLabel(labelName)) {
+			console.log('label found - remove');
+			return yield self.requestRemoveLabel(thread, labelName);
+		} else {
+			console.log('label not found - add');
+			return yield self.requestAddLabel(thread, labelName);
 		}
+	});
 
-		self.labelsByName = labels;
+	this.requestRemoveLabel = (thread, labelName) => co(function *() {
+		let newLabels = thread.removeLabel(labelName);
+		yield LavaboomAPI.threads.update(thread.id, {labels: newLabels});
 
-		$rootScope.$broadcast('inbox-labels', self.labels);
+		return newLabels;
+	});
 
-		yield self.requestList('Inbox', decodeChan);
+	this.requestAddLabel = (thread, labelName) => co(function *() {
+		const newLabels = thread.addLabel(labelName);
+		yield LavaboomAPI.threads.update(thread.id, {labels: newLabels});
+
+		return newLabels;
+	});
+
+	this.getEmailsByThreadId = (threadId) => co(function *() {
+		const emails = (yield LavaboomAPI.emails.list({thread: threadId})).body.emails;
+
+		return emails ? yield emails.map(e => Email.fromEnvelope(e)) : [];
+	});
+
+	this.setThreadReadStatus = (threadId) => co(function *(){
+		// hack
+		const thread = (yield LavaboomAPI.threads.get(threadId)).body.thread;
+
+		yield LavaboomAPI.threads.update(threadId, {
+			is_read: true,
+			labels: thread.labels
+		});
+	});
+
+	this.getLabels = () => co(function *() {
+		const labels = (yield LavaboomAPI.labels.list()).body.labels;
+
+		const r = labels.reduce((a, label) => {
+			a.byName[label.name] = a.byId[label.id] = new Label(label);
+			return a;
+		}, {byName: {}, byId: {}});
+
+		$rootScope.$broadcast('inbox-labels', r);
+
+		return r;
+	});
+
+	this.initialize = () => co(function *(){
+		let labels = yield self.getLabels();
+
+		if (!labels.byName.Drafts)
+			yield self.createLabel('Drafts');
+	});
+
+	this.createLabel = (name) => co(function *(){
+		yield LavaboomAPI.labels.create({name});
+	});
+
+	this.downloadAttachment = (id) => co(function *(){
+		const res =  yield LavaboomAPI.files.get(id);
+		return (yield crypto.decodeEnvelope(res.body.file, '', 'raw')).data;
 	});
 
 	this.uploadAttachment = (envelope) => co(function *(){
-		return yield apiProxy(['attachments', 'create'], envelope);
+		return yield LavaboomAPI.files.create(envelope);
 	});
 
 	this.deleteAttachment = (attachmentId) => co(function *(){
-		return yield apiProxy(['attachments', 'delete'], attachmentId);
+		return yield LavaboomAPI.files.delete(attachmentId);
 	});
 
-	this.requestList = (labelName, decodeChan = null) => {
-		if (self.labelName != labelName) {
-			self.offset = 0;
-			self.threads = {};
-			self.threadsList = [];
-		}
+	this.getEmailById = (emailId) => co(function *(){
+		const res = yield LavaboomAPI.emails.get(emailId);
 
-		self.labelName = labelName;
-
-		return performsThreadsOperation(co(function * (){
-			var e = yield getThreadsByLabelName(labelName, decodeChan);
-
-			self.threads = angular.extend(self.threads, e.map);
-			self.threadsList = self.threadsList.concat(e.list);
-
-			return e;
-		}));
-	};
-
-	this.send = (to, cc, bcc, subject, body, attachments, thread_id = null) => co(function * () {
-		var res = yield apiProxy(['keys', 'get'], to);
-		var publicKey = res.body.key;
-		var encryptedMessage = yield crypto.encodeWithKey(body, publicKey.key);
-
-		yield apiProxy(['emails', 'create'], {
-			to: to,
-			cc: cc,
-			bcc: bcc,
-			subject: subject,
-			body: encryptedMessage,
-			pgp_fingerprints: [publicKey.id],
-			attachments: attachments,
-			thread_id: thread_id
-		});
+		return res.body.email ? Email.fromEnvelope(res.body.email) : null;
 	});
 
-	this.scroll = () => {
-		self.isInboxLoading = true;
+	this.requestList = (labelName, offset, limit) => co(function *() {
+		const labels = yield self.getLabels();
+		const label = labels.byName[labelName];
+
+		const threads = (yield LavaboomAPI.threads.list({
+			label: label.id,
+			attachments_count: true,
+			sort: '-date_created',
+			offset: offset,
+			limit: limit
+		})).body.threads;
+
+		return threads ? yield threads.map(t => co.def(Thread.fromEnvelope(t), null)) : [];
+	});
+
+	this.getKeyForEmail = (email) => co(function * () {
+		const res = yield LavaboomAPI.keys.get(email);
+		return res.body.key;
+	});
+
+	let sendEnvelope = null;
+
+	this.send = (opts, manifest, keys) => co(function * () {
+		sendEnvelope = yield Email.toEnvelope(opts, manifest, keys);
+
+		return {
+			isEncrypted: sendEnvelope.kind == 'manifest'
+		};
+	});
+
+	this.confirmSend = () =>  co(function * () {
+		const res = yield LavaboomAPI.emails.create(sendEnvelope);
+
+		sendEnvelope = null;
+
+		return res.body.id;
+	});
+
+	this.rejectSend = () => {
+		sendEnvelope = null;
 	};
-});
+
+	$rootScope.whenInitialized(() => {
+		LavaboomAPI.subscribe('receipt', (msg) => self.__handleEvent(msg));
+		LavaboomAPI.subscribe('delivery', (msg) => self.__handleEvent(msg));
+	});
+};

@@ -1,0 +1,30 @@
+[application]
+	dependencies = [
+		# poly-fills
+		'../../../node_modules/babel/browser-polyfill.js',
+		'../../../node_modules/setimmediate/setImmediate.js',
+
+		# babel runtime
+		'../../../node_modules/babel/external-helpers.js',
+
+		# libs
+		'../../bower_components/sockjs-client/dist/sockjs.js',
+		'../../bower_components/lodash/lodash.js',
+
+		# Lavaboom raw API
+		'../../bower_components/lavaboom/dist/lavaboom-api.js',
+
+		# angular
+		'../../bower_components/angular/angular.js',
+
+		# angular 3rd-party modules
+		'../../bower_components/angular-ui-router/release/angular-ui-router.js',
+		'../../bower_components/angular-translate/angular-translate.js',
+		'../../bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js',
+		'../../bower_components/angular-messages/angular-messages.js',
+		'../../bower_components/angular-autodisable/angular-autodisable.js',
+
+		# angular own modules
+		'../../bower_components/lavaboom/dist/lavaboom-angular.js',
+		'../../bower_components/angular-co/dist/co.js'
+	]

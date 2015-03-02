@@ -1,6 +1,3 @@
-[TEST]
-	STR = "Hallo! Im Test-String in Englisch"
-
 [LANG]
 	CODE = "de"
 

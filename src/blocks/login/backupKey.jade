@@ -8,6 +8,7 @@ form.steps-form.ng-cloak(ng-class="{'errors': currentErrorMessage}")
 		span.icon-unread.active
 		span.icon-unread.active
 		span.icon-unread.active
+		span.icon-unread.active
 
 	div.info
 		span.icon-info
@@ -21,5 +22,8 @@ form.steps-form.ng-cloak(ng-class="{'errors': currentErrorMessage}")
 	hr.blank
 
 	footer
+		.checkbox
+			input#check1(type='checkbox', name="check1", ng-model="form.isPrivateComputer")
+			label(for='check1') This is private computer
 		button.btn.btn-block.btn-lg.btn-primary(ng-click="backup()") {{'LOGIN.BACKUP_KEY.BTN_BACKUP_NOW' | translate}}
 		button.btn.btn-block.btn-lg.btn(ng-click="skip()") {{'LOGIN.BACKUP_KEY.BTN_BACKUP_LATER' | translate}}

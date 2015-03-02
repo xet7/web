@@ -2,15 +2,6 @@
 	.lava-font();
 	font-size: 13px;
 
-	p{
-		word-break: break-word;
-		-webkit-hyphens: auto;
-		-moz-hyphens: auto;
-		-ms-hyphens: auto;
-		-o-hyphens: auto;
-		hyphens: auto;
-	}
-
 	.main-container, .main-container > .row, .main-content{
 		.pos-rel();
 		height: 100%;
@@ -43,9 +34,36 @@
 			background: @lava-login-error-bg;
 			color: @lava-login-gray-lightest;
 		}
+		+ .alert-danger, + span.input-group-addon + .alert-danger{
+			padding-left: 15px;
+			font-style: italic;
+			font-size: 1em;
+			transition: .3s all;
+			.opacity(0);
+			max-height: 0;
+			display: inline-block !important;
+			overflow: hidden;
+			padding-top: 0;
+			margin-bottom: 0;
+			> span {
+				position: relative;
+				top: -4em;
+				transition: .4s all;
+			}
+			&:not(.ng-hide){
+				padding-top: 3px;
+				margin-bottom: .5em;
+				.opacity(1);
+				max-height: 100px;
+				> span {
+					top: 0;
+					transition: .4s top;
+				}
+			}
+		}
 	}
 
-	form.errors{
+	form.errors, form.ng-submitted{
 		input[type=text], input[type=email], input[type=password], textarea, .btn, .checkbox label:before{
 			&.ng-invalid-required{
 				background: @lava-login-error-bg;
@@ -63,6 +81,7 @@
 		  	color: @lava-login-gray-light;
 		}
 	}
+
 
 	input[type=checkbox] {  
 	    display: none;  
@@ -99,15 +118,9 @@
 		margin-top: -2px;
 	}
 
-	.form-control::-moz-placeholder {
-		color: @lava-login-gray;
-	  	opacity: 1;
-	}
-	.form-control:-ms-input-placeholder {
-	  	color: @lava-login-gray;
-	}
-	.form-control::-webkit-input-placeholder {
-	  	color: @lava-login-gray;
+	.form-control{
+		.lava-font();
+		.placeholder();
 	}
 
 	.table-list{
@@ -183,7 +196,7 @@
 			.z1();
 			line-height: 1.8em;
 			font-size: 18px;
-			font-weight: 100;
+			.lava-font();
 			pointer-events: none;
 		}
 	}
@@ -222,6 +235,7 @@
 		font-size: 2em;
 		color: @lava-login-gray-light;
 		// font-weight: @light-font-weight;
+		.lava-font();
 		.text-center();
 		margin-bottom: 1.1em;
 		&.pack{
@@ -302,7 +316,7 @@
 	}
 
 	label{
-		font-weight: @base-font-weight;
+		.lava-font();
 	}
 
 	footer{

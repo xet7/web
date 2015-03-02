@@ -21,8 +21,9 @@ elif branch == "develop":
 
 # build
 def build():
-	local("npm install -g gulp")
-	local("npm install")
+	# we install required npm packages with increased number of retries and if it fails we use backup mirror
+	local("npm install --fetch-retries 3 -g gulp || npm install --fetch-retries 3 --registry http://registry.npmjs.eu -g gulp")
+	local("npm install --fetch-retries 3 || npm install --fetch-retries 3 --registry http://registry.npmjs.eu")
 	if branch == "master" or branch == "staging":
 		with shell_env(API_URI=api_uri, TLD=tld):
 			local("gulp production")
@@ -30,7 +31,7 @@ def build():
 		with shell_env(API_URI=api_uri, TLD=tld):
 			local("gulp develop")
 	else:
-		local("develop")
+		local("gulp develop")
 
 def deploy():
 	branch = os.getenv('DRONE_BRANCH', 'master')

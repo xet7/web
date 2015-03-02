@@ -1,11 +1,15 @@
-window.primaryApplicationName = 'AppLavaboom';
+window.coJS = require('co');
+let AngularApplication = require('../helpers/angularApplication');
 
-angular.module(primaryApplicationName, (globs.isProduction
-	? [
+var bulkRequire = require('bulk-require');
+
+let application = new AngularApplication('AppLavaboom');
+application.create(
+	[
 		'templates'
-	]
-	: []
-	).concat([
+	],
+	[
+		'utils',
 		'lavaboom.api',
 		'ngSanitize',
 		'ui.router',
@@ -15,26 +19,22 @@ angular.module(primaryApplicationName, (globs.isProduction
 		'pascalprecht.translate',
 		'infinite-scroll',
 		'angular-co',
-		'ngAutodisable'
-	])
+		'ngAutodisable',
+		'cfp.hotkeys',
+		'angularMoment'
+	]
 );
 
-window.coJS = require('co');
-
-var bulkRequire = require('bulk-require');
-
-bulkRequire(__dirname, [
-	'../runs/*.js',
-	'../decorators/*.js',
-	'../configs/*.js',
-	'../directives/*.js',
-	'../services/*.js',
-
-	'./AppLavaboom/runs/*.js',
-	'./AppLavaboom/filters/*.js',
-	'./AppLavaboom/configs/*.js',
-	'./AppLavaboom/directives/*.js',
-	'./AppLavaboom/services/*.js',
-	'./AppLavaboom/classes/*.js',
-	'./AppLavaboom/controllers/*.js'
-]);
+application.registerBulks(
+	bulkRequire(__dirname + '/AppLavaboom/', [
+		'runs/*.js',
+		'decorators/*.js',
+		'filters/*.js',
+		'constants/*.js',
+		'configs/*.js',
+		'directives/*.js',
+		'factories/*.js',
+		'services/*.js',
+		'controllers/*.js'
+	])
+);

@@ -1,7 +1,7 @@
 .switch{
 	overflow: hidden;
 	// background: @gray-light;
-	line-height: 1em;
+	line-height: 1.4rem;
 	vertical-align: middle;
 }
 
@@ -11,10 +11,10 @@
 .switch i {
 		display: inline-block;
 		cursor: pointer;
-		padding-right: 20px;
+		padding-right: 2rem;
 		transition: all @lava-ease-out-in 0.4s;
-		border-radius: 20px;
-		box-shadow: inset 0 0 0px 0px @lava;
+		border-radius: 2rem;
+		box-shadow: inset 0 0 0 0 @lava;
 		background: @gray-lighter;
 		transition-delay: box-shadow 5s, background-color 1s;
 
@@ -22,19 +22,19 @@
 .switch i:before {
 		display: block;
 		content: '';
-		width: 16px;
-		height: 16px;
-		border-radius: 20px;
-		margin: 4px;
+		width: 1.6rem;
+		height: 1.6rem;
+		border-radius: 2rem;
+		margin: .4rem;
 		background: #FFF;
-		box-shadow: 2px 1px 3px rgba(0, 0, 0, 0.1);
+		box-shadow: .2rem .1rem .3rem rgba(0, 0, 0, 0.1);
 		transition: all @lava-ease-out-in 0.2s;
 }
 .switch :checked + i {
 		padding-right: 0;
-		padding-left: 20px;
+		padding-left: 2rem;
 		background: #FFF;
-		box-shadow: inset 0 0 40px 40px @lava;
+		box-shadow: inset 0 0 4rem 4rem @lava;
 		transition: all @lava-ease-out-in 0.2s;
 }
 
@@ -53,60 +53,90 @@
 
 	.switch{
 		position: relative;
-		top: 5px;
+		top: .5rem;
 	}
 }
 
+// buttons
+.btn{
+	background-image: none !important;
+	bodrer: 0;
+	&:active{
+		transform: traslateZ (.8rem);
+	}
+}
+.btn-primary{
+	background: @lava;
+	border-color: transparent;
+}
+
+input:focus{
+	box-shadow: none;
+}
 form.settings{
-	position: relative;
-	height: 100%;
+	// position: relative;
+	// height: 100%;
 
 	.switch{
 		position: relative;
-		top: 13px;
+		top: 1.3rem;
 	}
 
-	.btn-primary{
-		background: @lava;
-		border-color: transparent;
+	.btn, input, textarea, label{
+		.lava-font();
+		color: @lava-gray;
+		&.btn-danger, &.btn-primary{
+			color: #FFF;
+		}
+	}
+
+	.btn-icon{
+		.text-left();
+		[class^="icon-"], [class*=" icon-"]{
+			padding-right: .5em;
+		}		
+	}
+
+	[class^="icon-"]:not(.field-icon), [class*=" icon-"]:not(.field-icon){
+		color: @lava-gray-light;
+		font-size: 1.3em;
 	}
 
 	.form-wrap{
-		 position: relative;
+		// position: relative;
+		// top: 50%;
+		// transform: translateY(-50%);
+	}
 
-			top: 50%;
-			transform: translateY(-63%);
-
-		 .price-tag {
-			height:0; overflow: visible;
-		 
-			text-align: right;
+	 .price-tag {
+		height:0; overflow: visible;
+	 
+		text-align: right;
+		position: relative;
+		span.text{
+			background: @lava;
 			position: relative;
-			span.text{
-				background: @lava;
-				position: relative;
-				top: 1.5em;
-				.z2();
-				padding: .6em 3em .6em 1em;
-				font-size: 1.1em;
-				right: -10px;
-				color: #FFF;
-				display: inline-block;
-			}
+			top: 1.5em;
+			.z2();
+			padding: .6em 3em .6em 1em;
+			font-size: 1.1em;
+			right: -1rem;
+			color: #FFF;
+			display: inline-block;
+		}
 
-			.caret{
-					display: inline-block;
-					width: 0;
-					height: 0;
-					margin: .6em 3em .6em 0;
-					vertical-align: middle;
-				 border-top: 10px solid @lava-dark;
-					border-right: 10px solid transparent;
-					border-left: 0px solid transparent;
-					position: absolute;
-					top: 3.78em;
-					.z1();
-			}
+		.caret{
+				display: inline-block;
+				width: 0;
+				height: 0;
+				margin: .6em 3em .6em 0;
+				vertical-align: middle;
+			 border-top: 1rem solid @lava-dark;
+				border-right: 1rem solid transparent;
+				border-left: 0 solid transparent;
+				position: absolute;
+				top: 3.78em;
+				.z1();
 		}
 	}
 	.settings-row{
@@ -124,7 +154,7 @@ form.settings{
 			float: right;
 			min-width: 50%;
 			text-align: right;
-			margin-top: -15px; margin-bottom: -15px;
+			margin-top: -1.5rem; margin-bottom: -1.5rem;
 			line-height: 3.5em;
 		}
 
@@ -133,16 +163,17 @@ form.settings{
 			background:    transparent none;
 			box-shadow: none;
 			outline: 0 none;
+			color: @lava-gray;
 			&:focus, &:active{
 				border-color: @lava !important;
 				outline: 0 !important;
 				
-				box-shadow: inset 0 0 0 1px @lava;
+				box-shadow: inset 0 0 0 .1rem @lava;
 			}
 		}
 
 		.input-group{
-			margin: -10px -15px;
+			margin: -1rem -1.5rem;
 			&.with-label{
 				.pos-rel();
 				padding-left: 40%;
@@ -150,9 +181,9 @@ form.settings{
 				> label {
 					width: 40%;
 					.pos-abs();
-					left: 13px; top: 0; bottom: 0;
+					left: 1.3rem; top: 0; bottom: 0;
 					.z2();
-					line-height: 31px;
+					line-height: 3.1rem;
 				}
 			}
 			.btn{
@@ -165,21 +196,25 @@ form.settings{
 				}
 				&.active .icon-star-outline:before{
 					content: "\67";
+					color: @lava;
+				}
+				.icon-lock:before{
+					color: @lava;
 				}
 			}
 		}
 
 		.text-control{
-			margin: -10px -15px;
+			margin: -1rem -1.5rem;
 			.pos-rel();
 			&.btn-control{
-				padding: 10px;
+				padding: 1rem;
 			}
 			label{
 				.pos-abs();
 				.z1();
-				line-height: 42px;
-				left: 13px;
+				line-height: @lava-form-line-height;
+				left: 1.3rem;
 				pointer-events: none;
 			}
 			input{
@@ -191,9 +226,9 @@ form.settings{
 				font-family: @font-family-base;
 				.text-right();
 				border: 0;
-				line-height: 42px; height: 42px;
-				&.icon-field{
-					padding-right: 50px;
+				line-height: @lava-form-line-height; height: @lava-form-line-height;
+				&.field-icon{
+					padding-right: 5rem;
 				}
 			}
 			&.block{
@@ -204,7 +239,7 @@ form.settings{
 				input{
 					width: 100%;
 					text-align: left;
-					padding: 6px 12px;
+					padding: .6rem 1.2rem;
 					display: block;
 				}
 			}
@@ -213,44 +248,53 @@ form.settings{
 					border-color: @lava !important;
 					outline: 0 !important;
 					
-					box-shadow: inset 0 0 0 1px @lava;
+					box-shadow: inset 0 0 0 .1rem @lava;
 				}
 			}
 		
 			span {
 				.pos-abs();
 				.z1();
-				line-height: 42px;
+				line-height: @lava-form-line-height;
 				top: 0;
-				right: 17px;
+				right: 1.7rem;
 				pointer-events: none;
-				font-size: 20px;
+				font-size: 2rem;
 			}
 		}
 		.signature{
-			// padding: 10px 45px 10px 15px;
+			
 			.ta-toolbar{
 				display:none;
 			}
 			.ta-bind{
 				box-shadow: none;
 				border: 0;
-				height: 200px;
+				height: 20rem;
+				&:focus{
+					border: 0;
+					box-shadow: none;
+					outline: 0 none;
+				}
 			}
 
 			.ta-scroll-window.form-control{
 				box-shadow: none;
 				border: 0;
 			}
+
+			.ta-editor{
+				min-height: 20rem;
+			}
 		}
 		.dropdown-control{
-			margin: -10px -15px;
+			margin: -1rem -1.5rem;
 			.pos-rel();
 			label{
 				.pos-abs();
 				.z1();
-				line-height: 42px;
-				left: 15px;
+				line-height: @lava-form-line-height;
+				left: 1.5rem;
 				pointer-events: none;
 			}
 
@@ -264,21 +308,24 @@ form.settings{
 				border: 0;
 				background-image: none;
 				background-color: transparent;
-				min-height: 34px;
+				min-height: 3.4rem;
 				box-shadow: none;
 				&:focus, &:active{
 					outline: 0 none !important;
 				}
 				text-align: right;
-				line-height: 30px;
+				line-height: 3.0rem;
 				font-weight: @light-font-weight;
 			}
 
 			.btn-group.ui-select-match{
 				display: block !important;
-				line-height: 42px;
+				line-height: @lava-form-line-height;
 				button{
-					padding-right: 17px;
+					padding-right: 1.7rem;
+				}
+				.pull-left{
+					float: none !important;
 				}
 			}
 			.caret{
@@ -287,25 +334,26 @@ form.settings{
 				height: auto;
 				width: auto;
 				.pos-rel();
-				left: -3px;
-				top: 3px;
-				font-size: 20px;
-				line-height: 28px;
+				left: -.3rem;
+				top: .3rem;
+				font-size: 2rem;
+				line-height: 2.8rem;
+				right: 1rem;
 				&:before{
 					content: "\76";
 				}
 			}
 
 			.ui-select-container{
-				min-height: 42px;
-				margin: 0 -1px;
+				min-height: @lava-form-line-height;
+				margin: 0 -.1rem;
 			}
 			.ui-select-choices-row{
 				.text-right();
 				background: #FFF;
 				border-bottom: @border-site-wide;
 				a{
-					padding-right: 51px;
+					padding-right: 5.1rem;
 					font-weight: @light-font-weight;
 				}
 				&.active, &:hover{
@@ -318,21 +366,21 @@ form.settings{
 							content: "\37";
 							color: @lava;
 							.pos-abs();
-							right: 18px;
-							font-size: 20px;
-							line-height: 42px;
+							right: 1.8rem;
+							font-size: 2rem;
+							line-height: @lava-form-line-height;
 						}
 					}
 				}
 			}
 
 			.dropdown-icon{
-				padding-left: 8px;
+				padding-left: .8rem;
 			}
 			.ui-select-choices-row-inner{
 				padding-left: 50%;
-				min-height: 42px;
-				line-height: 42px;
+				min-height: @lava-form-line-height;
+				line-height: @lava-form-line-height;
 			}
 
 			.ta-toolbar{
@@ -342,6 +390,15 @@ form.settings{
 			.ui-select-bootstrap > .ui-select-choices{
 				padding: 0;
 				margin: 0;
+			}
+			.ui-select-match{
+				&.ng-hide{
+					display: block !important;
+				}
+			}
+			.ui-select-match-text.pull-left{
+				float: none !important;
+				padding-right: 2rem;
 			}
 
 			.col-sm-2{
@@ -366,7 +423,7 @@ form.settings{
 
 			.col-md-11{
 				.make-md-column(22);
-				padding-right: 16px;
+				padding-right: 1.6rem;
 			}
 		}
 		&.suppress-borders{
@@ -374,25 +431,27 @@ form.settings{
 				border-top: 0;
 			}
 		}
-		.progress, .progress-bar{
-			box-shadow: none;
-		}
-
-		.progress{
-			height: .5em;
-			margin-bottom: .4em;
-		}
-
-		.progress-bar{
-			border-radius: 3px;
-		}
 	}
 	h4{
-		padding-left: 16px;
+		padding-left: 1.6rem;
 		color: @lava-text;
-		font-weight: 200;
-		margin-top: 2em;
+		.lava-font();
+		margin-top: 3.6rem;
+		margin-bottom: 1rem;
 	}
+}
+
+.progress, .progress-bar{
+	box-shadow: none;
+}
+
+.progress{
+	height: .5em;
+	margin-bottom: .4em;
+}
+
+.progress-bar{
+	border-radius: .3rem;
 }
 
 form{
@@ -410,7 +469,7 @@ form{
 				border-color: transparent;
 				border-radius: 0;
 				font-weight: @base-font-weight;
-				font-size: 14px;
+				font-size: 1.4rem;
 				&.selected,&:hover{
 					background-color: @lava-compose-tags-bg;
 				}

@@ -1,10 +1,10 @@
-angular.module(primaryApplicationName).service('router', function ($rootScope, $state, $modal, $timeout) {
-	var self = this;
+module.exports = /*@ngInject*/function ($rootScope, $state, $modal, $timeout) {
+	const self = this;
 
 	var isInitialized = false;
 	var delayedPopup = null;
 
-	$rootScope.$on('initialization-completed', () => {
+	$rootScope.whenInitialized(() => {
 		isInitialized = true;
 		if (delayedPopup) {
 			delayedPopup.windowClass = 'no-animation-modal';
@@ -28,10 +28,12 @@ angular.module(primaryApplicationName).service('router', function ($rootScope, $
 		} else delayedPopup = opts;
 	};
 
-	this.showPopup = (stateName, params, onClose = null) => {
+	this.showPopup = (stateName, params) => {
 		stateName = `.popup.${stateName}`;
+		if (!params)
+			params = {};
 
-		$state.go(self.getPrimaryStateName($state.current.name) + stateName);
+		$state.go(self.getPrimaryStateName($state.current.name) + stateName, params);
 	};
 
 	this.hidePopup = () => {
@@ -44,7 +46,7 @@ angular.module(primaryApplicationName).service('router', function ($rootScope, $
 		});
 	};
 
-	this.isPopupState = (name) => name.indexOf('.popup.') > 0;
+	this.isPopupState = (name) => name.includes('.popup.');
 
 	this.getPrimaryStateName = (name) => name.replace(/\.popup\..+/, '');
-});
+};

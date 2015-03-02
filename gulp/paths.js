@@ -9,7 +9,7 @@ module.exports = {
 		input: 'src/js/*.js',
 		inputFolder: 'src/js/',
 		inputAll: 'src/js/**/*.js',
-		inputApps: ['./src/js/apps/appLavaboom.js', './src/js/apps/appLavaboomLogin.js'],
+		inputApps: ['./src/js/apps/utils.js', './src/js/apps/appLavaboom.js', './src/js/apps/appLavaboomLogin.js', './src/js/loader.js', './src/js/checker.js'],
 		inputDeps: 'src/js/apps/*.toml',
 		inputAppsFolder: 'src/js/apps/',
 		output: output + 'js/'
@@ -28,7 +28,7 @@ module.exports = {
 		output: output + 'img/'
 	},
 	fonts: {
-		input: 'src/fonts/*',
+		input: 'src/fonts/fonts/*',
 		output: output + 'css/fonts/'
 	},
 	markup: {
@@ -39,9 +39,8 @@ module.exports = {
 		input: 'src/blocks/**/*.jade',
 		output: output + 'partials/'
 	},
-	staticFiles: 'src/static/**',
 	vendor: {
-		input: 'src/vendor/*.js',
+		input: 'src/vendor/*',
 		output: output + 'vendor/'
 	},
 	translations : {

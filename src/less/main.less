@@ -23,27 +23,33 @@
 	width: @mail-thread-width;
 	margin-left: @mail-list-width;
 	.z3();
-	box-shadow:  -3px 0px 14px 0 rgba(0, 0, 0, 0.19);
 	position: absolute;
-	top:0;
-	bottom: 0;
-	overflow-x: hidden;
-	overflow-y: auto;
+	height: 100%;
+	overflow-y: hidden;
+    overflow-x: hidden;
+    .z1();
+	.scrollbars();
+	box-shadow:  -3px 0px 14px 0 rgba(0, 0, 0, 0.19);
+	
 	@media (max-width: @screen-md-max) {
 		width: @mail-thread-width-sm;
 		margin-left: @mail-list-width-sm;
 	}
 	
-	.actions{
+	.actions, .filters{
 		top: 0;
+		.z2();
 	}
 	.main-settings-view, .main-view{
 		.pos-rel();
+		.z1();
 		height: 100%;
 		// padding: 10px;
-		padding-top: @filter-height;
-		> .settings-panel, .main-panel{
-			position: relative;
+		margin-top: @filter-height;
+		overflow: auto;
+		> .settings-panel, > .main-panel{
+			.no-gutter();
+			// position: relative;
 			height: 100%;
 			overflow: auto;
 			padding-bottom: @filter-height + 25px;
@@ -70,7 +76,7 @@
 	}
 }
 .list-group-wrapper{
-	padding-top: @filter-height;
+	margin-top: @filter-height;
 	.list-group-item {
 		&:first-child{
 			border-top: 0;
@@ -91,7 +97,7 @@
 		}
 		&:hover{
 			background-color: @lava-gray-lightest;
-			transition: .2s all;
+			transition: .3s all;
 			a{
 				color: @lava-gray-dark;
 				.sec-icon{
@@ -102,7 +108,7 @@
 		}
 		&.active {
 			background-color: @lava;
-			border-color: #4CBCDD;
+			border-color: @lava;
 			a{
 				color: #FFF;
 				.sec-icon{
@@ -186,10 +192,23 @@
 	}
 }
 
+p.hyphenate{
+	word-break: break-word;
+	-webkit-hyphens: auto;
+	-moz-hyphens: auto;
+	-ms-hyphens: auto;
+	-o-hyphens: auto;
+	hyphens: auto;
+}
+
 .table-list{
 	display: table;
 	.cell{
 		display: table-cell;
+		&.label{
+			min-width: 7rem;
+			text-align: left;
+		}
 	}
 }
 
@@ -201,4 +220,15 @@
 
 .serif{
 	font-family: @font-family-serif;
+}
+
+.lava-modal-header{
+	.modal-heading{
+		line-height: 2.8em;
+		padding-left: 1.3em;
+	}
+}
+
+.lava-modal-content{
+	padding-top: @filter-height + 25px;
 }

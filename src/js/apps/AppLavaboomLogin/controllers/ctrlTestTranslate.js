@@ -1,2 +1,2 @@
-angular.module(primaryApplicationName).controller('CtrlTestTranslate', function($scope) {
-});
+module.exports = /*@ngInject*/function($scope) {
+};

@@ -1,4 +1,4 @@
-angular.module(primaryApplicationName) .filter('fileSize', () => {
+module.exports = /*@ngInject*/() => {
 	return size => {
 		if (isNaN(size))
 			size = 0;
@@ -25,4 +25,4 @@ angular.module(primaryApplicationName) .filter('fileSize', () => {
 
 		return size.toFixed(2) + ' Tb';
 	};
-});
+};

@@ -1,8 +1,8 @@
-angular.module(primaryApplicationName).controller('CtrlDetails', function($scope, $state, user, signUp) {
+module.exports = /*@ngInject*/($scope, $state, co, user, signUp) => {
 	if (!signUp.tokenSignup || !signUp.plan)
 		$state.go('invite');
 
-	$scope.form = {
+	$scope.form = signUp.details ? signUp.details : {
 		firstName: '',
 		lastName: '',
 		displayName: ''
@@ -16,9 +16,9 @@ angular.module(primaryApplicationName).controller('CtrlDetails', function($scope
 		$scope.form.displayName = firstName || lastName ? autoDisplayName : $scope.form.displayName;
 	});
 
-	$scope.requestDetailsUpdate = () => {
+	$scope.requestDetailsUpdate = () => co(function *(){
 		signUp.details = $scope.form;
 
-		$state.go('choosePasswordIntro');
-	};
-});
+		yield $state.go('choosePasswordIntro');
+	});
+};

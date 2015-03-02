@@ -1,4 +1,4 @@
-form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-submit="__form.$valid && logIn()", novalidate)
+form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-submit="__form.$valid && logIn()", novalidate, ng-autodisable)
 	img.login-logo(src="img/Lavaboom-logo.svg")
 	p.lead {{'LOGIN.SIGNUP.LOGIN' | translate}}
 
@@ -20,6 +20,6 @@ form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-subm
 		label(for='check2') This is private computer
 
 	footer
-		button.btn.btn-block.btn-lg.btn-primary(type="submit", ng-disabled="isProcessing") {{'LOGIN.AUTH.BTN_GO_TO_MY_INBOX' | translate}}
+		button.btn.btn-block.btn-lg.btn-primary(type="submit") {{'LOGIN.AUTH.BTN_GO_TO_MY_INBOX' | translate}}
 	p.text-center
 		a(ui-sref="invite") {{'LOGIN.AUTH.BTN_NO_ACCOUNT_YET' | translate}}

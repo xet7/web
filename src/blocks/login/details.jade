@@ -1,10 +1,11 @@
-form.steps-form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-submit="__form.$valid && requestDetailsUpdate()", novalidate)
+form.steps-form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-submit="__form.$valid && requestDetailsUpdate()", novalidate, ng-autodisable)
 	p.lead.pack {{'LOGIN.DETAILS.TITLE' | translate}}
 
 	p.text-center.steps
 		span.icon-unread.active
 		span.icon-unread.active
 		span.icon-unread.active
+		span.icon-unread
 		span.icon-unread
 		span.icon-unread
 		span.icon-unread

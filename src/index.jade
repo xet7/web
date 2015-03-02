@@ -39,17 +39,18 @@ html(lang="en")
 								p#loader-progress-text.lead Initializing...
 
 		#login-app-container.hidden(ng-controller="CtrlLavaboomLogin")
-			.login-app.login
-				.container.main-container
-					.row
-						.main-content.col-md-8.col-xs-22.col-md-offset-8.col-xs-offset-1(ui-view="", autoscroll="false")
+			div(ng-if="isInitialized && isShown")
+				.login-app.login
+					.container.main-container
+						.row
+							.main-content.col-md-8.col-xs-22.col-md-offset-8.col-xs-offset-1(ui-view="", autoscroll="false")
 
 		#main-app-container.hidden(ng-controller="CtrlLavaboom")
-			#leftPanel(ui-view="left-view", autoscroll="false")
-			#content(ui-view="main-view", autoscroll="false")
-			#modal(ui-view="modal-view", autoscroll="false")
+			div(ng-if="isInitialized && isShown", custom-drop-zone)
+				#leftPanel(ui-view="left-view", autoscroll="false")
+				#content(ui-view="main-view", autoscroll="false")
+				#modal(ui-view="modal-view", autoscroll="false")
 
-		if globs.isProduction
+		if globs.IS_PRODUCTION
 			script!= 'window.assets = ' + JSON.stringify(assets) + ';'
-		script!= 'window.globs = ' + JSON.stringify(globs) + ';'
 		script!= fs.readFileSync('./dist' + resolveAsset('/js/loader.js'), 'utf8')

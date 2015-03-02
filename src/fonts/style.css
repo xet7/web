@@ -1,0 +1,245 @@
+@font-face {
+	font-family: 'lavaboom';
+	src:url('fonts/lavaboom.eot?-suchdr');
+	src:url('fonts/lavaboom.eot?#iefix-suchdr') format('embedded-opentype'),
+		url('fonts/lavaboom.woff?-suchdr') format('woff'),
+		url('fonts/lavaboom.ttf?-suchdr') format('truetype'),
+		url('fonts/lavaboom.svg?-suchdr#lavaboom') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+	font-family: 'lavaboom';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-format-list-bulleted:before {
+	content: "\e602";
+}
+
+.icon-format-bold:before {
+	content: "\f032";
+}
+
+.icon-format-italic:before {
+	content: "\f033";
+}
+
+.icon-format-align-center:before {
+	content: "\f037";
+}
+
+.icon-format-align-left:before {
+	content: "\f036";
+}
+
+.icon-format-align-right:before {
+	content: "\f038";
+}
+
+.icon-format-align-justify:before {
+	content: "\f039";
+}
+
+.icon-format-list:before {
+	content: "\f03a";
+}
+
+.icon-format-dedent:before {
+	content: "\f03b";
+}
+
+.icon-format-indent:before {
+	content: "\f03c";
+}
+
+.icon-format-list-numbered:before {
+	content: "\e603";
+}
+
+.icon-format-quote:before {
+	content: "\e604";
+}
+
+.icon-format-underline:before {
+	content: "\e605";
+}
+
+.icon-format-photo:before {
+	content: "\e606";
+}
+
+.icon-plus:before {
+	content: "\2b";
+}
+
+.icon-lock-hallow:before {
+	content: "\e600";
+}
+
+.icon-key-solid:before {
+	content: "\38";
+}
+
+.icon-info-circle:before {
+	content: "\39";
+}
+
+.icon-tick:before {
+	content: "\37";
+}
+
+.icon-compose:before {
+	content: "\61";
+}
+
+.icon-inbox:before {
+	content: "\62";
+}
+
+.icon-draft:before {
+	content: "\63";
+}
+
+.icon-outbox:before {
+	content: "\64";
+}
+
+.icon-sent:before {
+	content: "\65";
+}
+
+.icon-star-outline:before {
+	content: "\66";
+}
+
+.icon-star:before {
+	content: "\67";
+}
+
+.icon-ban:before {
+	content: "\68";
+}
+
+.icon-empty-trash:before {
+	content: "\69";
+}
+
+.icon-trash:before {
+	content: "\6a";
+}
+
+.icon-head:before {
+	content: "\6b";
+}
+
+.icon-cog:before {
+	content: "\6c";
+}
+
+.icon-power:before {
+	content: "\6d";
+}
+
+.icon-paper-clip:before {
+	content: "\6e";
+}
+
+.icon-search:before {
+	content: "\6f";
+}
+
+.icon-lock:before {
+	content: "\70";
+}
+
+.icon-unlock:before {
+	content: "\71";
+}
+
+.icon-unread:before {
+	content: "\72";
+}
+
+.icon-close:before {
+	content: "\73";
+}
+
+.icon-close-small:before {
+	content: "\74";
+}
+
+.icon-edit:before {
+	content: "\75";
+}
+
+.icon-chevron-down:before {
+	content: "\76";
+}
+
+.icon-chevron-down-small:before {
+	content: "\77";
+}
+
+.icon-put-back:before {
+	content: "\78";
+}
+
+.icon-arrow-right:before {
+	content: "\79";
+}
+
+.icon-reply:before {
+	content: "\7a";
+}
+
+.icon-reply-all:before {
+	content: "\e4";
+}
+
+.icon-arrow-up:before {
+	content: "\f6";
+}
+
+.icon-arrow-down:before {
+	content: "\fc";
+}
+
+.icon-tag:before {
+	content: "\df";
+}
+
+.icon-save:before {
+	content: "\31";
+}
+
+.icon-read:before {
+	content: "\32";
+}
+
+.icon-preferences:before {
+	content: "\33";
+}
+
+.icon-profile:before {
+	content: "\34";
+}
+
+.icon-key:before {
+	content: "\35";
+}
+
+.icon-lavaboom:before {
+	content: "\36";
+}
+

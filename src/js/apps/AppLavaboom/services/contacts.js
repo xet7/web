@@ -1,67 +1,109 @@
-angular.module(primaryApplicationName).service('contacts', function($q, $rootScope, co, user, crypto, apiProxy, Contact) {
-	var self = this;
+module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, LavaboomAPI, Contact) {
+	const self = this;
+	var emptyContact = null;
+
+	var deleteLocally = (contactId) => {
+		if (self.people.has(contactId)) {
+			self.people.delete(contactId);
+		}
+	};
+
+	this.newContact = () => {
+		if (emptyContact)
+			return emptyContact;
+
+		var id = 'new';
+		emptyContact = new Contact({
+			id: id,
+			isSecured: true,
+			isNew: true,
+			name: 'New contact'
+		});
+		self.people.set(id, emptyContact);
+
+		$rootScope.$broadcast('contacts-changed');
+
+		return emptyContact;
+	};
 
 	this.list = () => co(function *() {
-		var contacts = (yield apiProxy(['contacts', 'list'])).body.contacts;
-		return contacts ? co.map(contacts, Contact.fromEnvelope) : [];
+		var contacts = (yield LavaboomAPI.contacts.list()).body.contacts;
+
+		var list = contacts ? yield co.map(contacts, Contact.fromEnvelope) : [];
+		return list.reduce((map, c) => {
+			map.set(c.id, c);
+			return map;
+		}, new Map());
 	});
 
 	this.createContact = (contact) => co(function *() {
 		var envelope = yield Contact.toEnvelope(contact);
-		return yield apiProxy(['contacts', 'create'], envelope);
+		var r = yield LavaboomAPI.contacts.create(envelope);
+
+		if (contact.id) {
+			if (contact.id == 'new') {
+				delete contact.isNew;
+				emptyContact = null;
+			}
+			deleteLocally(contact.id);
+		}
+
+		contact.id = r.body.contact.id;
+
+		self.people.set(contact.id, contact);
+
+		$rootScope.$broadcast('contacts-changed');
+
+		return contact.id;
 	});
 
 	this.updateContact = (contact) => co(function *() {
 		var envelope = yield Contact.toEnvelope(contact);
-		return yield apiProxy(['contacts', 'update'], contact.id, envelope);
+		var r = yield LavaboomAPI.contacts.update(contact.id, envelope);
+
+		$rootScope.$broadcast('contacts-changed');
+
+		return r.body.contact.id;
 	});
 
-	this.deleteContact = (contact) => co(function *() {
-		return yield apiProxy(['contacts', 'delete'], contact.id);
+	this.deleteContact = (contactId) => co(function *() {
+		if (!emptyContact || contactId != emptyContact.id)
+			yield LavaboomAPI.contacts.delete(contactId);
+		else
+			emptyContact = null;
+
+		deleteLocally(contactId);
+		$rootScope.$broadcast('contacts-changed');
 	});
 
 	this.initialize = () => co(function*(){
-		var contacts = yield self.list();
-		console.log('contacts: ', contacts);
-		yield contacts.map(c => self.deleteContact(c));
+		emptyContact = null;
 
-		var testContacts = [
-			new Contact({name: 'Ned Stark', email: 'ned@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Winter is coming.', isSecured: true}),
-			new Contact({name: 'Theon Greyjoy', email: 'tgreyjoy@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Reluctant to pay iron price.', isSecured: true}),
-			new Contact({name: 'Samwell Tarly', email: 'starly@castleblack.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Loyal brother of the watch.'}),
-			new Contact({name: 'Jon Snow', email: 'jsnow@castleblack.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Knows nothing.'}),
-			new Contact({name: 'Arya Stark', email: 'waterdancer@winterfell.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Has a list of names.'}),
-			new Contact({name: 'Jora Mormont', email: 'khaleesifan100@gmail.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Lost in the friend-zone.'}),
-			new Contact({name: 'Tyrion Lannister', email: 'tyrion@lannister.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Currently drunk.'}),
-			new Contact({name: 'Stannis Baratheon', email: 'onetrueking@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Nobody expects the Stannish inquisition.', isSecured: true}),
-			new Contact({name: 'Hodor', email: 'hodor@hodor.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Hodor? Hodor... Hodor!'}),
-			new Contact({name: 'Margaery Tyrell', email: 'mtyrell@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Keeper of kings.', isSecured: true}),
-			new Contact({name: 'Brienne of Tarth', email: 'oathkeeper@gmail.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Do not cross her.'}),
-			new Contact({name: 'Petyr Baelish', email: 'petyr@lavaboom.com', phone: '123-456-7890', url: 'www.google.com', notes: 'Do not trust anyone.', isSecured: true})
-		];
-		yield testContacts.map(c => self.createContact(c));
+		if (user.isAuthenticated()) {
+			self.myself = new Contact({
+				name: user.name,
+				email: user.email,
+				isSecured: true
+			});
+		} else
+			self.myself = null;
 
-		self.people = self.people.concat(yield self.list());
+		$rootScope.$bind('keyring-updated', () => {
+			self.people = new Map();
+			co(function *(){
+				self.people = yield self.list();
+				$rootScope.$broadcast('contacts-changed');
+			});
+		});
 	});
 
-	this.people = [];
-
 	this.getContactById = (id) => {
-		for(let c of self.people) {
-			if (c.id == id)
-				return c;
-		}
-		return {};
+		return self.people.get(id);
 	};
 
 	this.getContactByEmail = (email) => {
-		for(let c of self.people)
-			if (c.email == email)
-				return c;
-		return {};
+		return [...self.people.values()].find(c => c.isMatchEmail(email));
 	};
-
-	this.myself = null;
 
 	$rootScope.$on('user-authenticated', () => {
 		self.myself = new Contact({
@@ -69,7 +111,7 @@ angular.module(primaryApplicationName).service('contacts', function($q, $rootSco
 			email: user.email,
 			isSecured: true
 		});
-		self.people.push(self.myself);
-		$rootScope.$broadcast('contacts-changed', self.people);
+
+		$rootScope.$broadcast('contacts-changed');
 	});
-});
+};
