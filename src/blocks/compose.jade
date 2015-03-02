@@ -28,19 +28,24 @@ div#compose-wrapper
 							button.btn.btn-default(ng-click="isXCC = !isXCC", ng-disabled="isWarning")
 								span.icon-tick
 
-						li.btn-group.dropdown(dropdown="", is-open="isWarning")
-							button.btn.btn-default(dropdown-toggle="", ng-disabled="disabled",type="submit", ng-click="send()", ng-class="{isWarning : dropdown-toggle}")
+						li.btn-group.dropdown(dropdown="", is-open="status.warning")
+							button.btn.btn-default(ng-disabled="disabled",type="submit", ng-click="send($event)")
 								span.icon-sent
-							ul.dropdown-menu(role="menu")
+							ul.dropdown-menu(role="menu", ng-click="$event.stopPropagation()")
 								li
-									a(href="#") Action
-								li
-									a(href="#") Another action
-								li
-									a(href="#") Something else here
-								li.divider
-								li
-									a(href="#") Separated link	
+									p {{'MAIN.COMPOSE.LB_WARNING' | translate}}
+									p {{'MAIN.COMPOSE.LB_WARNING_2' | translate}}
+								li.yesno.table-list
+									a.btn.cell(type="button", ng-click="confirm()")
+										span.icon-sent
+										span {{'MAIN.COMPOSE.BTN_CONFIRM' | translate}}
+									a.btn.cell(type="button", ng-click="reject()")
+										span.icon-close
+										span {{'MAIN.COMPOSE.BTN_REJECT' | translate}}
+								li.dropdown-checkbox
+									.checkbox
+										input#check1(type='checkbox', name="rememberSendWarning", ng-model="status.rememberSendWarning")
+										label(for='rememberSendWarning') Ask me again
 						li
 							button.btn.btn-default(ng-click="hidePopup()")
 								span.icon-close

@@ -42,6 +42,41 @@
 	padding-left: 1em;
 }
 
+input[type=checkbox] {  
+    display: none;  
+}
+
+.checkbox label:before {  
+	content: "";  
+    display: inline-block;  
+  
+    width: 22px;  
+    height: 22px;  
+    padding-right: 2px;
+  
+    margin-right: 20px;  
+    position: absolute;  
+    left: 0;
+    top: -2px;
+    
+}
+
+.checkbox label{
+	padding-left: 40px;
+}
+
+input[type=checkbox]:checked + label:before {
+	font-family: 'lavaboom';
+    content: "7";  
+    line-height: 22px;
+    font-size: 17px;
+    text-align: center;
+}
+
+.radio + .radio, .checkbox + .checkbox {
+	margin-top: -2px;
+}
+
 .checkbox-wrapper{
 	display: table;
 	// height: 100%;
