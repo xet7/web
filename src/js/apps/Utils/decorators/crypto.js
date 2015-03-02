@@ -24,5 +24,18 @@ module.exports = /*@ngInject*/($delegate, $rootScope, co, consts, Cache, Proxy) 
 		return yield decodeRaw(...args);
 	});
 
+	$delegate.invalidateCryptoCache = () => {
+		cache.invalidateAll();
+	};
+
+	$rootScope.whenInitialized(() => {
+		$rootScope.$on('keyring-updated', () => {
+			self.invalidateCryptoCache();
+		});
+		$rootScope.$on('logout', () => {
+			self.invalidateCryptoCache();
+		});
+	});
+
 	return $delegate;
 };
