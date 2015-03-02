@@ -1,6 +1,8 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, $stateParams, co, user, inbox, consts, Hotkey) => {
 	$scope.labelName = $stateParams.labelName;
 	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
+	if ($scope.selectedTid)
+		inbox.selectedTidByLabelName[$scope.labelName] = $scope.selectedTid;
 
 	console.log('CtrlThreadList loaded', $scope.selectedTid);
 
