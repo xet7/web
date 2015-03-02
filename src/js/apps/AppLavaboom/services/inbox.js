@@ -1,6 +1,8 @@
 module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts, co, LavaboomAPI, user, crypto, contacts, Email, Thread, Label) {
 	const self = this;
 
+	this.selectedTidByLabelName = {};
+
 	this.__handleEvent = (event) => co(function *(){
 		console.log('got server event', event);
 	});

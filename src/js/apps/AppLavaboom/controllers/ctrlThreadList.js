@@ -15,7 +15,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	$scope.offset = 0;
 	$scope.limit = 15;
 
-	let isWatching = false;
+	let watchingFilteredThreadsList = null;
 
 	const requestList = () => {
 		$scope.isLoading = true;
@@ -44,7 +44,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		});
 	};
 
-	$scope.selectThread = (event, tid) => {
+	$scope.selectThread = (tid) => {
 		$state.go('main.inbox.label', {labelName: $scope.labelName, threadId: tid});
 	};
 
@@ -88,8 +88,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			$scope.isLoadingSign = false;
 			$scope.isInitialLoad = false;
 
-			if (!isWatching) {
-				$scope.$watch('filteredThreadsList', (o, n) => {
+			if (!watchingFilteredThreadsList) {
+				watchingFilteredThreadsList = $scope.$watch('filteredThreadsList', (o, n) => {
 					if (o == n)
 						return;
 
@@ -99,7 +99,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 					else
 						$rootScope.$broadcast('emails-list-restore');
 				});
-				isWatching = true;
 			}
 		});
 	});
@@ -109,6 +108,14 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 
 		if (toState.name == 'main.inbox.label') {
 			$scope.selectedTid = toParams.threadId ? toParams.threadId : null;
+
+			if (!$scope.selectedTid && inbox.selectedTidByLabelName[toParams.labelName]) {
+				$timeout(() => {
+					$state.go('main.inbox.label', {labelName: toParams.labelName, threadId: inbox.selectedTidByLabelName[toParams.labelName]});
+				});
+				return;
+			}
+
 			if (toParams.labelName != $scope.labelName) {
 				$scope.offset = 0;
 				$scope.limit = 15;
@@ -117,9 +124,15 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 				$scope.labelName = toParams.labelName;
 				$scope.isLoading = false;
 				$scope.isLoadingSign = false;
-				isWatching = false;
+				if (watchingFilteredThreadsList) {
+					watchingFilteredThreadsList();
+					watchingFilteredThreadsList = null;
+				}
 				requestList();
 			}
+
+			inbox.selectedTidByLabelName[$scope.labelName] = $scope.selectedTid;
+
 			addHotkeys();
 		}
 	});
@@ -154,7 +167,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			if ($scope.selectedTid !== null) {
 				selectedIndex = Math.min(Math.max(selectedIndex + delta, 0), $scope.threadsList.length - 1);
 				$scope.selectedTid = $scope.threadsList[selectedIndex].id;
-				$scope.selectThread(null, $scope.selectedTid);
+				$scope.selectThread($scope.selectedTid);
 			}
 		};
 
