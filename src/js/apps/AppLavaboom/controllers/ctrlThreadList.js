@@ -16,16 +16,16 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	$scope.limit = 15;
 
 	let isWatching = false;
-	let setLoadingSignTimeout = null;
 
 	const requestList = () => {
 		$scope.isLoading = true;
-		setLoadingSignTimeout = $timeout(() => {
+		let setLoadingSignTimeout = $timeout(() => {
 			$scope.isLoadingSign = true;
 		}, consts.LOADER_SHOW_DELAY);
 
 		const labelName = $scope.labelName;
-		co(function *(){
+
+		return co(function *(){
 			try {
 				const list = yield inbox.requestList($scope.labelName, $scope.offset, $scope.limit);
 
@@ -35,12 +35,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 				}
 			} catch (err) {
 				$scope.isDisabled = true;
+				throw err;
 			} finally {
-				if (labelName == $scope.labelName) {
-					$scope.isLoading = false;
-					$scope.isLoadingSign = false;
-					$timeout.cancel(setLoadingSignTimeout);
-				}
+				$scope.isLoading = false;
+				$scope.isLoadingSign = false;
+				$timeout.cancel(setLoadingSignTimeout);
 			}
 		});
 	};
@@ -120,8 +119,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 				$scope.labelName = toParams.labelName;
 				$scope.isLoading = false;
 				$scope.isLoadingSign = false;
-				if (setLoadingSignTimeout)
-					$timeout.cancel(setLoadingSignTimeout);
 				isWatching = false;
 				requestList();
 			}
