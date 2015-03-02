@@ -11,6 +11,13 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		['indent', 'outdent', 'quote'],
 		['insertImage']
 	];
+
+	$scope.status = {
+	    warning: false,
+	    rememberSendWarning : true
+	};
+
+
 	let hiddenContacts = {};
 
 	var threadId = $stateParams.replyThreadId;
@@ -101,7 +108,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 	let manifest = null;
 
-	$scope.send = () => co(function *() {
+	$scope.send = (force) => co(function *() {
 		if (!$scope.__form.$valid || $scope.form.selected.to.length < 1 || $scope.form.body.length < 1)
 			return;
 
@@ -141,6 +148,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				yield $scope.confirm();
 			} else {
 				$scope.isWarning = true;
+				console.log($scope.status);
+				$scope.status.warning = true;
 			}
 		} catch (err) {
 			$scope.isError = true;
@@ -151,6 +160,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.confirm = () => co(function *(){
 		try {
 			$scope.isWarning = false;
+			$scope.status.warning = false;
 
 			yield inbox.confirmSend();
 
