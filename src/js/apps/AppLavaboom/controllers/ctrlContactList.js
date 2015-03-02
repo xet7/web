@@ -62,8 +62,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 	$scope.$bind('contacts-changed', () => {
 		let oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
 
-		console.log('contacts-changed, $scope.selectedContactId', $scope.selectedContactId, 'oldContactPosition', oldContactPosition);
-
 		$scope.list = [...contacts.people.values()].filter(c => !c.isPrivate());
 
 		const group = (map, letter, item) => {
@@ -108,7 +106,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 
 		const addHotkeys = () => {
 			const moveContacts = function(delta) {
-				console.log('move contacts', delta);
 				let oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
 
 				if (oldContactPosition) {
@@ -126,8 +123,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 				event.preventDefault();
 				moveContacts(1);
 			};
-
-			console.log('add hotkeys up/down');
 
 			Hotkey.addHotkey({
 				combo: ['h', 'k', 'left', 'up'],
