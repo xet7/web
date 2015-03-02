@@ -3,19 +3,12 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 
 	const proxy = new Proxy($delegate);
 
-	/*
-	wait for AWAIT_FOR_ITEM_CONCURRENT msec when Inbox.getThreadById called and there is pending Inbox.requestList
-	if no update available invoke Inbox.getThreadById to pull the actual data
-	 */
-	const AWAIT_FOR_ITEM_CONCURRENT = 500;
-	let pendingListRequests = {};
-
 	const CACHE_UNFOLD = {
 		unfold: item => item.id
 	};
 
 	let cache = new Cache('default cache', {
-		ttl: 15000
+		ttl: consts.INBOX_LABELS_CACHE_TTL
 	});
 	let threadsCache = new Cache('threads cache', angular.extend({},
 		{
@@ -128,9 +121,6 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 
 	proxy.methodCall('getThreadById', function *(getThreadById, args) {
 		const [threadId] = args;
-
-		/*if (pendingListRequest)
-			yield co.timeout(pendingListRequest, AWAIT_FOR_ITEM_CONCURRENT, null);*/
 
 		const r = threadsCache.getById(threadId);
 		if (r)
