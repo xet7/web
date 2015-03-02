@@ -128,7 +128,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 		const threads = (yield LavaboomAPI.threads.list({
 			label: label.id,
 			attachments_count: true,
-			sort: '-date_modified',
+			sort: '-date_created',
 			offset: offset,
 			limit: limit
 		})).body.threads;
