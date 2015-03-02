@@ -9,7 +9,7 @@ div#left-panel.ng-cloak
 					span.icon-compose
 					span.action {{'MAIN.NAV.LB_COMPOSE' | translate}}
 			li(ng-class="{ active: $state.includes('main.inbox.label', {labelName: label.name}) }", ng-repeat="(name, label) in labelsByName track by label.id")
-				a(ui-sref="main.inbox.label({labelName: label.name, threadId: null})")
+				a(ui-sref="main.inbox.label({labelName: label.name, threadId: getThreadForLabel(label.name)})")
 					span(ng-class="label.iconClass")
 					span.action(ng-bind="label.name")
 					span.badge(ng-bind="label.threadsUnread | unread")

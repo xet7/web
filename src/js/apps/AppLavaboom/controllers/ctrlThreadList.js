@@ -111,13 +111,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		if (toState.name == 'main.inbox.label') {
 			$scope.selectedTid = toParams.threadId ? toParams.threadId : null;
 
-			if (!$scope.selectedTid && inbox.selectedTidByLabelName[toParams.labelName]) {
-				$timeout(() => {
-					$state.go('main.inbox.label', {labelName: toParams.labelName, threadId: inbox.selectedTidByLabelName[toParams.labelName]});
-				});
-				return;
-			}
-
 			if (toParams.labelName != $scope.labelName) {
 				$scope.offset = 0;
 				$scope.limit = 15;
