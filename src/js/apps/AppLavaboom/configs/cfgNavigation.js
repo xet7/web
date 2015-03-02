@@ -23,7 +23,7 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 
 			views: {
 				'left-view': {
-					templateUrl: 'partials/left_panel.html',
+					templateUrl: 'partials/navigation.html',
 					controller: 'CtrlNavigation'
 				}
 			}
