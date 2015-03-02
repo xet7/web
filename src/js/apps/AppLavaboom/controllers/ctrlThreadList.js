@@ -93,8 +93,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 					if (o == n)
 						return;
 
-					console.log('$scope.filteredThreadsList', $scope.filteredThreadsList, 'original', $scope.threadsList);
-
 					const r = $scope.filteredThreadsList.find(t => t.id == $scope.selectedTid);
 					if (!r)
 						$rootScope.$broadcast('emails-list-hide');

@@ -46,13 +46,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 	let emails = null;
 
 	$rootScope.$on('emails-list-hide', () => {
-		console.log('emails-list-hide');
 		emails = $scope.emails;
 		$scope.emails = [];
 	});
 
 	$rootScope.$on('emails-list-restore', () => {
-		console.log('emails-list-restore');
 		if (emails)
 			$scope.emails = emails;
 	});
