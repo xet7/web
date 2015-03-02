@@ -9,15 +9,19 @@ module.exports = /*@ngInject*/($delegate, $rootScope, co, consts, Cache, Proxy) 
 	proxy.methodCall('decodeRaw', function *(decodeRaw, args) {
 		const [message] = args;
 
-		const key = openpgp.crypto.hash.md5(message);
+		if (message.length < consts.CRYPTO_CACHE_MAX_ENTRY_SIZE) {
+			const key = openpgp.crypto.hash.md5(message);
 
-		let value = cache.get(key);
-		if (!value) {
-			value = yield decodeRaw(...args);
-			cache.put(key, value);
+			let value = cache.get(key);
+			if (!value) {
+				value = yield decodeRaw(...args);
+				cache.put(key, value);
+			}
+
+			return value;
 		}
 
-		return value;
+		return yield decodeRaw(...args);
 	});
 
 	return $delegate;
