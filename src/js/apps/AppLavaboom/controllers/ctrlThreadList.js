@@ -1,7 +1,6 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, $stateParams, co, user, inbox, consts, Hotkey) => {
 	$scope.labelName = $stateParams.labelName;
 	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
-	$scope.$state = $state;
 
 	console.log('CtrlThreadList loaded', $scope.selectedTid);
 
@@ -17,10 +16,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	$scope.limit = 15;
 
 	let isWatching = false;
+	let setLoadingSignTimeout = null;
 
 	const requestList = () => {
 		$scope.isLoading = true;
-		let t = $timeout(() => {
+		setLoadingSignTimeout = $timeout(() => {
 			$scope.isLoadingSign = true;
 		}, consts.LOADER_SHOW_DELAY);
 
@@ -39,7 +39,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 				if (labelName == $scope.labelName) {
 					$scope.isLoading = false;
 					$scope.isLoadingSign = false;
-					$timeout.cancel(t);
+					$timeout.cancel(setLoadingSignTimeout);
 				}
 			}
 		});
@@ -60,13 +60,23 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	};
 
 	$rootScope.$on(`inbox-threads`, (e, labelName) => {
-		if (labelName != $scope.labelName) {
-			console.log(`inbox-threads data has been rejected label should match to `, $scope.labelName);
-			return;
-		}
-
 		co (function *(){
-			$scope.threadsList = yield inbox.requestListDirect($scope.labelName, 0, $scope.limit);
+			console.log('inbox-threads', labelName);
+
+			if (labelName != $scope.labelName) {
+				console.log(`inbox-threads data has been rejected (1) label should match to `, $scope.labelName);
+				return;
+			}
+
+			const threadsList = yield inbox.requestListDirect($scope.labelName, 0, $scope.limit);
+
+			if (labelName != $scope.labelName) {
+				console.log(`inbox-threads data has been rejected (2) label should match to `, $scope.labelName);
+				return;
+			}
+
+			$scope.threadsList = threadsList;
+
 			if (!$scope.threadsList || $scope.threadsList.length < 1)
 				$state.go('main.inbox.label', {labelName: $scope.labelName});
 
@@ -108,6 +118,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 				$scope.threads = {};
 				$scope.threadsList = [];
 				$scope.labelName = toParams.labelName;
+				$scope.isLoading = false;
+				$scope.isLoadingSign = false;
+				if (setLoadingSignTimeout)
+					$timeout.cancel(setLoadingSignTimeout);
 				isWatching = false;
 				requestList();
 			}
@@ -123,17 +137,14 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	};
 
 	$scope.spamThread = (tid) => {
-		console.log('$scope.spamThread', tid, $scope.threads);
 		inbox.requestSetLabel($scope.threads[tid], 'Spam');
 	};
 
 	$scope.deleteThread = (tid) => {
-		console.log('$scope.deleteThread', tid, $scope.threads);
 		inbox.requestDelete($scope.threads[tid]);
 	};
 
 	$scope.starThread = (tid) => {
-		console.log('$scope.starThread', tid, $scope.threads);
 		inbox.requestSwitchLabel($scope.threads[tid], 'Starred');
 	};
 
