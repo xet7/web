@@ -53,6 +53,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 
 	$rootScope.$on('emails-list-restore', () => {
 		console.log('emails-list-restore');
-		$scope.emails = emails;
+		if (emails)
+			$scope.emails = emails;
 	});
 };

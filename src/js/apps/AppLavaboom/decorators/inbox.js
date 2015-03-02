@@ -8,11 +8,11 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 	};
 
 	let cache = new Cache('default cache', {
-		ttl: consts.INBOX_LABELS_CACHE_TTL
+		ttl: 15000//consts.INBOX_LABELS_CACHE_TTL
 	});
 	let threadsCache = new Cache('threads cache', angular.extend({},
 		{
-			ttl: consts.INBOX_THREADS_CACHE_TTL
+			ttl: 10000//consts.INBOX_THREADS_CACHE_TTL
 		},
 		{
 			list: value => value.list
@@ -21,7 +21,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 	));
 	let emailsCache = new Cache('emails cache', angular.extend({},
 		{
-			ttl: consts.INBOX_EMAILS_CACHE_TTL
+			ttl: 10000//consts.INBOX_EMAILS_CACHE_TTL
 		},
 		CACHE_UNFOLD
 	));
