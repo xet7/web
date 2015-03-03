@@ -15,6 +15,16 @@
 	LB_SETTINGS = "settings"
 	LB_NO_PRIVATE_KEY_FOUND3 = " and check your key"
 
+	LB_SORT_BY_CREATION_DATE_DESC = "Sort by creation date -"
+	LB_SORT_BY_CREATION_DATE_ASC = "Sort by creation date +"
+	LB_SORT_BY_MODIFICATION_DATE_DESC = "Sort by modification date -"
+	LB_SORT_BY_MODIFICATION_DATE_ASC = "Sort by modification date +"
+
+	LB_SORTED_BY_CREATION_DATE_DESC = "Sorted by creation date -"
+	LB_SORTED_BY_CREATION_DATE_ASC = "Sorted by creation date +"
+	LB_SORTED_BY_MODIFICATION_DATE_DESC = "Sorted by modification date -"
+	LB_SORTED_BY_MODIFICATION_DATE_ASC = "Sorted by modification date +"
+
 [INBOX.DOWNLOAD]
 	TITLE = "Downloading your attachment"
 	LB_ACQUIRING = "Acquiring information..."
