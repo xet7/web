@@ -237,7 +237,7 @@
 	LB_SORT_BY_FIRST_NAME = "first name"
 	LB_SORT_BY_LAST_NAME = "last name"
 	TITLE_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts"
-	LB_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts Enabled"
+	LB_KEYBOARD_SHORTCUTS = "Enabled"
 
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
