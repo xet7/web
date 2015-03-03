@@ -89,7 +89,9 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	});
 
 	$scope.onFileDrop = (file, action) => {
-		if (_.startsWith(file.type, 'image')) return;
+		if (file.type && file.type.startsWith('image'))
+			return;
+
 		var attachmentStatus = {
 			attachment: new Attachment(file)
 		};

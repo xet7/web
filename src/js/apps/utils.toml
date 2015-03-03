@@ -9,7 +9,6 @@
 
 		# libs
 		'../../bower_components/sockjs-client/dist/sockjs.js',
-		'../../bower_components/lodash/lodash.js',
 
 		# Lavaboom raw API
 		'../../bower_components/lavaboom/dist/lavaboom-api.js',
