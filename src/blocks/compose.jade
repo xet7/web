@@ -2,21 +2,53 @@
 div#compose-wrapper
 	form#compose(name="__form", ng-class="{ warning: isWarning }")
 		.filters.row.no-gutter.lava-icon-row.z1
-			hgroup(ng-show="isWarning")
-				label {{'MAIN.COMPOSE.LB_WARNING' | translate}}
-				a.btn.btn-primary.btn-sm(type="button", ng-click="confirm()")
-					span.icon-sent
-					span {{'MAIN.COMPOSE.BTN_CONFIRM' | translate}}
-				a.btn.btn-default.btn-sm(type="button", ng-click="reject()") {{'MAIN.COMPOSE.BTN_REJECT' | translate}}
-			hgroup(ng-show="isError")
-				label {{'MAIN.COMPOSE.LB_ERROR' | translate}}
-			.lava-icon-wrapper.pull-right(ng-hide="isWarning")
-				a(type="button", ng-click="isXCC = !isXCC", ng-disabled="isWarning")
-					span.icon-tick
-				a(type="submit", ng-click="send()", ng-disabled="isWarning")
-					span.icon-sent
-				a(type="button", ng-click="hidePopup()")
-					span.icon-close
+			//- hgroup(ng-show="isWarning")
+			//- 	label {{'MAIN.COMPOSE.LB_WARNING' | translate}}
+			//- 	a.btn.btn-primary.btn-sm(type="button", ng-click="confirm()")
+			//- 		span.icon-sent
+			//- 		span {{'MAIN.COMPOSE.BTN_CONFIRM' | translate}}
+			//- 	a.btn.btn-default.btn-sm(type="button", ng-click="reject()") {{'MAIN.COMPOSE.BTN_REJECT' | translate}}
+			//- hgroup(ng-show="isError")
+			//- 	label {{'MAIN.COMPOSE.LB_ERROR' | translate}}
+			//- .lava-icon-wrapper.pull-right(ng-hide="isWarning")
+			//- 	button.btn.btn-default(ng-click="isXCC = !isXCC", ng-disabled="isWarning")
+			//- 		span.icon-tick
+			//- 	button.btn.btn-default(type="submit", ng-click="send()", ng-disabled="isWarning")
+			//- 		span.icon-sent
+			//- 	button.btn.btn-default(ng-click="hidePopup()")
+			//- 		span.icon-close
+			nav.navbar.navbar-inverse(role="navigation")
+				div
+					ul.nav.navbar-nav.navbar-right(ng-show="selectedTid !== null")
+						//- li
+						//- 	a(href="#", ng-click="starThread(selectedTid)")
+						//- 		span.icon-star(ng-show="selectedTid !== null && threads[selectedTid].isLabel('Starred')")
+						//- 		span.icon-star-outline(ng-show="selectedTid !== null && !threads[selectedTid].isLabel('Starred')")		
+						li
+							button.btn.btn-default(ng-click="isXCC = !isXCC", ng-disabled="isWarning")
+								span.icon-tick
+
+						li.btn-group.dropdown(dropdown="", is-open="status.warning")
+							button.btn.btn-default(ng-disabled="disabled",type="submit", ng-click="send($event)")
+								span.icon-sent
+							ul.dropdown-menu(role="menu", ng-click="$event.stopPropagation()")
+								li
+									p {{'MAIN.COMPOSE.LB_WARNING' | translate}}
+									p {{'MAIN.COMPOSE.LB_WARNING_2' | translate}}
+								li.yesno.table-list
+									a.btn.btn-lg.cell(type="button", ng-click="confirm()")
+										span.icon-sent
+										span {{'MAIN.COMPOSE.BTN_CONFIRM' | translate}}
+									a.btn.btn-lg.cell(type="button", ng-click="reject()")
+										span.icon-close
+										span {{'MAIN.COMPOSE.BTN_REJECT' | translate}}
+								li.dropdown-checkbox.text-center
+									.checkbox
+										input#check1(type='checkbox', name="rememberSendWarning", ng-model="status.rememberSendWarning")
+										label(for='rememberSendWarning') Ask me again
+						li
+							button.btn.btn-default(ng-click="hidePopup()")
+								span.icon-close
 		header#compose-header
 			.table-list
 				- defs = {model: "form.selected.to", label: "{{'MAIN.COMPOSE.LB_TO' | translate}}", click: "clearTo()", required: true};
