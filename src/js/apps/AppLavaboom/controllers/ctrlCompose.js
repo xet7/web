@@ -158,8 +158,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		try {
 			$scope.isWarning = false;
 
-			throw new Error('dead');
-			/*yield inbox.confirmSend();
+			yield inbox.confirmSend();
 
 			yield manifest.getDestinationEmails()
 				.filter(email => !contacts.getContactByEmail(email))
@@ -171,7 +170,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 			manifest = null;
 
-			router.hidePopup();*/
+			router.hidePopup();
 		} catch (err) {
 			$scope.isError = true;
 			throw err;
