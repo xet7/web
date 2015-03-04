@@ -2,15 +2,15 @@
 	.filters.row.no-gutter.lava-icon-row
 		nav.navbar.navbar-inverse(role="navigation")
 			div
-				ul.nav.navbar-nav.navbar-right(ng-show="selectedTid !== null")
+				ul.nav.navbar-nav.navbar-right
 					li
 						button.btn.btn-default(ng-click="newContact()", ng-autodisable)
 							span.icon-plus
 					li
-						button.btn.btn-default
+						button.btn.btn-default(ng-disabled="!selectedContactId")
 							span.icon-star
 					li
-						button.btn.btn-default
+						button.btn.btn-default(ng-disabled="!selectedContactId", ng-click="deleteContact(selectedContactId)")
 							span.icon-trash
 				form.navbar-form-alt
 					.form-group
