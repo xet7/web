@@ -295,8 +295,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.tagClicked = (select, item, model) => {
 		const index = model.findIndex(c => c.email == item.email);
 		if (index > -1) {
-			model.splice(index, 1);
-			select.search = item.getTag();
+			const tag = item.getTag();
+			if (tag) {
+				model.splice(index, 1);
+				select.search = item.getTag();
+			}
 		}
 	};
 
