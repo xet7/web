@@ -216,7 +216,7 @@
 	LB_ERROR = "Error occurred"
 	LB_ERROR_NOT_FOUND = "not found"
 	LB_ERROR_UNKNOWN = "unknown"
-	LB_ASK_ME_AGAIN = "Ask me again"
+	LB_ASK_ME_AGAIN = "Dont's ask me again"
 
 [MAIN.SETTINGS.MENU]
 	KEYS = "Keys"

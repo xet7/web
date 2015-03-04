@@ -3,7 +3,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.isWarning = false;
 	$scope.isError = false;
 	$scope.isXCC = false;
-	$scope.isShowWarning = true;
+	$scope.isShowWarning = false;
 
 	$scope.toolbar = [
 		['h1', 'h2', 'h3'],
