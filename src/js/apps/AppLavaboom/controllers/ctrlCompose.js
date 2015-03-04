@@ -4,6 +4,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.isError = false;
 	$scope.isXCC = false;
 	$scope.isShowWarning = true;
+
 	$scope.toolbar = [
 		['h1', 'h2', 'h3'],
 		['bold', 'italics', 'underline'],
@@ -19,6 +20,13 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	var toEmail = $stateParams.to;
 
 	$scope.attachments = [];
+
+	$scope.$watch('isShowWarning', (o, n) => {
+		if (o == n)
+			return;
+
+		user.update({isShowComposeScreenWarning: $scope.isShowWarning});
+	});
 
 	var processAttachment = (attachmentStatus) => co(function *() {
 		attachmentStatus.status = 'reading';
