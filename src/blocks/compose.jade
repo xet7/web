@@ -13,7 +13,7 @@ div#compose-wrapper
 						li.btn-group.dropdown(dropdown="", is-open="isWarning")
 							button.btn.btn-default(ng-disabled="isWarning || !isValid()", type="submit", ng-click="send()")
 								span.icon-sent
-							ul.dropdown-menu(role="menu", ng-click="$event.stopPropagation()")
+							ul.dropdown-menu(role="menu")
 								li
 									p {{'MAIN.COMPOSE.LB_WARNING' | translate}}
 									p {{'MAIN.COMPOSE.LB_WARNING_2' | translate}}
@@ -27,7 +27,7 @@ div#compose-wrapper
 								li.dropdown-checkbox.text-center
 									.checkbox
 										input#check1(type='checkbox', name="isShowWarning", ng-model="isShowWarning")
-										label(for='isShowWarning') {{'MAIN.COMPOSE.LB_ASK_ME_AGAIN' | translate}}
+										label(for='isShowWarning', ng-click="$event.stopPropagation(); toggleIsShowWarning($event)") {{'MAIN.COMPOSE.LB_ASK_ME_AGAIN' | translate}}
 						li
 							button.btn.btn-default(ng-click="hidePopup()")
 								span.icon-close

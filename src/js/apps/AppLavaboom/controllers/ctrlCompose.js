@@ -28,6 +28,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		user.update({isShowComposeScreenWarning: $scope.isShowWarning});
 	});
 
+	$scope.toggleIsShowWarning = (event) => {
+		$scope.isShowWarning = !$scope.isShowWarning;
+	};
+
 	var processAttachment = (attachmentStatus) => co(function *() {
 		attachmentStatus.status = 'reading';
 		attachmentStatus.isCancelled = false;
