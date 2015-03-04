@@ -136,7 +136,12 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 			limit: limit
 		})).body.threads;
 
-		return threads ? yield threads.map(t => co.def(Thread.fromEnvelope(t), null)) : [];
+		return threads ? yield threads.map(t => co(function *(){
+			const cachedThread = yield self.getThreadById(t.id, true);
+			if (cachedThread)
+				return cachedThread;
+			return yield co.def(Thread.fromEnvelope(t), null);
+		})) : [];
 	});
 
 	this.getKeyForEmail = (email) => co(function * () {

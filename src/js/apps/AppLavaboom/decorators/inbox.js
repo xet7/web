@@ -120,11 +120,14 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 	}, true);
 
 	proxy.methodCall('getThreadById', function *(getThreadById, args) {
-		const [threadId] = args;
+		const [threadId, isCachedOnly] = args;
 
 		const r = threadsCache.getById(threadId);
 		if (r)
 			return r;
+
+		if (isCachedOnly)
+			return null;
 
 		const thread = yield getThreadById(...args);
 
