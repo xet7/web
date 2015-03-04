@@ -11,7 +11,7 @@ div#compose-wrapper
 							button.btn.btn-default(ng-click="isXCC = !isXCC", ng-disabled="isWarning")
 								span.icon-tick
 						li.btn-group.dropdown(dropdown="", is-open="isWarning")
-							button.btn.btn-default(ng-disabled="isWarning", type="submit", ng-click="send()")
+							button.btn.btn-default(ng-disabled="isWarning || !isValid()", type="submit", ng-click="send()")
 								span.icon-sent
 							ul.dropdown-menu(role="menu", ng-click="$event.stopPropagation()")
 								li
