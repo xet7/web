@@ -213,9 +213,10 @@
 	LB_WARNING_2 = "Do you want to continue?"
 	BTN_CONFIRM = "Send"
 	BTN_REJECT = "Go back"
-	LB_ERROR = "Error occured"
+	LB_ERROR = "Error occurred"
 	LB_ERROR_NOT_FOUND = "not found"
 	LB_ERROR_UNKNOWN = "unknown"
+	LB_ASK_ME_AGAIN = "Ask me again"
 
 [MAIN.SETTINGS.MENU]
 	KEYS = "Keys"

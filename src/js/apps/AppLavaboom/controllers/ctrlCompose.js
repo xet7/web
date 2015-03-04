@@ -3,6 +3,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.isWarning = false;
 	$scope.isError = false;
 	$scope.isXCC = false;
+	$scope.isShowWarning = true;
 	$scope.toolbar = [
 		['h1', 'h2', 'h3'],
 		['bold', 'italics', 'underline'],
@@ -11,12 +12,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		['indent', 'outdent', 'quote'],
 		['insertImage']
 	];
-
-	$scope.status = {
-	    warning: false,
-	    rememberSendWarning : true
-	};
-
 
 	let hiddenContacts = {};
 
@@ -110,9 +105,12 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 	let manifest = null;
 
-	$scope.send = (force) => co(function *() {
+	$scope.send = () => co(function *() {
 		if (!$scope.__form.$valid || $scope.form.selected.to.length < 1 || $scope.form.body.length < 1)
 			return;
+
+		$scope.isError = false;
+		$scope.isWarning = false;
 
 		yield $scope.attachments.map(a => a.processingPromise);
 
@@ -137,7 +135,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			manifest.addAttachment(attachmentStatus.id, attachmentStatus.attachment.body, attachmentStatus.attachment.name, attachmentStatus.attachment.type);
 
 		try {
-			$scope.isError = false;
 			var sendStatus = yield inbox.send({
 				body: $scope.form.body,
 				attachmentIds: $scope.attachments.map(a => a.id),
@@ -150,8 +147,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				yield $scope.confirm();
 			} else {
 				$scope.isWarning = true;
-				console.log($scope.status);
-				$scope.status.warning = true;
 			}
 		} catch (err) {
 			$scope.isError = true;
@@ -162,9 +157,9 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.confirm = () => co(function *(){
 		try {
 			$scope.isWarning = false;
-			$scope.status.warning = false;
 
-			yield inbox.confirmSend();
+			throw new Error('dead');
+			/*yield inbox.confirmSend();
 
 			yield manifest.getDestinationEmails()
 				.filter(email => !contacts.getContactByEmail(email))
@@ -176,7 +171,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 			manifest = null;
 
-			router.hidePopup();
+			router.hidePopup();*/
 		} catch (err) {
 			$scope.isError = true;
 			throw err;

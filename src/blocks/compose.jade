@@ -2,34 +2,16 @@
 div#compose-wrapper
 	form#compose(name="__form", ng-class="{ warning: isWarning }")
 		.filters.row.no-gutter.lava-icon-row.z1
-			//- hgroup(ng-show="isWarning")
-			//- 	label {{'MAIN.COMPOSE.LB_WARNING' | translate}}
-			//- 	a.btn.btn-primary.btn-sm(type="button", ng-click="confirm()")
-			//- 		span.icon-sent
-			//- 		span {{'MAIN.COMPOSE.BTN_CONFIRM' | translate}}
-			//- 	a.btn.btn-default.btn-sm(type="button", ng-click="reject()") {{'MAIN.COMPOSE.BTN_REJECT' | translate}}
-			//- hgroup(ng-show="isError")
-			//- 	label {{'MAIN.COMPOSE.LB_ERROR' | translate}}
-			//- .lava-icon-wrapper.pull-right(ng-hide="isWarning")
-			//- 	button.btn.btn-default(ng-click="isXCC = !isXCC", ng-disabled="isWarning")
-			//- 		span.icon-tick
-			//- 	button.btn.btn-default(type="submit", ng-click="send()", ng-disabled="isWarning")
-			//- 		span.icon-sent
-			//- 	button.btn.btn-default(ng-click="hidePopup()")
-			//- 		span.icon-close
 			nav.navbar.navbar-inverse(role="navigation")
 				div
 					ul.nav.navbar-nav.navbar-right(ng-show="selectedTid !== null")
-						//- li
-						//- 	a(href="#", ng-click="starThread(selectedTid)")
-						//- 		span.icon-star(ng-show="selectedTid !== null && threads[selectedTid].isLabel('Starred')")
-						//- 		span.icon-star-outline(ng-show="selectedTid !== null && !threads[selectedTid].isLabel('Starred')")		
+						li(ng-show="isError")
+							span {{'MAIN.COMPOSE.LB_ERROR' | translate}}
 						li
 							button.btn.btn-default(ng-click="isXCC = !isXCC", ng-disabled="isWarning")
 								span.icon-tick
-
-						li.btn-group.dropdown(dropdown="", is-open="status.warning")
-							button.btn.btn-default(ng-disabled="disabled",type="submit", ng-click="send($event)")
+						li.btn-group.dropdown(dropdown="", is-open="isWarning")
+							button.btn.btn-default(ng-disabled="isWarning", type="submit", ng-click="send()")
 								span.icon-sent
 							ul.dropdown-menu(role="menu", ng-click="$event.stopPropagation()")
 								li
@@ -44,8 +26,8 @@ div#compose-wrapper
 										span {{'MAIN.COMPOSE.BTN_REJECT' | translate}}
 								li.dropdown-checkbox.text-center
 									.checkbox
-										input#check1(type='checkbox', name="rememberSendWarning", ng-model="status.rememberSendWarning")
-										label(for='rememberSendWarning') Ask me again
+										input#check1(type='checkbox', name="isShowWarning", ng-model="isShowWarning")
+										label(for='isShowWarning') {{'MAIN.COMPOSE.LB_ASK_ME_AGAIN' | translate}}
 						li
 							button.btn.btn-default(ng-click="hidePopup()")
 								span.icon-close
@@ -64,10 +46,6 @@ div#compose-wrapper
 					label {{'MAIN.COMPOSE.LB_FROM' | translate}}:
 				.cell.fields
 					input.form-control.col-xs-24.from-email(type='text', name="from", ng-model='form.fromEmails[0].email', disabled)
-					//- ui-select(ng-model='form.selected.from', search-enabled='false')
-					//- 	ui-select-match {{$select.selected.email}}
-					//- 	ui-select-choices(repeat='item in form.fromEmails')
-					//- 		span(ng-click='item.selected=item', ng-bind-html='item.email')
 			.table-list
 				.cell.label
 					label.text-primary {{'MAIN.COMPOSE.LB_SUBJECT' | translate}}:
