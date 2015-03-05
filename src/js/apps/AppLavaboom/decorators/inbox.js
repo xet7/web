@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Cache, Proxy) => {
+module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, utils, Cache, Proxy) => {
 	const self = $delegate;
 
 	const proxy = new Proxy($delegate);
@@ -88,7 +88,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 				newList = [];
 
 			threadsCache.put(labelName, {
-				list: value && value.list ? _.uniq(value.list.concat(newList), t => t.id) : newList,
+				list: value && value.list ? utils.uniq(value.list.concat(newList), c => c.id) : newList,
 				isEnd: newList.length < limit
 			});
 		}
@@ -107,7 +107,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		$rootScope.$broadcast(`inbox-threads`, labelName);
 
 		// todo: get rid of uniq(api bug)
-		return _.uniq(value.list, t => t.id).slice(offset, offset + limit);
+		return utils.uniq(value.list, t => t.id).slice(offset, offset + limit);
 	}, true);
 
 	self.requestListDirect = proxy.unbindedMethodCall('requestList', function *(requestList, args) {
@@ -116,15 +116,18 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, Ca
 		const value = yield requestListProxy(requestList, args);
 
 		// todo: get rid of uniq(api bug)
-		return _.uniq(value.list, t => t.id).slice(offset, offset + limit);
+		return utils.uniq(value.list, t => t.id).slice(offset, offset + limit);
 	}, true);
 
 	proxy.methodCall('getThreadById', function *(getThreadById, args) {
-		const [threadId] = args;
+		const [threadId, isCachedOnly] = args;
 
 		const r = threadsCache.getById(threadId);
 		if (r)
 			return r;
+
+		if (isCachedOnly)
+			return null;
 
 		const thread = yield getThreadById(...args);
 

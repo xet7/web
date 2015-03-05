@@ -7,18 +7,14 @@
 					//- 	a(href="#", ng-click="starThread(selectedTid)")
 					//- 		span.icon-star(ng-show="selectedTid !== null && threads[selectedTid].isLabel('Starred')")
 					//- 		span.icon-star-outline(ng-show="selectedTid !== null && !threads[selectedTid].isLabel('Starred')")		
-					li.btn-group.dropdown(dropdown="", is-open="status.isopen")
+					li.btn-group.dropdown(dropdown="", is-open="status.isSortOpened", title="{{sortedLabel}}")
 						button.btn.btn-default.dropdown-toggle(type="button", dropdown-toggle="", ng-disabled="disabled")
 							span.icon-chevron-down
 						ul.dropdown-menu(role="menu")
-							li
-								a(href="#") Action
-							li
-								a(href="#") Another action
-							li
-								a(href="#") Something else here
-							li.divider
-							li
+							li(ng-repeat="sort in sorts", ng-class="{selected: sortQuery == sort.query}")
+								a(ng-click="sortThreads(sort.query)") {{sort.label}}
+							//li.divider
+							//li
 								a(href="#") Separated link
 					li
 						button.btn.btn-default(ng-click="starThread(selectedTid)")

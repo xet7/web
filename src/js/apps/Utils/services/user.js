@@ -15,6 +15,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	// information about user from API
 	this.settings = {};
 	this.defaultSettings = {
+		isShowComposeScreenWarning: true,
 		isHotkeyEnabled: true
 	};
 

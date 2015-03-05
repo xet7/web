@@ -67,7 +67,7 @@ module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
 		this.getSecureClass = () => `sec-${self.isSecured() ? 1 : 0}`;
 	};
 
-	var secureFields = ['firstName', 'lastName', 'companyName', 'privateEmails', 'businessEmails', 'hiddenEmail'];
+	var secureFields = ['name', 'firstName', 'lastName', 'companyName', 'privateEmails', 'businessEmails', 'hiddenEmail'];
 
 	Contact.toEnvelope = (contact) => co(function *() {
 		let data = secureFields.reduce((a, field) => {
@@ -81,7 +81,7 @@ module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
 			data: data,
 			encoding: 'json'
 		}, [user.key.key], 'data');
-		envelope.name = contact.name;
+		envelope.name = contact.name == '$hidden' ? '$hidden' : '$contact';
 
 		return envelope;
 	});
@@ -95,7 +95,6 @@ module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
 			default:
 				let c = new Contact(angular.extend({}, {
 					id: envelope.id,
-					name: envelope.name,
 					dateCreated: envelope.date_created,
 					dateModified: envelope.date_modified,
 					isDecrypted: !!data.data

@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($injector, $rootScope, $translate, co, user, crypto, Manifest) => {
+module.exports = /*@ngInject*/($injector, $rootScope, $translate, co, user, utils, crypto, Manifest) => {
 	let translations = {};
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
@@ -21,9 +21,7 @@ module.exports = /*@ngInject*/($injector, $rootScope, $translate, co, user, cryp
 		this.attachmentsCount = opt.attachments_count;
 
 		this.isLabel = (labelName) => this.labels.some(lid => labels.byId[lid] && labels.byId[lid].name == labelName);
-		this.addLabel = (labelName) => {
-			return _.union(self.labels, [labels.byName[labelName].id]);
-		};
+		this.addLabel = (labelName) => utils.uniq(self.labels.concat([labels.byName[labelName].id]));
 
 		this.removeLabel = (labelName) => {
 			return self.labels.filter(x => x != labels.byName[labelName].id);
