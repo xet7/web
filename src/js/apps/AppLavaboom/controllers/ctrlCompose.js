@@ -3,6 +3,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.isWarning = false;
 	$scope.isError = false;
 	$scope.isXCC = false;
+	$scope.isShowWarning = false;
+
 	$scope.toolbar = [
 		['h1', 'h2', 'h3'],
 		['bold', 'italics', 'underline'],
@@ -11,12 +13,24 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		['indent', 'outdent', 'quote'],
 		['insertImage']
 	];
+
 	let hiddenContacts = {};
 
 	var threadId = $stateParams.replyThreadId;
 	var toEmail = $stateParams.to;
 
 	$scope.attachments = [];
+
+	$scope.$watch('isShowWarning', (o, n) => {
+		if (o == n)
+			return;
+
+		user.update({isShowComposeScreenWarning: $scope.isShowWarning});
+	});
+
+	$scope.toggleIsShowWarning = (event) => {
+		$scope.isShowWarning = !$scope.isShowWarning;
+	};
 
 	var processAttachment = (attachmentStatus) => co(function *() {
 		attachmentStatus.status = 'reading';
@@ -89,7 +103,9 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	});
 
 	$scope.onFileDrop = (file, action) => {
-		if (_.startsWith(file.type, 'image')) return;
+		if (file.type && file.type.startsWith('image'))
+			return;
+
 		var attachmentStatus = {
 			attachment: new Attachment(file)
 		};
@@ -101,9 +117,14 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 	let manifest = null;
 
+	$scope.isValid = () => $scope.__form.$valid && $scope.form.selected.to.length > 0 && $scope.form.subject.length > 0 && $scope.form.body.length > 0;
+
 	$scope.send = () => co(function *() {
-		if (!$scope.__form.$valid || $scope.form.selected.to.length < 1 || $scope.form.body.length < 1)
+		if (!$scope.isValid())
 			return;
+
+		$scope.isError = false;
+		$scope.isWarning = false;
 
 		yield $scope.attachments.map(a => a.processingPromise);
 
@@ -128,7 +149,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			manifest.addAttachment(attachmentStatus.id, attachmentStatus.attachment.body, attachmentStatus.attachment.name, attachmentStatus.attachment.type);
 
 		try {
-			$scope.isError = false;
 			var sendStatus = yield inbox.send({
 				body: $scope.form.body,
 				attachmentIds: $scope.attachments.map(a => a.id),
@@ -279,8 +299,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.tagClicked = (select, item, model) => {
 		const index = model.findIndex(c => c.email == item.email);
 		if (index > -1) {
-			model.splice(index, 1);
-			select.search = item.getTag();
+			const tag = item.getTag();
+			if (tag) {
+				model.splice(index, 1);
+				select.search = item.getTag();
+			}
 		}
 	};
 

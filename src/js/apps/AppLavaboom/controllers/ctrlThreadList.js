@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, $stateParams, co, user, inbox, consts, Hotkey) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, $stateParams, $translate, co, user, inbox, consts, Hotkey) => {
 	$scope.labelName = $stateParams.labelName;
 	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
 	if ($scope.selectedTid)
@@ -16,6 +16,51 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 
 	$scope.offset = 0;
 	$scope.limit = 15;
+
+	$scope.status = {
+		isSortOpened: false
+	};
+	$scope.sortedLabel = '';
+	$scope.sortQuery = inbox.sortQuery;
+
+	var translations = {};
+
+	$rootScope.$bind('$translateChangeSuccess', () => {
+		translations.LB_SORT_BY_CREATION_DATE_DESC = $translate.instant('INBOX.LB_SORT_BY_CREATION_DATE_DESC');
+		translations.LB_SORT_BY_CREATION_DATE_ASC = $translate.instant('INBOX.LB_SORT_BY_CREATION_DATE_ASC');
+		translations.LB_SORT_BY_MODIFICATION_DATE_DESC = $translate.instant('INBOX.LB_SORT_BY_MODIFICATION_DATE_DESC');
+		translations.LB_SORT_BY_MODIFICATION_DATE_ASC = $translate.instant('INBOX.LB_SORT_BY_MODIFICATION_DATE_ASC');
+		translations.LB_SORTED_BY_CREATION_DATE_DESC = $translate.instant('INBOX.LB_SORTED_BY_CREATION_DATE_DESC');
+		translations.LB_SORTED_BY_CREATION_DATE_ASC = $translate.instant('INBOX.LB_SORTED_BY_CREATION_DATE_ASC');
+		translations.LB_SORTED_BY_MODIFICATION_DATE_DESC = $translate.instant('INBOX.LB_SORTED_BY_MODIFICATION_DATE_DESC');
+		translations.LB_SORTED_BY_MODIFICATION_DATE_ASC = $translate.instant('INBOX.LB_SORTED_BY_MODIFICATION_DATE_ASC');
+
+		$scope.sorts = [
+			{
+				query: '-date_created',
+				label: translations.LB_SORT_BY_CREATION_DATE_DESC,
+				labelSorted: translations.LB_SORTED_BY_CREATION_DATE_DESC
+			},
+			{
+				query: '+date_created',
+				label: translations.LB_SORT_BY_CREATION_DATE_ASC,
+				labelSorted: translations.LB_SORTED_BY_CREATION_DATE_ASC
+			},
+			{
+				query: '-date_modified',
+				label: translations.LB_SORT_BY_MODIFICATION_DATE_DESC,
+				labelSorted: translations.LB_SORTED_BY_MODIFICATION_DATE_DESC
+			},
+			{
+				query: '+date_modified',
+				label: translations.LB_SORT_BY_MODIFICATION_DATE_ASC,
+				labelSorted: translations.LB_SORTED_BY_MODIFICATION_DATE_ASC
+			}
+		];
+
+		const currentSort = $scope.sorts.find(s => s.query == $scope.sortQuery);
+		$scope.sortedLabel = currentSort ? currentSort.labelSorted : '';
+	});
 
 	let watchingFilteredThreadsList = null;
 
@@ -44,6 +89,18 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 				$timeout.cancel(setLoadingSignTimeout);
 			}
 		});
+	};
+
+	$scope.sortThreads = (sortQuery) => {
+		console.log('sorting', sortQuery);
+		$scope.sortQuery = inbox.sortQuery = sortQuery;
+		inbox.invalidateThreadCache();
+
+		$scope.offset = 0;
+		$scope.limit = 15;
+		$scope.threads = {};
+		$scope.threadsList = [];
+		requestList();
 	};
 
 	$scope.selectThread = (tid) => {
@@ -149,14 +206,17 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	};
 
 	$scope.spamThread = (tid) => {
+		console.log('spamThread', tid, $scope.threads[tid]);
 		inbox.requestSetLabel($scope.threads[tid], 'Spam');
 	};
 
 	$scope.deleteThread = (tid) => {
+		console.log('deleteThread', tid, $scope.threads[tid]);
 		inbox.requestDelete($scope.threads[tid]);
 	};
 
 	$scope.starThread = (tid) => {
+		console.log('starThread', tid, $scope.threads[tid]);
 		inbox.requestSwitchLabel($scope.threads[tid], 'Starred');
 	};
 

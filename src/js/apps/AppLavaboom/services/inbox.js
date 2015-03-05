@@ -2,6 +2,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	const self = this;
 
 	this.selectedTidByLabelName = {};
+	this.sortQuery = '-date_created';
 
 	this.__handleEvent = (event) => co(function *(){
 		console.log('got server event', event);
@@ -130,12 +131,17 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 		const threads = (yield LavaboomAPI.threads.list({
 			label: label.id,
 			attachments_count: true,
-			sort: '-date_created',
+			sort: self.sortQuery,
 			offset: offset,
 			limit: limit
 		})).body.threads;
 
-		return threads ? yield threads.map(t => co.def(Thread.fromEnvelope(t), null)) : [];
+		return threads ? yield threads.map(t => co(function *(){
+			const cachedThread = yield self.getThreadById(t.id, true);
+			if (cachedThread)
+				return cachedThread;
+			return yield co.def(Thread.fromEnvelope(t), null);
+		})) : [];
 	});
 
 	this.getKeyForEmail = (email) => co(function * () {

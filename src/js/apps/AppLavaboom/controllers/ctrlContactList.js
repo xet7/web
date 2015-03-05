@@ -101,6 +101,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 		yield $state.go('main.contacts.profile', {contactId: 'new'});
 	});
 
+	$scope.deleteContact = (contactId) => co(function *(){
+		return yield contacts.deleteContact(contactId);
+	});
+
 	const stateChangeSuccess = $scope.$bind('$stateChangeSuccess', () => {
 		$scope.selectedContactId = $stateParams.contactId;
 

@@ -1,6 +1,7 @@
 // colors
 @lava: #4CBCDD;
 @lava-dark: darken(@lava, 30%);
+@lava-light: lighten(@lava, 5%);
 @lava-gray: #3A4045;
 @lava-gray-light: #BCBBC0;
 @lava-gray-lighter: #D9D9D9;
@@ -132,6 +133,37 @@
 @navbar-inverse-link-active-bg:             transparent;
 @navbar-inverse-link-disabled-color:        @lava-gray;
 @navbar-inverse-link-disabled-bg:           transparent;
+
+
+//** Background for the dropdown menu.
+@dropdown-bg:                    @lava;
+//** Dropdown menu `border-color`.
+@dropdown-border:                rgba(0,0,0,.15);
+//** Dropdown menu `border-color` **for IE8**.
+@dropdown-fallback-border:       #ccc;
+//** Divider color for between dropdown items.
+@dropdown-divider-bg:            @lava-gray-lightest;
+
+//** Dropdown link text color.
+@dropdown-link-color:            @lava-gray-lightest;
+//** Hover color for dropdown links.
+@dropdown-link-hover-color:      #FFF;
+//** Hover background for dropdown links.
+@dropdown-link-hover-bg:         transparent;
+
+//** Active dropdown menu item text color.
+@dropdown-link-active-color:     @component-active-color;
+//** Active dropdown menu item background color.
+@dropdown-link-active-bg:        @component-active-bg;
+
+//** Disabled dropdown menu item background color.
+@dropdown-link-disabled-color:   @gray-light;
+
+//** Text color for headers within dropdown menus.
+@dropdown-header-color:          #FFF;
+
+//** Deprecated `@dropdown-caret-color` as of v3.1.0
+@dropdown-caret-color:           #000;
 
 
 
@@ -365,6 +397,10 @@ body{
 	img {
 		.img-responsive();
 	}
+}
+
+.inverted {
+	filter: invert(100%);
 }
 
 .select2 > .select2-choice.ui-select-match {

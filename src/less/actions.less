@@ -38,7 +38,7 @@
 			// color: @lava-gray-light;
 		}
 
-		a, button, label{
+		button, label{
 			color: @lava-gray-light;
 			background: transparent;
 			border: 0;
@@ -138,6 +138,38 @@
 	        .opacity(0);
 	        transform: translateY(-5px);
 	        top: @filter-height + 1.1rem;
+	        right: -.6rem;
+	        color: @dropdown-header-color;
+
+	        p, a, .dropdown-checkbox{
+	        	padding: 1rem 1.5rem;
+        			[class^="icon-"],
+					[class*=" icon-"] {
+						// font-size: 1em;
+						padding-right: .5rem;
+						// color: @lava-gray-light;
+					}
+	        }
+
+	        .yesno{
+	        	width: 100%;
+	        	background: @lava-light;
+	        	min-width: 25rem;
+	        	> *{
+	        		width: 50%;
+	        		&:not(:first-child){
+	        			border-left: .1rem solid @lava-gray-lightest;
+	        		}
+	        	}
+	        }
+
+	        .checkbox{
+	        	margin: 0;
+	        	color: @lava-gray-lightest;
+	        	> * {
+	        		color: @lava-gray-lightest;
+	        	}
+	        }
 	        
 	        &:after, &:before{
 	            transition: .3s;
@@ -161,13 +193,13 @@
 	        }
 	        &:after{
 	            top: -1.2rem !important;
-	            border-bottom-color: #ccc;
+	            border-bottom-color: @dropdown-border;
 	        }
 	    }
 
 	    .dropdown ul.dropdown-menu:before {
 	        
-	        border-bottom: 1rem solid #fff;
+	        border-bottom: 1rem solid @dropdown-bg;
 	        border-right: 1rem solid transparent;
 	        border-left: 1rem solid transparent;
 	        
@@ -177,7 +209,7 @@
 	    }
 	    .dropdown ul.dropdown-menu:after {
 	        
-	        border-bottom: 1.1rem solid @lava-gray-light;
+	        border-bottom: 1.1rem solid @dropdown-border;
 	        border-right: 1.1rem solid transparent;
 	        border-left: 1.1rem solid transparent;
 	        

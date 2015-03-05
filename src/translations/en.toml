@@ -15,6 +15,16 @@
 	LB_SETTINGS = "settings"
 	LB_NO_PRIVATE_KEY_FOUND3 = " and check your key"
 
+	LB_SORT_BY_CREATION_DATE_DESC = "Sort by creation date -"
+	LB_SORT_BY_CREATION_DATE_ASC = "Sort by creation date +"
+	LB_SORT_BY_MODIFICATION_DATE_DESC = "Sort by modification date -"
+	LB_SORT_BY_MODIFICATION_DATE_ASC = "Sort by modification date +"
+
+	LB_SORTED_BY_CREATION_DATE_DESC = "Sorted by creation date -"
+	LB_SORTED_BY_CREATION_DATE_ASC = "Sorted by creation date +"
+	LB_SORTED_BY_MODIFICATION_DATE_DESC = "Sorted by modification date -"
+	LB_SORTED_BY_MODIFICATION_DATE_ASC = "Sorted by modification date +"
+
 [INBOX.DOWNLOAD]
 	TITLE = "Downloading your attachment"
 	LB_ACQUIRING = "Acquiring information..."
@@ -130,11 +140,11 @@
 [LOGIN.LAVABOOM_SYNC]
 	TITLE = "Lavaboom Sync"
 	LB_WHAT_IS = "What is Lavaboom Sync?"
-	LB_SYNC_INTRO = "Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Nulla quis lorem ut libero malesuada feugiat."
+	LB_SYNC_INTRO = "If you don't have experience managing encryption keys we recommend enabling Lavaboom Sync. This encrypts and uploads your keypair to our servers, allowing you to send and receive encrypted emails from any device. Your keypair is encrypted by your passphrase and securely stored."
 	LB_SYNC1 = "We want to offer the users the option to activate Lavaboom Sync, basically backing up their key ring on our servers. Lavaboom Sync can work with or without a sync passphrase (similar to how Chrome works)"
 	LB_SYNC2 = "Every Account has a field called settings that is simply a key value store to allow for flexible storage of misc stuff. Your task is, if Lavaboom Sync is activated, to store the user's keyring to Account.settings."
 	LB_ENABLE_LB_SYNC = "Enable Lavaboom Sync"
-	BTN_NEXT = "You're almost done"
+	LB_DONT_ENABLE_LB_SYNC = "Continue Without Syncing"
 
 [LOGIN.GENERATING_KEYS]
 	LB_GENERATING = "Generating your Keys..."
@@ -199,12 +209,14 @@
 	LB_BUSINESS = "business"
 	LB_HIDDEN = "hidden"
 	LB_NEW = "new"
-	LB_WARNING = "You are about to send an unencrypted email, are you sure?"
-	BTN_CONFIRM = "I understand the risk"
-	BTN_REJECT = "No"
-	LB_ERROR = "Error occured"
+	LB_WARNING = "Some of your recipients will not be able to receive encrypted emails."
+	LB_WARNING_2 = "Do you want to continue?"
+	BTN_CONFIRM = "Send"
+	BTN_REJECT = "Go back"
+	LB_ERROR = "Error occurred"
 	LB_ERROR_NOT_FOUND = "not found"
 	LB_ERROR_UNKNOWN = "unknown"
+	LB_ASK_ME_AGAIN = "Dont's ask me again"
 
 [MAIN.SETTINGS.MENU]
 	KEYS = "Keys"
@@ -226,7 +238,7 @@
 	LB_SORT_BY_FIRST_NAME = "first name"
 	LB_SORT_BY_LAST_NAME = "last name"
 	TITLE_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts"
-	LB_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts Enabled"
+	LB_KEYBOARD_SHORTCUTS = "Enabled"
 
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
