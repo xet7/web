@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
-							   consts, co, user, contacts, inbox, router, Manifest, Attachment, Contact, Hotkey, ContactEmail) => {
+							   consts, co, user, contacts, inbox, router, Manifest, Attachment, Contact, Hotkey, ContactEmail, Email) => {
 	$scope.isWarning = false;
 	$scope.isError = false;
 	$scope.isXCC = false;
@@ -53,20 +53,24 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		} catch (err) {
 			attachmentStatus.ext = 'file';
 		}
+	});
 
-		var envelope;
-		attachmentStatus.status = 'encrypting';
+	var uploadAttachment = (attachmentStatus, keys) => co(function *() {
+		const isSecured = Email.isSecuredKeys(keys);
+
+		let envelope;
+		attachmentStatus.status = isSecured ? 'encrypting' : 'formatting';
 		try {
-			envelope = yield Attachment.toEnvelope(attachmentStatus.attachment);
+			envelope = yield Attachment.toEnvelope(attachmentStatus.attachment, keys);
 		} catch (err) {
-			attachmentStatus.status = 'cannot encrypt';
+			attachmentStatus.status = isSecured ? 'cannot encrypt' : 'cannot format';
 			throw err;
 		} finally {
 			if (attachmentStatus.isCancelled)
 				throw new Error('cancelled');
 		}
 
-		var r;
+		let r;
 		attachmentStatus.status = 'uploading';
 		try {
 			r = yield inbox.uploadAttachment(envelope);
@@ -137,6 +141,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			return a;
 		}, {}));
 
+		const isSecured = Email.isSecuredKeys(keys);
+
+		yield $scope.attachments.map(attachmentStatus => uploadAttachment(attachmentStatus, keys));
+
 		manifest = Manifest.create({
 			fromEmail: user.email,
 			to,
@@ -157,7 +165,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 			console.log('compose send status', sendStatus);
 
-			if (sendStatus.isEncrypted) {
+			if (isSecured) {
 				yield $scope.confirm();
 			} else {
 				$scope.isWarning = true;
