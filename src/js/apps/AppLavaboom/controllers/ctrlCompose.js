@@ -1,10 +1,5 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
-							   consts, co, user, contacts, inbox, router, Manifest, Attachment, Contact, Hotkey, ContactEmail, Email) => {
-	$scope.isWarning = false;
-	$scope.isError = false;
-	$scope.isXCC = false;
-	$scope.isShowWarning = false;
-
+							   consts, co, user, contacts, inbox, router, Manifest, Contact, Hotkey, ContactEmail, Email, Attachment) => {
 	$scope.toolbar = [
 		['h1', 'h2', 'h3'],
 		['bold', 'italics', 'underline'],
@@ -13,26 +8,21 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		['indent', 'outdent', 'quote'],
 		['insertImage']
 	];
+	$scope.taggingTokens = 'SPACE|,|/';
 
-	let hiddenContacts = {};
-
-	var threadId = $stateParams.replyThreadId;
-	var toEmail = $stateParams.to;
-
+	$scope.isWarning = false;
+	$scope.isError = false;
+	$scope.isXCC = false;
+	$scope.isShowWarning = false;
 	$scope.attachments = [];
 
-	$scope.$watch('isShowWarning', (o, n) => {
-		if (o == n)
-			return;
+	const hiddenContacts = {};
+	const threadId = $stateParams.replyThreadId;
+	const toEmail = $stateParams.to;
+	let manifest = null;
+	let newHiddenContact = null;
 
-		user.update({isShowComposeScreenWarning: $scope.isShowWarning});
-	});
-
-	$scope.toggleIsShowWarning = (event) => {
-		$scope.isShowWarning = !$scope.isShowWarning;
-	};
-
-	var processAttachment = (attachmentStatus) => co(function *() {
+	const processAttachment = (attachmentStatus) => co(function *() {
 		attachmentStatus.status = 'reading';
 		attachmentStatus.isCancelled = false;
 
@@ -46,7 +36,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				throw new Error('cancelled');
 		}
 
-		console.log('dropzone added file', attachmentStatus);
+		attachmentStatus.status = 'done';
 
 		try {
 			attachmentStatus.ext = attachmentStatus.attachment.type.split('/')[0];
@@ -55,7 +45,39 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		}
 	});
 
-	var uploadAttachment = (attachmentStatus, keys) => co(function *() {
+	$scope.onFileDrop = (file) => {
+		if (file.type && file.type.startsWith('image'))
+			return;
+
+		const attachmentStatus = {
+			attachment: new Attachment(file)
+		};
+		attachmentStatus.processingPromise = processAttachment(attachmentStatus);
+		$scope.attachments.push(attachmentStatus);
+	};
+
+	$scope.deleteAttachment = (attachmentStatus, index) => co(function *() {
+		attachmentStatus.isCancelled = true;
+
+		try {
+			yield attachmentStatus.processingPromise;
+		} catch (err) {
+			if (err.message != 'cancelled')
+				throw err;
+		}
+
+		if (attachmentStatus.id)
+			try {
+				yield inbox.deleteAttachment(attachmentStatus.id);
+			} catch (err) {
+				attachmentStatus.status = 'cannot delete';
+				throw err;
+			}
+
+		$scope.attachments.splice(index, 1);
+	});
+
+	$scope.uploadAttachment = (attachmentStatus, keys) => co(function *() {
 		const isSecured = Email.isSecuredKeys(keys);
 
 		let envelope;
@@ -85,41 +107,16 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		}
 	});
 
-	var deleteAttachment = (attachmentStatus, index) => co(function *() {
-		attachmentStatus.isCancelled = true;
-
-		try {
-			yield attachmentStatus.processingPromise;
-		} catch (err) {
-			if (err.message != 'cancelled')
-				throw err;
-		}
-
-		if (attachmentStatus.id)
-			try {
-				yield inbox.deleteAttachment(attachmentStatus.id);
-			} catch (err) {
-				attachmentStatus.status = 'cannot delete';
-				throw err;
-			}
-
-		$scope.attachments.splice(index, 1);
-	});
-
-	$scope.onFileDrop = (file, action) => {
-		if (file.type && file.type.startsWith('image'))
+	$scope.$watch('isShowWarning', (o, n) => {
+		if (o == n)
 			return;
 
-		var attachmentStatus = {
-			attachment: new Attachment(file)
-		};
-		attachmentStatus.processingPromise = processAttachment(attachmentStatus);
-		$scope.attachments.push(attachmentStatus);
+		user.update({isShowComposeScreenWarning: $scope.isShowWarning});
+	});
+
+	$scope.toggleIsShowWarning = (event) => {
+		$scope.isShowWarning = !$scope.isShowWarning;
 	};
-
-	$scope.deleteAttachment = (attachmentStatus, index) => deleteAttachment(attachmentStatus, index);
-
-	let manifest = null;
 
 	$scope.isValid = () => $scope.__form.$valid && $scope.form.selected.to.length > 0 && $scope.form.subject.length > 0 && $scope.form.body.length > 0;
 
@@ -143,7 +140,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 		const isSecured = Email.isSecuredKeys(keys);
 
-		yield $scope.attachments.map(attachmentStatus => uploadAttachment(attachmentStatus, keys));
+		yield $scope.attachments.map(attachmentStatus => $scope.uploadAttachment(attachmentStatus, keys));
 
 		manifest = Manifest.create({
 			fromEmail: user.email,
@@ -302,8 +299,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.clearCC = () => $scope.form.selected.cc = [];
 	$scope.clearBCC = () => $scope.form.selected.bcc = [];
 
-	$scope.taggingTokens = 'SPACE|,|/';
-
 	$scope.tagClicked = (select, item, model) => {
 		const index = model.findIndex(c => c.email == item.email);
 		if (index > -1) {
@@ -315,7 +310,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		}
 	};
 
-	let newHiddenContact = null;
 	$scope.tagTransform = function (newTag) {
 		if (!newTag)
 			return null;
@@ -375,7 +369,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				);
 		};
 
-    // Add hotkeys
 	Hotkey.addHotkey({
         combo: ['ctrl+enter', 'command+enter'],
         description: 'HOTKEY.SEND_EMAIL',
