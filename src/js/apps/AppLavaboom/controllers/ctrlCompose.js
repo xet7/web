@@ -22,21 +22,35 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	let manifest = null;
 	let newHiddenContact = null;
 
+	const translations = {};
+	$translate.bind(translations, [
+		'LB_ATTACHMENT_STATUS_READING',
+		'LB_ATTACHMENT_STATUS_READING_ERROR',
+		'LB_ATTACHMENT_STATUS_DELETING_ERROR',
+		'LB_ATTACHMENT_STATUS_ENCRYPTING',
+		'LB_ATTACHMENT_STATUS_ENCRYPTING_ERROR',
+		'LB_ATTACHMENT_STATUS_FORMATTING',
+		'LB_ATTACHMENT_STATUS_FORMATTING_ERROR',
+		'LB_ATTACHMENT_STATUS_UPLOADING',
+		'LB_ATTACHMENT_STATUS_UPLOADING_ERROR',
+		'LB_ATTACHMENT_STATUS_UPLOADED'
+	], 'MAIN.COMPOSE');
+
 	const processAttachment = (attachmentStatus) => co(function *() {
-		attachmentStatus.status = 'reading';
+		attachmentStatus.status = translations.LB_ATTACHMENT_STATUS_READING;
 		attachmentStatus.isCancelled = false;
 
 		try {
 			yield attachmentStatus.attachment.read();
 		} catch (err) {
-			attachmentStatus.status = 'cannot read';
+			attachmentStatus.status = translations.LB_ATTACHMENT_STATUS_READING_ERROR;
 			throw err;
 		} finally {
 			if (attachmentStatus.isCancelled)
 				throw new Error('cancelled');
 		}
 
-		attachmentStatus.status = 'done';
+		attachmentStatus.status = '';
 
 		try {
 			attachmentStatus.ext = attachmentStatus.attachment.type.split('/')[0];
@@ -70,7 +84,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			try {
 				yield inbox.deleteAttachment(attachmentStatus.id);
 			} catch (err) {
-				attachmentStatus.status = 'cannot delete';
+				attachmentStatus.status = translations.LB_ATTACHMENT_STATUS_DELETING_ERROR;
 				throw err;
 			}
 
@@ -81,11 +95,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		const isSecured = Email.isSecuredKeys(keys);
 
 		let envelope;
-		attachmentStatus.status = isSecured ? 'encrypting' : 'formatting';
+		attachmentStatus.status = isSecured ? translations.LB_ATTACHMENT_STATUS_ENCRYPTING : translations.LB_ATTACHMENT_STATUS_FORMATTING;
 		try {
 			envelope = yield Attachment.toEnvelope(attachmentStatus.attachment, keys);
 		} catch (err) {
-			attachmentStatus.status = isSecured ? 'cannot encrypt' : 'cannot format';
+			attachmentStatus.status = isSecured ? translations.LB_ATTACHMENT_STATUS_ENCRYPTING_ERROR : translations.LB_ATTACHMENT_STATUS_FORMATTING_ERROR;
 			throw err;
 		} finally {
 			if (attachmentStatus.isCancelled)
@@ -93,13 +107,13 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		}
 
 		let r;
-		attachmentStatus.status = 'uploading';
+		attachmentStatus.status = translations.LB_ATTACHMENT_STATUS_UPLOADING;
 		try {
 			r = yield inbox.uploadAttachment(envelope);
 			attachmentStatus.id = r.body.file.id;
-			attachmentStatus.status = 'uploaded!';
+			attachmentStatus.status = translations.LB_ATTACHMENT_STATUS_UPLOADED;
 		} catch (err) {
-			attachmentStatus.status = 'cannot upload';
+			attachmentStatus.status = translations.LB_ATTACHMENT_STATUS_UPLOADING_ERROR;
 			throw err;
 		} finally {
 			if (attachmentStatus.isCancelled)
