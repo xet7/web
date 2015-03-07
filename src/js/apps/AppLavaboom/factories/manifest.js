@@ -6,6 +6,7 @@ module.exports = /*@ngInject*/(contacts) => {
 
 		this.id = manifestPart.id;
 		this.size = manifestPart.size;
+		this.filename = manifestPart.filename;
 		this.hash = manifestPart.hash;
 
 		this.isValid = (body) => body.length == self.size && hash(body) == self.hash;
