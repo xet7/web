@@ -1,6 +1,6 @@
 .login-app{
 	.lava-font();
-	font-size: 13px;
+	font-size: 1.4rem;
 
 	.main-container, .main-container > .row, .main-content{
 		.pos-rel();
@@ -151,7 +151,7 @@
 			display: table-cell;
 		}
 	}
-
+ 
 	.pack{
 		margin-bottom: 0 !important;
 	}
@@ -222,6 +222,15 @@
 
 	.login-alert{
 		border-radius: 3px;
+		padding: 2.5rem;
+		margin: 0;
+		header{
+			> h1:first-child, > .lead:first-child {
+				margin-top: 0;
+				padding-bottom: 1rem;
+				margin-bottom: 1rem;
+			}
+		}
 	}
 
 	hr.blank{
@@ -236,20 +245,20 @@
 		color: white;
 	}
 	p.lead, h1{
-		font-size: 2em;
+		font-size: 3.2rem;
 		color: @lava-login-gray-light;
 		// font-weight: @light-font-weight;
 		.lava-font();
 		.text-center();
-		margin-bottom: 1.1em;
+		margin-bottom: 1.6rem;
 		&.pack{
 			margin-bottom: 0;
 		}
 		+ .steps{
-			margin-top: .5em;
-			margin-bottom: 1em;
+			margin-top: .7rem;
+			margin-bottom: 1.4rem;
 			&.large{
-				margin-bottom: 2.25em;
+				margin-bottom: 3.15rem;
 			}
 		}
 	}
@@ -324,7 +333,7 @@
 	}
 
 	footer{
-		margin-top: 2em;
+		margin-top: 3rem;
 	}
 
 	.checkbox-label{
