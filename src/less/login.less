@@ -60,6 +60,7 @@
 					transition: .4s top;
 				}
 			}
+
 		}
 	}
 
@@ -120,7 +121,7 @@
 
 	.form-control{
 		.lava-font();
-		.placeholder();
+		.placeholder(@lava-login-gray-light);
 	}
 
 	.table-list{
@@ -215,9 +216,11 @@
 	}
 
 	.alert:not(.login-alert){
-		padding: .25em;
-		margin-bottom: .5em;
-		font-size: 1.2em;
+		&:not(.ng-hide){
+			padding: .25em;
+			margin-bottom: .5em;
+			font-size: 1.2em;
+		}
 	}
 
 	.login-alert{
@@ -238,7 +241,7 @@
 	}
 
 	form.steps-form hr.spacer{
-		margin-bottom: 2.5em;
+		
 	}
 
 	h4{
@@ -255,8 +258,8 @@
 			margin-bottom: 0;
 		}
 		+ .steps{
-			margin-top: .7rem;
-			margin-bottom: 1.4rem;
+			margin-top: 2rem;
+			margin-bottom: 2.5rem;
 			&.large{
 				margin-bottom: 3.15rem;
 			}
