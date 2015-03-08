@@ -55,7 +55,7 @@ module.exports = /*@ngInject*/(contacts) => {
 			return [...emails];
 		};
 
-		this.getFileById = (id) => self.parts.find(p => p.id == id);
+		this.getFileById = (id) => manifest.parts.find(p => p.id == id);
 		
 		this.setBody = (data, contentType) => {
 			manifest.parts.push({
