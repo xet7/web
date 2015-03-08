@@ -76,7 +76,7 @@
 [LOGIN.SECURE_USERNAME]
 	TITLE = "Secure your Lavaboom username"
     LNK_INVITE_QUESTION = "Got an invitation?"
-  //  LB_NEWS = "Send me updates to my Lavaboom address." not required. //
+#	LB_NEWS = "Send me updates to my Lavaboom address." not required.
 	BTN_SECURE = "Secure your username"
 
 [LOGIN.SECURED]
@@ -84,7 +84,8 @@
 	SUB_TITLE = "Your username has been reserved."
 	LB_EMAIL_SENT = "We have just sent an email to"
 	LB_COMPLETE = "We are currently in a closed beta and rolling out account invitations gradually. The email you will receive will tell you how long the wait time is."
-	BTN_COMPLETE = "OK" // Should we be giving users link to registration box if they aren't going to receive a registration code?
+	BTN_COMPLETE = "OK"
+	#Should we be giving users link to registration box if they aren't going to receive a registration code?
 
 [LOGIN.INVITE]
 	TITLE = "Have you got an invite already?"
@@ -95,7 +96,7 @@
 	TITLE = "Verify invite code"
 	PLC_INVITE_CODE = "please paste invite code here"
 	LB_NEWS = "Send me updates to my Lavaboom address."
-	LB_TOS = "By signing up I agree that I've read and understood the" 
+	LB_TOS = "By signing up I agree that I've read and understood the " 
     LNK_TOS = "Terms of Service and the Privacy Policy"
 
 [LOGIN.PLAN]
@@ -156,9 +157,6 @@
 
 [LOGIN.BACKUP_KEY]
 	TITLE = "Back up your key"
-	 //  //  //  // 
-	
-	
     INFO1 = "We create and store your keychain locally in the chache of the browser you are using right now."
     INFO2 = "This means that if you want to access your Lavaboom account in a different browser or on a different machine you'll need to import your keychain at login into the new browser."
     INFO3 = "If you clear your cache from Lavaboom your keys will be deleted and you will lose access to your account."
