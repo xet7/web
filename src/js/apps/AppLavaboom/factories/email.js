@@ -20,6 +20,14 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 		this.attachments = opt.attachments ? opt.attachments : [];
 	};
 
+	Email.isSecuredKeys = (keys) => !Object.keys(keys).some(e => !keys[e]);
+
+	Email.keysMapToList = (keys) => {
+		const publicKeysValues = Object.keys(keys).filter(e => keys[e]).map(e => keys[e]);
+
+		return [...publicKeysValues];
+	};
+
 	Email.toEnvelope = ({body, attachmentIds, threadId}, manifest, keys) => co(function *() {
 		if (manifest && manifest.isValid && !manifest.isValid())
 			throw new Error('invalid manifest');
@@ -29,12 +37,11 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 		if (!threadId)
 			threadId = null;
 
-		let isSecured = !Object.keys(keys).some(e => !keys[e]);
+		let isSecured = Email.isSecuredKeys(keys);
 
 		if (isSecured) {
 			keys[user.email] = user.key.key;
-			let publicKeysValues = Object.keys(keys).filter(e => keys[e]).map(e => keys[e]);
-			let publicKeys = [...publicKeysValues];
+			let publicKeys = Email.keysMapToList(keys);
 
 			let manifestString = manifest.stringify();
 
@@ -50,6 +57,7 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 				to: manifest.to,
 				cc: manifest.cc,
 				bcc: manifest.bcc,
+				subject_hash: openpgp.util.hexstrdump(openpgp.crypto.hash.sha256(manifest.subject)),
 
 				files: attachmentIds,
 				thread: threadId
@@ -64,6 +72,7 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 			cc: manifest.cc,
 			bcc: manifest.bcc,
 			subject: manifest.subject,
+			subject_hash: openpgp.util.hexstrdump(openpgp.crypto.hash.sha256(manifest.subject)),
 			body: body,
 
 			files: attachmentIds,

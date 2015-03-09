@@ -35,7 +35,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $interval, $tim
 		console.log('downloading file from email', 'email', email);
 
 		$scope.label = translations.LB_DOWNLOADING;
-		let fileData = yield inbox.downloadAttachment(fileId);
+		let fileData = yield inbox.downloadAttachment(emailId, fileId);
 
 		let manifestFile = email.manifest.getFileById(fileId);
 		saver.saveAs(fileData, manifestFile.filename);
