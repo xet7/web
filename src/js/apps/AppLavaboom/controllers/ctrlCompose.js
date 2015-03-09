@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
-							   consts, co, user, contacts, inbox, router, Manifest, Attachment, Contact, Hotkey, ContactEmail) => {
+							   consts, co, user, contacts, inbox, router, Manifest, Attachment, Contact, Hotkey, Email, ContactEmail) => {
 	$scope.isWarning = false;
 	$scope.isError = false;
 	$scope.isXCC = false;
@@ -16,8 +16,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 	let hiddenContacts = {};
 
-	var threadId = $stateParams.replyThreadId;
-	var toEmail = $stateParams.to;
+	let threadId = $stateParams.replyThreadId;
+	let toEmail = $stateParams.to;
 
 	$scope.attachments = [];
 
@@ -264,7 +264,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 						from: contacts.myself
 					},
 					fromEmails: [contacts.myself],
-					subject: `Re: ${thread.subject}`,
+					subject: `Re: ${Email.getSubjectWithoutRe(thread.subject)}`,
 					body: ''
 				};
 
