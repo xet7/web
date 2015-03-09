@@ -283,7 +283,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 						from: contacts.myself
 					},
 					fromEmails: [contacts.myself],
-					subject: `Re: ${thread.subject}`,
+					subject: `Re: ${Email.getSubjectWithoutRe(thread.subject)}`,
 					body: ''
 				};
 

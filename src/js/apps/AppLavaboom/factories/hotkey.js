@@ -1,13 +1,13 @@
 module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
     var hotkeyList = ['?'];
-    var active = true;
+    var isActive = true;
 
     var Hotkey = function() {
 
     };
 
     Hotkey.addHotkey = (option) => {
-        if (!active || angular.isUndefined(option))
+        if (!isActive || angular.isUndefined(option))
             return;
 
         var key = angular.isArray(option.combo) ? option.combo[0] : option.combo;
@@ -23,7 +23,7 @@ module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
     };
 
     Hotkey.toggleHotkeys = (enable) => {
-        active = enable;
+        isActive = enable;
         if (enable) {
             Hotkey.addGlobalHotkeys();
         } else {
@@ -111,7 +111,7 @@ module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
         });
 
         Hotkey.addHotkey({
-            combo: ['ctrl+c', 'command+c'],
+            combo: ['ctrl+x', 'command+x'],
             description: 'HOTKEY.GOTO_CONTACTS',
             callback: (event, key) => {
                 event.preventDefault();
