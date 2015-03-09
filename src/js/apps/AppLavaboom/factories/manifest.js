@@ -77,7 +77,7 @@ module.exports = /*@ngInject*/(contacts) => {
 				hash: hash(data),
 				filename: fileName,
 				content_type: contentType ? contentType : 'application/octet-stream',
-				charset: 'urf-8',
+				charset: 'utf-8',
 				size: data.length
 			});
 		};
