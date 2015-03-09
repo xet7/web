@@ -1,8 +1,9 @@
-module.exports = /*@ngInject*/(co, user, crypto, fileReader, Email) => {
+module.exports = /*@ngInject*/(co, user, crypto, utils, fileReader, Email) => {
 	var Attachment = function(file) {
 		const self = this;
 
 		angular.extend(this, {
+			id: utils.hexify(openpgp.crypto.random.getRandomBytes(16)),
 			type: file.type,
 			name: file.name,
 			dateModified: new Date(file.lastModifiedDate),
@@ -26,7 +27,7 @@ module.exports = /*@ngInject*/(co, user, crypto, fileReader, Email) => {
 		const envelope = yield crypto.encodeEnvelopeWithKeys({
 			data: attachment.body
 		}, publicKeys, 'data');
-		envelope.name = isSecured ? 'encrypted.pgp' : attachment.name;
+		envelope.name = isSecured ? attachment.id + '.pgp' : attachment.name;
 
 		return envelope;
 	});
