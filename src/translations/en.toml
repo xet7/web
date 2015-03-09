@@ -68,23 +68,24 @@
 	LB_INITIALIZING_I18N = "Loading internationalization support..."
 	LB_INITIALIZING_OPENPGP = "Initializing openpgp.js..."
 	LB_AUTHENTICATING = "Authenticating..."
-	LB_LOADING = "Loading emails && contacts..."
+	LB_LOADING = "Loading emails & contacts..."
 	LB_DECRYPTING = "Decrypting your inbox..."
 	LB_SUCCESS = "Done!"
-	LB_BYE = "See you soon ;)"
+	LB_BYE = "We miss you already!"
 
 [LOGIN.SECURE_USERNAME]
-	TITLE = "Secure your own Lavaboom username"
-    LNK_INVITE_QUESTION = "Got an invite mail already?"
-    LB_NEWS = "I want to be the first to hear about Lavaboom news, send me the latest form.Lava HQ"
+	TITLE = "Secure your Lavaboom username"
+    LNK_INVITE_QUESTION = "Got an invitation?"
+#	LB_NEWS = "Send me updates to my Lavaboom address." not required.
 	BTN_SECURE = "Secure your username"
 
 [LOGIN.SECURED]
-	TITLE = "Congrats!"
+	TITLE = "Nice one!"
 	SUB_TITLE = "Your username has been reserved."
-	LB_EMAIL_SENT = "We have just sent and email to"
-	LB_COMPLETE = "Follow the link in the invite to complete Sign-Up. If no invite email arrives in your Inbox, please check your Spam folder"
+	LB_EMAIL_SENT = "We have just sent an email to"
+	LB_COMPLETE = "We are currently in a closed beta and rolling out account invitations gradually. The email you will receive will tell you how long the wait time is."
 	BTN_COMPLETE = "OK"
+	#Should we be giving users link to registration box if they aren't going to receive a registration code?
 
 [LOGIN.INVITE]
 	TITLE = "Have you got an invite already?"
@@ -94,8 +95,8 @@
 [LOGIN.VERIFY_INVITE]
 	TITLE = "Verify invite code"
 	PLC_INVITE_CODE = "please paste invite code here"
-	LB_NEWS = "I want to be the first to hear about Lavaboom news, send me the latest form.Lava HQ"
-	LB_TOS = "By signing up I've agreed that I've read and understood the" 
+	LB_NEWS = "Send me updates to my Lavaboom address."
+	LB_TOS = "By signing up I agree that I've read and understood the " 
     LNK_TOS = "Terms of Service and the Privacy Policy"
 
 [LOGIN.PLAN]
@@ -114,55 +115,55 @@
 	BTN_SELECT = "I'll take this"
 
 [LOGIN.DETAILS]
-	TITLE = "User Details"
-    SUB_TITLE = "We are legally obliged to ask you this information. However, we neither actually use nor verify this data."
+	TITLE = "Personal details"
+    SUB_TITLE = "We are legally obliged to ask you for this information. However, we do not use or verify this data."
 
 [LOGIN.CHOOSE_PASSWORD_INTRO]
-	TITLE = "Choose password"
+	TITLE = "Choose your password"
 	LB_WARNING_TITLE = "Attention"
-    LB_WARNING1 = "Please note that we don't store your passwords on our servers. This makes lavaboom this safe. However, it also means that we cannot reset the password for you, in case you lose it."
-    LB_WARNING2 = "Please memorize the password that you choose now very thoroughly. You might lose your account otherwise."
+    LB_WARNING1 = "Please note that we do not store your passwords in plain text on our servers. This makes Lavaboom more secure, however if you lose your password we are unable reset it for you."
+    LB_WARNING2 = "When you have chosen a password make sure to write it down on a piece of paper. Losing your password may prevent access to your account."
     BTN_NEXT = "I understand"
 
 [LOGIN.CHOOSE_PASSWORD]
-	TITLE = "Choose password"
-	LB_WARNING1 = "We recommend a long password including numbers and special characters. It should still be easy to remember for you."
-	LB_WARNING2 = "Please remember, we can't set your password back for you when you forget it!. So only continue when you have really memorised it!"
-	BTN_NEXT = "I have memorized it"
+	TITLE = "Choose your password"
+	LB_WARNING1 = "We recommend a long password, including numbers and special characters. Though it should still be easy for you to remember."
+	LB_WARNING2 = "Please note that we will not be able to reset your password if you forget it. Only continue once you have memorised your password."
+	BTN_NEXT = "I have memorised it"
 
 [LOGIN.GENERATE_KEYS]
-	TITLE = "Generate your keys"
-	LB_WARNING1 = "Lavaboom keeps you safe by encrypting your email and data. To do this, we give each other a pair of encryption keys."
-	LB_WARNING2 = "Thus Key is used to encrypt messages coming your way. You can share it with contacts so they can encrpt the messages the messages they would send to you."
-	LB_WARNING3 = "This Key is used to decrypt your data. It is like a super-safe password. Keep it safe and do not share it with anyone."
-	BTN_NEXT = "Generate my key pair"
+	TITLE = "Key generation"
+	LB_WARNING1 = "Lavaboom encrypts your data client-side, on your computer. To do this we need to store an encryption key pair in your browser. "
+	LB_WARNING2 = "This key is used to encrypt data. Share it with your friends so they can send encrypted messages to you."
+	LB_WARNING3 = "This key is used to decrypt data. Do not share it. Keep it safe and never share it with anyone."
+	BTN_NEXT = "Generate my keys"
 
 [LOGIN.LAVABOOM_SYNC]
 	TITLE = "Lavaboom Sync"
 	LB_WHAT_IS = "What is Lavaboom Sync?"
 	LB_SYNC_INTRO = "If you don't have experience managing encryption keys we recommend enabling Lavaboom Sync. This encrypts and uploads your keypair to our servers, allowing you to send and receive encrypted emails from any device. Your keypair is encrypted by your passphrase and securely stored."
-	LB_SYNC1 = "We want to offer the users the option to activate Lavaboom Sync, basically backing up their key ring on our servers. Lavaboom Sync can work with or without a sync passphrase (similar to how Chrome works)"
+	LB_SYNC1 = "We want to offer the users the option to activate Lavaboom Sync, basically backing up their key ring on our servers. Lavaboom Sync can work with or without a sync passphrase (similar to how Chrome works)."
 	LB_SYNC2 = "Every Account has a field called settings that is simply a key value store to allow for flexible storage of misc stuff. Your task is, if Lavaboom Sync is activated, to store the user's keyring to Account.settings."
 	LB_ENABLE_LB_SYNC = "Enable Lavaboom Sync"
 	LB_DONT_ENABLE_LB_SYNC = "Continue Without Syncing"
 
 [LOGIN.GENERATING_KEYS]
-	LB_GENERATING = "Generating your Keys..."
+	LB_GENERATING = "Generating your keys..."
 	LB_UPLOADING = "Uploading Public Key..."
 	LB_READY = "Your keys are ready!"
-	LB_REACHED = "Our hamsters are running extra hard, just be a bit more patient..."
-	LB_ERROR = "Cannot generate keys, make sure you use up-to-date browser and try again!"
-	LB_DO_NOT_CLOSE = "Do not close this window!"
+	LB_REACHED = "Our hamsters are running extra hard, just be a little longer to wait..."
+	LB_ERROR = "Cannot generate keys, make sure you are using an up-to-date browser like Firefox, Google Chrome or Safari and try again."
+	LB_DO_NOT_CLOSE = "Please do not close this window."
 
 [LOGIN.BACKUP_KEY]
 	TITLE = "Back up your key"
-    INFO1 = "We create and store your Private Key locally in your browser, which you are using right now."
-    INFO2 = "This means that if you want to access your Lavaboom account on a different browser or a different machine you need to import your Key there before you can do this."
-    INFO3 = "Furthermore, if you Lose your browser cache, you might lose your Key and in turn, lose access to your Lavaboom account."
-    INFO4 = "To prevent this, you should back up your Private Key to your hard drive to keep it safe. No worries - it's encrypted."
-    INFO5 = "You can back up your Key at any time in the Settings / My Keys page"
+    INFO1 = "We create and store your keychain locally in the chache of the browser you are using right now."
+    INFO2 = "This means that if you want to access your Lavaboom account in a different browser or on a different machine you'll need to import your keychain at login into the new browser."
+    INFO3 = "If you clear your cache from Lavaboom your keys will be deleted and you will lose access to your account."
+    INFO4 = "To prevent this you should back up your keychain to your hard drive to keep it safe."
+    INFO5 = "You can back up your keychain anytime in your Settings, or enable Lavaboom Sync to allow us to manage your keys for you."
     BTN_BACKUP_NOW = "Back up my key now"
-	BTN_BACKUP_LATER = "Do Back up later"
+	BTN_BACKUP_LATER = "Do it later"
 
 [LOGIN.IMPORT_KEY]
 	TITLE = "Please Upload Key"
@@ -172,23 +173,23 @@
 	BTN_UPLOAD_KEY = "Upload your key"
 
 [LOGIN.SIGNUP]
-	HEADER = "Get your own secure email account!"
+	HEADER = "Welcome to Lavaboom"
  	LOGIN = "Log In"
  	SIGNUP = "Sign Up"
 
 [LOGIN.AUTH]
 	BTN_GO_TO_MY_INBOX = "Go to my Inbox"
-	BTN_NO_ACCOUNT_YET = "No Account Yet? Signup Here!"
+	BTN_NO_ACCOUNT_YET = "No Account Yet? Sign up Here!"
 
 # Generic error messages for Lavaboom REST API
 [LAVABOOM.API.ERROR]
-	UNKNOWN = "Unknown error, we're really sorry"
-	DOWN = "It seems Lavaboom is down, please try again later"
-	403 = "Wrong username or password!"
+	UNKNOWN = "Unknown error, sorry about that."
+	DOWN = "We are experiencing a server issue, please try again later."
+	403 = "Wrong username or password."
 
 # Specific error message for Lavaboom REST API
 [LAVABOOM.API.ERROR.ACCOUNTS.UPDATE]
-	403 = "Wrong old password specified"
+	403 = "Incorrect old password specified"
 
 [MAIN.NAV]
 	LB_COMPOSE = "Compose"
@@ -197,10 +198,10 @@
 	LB_LOGOUT = "Logout"
 
 [MAIN.COMPOSE]
-	LB_TO = "to"
-	LB_CC = "cc"
-	LB_BCC = "bcc"
-	LB_FROM = "from"
+	LB_TO = "To"
+	LB_CC = "CC"
+	LB_BCC = "BCC"
+	LB_FROM = "From"
 	TITLE_PERSON = "Choose a person"
 	PLC_SELECT_PERSON = "Select person..."
 	LB_EMAIL = "email"
@@ -262,7 +263,7 @@
 	LB_FINGERPRINT = "Fingerprint"
 	LB_CREATION_DATE = "Creation Date"
 	LB_PASSPHRASE = "Enter your passphrase"
-	LB_PASSPHRASE_NOTE = "In order to remember your passphrase please select \"private computer\" checkbox when you sign in to the lavaboom"
+	LB_PASSPHRASE_NOTE = "In order to remember your passphrase please select \"private computer\" checkbox when you sign in to Lavaboom"
 	LB_KEY_NOTE = "Don't see your key? Private key required in order to read emails and view contacts, please import private key"
 	BTN_REMOVE_DECRYPTED_KEYS = "Remove decrypted keys"
 	BTN_EXPORT_KEYS = "Export keys"
