@@ -132,7 +132,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		$scope.isShowWarning = !$scope.isShowWarning;
 	};
 
-	$scope.isValid = () => $scope.__form.$valid && $scope.form.selected.to.length > 0 && $scope.form.subject.length > 0 && $scope.form.body.length > 0;
+	$scope.isValid = () => $scope.__form.$valid &&
+		$scope.form && $scope.form.selected.to.length > 0 && $scope.form.subject.length > 0 && $scope.form.body.length > 0;
 
 	$scope.send = () => co(function *() {
 		if (!$scope.isValid())
@@ -148,7 +149,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			bcc = $scope.form.selected.bcc.map(e => e.email);
 
 		let keys = yield ([...$scope.form.selected.to, ...$scope.form.selected.cc, ...$scope.form.selected.bcc].reduce((a, e) => {
-			a[e.email] = co.transform(co.def(e.loadKey(), null), v => v.key);
+			a[e.email] = co.transform(co.def(e.loadKey(), null), v => v ? v.key : v);
 			return a;
 		}, {}));
 
