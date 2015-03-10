@@ -7,14 +7,13 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
 	this.details = null;
 	this.password = null;
 
-	this.register = (username, altEmail, isNews) => {
+	this.register = (username, altEmail) => {
 		let transformedUsername = user.transformUserName(username);
 
 		self.reserve = {
 			originalUsername: username,
 			username: transformedUsername,
-			altEmail: altEmail,
-			isNews: isNews
+			altEmail: altEmail
 		};
 
 		return co(function * (){
@@ -60,7 +59,7 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
 			let settings = angular.extend({},
 				self.details,
 				user.defaultSettings, {
-					isSubscribedToNews: (self.reserve ? self.reserve.isNews : false) || self.tokenSignup.isNews,
+					isSubscribedToNews: self.tokenSignup.isNews,
 					state: 'incomplete'
 				});
 
