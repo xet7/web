@@ -256,7 +256,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 			prefixName = `${prefixName}_`;
 
 		let dataObj = data.encoding == 'json' ? JSON.stringify(data.data) : data.data;
-		let {pgpData, mergedPublicKeys} = yield self.encodeWithKeys(dataObj, publicKeys);
+		let {pgpData, mergedPublicKeys} = publicKeys && publicKeys.length > 0
+			? yield self.encodeWithKeys(dataObj, publicKeys)
+			: {pgpData: dataObj, mergedPublicKeys: []};
 
 		let envelope = {
 			pgp_fingerprints: mergedPublicKeys.map(k => k.primaryKey.fingerprint),

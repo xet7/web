@@ -105,9 +105,12 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 		yield LavaboomAPI.labels.create({name});
 	});
 
-	this.downloadAttachment = (id) => co(function *(){
-		const res =  yield LavaboomAPI.files.get(id);
-		return (yield crypto.decodeEnvelope(res.body.file, '', 'raw')).data;
+	this.downloadAttachment = (email, attachmentId) => co(function *(){
+		const res =  yield LavaboomAPI.files.list({
+			email: email,
+			name: attachmentId + '.pgp'
+		});
+		return (yield crypto.decodeEnvelope(res.body.files[0], '', 'raw')).data;
 	});
 
 	this.uploadAttachment = (envelope) => co(function *(){
@@ -153,10 +156,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 	this.send = (opts, manifest, keys) => co(function * () {
 		sendEnvelope = yield Email.toEnvelope(opts, manifest, keys);
-
-		return {
-			isEncrypted: sendEnvelope.kind == 'manifest'
-		};
 	});
 
 	this.confirmSend = () =>  co(function * () {
