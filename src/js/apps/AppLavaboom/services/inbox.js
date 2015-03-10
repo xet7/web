@@ -66,7 +66,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	});
 
 	this.getEmailsByThreadId = (threadId) => co(function *() {
-		const emails = (yield LavaboomAPI.emails.list({thread: threadId})).body.emails;
+		const emails = (yield LavaboomAPI.emails.list({thread: threadId, sort: '-date_created'})).body.emails;
 
 		return emails ? yield emails.map(e => Email.fromEnvelope(e)) : [];
 	});
