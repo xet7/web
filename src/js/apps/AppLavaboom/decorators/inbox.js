@@ -232,7 +232,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 		const [event] = args;
 
 		const labels = cache.get('labels');
-		console.log('__handleEvent', labels);
+
 		if (labels) {
 			const labelNames = event.labels.map(lid => labels.byId[lid].name);
 			labelNames.forEach(labelName => {
@@ -241,7 +241,16 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 		} else
 			yield self.getLabels();
 
+		const thread = threadsCache.getById(event.thread);
+		console.log('event thread', thread);
+		if (thread) {
+			threadsCache.invalidate(event.thread);
+			emailsCache.invalidate(event.thread);
+		}
 		yield self.getThreadById(event.thread);
+		yield self.getEmailsByThreadId(event.thread);
+
+		$rootScope.$broadcast(`inbox-emails`, event.thread);
 
 		yield __handleEvent(...args);
 	});
