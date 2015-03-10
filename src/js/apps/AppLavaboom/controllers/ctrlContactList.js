@@ -109,7 +109,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 		$scope.selectedContactId = $stateParams.contactId;
 
 		const addHotkeys = () => {
-			const moveContacts = function(delta) {
+			const moveContacts = delta => {
 				let oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
 
 				if (oldContactPosition) {

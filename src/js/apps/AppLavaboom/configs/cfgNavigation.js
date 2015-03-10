@@ -9,7 +9,7 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 		return '/label/Inbox';
 	});
 
-	var primaryStates = {
+	const primaryStates = {
 		'empty': {
 			url: '/'
 		},
@@ -94,11 +94,11 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 		}
 	};
 
-	var PopupAbstractState = function () {
+	function PopupAbstractState () {
 		this.abstract = true;
-	};
+	}
 
-	var popupStates = {
+	const popupStates = {
 		'compose': function () {
 			this.url =  '/compose?replyThreadId&to';
 
@@ -137,12 +137,12 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 		}
 	};
 
-	var declareState = (name, state) => {
+	const declareState = (name, state) => {
 		console.log('creating state ', name);
 		$stateProvider.state(name, state);
 	};
 
-	for(let stateName in primaryStates) {
+	for(let stateName of Object.keys(primaryStates)) {
 		declareState(stateName, primaryStates[stateName]);
 
 		if (!primaryStates[stateName].abstract) {

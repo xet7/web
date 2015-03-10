@@ -29,10 +29,10 @@ application.registerBulks(
 	])
 );
 
-(function (loader) {
+((loader) => {
 	var token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
 
-	var Checker = function (url, Promise) {
+	function Checker (url, Promise) {
 		console.log('checker', url);
 		this.check = () => new Promise((resolve, reject) => {
 			if (token) {
@@ -61,7 +61,7 @@ application.registerBulks(
 									console.log('checker: keys.get error', err);
 									loader.loadLoginApplication({state: 'generateKeys', noDelay: true});
 								});
-						}).catch(function (err) {
+						}).catch(err => {
 							console.log('checker: accounts.get(me) error', err);
 							loader.loadLoginApplication({noDelay: true});
 							resolve();
@@ -77,7 +77,7 @@ application.registerBulks(
 				resolve();
 			}
 		});
-	};
+	}
 
 	window.checkerFactory = (Promise) => new Checker(process.env.API_URI, Promise);
 })(window.loader);

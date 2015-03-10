@@ -223,7 +223,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		$scope.isError = false;
 	});
 
-	let emailTransform = function (email) {
+	let emailTransform = email => {
 		if (!email)
 			return null;
 
@@ -326,7 +326,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		}
 	};
 
-	$scope.tagTransform = function (newTag) {
+	$scope.tagTransform = newTag => {
 		if (!newTag)
 			return null;
 

@@ -1,4 +1,4 @@
-(function (assets) {
+((assets) => {
 	var Promise = require('./helpers/promise-polyfill');
 
 	const
@@ -116,7 +116,7 @@
 		ref.parentNode.insertBefore(script, ref);
 	});
 
-	var Loader = function () {
+	function Loader () {
 		console.log('Initialize loader...');
 
 		const self = this;
@@ -321,7 +321,7 @@
 		this.showLoader = (isImmediate = false) => {
 			showContainer(LOADER, null, isImmediate);
 		};
-	};
+	}
 
 	window.loader = new Loader();
 	window.loader.initialize();
