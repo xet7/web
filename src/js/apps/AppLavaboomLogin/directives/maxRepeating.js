@@ -1,10 +1,10 @@
 module.exports = /*@ngInject*/() => {
 	return {
 		require: 'ngModel',
-		link: function(scope, elem, attrs, ngModel) {
-			var r = attrs.maxRepeating;
+		link: (scope, elem, attrs, ngModel) => {
+			const r = attrs.maxRepeating;
 			ngModel.$parsers.unshift(value => {
-				var isValid = true;
+				let isValid = true;
 				value.split('').reduce((a, c) => {
 					if (a && c == a.pc) {
 						a.count++;

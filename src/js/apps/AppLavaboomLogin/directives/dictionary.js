@@ -1,12 +1,12 @@
-var Levenshtein = require('levenshtein');
 module.exports = /*@ngInject*/($http, $q) => {
-	var words = {};
+	const Levenshtein = require('levenshtein');
+	const words = {};
 
 	return {
 		require: 'ngModel',
 		link: (scope, elem, attrs, ngModel) => {
-			let dictionary = attrs.dictionary;
-			let minLevenshteinDistance = attrs.minLevenshteinDistance;
+			const dictionary = attrs.dictionary;
+			const minLevenshteinDistance = attrs.minLevenshteinDistance;
 
 			ngModel.$asyncValidators.dictionary = (modelValue, viewValue) => {
 				if (!words[dictionary])
