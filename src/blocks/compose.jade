@@ -57,7 +57,7 @@ div#compose-wrapper
 		footer
 			#attachments.row
 				div.col-xs-6(ng-repeat="attachment in attachments")
-					a.attachment(href="test.mov", filetype="{{attachment.ext}}")
+					a.attachment(filetype="{{attachment.ext}}")
 						span.fileCorner
 						span(ng-bind="attachment.attachment.name")
 						br

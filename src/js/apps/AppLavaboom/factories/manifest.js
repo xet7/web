@@ -6,6 +6,7 @@ module.exports = /*@ngInject*/(contacts) => {
 
 		this.id = manifestPart.id;
 		this.size = manifestPart.size;
+		this.filename = manifestPart.filename;
 		this.hash = manifestPart.hash;
 
 		this.isValid = (body) => body.length == self.size && hash(body) == self.hash;
@@ -54,7 +55,7 @@ module.exports = /*@ngInject*/(contacts) => {
 			return [...emails];
 		};
 
-		this.getFileById = (id) => self.parts.find(p => p.id == id);
+		this.getFileById = (id) => manifest.parts.find(p => p.id == id);
 		
 		this.setBody = (data, contentType) => {
 			manifest.parts.push({
@@ -76,8 +77,8 @@ module.exports = /*@ngInject*/(contacts) => {
 				hash: hash(data),
 				filename: fileName,
 				content_type: contentType ? contentType : 'application/octet-stream',
-				charset: 'urf-8',
-				filesize: data.length
+				charset: 'utf-8',
+				size: data.length
 			});
 		};
 

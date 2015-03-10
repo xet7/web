@@ -1,6 +1,6 @@
 .login-app{
 	.lava-font();
-	font-size: 13px;
+	font-size: 1.4rem;
 
 	.main-container, .main-container > .row, .main-content{
 		.pos-rel();
@@ -9,8 +9,8 @@
 
 	.main-content > form{
 		position: relative;
-		top: 40%;
-		transform: translateY(-34%);
+		top: 50%;
+		transform: translateY(-50%);
 	}
 
 	background-color: @lava-login-gray-darker;
@@ -19,7 +19,7 @@
 	-moz-osx-font-smoothing: grayscale;
 
 	input[type=text], input[type=email], input[type=password], textarea, .btn, .checkbox label:before{
-		border-radius: 2px;
+		border-radius: .2rem;
 		background: @lava-login-gray-dark;
 		border: 0;
 		box-shadow: none;
@@ -35,7 +35,7 @@
 			color: @lava-login-gray-lightest;
 		}
 		+ .alert-danger, + span.input-group-addon + .alert-danger{
-			padding-left: 15px;
+			padding-left: 1.5rem;
 			font-style: italic;
 			font-size: 1em;
 			transition: .3s all;
@@ -51,8 +51,8 @@
 				transition: .4s all;
 			}
 			&:not(.ng-hide){
-				padding-top: 3px;
-				margin-bottom: .5em;
+				padding-top: .3rem;
+				margin-bottom: .7rem;
 				.opacity(1);
 				max-height: 100px;
 				> span {
@@ -60,6 +60,7 @@
 					transition: .4s top;
 				}
 			}
+
 		}
 	}
 
@@ -91,36 +92,36 @@
 		content: "";  
 	    display: inline-block;  
 	  
-	    width: 22px;  
-	    height: 22px;  
-	    padding-right: 2px;
+	    width: 2.2rem;  
+	    height: 2.2rem;  
+	    padding-right: .2rem;
 	  
-	    margin-right: 20px;  
+	    margin-right: 2rem;  
 	    position: absolute;  
 	    left: 0;
-	    top: -2px;
+	    top: -.2rem;
 	    
 	}
 
 	.checkbox label{
-		padding-left: 40px;
+		padding-left: 4rem;
 	}
 
 	input[type=checkbox]:checked + label:before {
 		font-family: 'lavaboom';
 	    content: "7";  
-	    line-height: 22px;
-	    font-size: 17px;
+	    line-height: 2.2rem;
+	    font-size: 1.7rem;
 	    text-align: center;
 	}
 
 	.radio + .radio, .checkbox + .checkbox {
-		margin-top: -2px;
+		margin-top: -0.2rem;
 	}
 
 	.form-control{
 		.lava-font();
-		.placeholder();
+		.placeholder(@lava-login-gray-light);
 	}
 
 	.table-list{
@@ -129,7 +130,7 @@
 			text-shadow: 0px 0px 6px rgba(0, 0, 0, .5);
 			padding-right: 10px;
 			.pos-rel();
-			top: .5em;
+			top: .8rem;
 		}
 		h1{
 			text-align: left;
@@ -151,7 +152,7 @@
 			display: table-cell;
 		}
 	}
-
+ 
 	.pack{
 		margin-bottom: 0 !important;
 	}
@@ -171,10 +172,12 @@
 		height: 6px;
 		border: 0;
 		margin-bottom: 2em;
+		background: @lava-login-gray-light;
 		.progress-bar{
 			border: 0;
 			box-shadow: none;
 			border-radius: 2px;
+			background: @lava-login-lava;
 		}
 	}
 
@@ -213,13 +216,24 @@
 	}
 
 	.alert:not(.login-alert){
-		padding: .25em;
-		margin-bottom: .5em;
-		font-size: 1.2em;
+		&:not(.ng-hide){
+			padding: .25em;
+			margin-bottom: .5em;
+			font-size: 1.2em;
+		}
 	}
 
 	.login-alert{
 		border-radius: 3px;
+		padding: 2.5rem;
+		margin: 0;
+		header{
+			> h1:first-child, > .lead:first-child {
+				margin-top: 0;
+				padding-bottom: 1rem;
+				margin-bottom: 1rem;
+			}
+		}
 	}
 
 	hr.blank{
@@ -227,27 +241,27 @@
 	}
 
 	form.steps-form hr.spacer{
-		margin-bottom: 2.5em;
+
 	}
 
 	h4{
 		color: white;
 	}
 	p.lead, h1{
-		font-size: 2em;
+		font-size: 3.2rem;
 		color: @lava-login-gray-light;
 		// font-weight: @light-font-weight;
 		.lava-font();
 		.text-center();
-		margin-bottom: 1.1em;
+		margin-bottom: 1.6rem;
 		&.pack{
 			margin-bottom: 0;
 		}
 		+ .steps{
-			margin-top: .5em;
-			margin-bottom: 1em;
+			margin-top: 2rem;
+			margin-bottom: 2.5rem;
 			&.large{
-				margin-bottom: 2.25em;
+				margin-bottom: 3.15rem;
 			}
 		}
 	}
@@ -322,7 +336,7 @@
 	}
 
 	footer{
-		margin-top: 2em;
+		margin-top: 3rem;
 	}
 
 	.checkbox-label{
