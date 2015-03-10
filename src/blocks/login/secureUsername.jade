@@ -18,7 +18,5 @@ form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-subm
 		input.form-control.input-lg(type='email', name="email", ng-model='form.email', placeholder="{{'GLOBAL.CURRENT_EMAIL' | translate}}", required, minlength="4")
 		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.email.$error", ng-messages-include="partials/validationMessages.html")
 
-	hr.spacer.large
-
 	footer
 		button.btn.btn-block.btn-lg.btn-primary(type="submit") {{'LOGIN.SECURE_USERNAME.BTN_SECURE' | translate}}
