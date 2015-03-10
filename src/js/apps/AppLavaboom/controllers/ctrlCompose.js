@@ -132,7 +132,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		$scope.isShowWarning = !$scope.isShowWarning;
 	};
 
-	$scope.isValid = () => $scope.__form.$valid && $scope.form.selected.to.length > 0 && $scope.form.subject.length > 0 && $scope.form.body.length > 0;
+	$scope.isValid = () => $scope.__form.$valid &&
+		$scope.form && $scope.form.selected.to.length > 0 && $scope.form.subject.length > 0 && $scope.form.body.length > 0;
 
 	$scope.send = () => co(function *() {
 		if (!$scope.isValid())
