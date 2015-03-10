@@ -1,9 +1,8 @@
 window.coJS = require('co');
-let AngularApplication = require('../helpers/angularApplication');
+const AngularApplication = require('../helpers/angularApplication');
+const bulkRequire = require('bulk-require');
+const application = new AngularApplication('utils');
 
-var bulkRequire = require('bulk-require');
-
-let application = new AngularApplication('utils');
 application.create(
 	[
 	],
@@ -30,13 +29,13 @@ application.registerBulks(
 );
 
 ((loader) => {
-	var token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
+	const token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
 
 	function Checker (url, Promise) {
 		console.log('checker', url);
 		this.check = () => new Promise((resolve, reject) => {
 			if (token) {
-				var api = Lavaboom.getInstance(url, null, 'sockjs');
+				const api = Lavaboom.getInstance(url, null, 'sockjs');
 				api.authToken = token;
 
 				api.connect()

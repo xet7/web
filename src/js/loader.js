@@ -1,5 +1,5 @@
 ((assets) => {
-	var Promise = require('./helpers/promise-polyfill');
+	const Promise = require('./helpers/promise-polyfill');
 
 	const
 		SRC_APP_LAVABOOM_MAIN_VENDOR = '/js/appLavaboom-vendor.js',
@@ -14,13 +14,13 @@
 		LB_DONE = 'Done!',
 		LB_FAIL = 'Cannot load Lavaboom :( \n Please check network connection and try again!';
 
-	var // containers
+	const // containers
 		loaderContainer = document.getElementById('loader-container'),
 		loginAppContainer = document.getElementById('login-app-container'),
 		mainAppContainer = document.getElementById('main-app-container'),
 		containers = [loaderContainer, loginAppContainer, mainAppContainer];
 
-	var
+	const
 		CHECKER = {
 			afterProgressText: 'Checking...',
 			afterProgressValue: 30,
@@ -87,14 +87,14 @@
 		DEBUG_DELAY = 0,
 		APP_TRANSITION_DELAY = 500;
 
-	var loadedScripts = {};
+	const loadedScripts = {};
 
-	var loadJS = (src) => new Promise((resolve, reject) => {
+	const loadJS = (src) => new Promise((resolve, reject) => {
 		if (loadedScripts[src])
 			return resolve();
 
-		var ref = window.document.getElementsByTagName('script')[ 0 ];
-		var script = window.document.createElement('script');
+		const ref = window.document.getElementsByTagName('script')[ 0 ];
+		const script = window.document.createElement('script');
 		script.src = src;
 		script.async = true;
 		script.onload = (e) => {
@@ -121,20 +121,21 @@
 
 		const self = this;
 
-		var
+		const
 		// loader elements
 			loaderProgressText = document.getElementById('loader-progress-text'),
-			loaderProgressBar = document.getElementById('loader-progress-bar'),
+			loaderProgressBar = document.getElementById('loader-progress-bar');
 
+		let
 		// state
 			isError = false,
 			isLoginAppLoaded = false,
 			isMainAppLoaded = false,
 			isMainApp = false,
-			currentProgress,
-			progress;
+			currentProgress = 0,
+			progress = 0;
 
-		var showContainer = (e, lbDone, isImmediate = false) => new Promise((resolve) => {
+		const showContainer = (e, lbDone, isImmediate = false) => new Promise((resolve) => {
 			if (e.container != LOADER.container)
 				self.setProgress(lbDone ? lbDone : LB_DONE, 100);
 
@@ -154,11 +155,11 @@
 
 		});
 
-		var loadScripts = (opts) => new Promise((resolve, reject) => {
-			var total = opts.scripts.length;
+		const loadScripts = (opts) => new Promise((resolve, reject) => {
+			const total = opts.scripts.length;
 
-			var load = (loaded = 0) => {
-				var script = null;
+			const load = (loaded = 0) => {
+				let script = null;
 				do {
 					script = opts.scripts.splice(0, 1)[0];
 				} while (!script);
@@ -184,7 +185,7 @@
 			load();
 		});
 
-		var initializeApplication = (app, opts) => {
+		const initializeApplication = (app, opts) => {
 			console.log('loader: initializing application', app.appName, opts);
 
 			isMainApp = app.container == APP_LAVABOOM_MAIN.container;
@@ -192,7 +193,7 @@
 			if (!opts)
 				opts = {};
 
-			var rootScope = app.rootScope = angular.element(app.container).scope();
+			const rootScope = app.rootScope = angular.element(app.container).scope();
 			rootScope.$apply(() => {
 				console.log('loader: calling rootScope.initializeApplication()');
 				rootScope.initializeApplication(opts)
@@ -215,7 +216,7 @@
 			});
 		};
 
-		var loadApplication = (app, opts) => new Promise((resolve, reject) => {
+		const loadApplication = (app, opts) => new Promise((resolve, reject) => {
 			console.log('loader: loading application', app.appName, opts);
 			isMainApp = app.container == APP_LAVABOOM_MAIN.container;
 
@@ -270,7 +271,7 @@
 			progress = 10;
 			loadScripts(CHECKER)
 				.then(() => {
-					var checker = window.checkerFactory(Promise);
+					const checker = window.checkerFactory(Promise);
 					console.log('checker', checker);
 					checker.check()
 						.catch(e => {
