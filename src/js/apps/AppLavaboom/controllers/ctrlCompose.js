@@ -148,7 +148,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			bcc = $scope.form.selected.bcc.map(e => e.email);
 
 		let keys = yield ([...$scope.form.selected.to, ...$scope.form.selected.cc, ...$scope.form.selected.bcc].reduce((a, e) => {
-			a[e.email] = co.def(e.loadKey(), null);
+			a[e.email] = co.transform(co.def(e.loadKey(), null), v => v.key);
 			return a;
 		}, {}));
 

@@ -28,7 +28,7 @@ module.exports = /*@ngInject*/($injector, $rootScope, $translate, co, user, util
 		};
 
 		this.isRead = opt.is_read;
-		this.isEncrypted = true;
+		this.secure = opt.secure;
 	};
 
 	Thread.fromEnvelope = (envelope) => co(function *() {

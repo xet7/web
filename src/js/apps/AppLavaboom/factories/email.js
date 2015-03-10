@@ -50,6 +50,8 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 			keys[user.email] = user.key.key;
 			let publicKeys = Email.keysMapToList(keys);
 
+			console.log('Email.toEnvelope keys', keys, publicKeys);
+
 			let manifestString = manifest.stringify();
 
 			let [envelope, manifestEncoded] = yield [
