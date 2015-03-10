@@ -2,7 +2,7 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 	const reRegex =
 		/([\[\(] *)?(RE?S?|FYI|RIF|I|FS|VB|RV|ENC|ODP|PD|YNT|ILT|SV|VS|VL|AW|WG|ΑΠ|ΣΧΕΤ|ΠΡΘ|תגובה|הועבר|主题|转发|FWD?) *([-:;)\]][ :;\])-]*|$)|\]+ *$/i;
 
-	let Email = function(opt, manifest) {
+	function Email (opt, manifest) {
 		this.id =  opt.id;
 		this.threadId = opt.thread;
 		this.isEncrypted = opt.isEncrypted;
@@ -21,7 +21,7 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 		this.preview = opt.preview;
 		this.body = opt.body;
 		this.attachments = opt.attachments ? opt.attachments : [];
-	};
+	}
 
 	Email.getSubjectWithoutRe = (subject) => subject.replace(reRegex, '');
 

@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/(co) => {
-	const Proxy = function ($delegate) {
+	function Proxy ($delegate) {
 		const self = this;
 
 		this.unbindedMethodCall = (call, proxy, isCache = false) => {
@@ -38,7 +38,7 @@ module.exports = /*@ngInject*/(co) => {
 		this.methodCall = (call, proxy, isCache = false) => {
 			$delegate[call] = self.unbindedMethodCall(call, proxy, isCache);
 		};
-	};
+	}
 
 	return Proxy;
 };

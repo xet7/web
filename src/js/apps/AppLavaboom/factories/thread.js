@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($injector, $rootScope, $translate, co, user, utils, crypto, Manifest) => {
-	let translations = {};
+	const translations = {};
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
 		translations.LB_AND_ONE_OTHER = $translate.instant('LOADER.LB_AND_ONE_OTHER');
@@ -7,9 +7,8 @@ module.exports = /*@ngInject*/($injector, $rootScope, $translate, co, user, util
 		translations.LB_AND_OTHERS = $translate.instant('LOADER.LB_AND_OTHERS');
 	});
 
-	let Thread = function(opt, manifest, labels) {
-		let self = this;
-		let inbox = $injector.get('inbox');
+	function Thread(opt, manifest, labels) {
+		const self = this;
 
 		this.id = opt.id;
 		this.subject = manifest && manifest.subject ? manifest.subject : opt.name;
@@ -29,12 +28,12 @@ module.exports = /*@ngInject*/($injector, $rootScope, $translate, co, user, util
 
 		this.isRead = opt.is_read;
 		this.secure = opt.secure;
-	};
+	}
 
 	Thread.fromEnvelope = (envelope) => co(function *() {
-		let inbox = $injector.get('inbox');
+		const inbox = $injector.get('inbox');
 
-		let manifestRaw = yield co.def(crypto.decodeRaw(envelope.manifest), null);
+		const manifestRaw = yield co.def(crypto.decodeRaw(envelope.manifest), null);
 
 		const labels = yield inbox.getLabels();
 

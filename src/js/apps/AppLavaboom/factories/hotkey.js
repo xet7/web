@@ -1,17 +1,17 @@
 module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
-    var hotkeyList = ['?'];
-    var isActive = true;
+    let hotkeyList = ['?'];
+    let isActive = true;
 
-    var Hotkey = function() {
+    function Hotkey() {
 
-    };
+    }
 
     Hotkey.addHotkey = (option) => {
         if (!isActive || angular.isUndefined(option))
             return;
 
-        var key = angular.isArray(option.combo) ? option.combo[0] : option.combo;
-        var currentKey = hotkeys.get(key);
+		const key = angular.isArray(option.combo) ? option.combo[0] : option.combo;
+		const currentKey = hotkeys.get(key);
         if (currentKey)
             hotkeys.del(currentKey);
         if (!hotkeyList.includes(option.combo)) {
@@ -35,7 +35,7 @@ module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
         for (let key of hotkeyList) {
             if(key !== '?') {
                 key = angular.isArray(key) ? key[0] : key;
-                var hotkey = hotkeys.get(key);
+				const hotkey = hotkeys.get(key);
                 if (hotkey) {
                     hotkeys.del(hotkey);
                 }
