@@ -23,7 +23,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	$scope.sortedLabel = '';
 	$scope.sortQuery = inbox.sortQuery;
 
-	var translations = {};
+	const translations = {};
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
 		translations.LB_SORT_BY_CREATION_DATE_DESC = $translate.instant('INBOX.LB_SORT_BY_CREATION_DATE_DESC');

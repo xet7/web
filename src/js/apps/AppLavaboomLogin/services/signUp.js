@@ -8,7 +8,7 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
 	this.password = null;
 
 	this.register = (username, altEmail, isNews) => {
-		var transformedUsername = user.transformUserName(username);
+		let transformedUsername = user.transformUserName(username);
 
 		self.reserve = {
 			originalUsername: username,
@@ -18,7 +18,7 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
 		};
 
 		return co(function * (){
-			var res = yield LavaboomAPI.accounts.create.register({
+			let res = yield LavaboomAPI.accounts.create.register({
 				username: transformedUsername,
 				alt_email: altEmail
 			});
@@ -37,7 +37,7 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
 		};
 
 		return co(function * (){
-			var res = yield LavaboomAPI.accounts.create.verify({
+			let res = yield LavaboomAPI.accounts.create.verify({
 				username: self.tokenSignup.username,
 				invite_code: self.tokenSignup.token
 			});
@@ -57,7 +57,7 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
 
 			yield user.signIn(self.tokenSignup.username, password, true);
 
-			var settings = angular.extend({},
+			let settings = angular.extend({},
 				self.details,
 				user.defaultSettings, {
 					isSubscribedToNews: (self.reserve ? self.reserve.isNews : false) || self.tokenSignup.isNews,

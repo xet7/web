@@ -170,7 +170,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				attachmentStatus.attachment.body, attachmentStatus.attachment.name, attachmentStatus.attachment.type);
 
 		try {
-			var sendStatus = yield inbox.send({
+			let sendStatus = yield inbox.send({
 				body: $scope.form.body,
 				attachmentIds: $scope.attachments.map(a => a.id),
 				threadId

@@ -17,7 +17,7 @@ module.exports = /*@ngInject*/($http, $q) => {
 					.then(words => {
 						for (let word of words) {
 							word = word.trim();
-							var levenshtein = new Levenshtein(word, viewValue);
+							let levenshtein = new Levenshtein(word, viewValue);
 							if (levenshtein.distance < minLevenshteinDistance)
 								return $q.reject(false);
 						}

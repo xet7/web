@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($rootScope, $translate, contacts) => {
-	var translations = {};
+	const translations = {};
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
 		translations.LB_AND_ONE_OTHER = $translate.instant('INBOX.LB_AND_ONE_OTHER');
@@ -8,14 +8,14 @@ module.exports = /*@ngInject*/($rootScope, $translate, contacts) => {
 	});
 
 	return (membersList) => {
-		var members = membersList
+		let members = membersList
 			? membersList.map(email => {
-				var contact = contacts.getContactByEmail(email);
+				let contact = contacts.getContactByEmail(email);
 				return contact ? contact.getFullName() : email;
 			})
 			: [];
 
-		var membersString = members.slice(0, 2).join(', ');
+		let membersString = members.slice(0, 2).join(', ');
 		if (members.length == 3)
 			membersString += ' ' + translations.LB_AND_ONE_OTHER;
 		else if (members.length == 4)

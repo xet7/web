@@ -1,6 +1,6 @@
 module.exports = /*@ngInject*/($scope, $timeout, consts, crypto) => {
-	var decodeTimeout = null;
-	var cryptoKey = crypto.getDecryptedPrivateKeyByFingerprint($scope.key.fingerprint);
+	let decodeTimeout = null;
+	let cryptoKey = crypto.getDecryptedPrivateKeyByFingerprint($scope.key.fingerprint);
 
 	console.log('CtrlSettingsSecurityKey instantiated with key', $scope.key);
 
@@ -10,7 +10,7 @@ module.exports = /*@ngInject*/($scope, $timeout, consts, crypto) => {
 		
 		if ($scope.key) {
 			decodeTimeout = $timeout.schedule(decodeTimeout, () => {
-				var r = false;
+				let r = false;
 				if (cryptoKey) {
 					r = crypto.authenticate(cryptoKey, $scope.key.decryptPassword);
 

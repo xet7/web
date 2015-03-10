@@ -1,8 +1,8 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $interval, $timeout, $translate, consts, co, inbox, router, saver) => {
 	let [emailId, fileId] = [$stateParams.emailId, $stateParams.fileId];
 
-	var timePassed = 0;
-	var translations = {};
+	let timePassed = 0;
+	const translations = {};
 
 	$scope.progress = 0;
 	$scope.label = '';
@@ -17,11 +17,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $interval, $tim
 	});
 
 	// TODO: implement proper estimation
-	var estimatedTime = 1000 * 3;
+	let estimatedTime = 1000 * 3;
 
 	console.log('downloading file. Email id', emailId, 'file id', fileId);
 
-	var progressBarInterval = $interval(() => {
+	let progressBarInterval = $interval(() => {
 		$scope.progress = Math.floor(++timePassed / estimatedTime);
 		if ($scope.progress >= 100) {
 			$scope.label = translations.LB_TAKES_MORE;

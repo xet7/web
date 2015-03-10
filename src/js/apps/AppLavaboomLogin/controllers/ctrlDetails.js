@@ -9,9 +9,9 @@ module.exports = /*@ngInject*/($scope, $state, co, user, signUp) => {
 	};
 
 	$scope.$watchGroup(['form.firstName', 'form.lastName'], () => {
-		var firstName = $scope.form.firstName ? $scope.form.firstName.trim() : '';
-		var lastName = $scope.form.lastName ? $scope.form.lastName.trim() : '';
-		var autoDisplayName = `${firstName} ${lastName}`;
+		let firstName = $scope.form.firstName ? $scope.form.firstName.trim() : '';
+		let lastName = $scope.form.lastName ? $scope.form.lastName.trim() : '';
+		let autoDisplayName = `${firstName} ${lastName}`;
 
 		$scope.form.displayName = firstName || lastName ? autoDisplayName : $scope.form.displayName;
 	});

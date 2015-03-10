@@ -4,8 +4,8 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co) => {
 	$delegate.formatError = (callName, error) => {
 		callName = callName.toUpperCase();
 
-		var translate = (name) => co(function *(){
-			var r = yield $translate(name);
+		const translate = (name) => co(function *(){
+			let r = yield $translate(name);
 			if (r == name)
 				throw new Error(`Translation '${name}' not found!`);
 			return r;
@@ -18,13 +18,13 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co) => {
 
 				return yield translate(`LAVABOOM.API.ERROR.${callName}.${error.status}`);
 			} catch (err) {
-				var def = '';
+				let def = '';
 				try {
 					def = yield translate(`LAVABOOM.API.ERROR.${callName}.DEFAULT`);
 				} catch (e) {}
 
 				try {
-					var genericReason = yield translate(`LAVABOOM.API.ERROR.${error.status}`);
+					let genericReason = yield translate(`LAVABOOM.API.ERROR.${error.status}`);
 					return def ? `${def} (${genericReason})` : genericReason;
 				} catch (err) {
 					if (error.body && error.body.message)
@@ -55,12 +55,12 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co) => {
 
 					return res;
 				} catch (err) {
-					var formattedError = yield $delegate.formatError(callName, err);
+					let formattedError = yield $delegate.formatError(callName, err);
 					$rootScope.currentErrorMessage = formattedError;
 
 					console.error(`${callName} error: `, err);
 
-					var error =  new Error(formattedError);
+					let error =  new Error(formattedError);
 					error.original = err;
 					throw error;
 				}
@@ -70,7 +70,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co) => {
 
 	function wrapApiCall (path, obj, k) {
 		if (angular.isFunction(obj[k])) {
-			var callName = [...path, k].join('.');
+			let callName = [...path, k].join('.');
 
 			//console.log('patching LavaboomAPI', callName);
 			patchApiMethod(obj, k, callName);

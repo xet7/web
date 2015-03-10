@@ -1,8 +1,8 @@
-var chan = require('chan');
+let chan = require('chan');
 
 module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate, LavaboomAPI, co, translate, crypto, user, inbox, contacts, Hotkey, loader) => {
-	var translations = {};
-	var translationsCh = chan();
+	const translations = {};
+	const translationsCh = chan();
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
 		translations.LB_INITIALIZING_I18N = $translate.instant('LOADER.LB_INITIALIZING_I18N');
@@ -19,14 +19,14 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 
 	$scope.initializeApplication = () => co(function *(){
 		try {
-			var connectionPromise = LavaboomAPI.connect();
+			let connectionPromise = LavaboomAPI.connect();
 
 			if (!$rootScope.isInitialized)
 				yield translationsCh;
 
 			loader.incProgress(translations.LB_INITIALIZING_I18N, 1);
 
-			var translateInitialization = translate.initialize();
+			let translateInitialization = translate.initialize();
 
 			loader.incProgress(translations.LB_INITIALIZING_OPENPGP, 1);
 

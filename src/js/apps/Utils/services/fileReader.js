@@ -1,6 +1,6 @@
 module.exports = /*@ngInject*/function ($rootScope, $q) {
-	var getReader = (deferred, opts) => {
-		var reader = new FileReader();
+	const getReader = (deferred, opts) => {
+		let reader = new FileReader();
 
 		reader.onload = () => deferred.resolve(reader.result);
 		reader.onerror = () => deferred.reject(reader.result);
@@ -17,18 +17,18 @@ module.exports = /*@ngInject*/function ($rootScope, $q) {
 	};
 
 	this.readAsDataURL = (file, opts = {}) => {
-		var deferred = $q.defer();
+		let deferred = $q.defer();
 
-		var reader = getReader(deferred, opts);
+		let reader = getReader(deferred, opts);
 		reader.readAsDataURL(file);
 
 		return deferred.promise;
 	};
 
 	this.readAsText = (file, opts = {}) => {
-		var deferred = $q.defer();
+		let deferred = $q.defer();
 
-		var reader = getReader(deferred, opts);
+		let reader = getReader(deferred, opts);
 		reader.readAsText(file);
 
 		return deferred.promise;

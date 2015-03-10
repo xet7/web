@@ -1,7 +1,7 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, ContactEmail) => {
 	$scope.contactId = $stateParams.contactId;
 
-	var translations = {};
+	const translations = {};
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
 		translations.LB_NEW_CONTACT = $translate.instant('MAIN.CONTACTS.LB_NEW_CONTACT');
@@ -18,8 +18,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 
 	$scope.$watchGroup(['details.firstName', 'details.lastName'], (newValues, oldValues) => {
 		if (newValues[0] != oldValues[0] || newValues[1] != oldValues[1]) {
-			var firstName = $scope.details.firstName ? $scope.details.firstName.trim() : '';
-			var lastName = $scope.details.lastName ? $scope.details.lastName.trim() : '';
+			let firstName = $scope.details.firstName ? $scope.details.firstName.trim() : '';
+			let lastName = $scope.details.lastName ? $scope.details.lastName.trim() : '';
 
 			$scope.details.name = firstName || lastName ? `${firstName} ${lastName}` : $scope.details.name;
 		}
@@ -37,7 +37,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 		if ($scope.details.id != 'new')
 			yield contacts.updateContact($scope.details);
 		else {
-			var cid = yield contacts.createContact($scope.details);
+			let cid = yield contacts.createContact($scope.details);
 			$state.go('main.contacts.profile', {contactId: cid});
 		}
 	});

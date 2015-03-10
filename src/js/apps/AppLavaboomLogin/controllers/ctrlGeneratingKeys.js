@@ -2,8 +2,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $interval, $timeout, 
 	if (!user.isAuthenticated())
 		$state.go('login');
 
-	var timePassed = 0;
-	var translations = {};
+	let timePassed = 0;
+	const translations = {};
 
 	$scope.progress = 0;
 	$scope.label = '';
@@ -17,7 +17,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $interval, $timeout, 
 		$scope.label = translations.LB_GENERATING;
 	});
 
-	var progressBarInterval = $interval(() => {
+	let progressBarInterval = $interval(() => {
 		$scope.progress = Math.floor(++timePassed / consts.ESTIMATED_KEY_GENERATION_TIME_SECONDS * 95);
 		if ($scope.progress >= 95) {
 			$scope.label = translations.LB_REACHED;
@@ -28,7 +28,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $interval, $timeout, 
 
 	co(function *() {
 		try {
-			var res = yield crypto.generateKeys(user.nameEmail, signUp.password, consts.DEFAULT_KEY_LENGTH);
+			let res = yield crypto.generateKeys(user.nameEmail, signUp.password, consts.DEFAULT_KEY_LENGTH);
 			console.log('login app: keys generated', res);
 
 			$interval.cancel(progressBarInterval);

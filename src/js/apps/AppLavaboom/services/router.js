@@ -1,8 +1,8 @@
 module.exports = /*@ngInject*/function ($rootScope, $state, $modal, $timeout) {
 	const self = this;
 
-	var isInitialized = false;
-	var delayedPopup = null;
+	let isInitialized = false;
+	let delayedPopup = null;
 
 	$rootScope.whenInitialized(() => {
 		isInitialized = true;
