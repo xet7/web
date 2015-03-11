@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeout, translate, user, Hotkey) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeout, translate, user, hotkey) => {
 	$scope.form = {
 		selectedLanguage: null,
 		contactsSortBy: null
@@ -53,8 +53,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeo
 	});
 
     $scope.$watch('settings.isHotkeyEnabled', () => {
-        Hotkey.toggleHotkeys($scope.settings.isHotkeyEnabled);
-		Hotkey.addSettingsNavigationHotkeys();
+        hotkey.toggleHotkeys($scope.settings.isHotkeyEnabled);
     });
 
 	const timeouts = {

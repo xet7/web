@@ -1,6 +1,6 @@
 let chan = require('chan');
 
-module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate, LavaboomAPI, co, translate, crypto, user, inbox, contacts, Hotkey, loader) => {
+module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate, LavaboomAPI, co, translate, crypto, user, inbox, contacts, hotkey, loader) => {
 	const translations = {};
 	const translationsCh = chan();
 
@@ -45,16 +45,11 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 
 			$rootScope.isInitialized = true;
 
-			Hotkey.toggleHotkeys(user.settings.isHotkeyEnabled);
+			hotkey.initialize(user.settings.isHotkeyEnabled);
 			return {lbDone: translations.LB_SUCCESS};
 		} catch (error) {
 			throw {message: translations.LB_INITIALIZATION_FAILED, error: error};
 		}
-	});
-
-	$rootScope.$on('$stateChangeStart', () => {
-		Hotkey.clearHotkeys();
-		Hotkey.addGlobalHotkeys();
 	});
 
 	$scope.onApplicationReady = () => {

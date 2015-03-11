@@ -1,8 +1,16 @@
-.cfp-hotkeys-container.fade(ng-class='{"in": helpVisible}', style='display: none;')
-	.cfp-hotkeys
-		h4.cfp-hotkeys-title {{ title }}
-		dl(ng-repeat='hotkey in hotkeys')
-			dt.cfp-hotkeys-keys
-				span.cfp-hotkeys-key.label.label-default(ng-repeat='key in hotkey.combo track by $index') {{ key }}
-			dd.cfp-hotkeys-text {{ hotkey.description }}
-		.cfp-hotkeys-close(ng-click='toggleCheatSheet()') ×
+div
+	form.lava-modal-header
+		.filters.row.no-gutter.lava-icon-row.z1
+			span.pull-left.modal-heading {{'HOTKEY.TITLE' | translate}}
+			nav.navbar.navbar-inverse(role="navigation")
+				div
+					ul.nav.navbar-nav.navbar-right
+						li
+							button.btn.btn-default(ng-click="hidePopup()")
+								span.icon-close
+		.row
+			div.col-xs-12.col-xs-offset-3
+				dl(ng-repeat='(firstKey, hotkey) in hotkeys')
+					dt.cfp-hotkeys-keys
+						span.cfp-hotkeys-key.label.label-default(ng-repeat='key in hotkey.combo track by $index') {{ key }}
+					dd.cfp-hotkeys-text {{ hotkey.description }}

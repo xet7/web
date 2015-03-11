@@ -111,10 +111,18 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 					size: 'lg'
 				});
 			};
+		},
+		'hotkeys': function () {
+			this.url =  '/hotkeys';
 
 			// @ngInject
-			this.onExit = (router) => {
-				router.hidePopup();
+			this.onEnter = (router) => {
+				router.createPopup({
+					templateUrl: 'partials/hotkeys.html',
+					controller: 'CtrlHotkeys',
+					backdrop: 'static',
+					size: 'lg'
+				});
 			};
 		},
 		'download': function () {
@@ -128,11 +136,6 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 					backdrop: 'static',
 					size: 'lg'
 				});
-			};
-
-			// @ngInject
-			this.onExit = (router) => {
-				router.hidePopup();
 			};
 		}
 	};

@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, user, Hotkey) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, user, hotkey) => {
 	$scope.selectedContactId = null;
 	$scope.searchText = '';
 
@@ -128,13 +128,13 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 				moveContacts(1);
 			};
 
-			Hotkey.addHotkey({
+			hotkey.addHotkey({
 				combo: ['h', 'k', 'left', 'up'],
 				description: 'HOTKEY.MOVE_UP',
 				callback: moveUp
 			});
 
-			Hotkey.addHotkey({
+			hotkey.addHotkey({
 				combo: ['j', 'l', 'right', 'down'],
 				description: 'HOTKEY.MOVE_DOWN',
 				callback: moveDown

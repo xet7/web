@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
-							   consts, co, user, contacts, inbox, router, Manifest, Contact, Hotkey, ContactEmail, Email, Attachment) => {
+							   consts, co, user, contacts, inbox, router, Manifest, Contact, hotkey, ContactEmail, Email, Attachment) => {
 	$scope.toolbar = [
 		['h1', 'h2', 'h3'],
 		['bold', 'italics', 'underline'],
@@ -386,7 +386,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				);
 		};
 
-	Hotkey.addHotkey({
+	hotkey.addHotkey({
         combo: ['ctrl+enter', 'command+enter'],
         description: 'HOTKEY.SEND_EMAIL',
         callback: (event, key) => {

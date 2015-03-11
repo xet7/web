@@ -297,6 +297,7 @@
     LB_NO_PRIVATE_KEY_FOUND3 = " and check your key"
 
 [HOTKEY]
+	TITLE          		 = "Shortcuts cheatsheet"
     CHEATSHEET           = "Show/Hide cheatsheet"
     FOCUS_ON_SEARCH      = "Focus on Search"
     LEAVE_FROM_SEARCH    = "Leave from Search"
