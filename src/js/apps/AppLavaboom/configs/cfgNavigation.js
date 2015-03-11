@@ -117,6 +117,24 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 				router.hidePopup();
 			};
 		},
+		'hotkeys': function () {
+			this.url =  '/hotkeys';
+
+			// @ngInject
+			this.onEnter = (router) => {
+				router.createPopup({
+					templateUrl: 'partials/hotkeys.html',
+					controller: 'CtrlHotkeys',
+					backdrop: 'static',
+					size: 'lg'
+				});
+			};
+
+			// @ngInject
+			this.onExit = (router) => {
+				router.hidePopup();
+			};
+		},
 		'download': function () {
 			this.url =  '/download/:emailId/:fileId';
 

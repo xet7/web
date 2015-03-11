@@ -54,7 +54,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeo
 
     $scope.$watch('settings.isHotkeyEnabled', () => {
         Hotkey.toggleHotkeys($scope.settings.isHotkeyEnabled);
-		Hotkey.addSettingsNavigationHotkeys();
     });
 
 	const timeouts = {
