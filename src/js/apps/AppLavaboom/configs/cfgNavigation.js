@@ -111,11 +111,6 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 					size: 'lg'
 				});
 			};
-
-			// @ngInject
-			this.onExit = (router) => {
-				router.hidePopup();
-			};
 		},
 		'hotkeys': function () {
 			this.url =  '/hotkeys';
@@ -129,11 +124,6 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 					size: 'lg'
 				});
 			};
-
-			// @ngInject
-			this.onExit = (router) => {
-				router.hidePopup();
-			};
 		},
 		'download': function () {
 			this.url =  '/download/:emailId/:fileId';
@@ -146,11 +136,6 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 					backdrop: 'static',
 					size: 'lg'
 				});
-			};
-
-			// @ngInject
-			this.onExit = (router) => {
-				router.hidePopup();
 			};
 		}
 	};
