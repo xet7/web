@@ -170,7 +170,11 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 			combo: '?',
 			description: 'HOTKEY.CHEATSHEET',
 			callback: (event, key) => {
-				if(!router.isPopupState($state.current.name)) {
+				if ($state.current.name.includes('.hotkeys')) {
+					event.preventDefault();
+					router.hidePopup();
+				}
+				else if (!router.isPopupState($state.current.name)) {
 					event.preventDefault();
 					router.showPopup('hotkeys');
 				}
