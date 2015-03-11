@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, $stateParams, $translate, co, user, inbox, consts, Hotkey) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, $stateParams, $translate, co, user, inbox, consts, hotkey) => {
 	$scope.labelName = $stateParams.labelName;
 	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
 	if ($scope.selectedTid)
@@ -245,19 +245,19 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			moveThreads(1);
 		};
 		
-		Hotkey.addHotkey({
+		hotkey.addHotkey({
 			combo: ['h', 'k', 'left', 'up'],
 			description: 'HOTKEY.MOVE_UP',
 			callback: moveUp
 		});
 
-		Hotkey.addHotkey({
+		hotkey.addHotkey({
 			combo: ['j', 'l', 'right', 'down'],
 			description: 'HOTKEY.MOVE_DOWN',
 			callback: moveDown
 		});
 
-		Hotkey.addHotkey({
+		hotkey.addHotkey({
 			combo: 'a',
 			description: 'HOTKEY.ARCHIVE_EMAIL',
 			callback: (event, key) => {
@@ -266,7 +266,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			}
 		});
 
-		Hotkey.addHotkey({
+		hotkey.addHotkey({
 			combo: 'd',
 			description: 'HOTKEY.DELETE_EMAIL',
 			callback: (event, key) => {
@@ -275,7 +275,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			}
 		});
 
-		Hotkey.addHotkey({
+		hotkey.addHotkey({
 			combo: 'r',
 			description: 'HOTKEY.REPLY_EMAIL',
 			callback: (event, key) => {

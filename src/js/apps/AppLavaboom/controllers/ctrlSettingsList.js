@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $state, router, Hotkey) => {
+module.exports = /*@ngInject*/($rootScope, $state, router, hotkey) => {
 	const settingsList = ['main.settings.general', 'main.settings.profile', 'main.settings.security', 'main.settings.plan'];
 
 	const goSettings = (event, delta) => {
@@ -16,13 +16,13 @@ module.exports = /*@ngInject*/($rootScope, $state, router, Hotkey) => {
 	};
 
 	const addHotkeys = () => {
-		Hotkey.addHotkey({
+		hotkey.addHotkey({
 			combo: ['h', 'k', 'left', 'up'],
 			description: 'HOTKEY.MOVE_UP',
 			callback: (event, key) => goSettings(event, -1)
 		});
 
-		Hotkey.addHotkey({
+		hotkey.addHotkey({
 			combo: ['j', 'l', 'right', 'down'],
 			description: 'HOTKEY.MOVE_DOWN',
 			callback: (event, key) => goSettings(event, +1)

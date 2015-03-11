@@ -1,3 +1,3 @@
-module.exports = /*@ngInject*/($scope, Hotkey) => {
-	$scope.hotkeys = Hotkey.getKeys();
+module.exports = /*@ngInject*/($scope, hotkey) => {
+	$scope.hotkeys = hotkey.getKeys();
 };

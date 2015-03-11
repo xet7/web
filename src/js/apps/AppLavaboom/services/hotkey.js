@@ -1,13 +1,21 @@
-module.exports = /*@ngInject*/($rootScope, $translate, $state, hotkeys, router) => {
+module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys, router) {
+	const self = this;
+
 	let isActive = true;
 	let hotkeyList = { };
 
-	function Hotkey() {
-	}
+	self.initialize = (isEnabled) => {
+		self.toggleHotkeys(isEnabled);
 
-	Hotkey.getKeys = () => hotkeyList;
+		$rootScope.$on('$stateChangeStart', () => {
+			self.clearHotkeys();
+			self.addGlobalHotkeys();
+		});
+	};
 
-	Hotkey.addHotkey = (option) => {
+	self.getKeys = () => hotkeyList;
+
+	self.addHotkey = (option) => {
 		if (!isActive || !option)
 			return;
 
@@ -25,18 +33,18 @@ module.exports = /*@ngInject*/($rootScope, $translate, $state, hotkeys, router) 
 		};
 	};
 
-	Hotkey.toggleHotkeys = (enable) => {
+	self.toggleHotkeys = (enable) => {
 		isActive = enable;
 		if (enable) {
-			Hotkey.addGlobalHotkeys();
+			self.addGlobalHotkeys();
 		} else {
-			Hotkey.clearHotkeys();
+			self.clearHotkeys();
 		}
 
 		$rootScope.$broadcast('hotkeys-enabled', isActive);
 	};
 
-	Hotkey.clearHotkeys = () => {
+	self.clearHotkeys = () => {
 		let r;
 		for (let key of Object.keys(hotkeyList)) {
 			if (key !== '?') {
@@ -48,11 +56,11 @@ module.exports = /*@ngInject*/($rootScope, $translate, $state, hotkeys, router) 
 		}
 
 		hotkeyList = [r];
-		console.log('Hotkey.clearHotkeys()');
+		console.log('hotkeys.clearHotkeys()');
 	};
 
-	Hotkey.addGlobalHotkeys = () => {
-		Hotkey.addHotkey({
+	self.addGlobalHotkeys = () => {
+		self.addHotkey({
 			combo: ['c', 'n'],
 			description: 'HOTKEY.COMPOSE_EMAIL',
 			callback: (event, key) => {
@@ -61,7 +69,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $state, hotkeys, router) 
 			}
 		});
 
-		Hotkey.addHotkey({
+		self.addHotkey({
 			combo: ['ctrl+i', 'command+i'],
 			description: 'HOTKEY.GOTO_INBOX',
 			callback: (event, key) => {
@@ -70,7 +78,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $state, hotkeys, router) 
 			}
 		});
 
-		Hotkey.addHotkey({
+		self.addHotkey({
 			combo: ['ctrl+d', 'command+d'],
 			description: 'HOTKEY.GOTO_DRAFTS',
 			callback: (event, key) => {
@@ -79,7 +87,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $state, hotkeys, router) 
 			}
 		});
 
-		Hotkey.addHotkey({
+		self.addHotkey({
 			combo: ['ctrl+s', 'command+s'],
 			description: 'HOTKEY.GOTO_SENT',
 			callback: (event, key) => {
@@ -88,7 +96,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $state, hotkeys, router) 
 			}
 		});
 
-		Hotkey.addHotkey({
+		self.addHotkey({
 			combo: ['ctrl+m', 'command+m'],
 			description: 'HOTKEY.GOTO_SPAM',
 			callback: (event, key) => {
@@ -97,7 +105,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $state, hotkeys, router) 
 			}
 		});
 
-		Hotkey.addHotkey({
+		self.addHotkey({
 			combo: ['ctrl+t', 'command+t'],
 			description: 'HOTKEY.GOTO_STARRED',
 			callback: (event, key) => {
@@ -106,7 +114,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $state, hotkeys, router) 
 			}
 		});
 
-		Hotkey.addHotkey({
+		self.addHotkey({
 			combo: ['ctrl+h', 'command+h'],
 			description: 'HOTKEY.GOTO_TRASH',
 			callback: (event, key) => {
@@ -115,7 +123,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $state, hotkeys, router) 
 			}
 		});
 
-		Hotkey.addHotkey({
+		self.addHotkey({
 			combo: ['ctrl+x', 'command+x'],
 			description: 'HOTKEY.GOTO_CONTACTS',
 			callback: (event, key) => {
@@ -124,7 +132,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $state, hotkeys, router) 
 			}
 		});
 
-		Hotkey.addHotkey({
+		self.addHotkey({
 			combo: ['ctrl+e', 'command+e'],
 			description: 'HOTKEY.GOTO_SETTINGS',
 			callback: (event, key) => {
@@ -133,7 +141,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $state, hotkeys, router) 
 			}
 		});
 
-		Hotkey.addHotkey({
+		self.addHotkey({
 			combo: '/',
 			description: 'HOTKEY.FOCUS_ON_SEARCH',
 			callback: (event, key) => {
@@ -144,7 +152,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $state, hotkeys, router) 
 			}
 		});
 
-		Hotkey.addHotkey({
+		self.addHotkey({
 			combo: 'esc',
 			description: 'HOTKEY.LEAVE_FROM_SEARCH',
 			callback: (event, key) => {
@@ -156,7 +164,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $state, hotkeys, router) 
 			allowIn: ['INPUT']
 		});
 
-		Hotkey.addHotkey({
+		self.addHotkey({
 			combo: '?',
 			description: 'HOTKEY.CHEATSHEET',
 			callback: (event, key) => {
@@ -168,8 +176,6 @@ module.exports = /*@ngInject*/($rootScope, $translate, $state, hotkeys, router) 
 			allowIn: ['INPUT']
 		});
 
-		console.log('Hotkey.addGlobalHotkeys()');
+		console.log('hotkeys.addGlobalHotkeys()');
 	};
-
-	return Hotkey;
 };
