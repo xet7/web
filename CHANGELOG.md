@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 0.1.1 - 2015-03-11
+### Added
+- external images filter
+
 ## 0.1.0 - 2015-03-10
 ### Added
 - CHANGELOG.md created
