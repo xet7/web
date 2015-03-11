@@ -16,7 +16,15 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	this.settings = {};
 	this.defaultSettings = {
 		isShowComposeScreenWarning: true,
-		isHotkeyEnabled: true
+		isHotkeyEnabled: true,
+		isSecuredImages: true
+	};
+
+	const setupSettings = (settings) => {
+		self.settings = angular.extend({},
+			self.defaultSettings,
+			settings ? settings : {}
+		);
 	};
 
 	// primary key
@@ -82,7 +90,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 		let res = yield LavaboomAPI.accounts.get('me');
 
-		self.settings = res.body.user.settings ? res.body.user.settings : {};
+		setupSettings(res.body.user.settings);
 		$rootScope.$broadcast('user-settings');
 
 		setupUserBasicInformation(res.body.user.name);
@@ -163,7 +171,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 				self.key = res.body.key;
 
 				res = yield LavaboomAPI.accounts.get('me');
-				self.settings = res.body.user.settings ? res.body.user.settings : {};
+				setupSettings(res.body.user.settings);
 				setupUserBasicInformation(res.body.user.name);
 
 				if (self.settings.isLavaboomSynced)

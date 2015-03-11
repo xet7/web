@@ -164,6 +164,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			bcc,
 			subject: $scope.form.subject
 		});
+
 		manifest.setBody($scope.form.body, 'text/html');
 		for(let attachmentStatus of $scope.attachments)
 			manifest.addAttachment(attachmentStatus.attachment.id,

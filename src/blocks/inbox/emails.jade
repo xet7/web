@@ -33,7 +33,7 @@ div(ng-if="selectedTid !== null").main-view
 				.col-xs-1.secure
 					a.icon-<!--.$secure.-->
 			.mail-content.row.no-gutter
-				.col-xs-22(ng-if="email.manifest.getPart('body').isHtml()", ng-show="email.body.state == 'ok'", ng-bind-html="email.body.data", email-body)
+				.col-xs-22(ng-if="email.manifest.getPart('body').isHtml()", ng-show="email.body.state == 'ok'", ng-bind-html="email.body.data")
 				.col-xs-22(ng-if="!email.manifest.getPart('body').isHtml()", ng-show="email.body.state == 'ok'")
 					pre(ng-bind="email.body.data")
 				.col-xs-22(ng-show="email.body.state == 'no_private_key'") {{'INBOX.LB_NO_PRIVATE_KEY_FOUND1' | translate}}
