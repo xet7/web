@@ -7,9 +7,11 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 	self.initialize = (isEnabled) => {
 		self.toggleHotkeys(isEnabled);
 
-		$rootScope.$on('$stateChangeStart', () => {
-			self.clearHotkeys();
-			self.addGlobalHotkeys();
+		$rootScope.$on('$stateChangeStart', (event, toState, toParams, fromState, fromParams) => {
+			if (!toState.name.includes('.hotkeys') && !fromState.name.includes('.hotkeys')) {
+				self.clearHotkeys();
+				self.addGlobalHotkeys();
+			}
 		});
 	};
 
@@ -55,7 +57,7 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 			} else r = hotkeyList[key];
 		}
 
-		hotkeyList = [r];
+		hotkeyList = {'?': r};
 		console.log('hotkeys.clearHotkeys()');
 	};
 
