@@ -250,6 +250,7 @@
 	LB_SORT_BY_LAST_NAME = "last name"
 	TITLE_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts"
 	LB_KEYBOARD_SHORTCUTS = "Enabled"
+	LB_SECURED_IMAGES = "Don't show external images(security risk)"
 
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
