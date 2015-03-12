@@ -61,115 +61,118 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 		console.log('hotkeys.clearHotkeys()');
 	};
 
+	const notWhenPopupOpened = (callback) => {
+		return (event, key) => {
+			if (!router.isPopupState($state.current.name))
+				return callback(event, key);
+		};
+	};
+
 	self.addGlobalHotkeys = () => {
 		self.addHotkey({
 			combo: ['c', 'n'],
 			description: 'HOTKEY.COMPOSE_EMAIL',
-			callback: (event, key) => {
+			callback: notWhenPopupOpened((event, key) => {
 				event.preventDefault();
 				router.showPopup('compose');
-			}
+			})
 		});
 
 		self.addHotkey({
 			combo: ['ctrl+i', 'command+i'],
 			description: 'HOTKEY.GOTO_INBOX',
-			callback: (event, key) => {
+			callback: notWhenPopupOpened((event, key) => {
 				event.preventDefault();
 				$state.go('main.inbox.label', {labelName: 'Inbox'});
-			}
+			})
 		});
 
 		self.addHotkey({
 			combo: ['ctrl+d', 'command+d'],
 			description: 'HOTKEY.GOTO_DRAFTS',
-			callback: (event, key) => {
+			callback: notWhenPopupOpened((event, key) => {
 				event.preventDefault();
 				$state.go('main.inbox.label', {labelName: 'Drafts'});
-			}
+			})
 		});
 
 		self.addHotkey({
 			combo: ['ctrl+s', 'command+s'],
 			description: 'HOTKEY.GOTO_SENT',
-			callback: (event, key) => {
+			callback: notWhenPopupOpened((event, key) => {
 				event.preventDefault();
 				$state.go('main.inbox.label', {labelName: 'Sent'});
-			}
+			})
 		});
 
 		self.addHotkey({
 			combo: ['ctrl+m', 'command+m'],
 			description: 'HOTKEY.GOTO_SPAM',
-			callback: (event, key) => {
+			callback: notWhenPopupOpened((event, key) => {
 				event.preventDefault();
 				$state.go('main.inbox.label', {labelName: 'Spam'});
-			}
+			})
 		});
 
 		self.addHotkey({
 			combo: ['ctrl+t', 'command+t'],
 			description: 'HOTKEY.GOTO_STARRED',
-			callback: (event, key) => {
+			callback: notWhenPopupOpened((event, key) => {
 				event.preventDefault();
 				$state.go('main.inbox.label', {labelName: 'Starred'});
-			}
+			})
 		});
 
 		self.addHotkey({
 			combo: ['ctrl+h', 'command+h'],
 			description: 'HOTKEY.GOTO_TRASH',
-			callback: (event, key) => {
+			callback: notWhenPopupOpened((event, key) => {
 				event.preventDefault();
 				$state.go('main.inbox.label', {labelName: 'Trash'});
-			}
+			})
 		});
 
 		self.addHotkey({
 			combo: ['ctrl+x', 'command+x'],
 			description: 'HOTKEY.GOTO_CONTACTS',
-			callback: (event, key) => {
+			callback: notWhenPopupOpened((event, key) => {
 				event.preventDefault();
 				$state.go('main.contacts');
-			}
+			})
 		});
 
 		self.addHotkey({
 			combo: ['ctrl+e', 'command+e'],
 			description: 'HOTKEY.GOTO_SETTINGS',
-			callback: (event, key) => {
+			callback: notWhenPopupOpened((event, key) => {
 				event.preventDefault();
 				$state.go('main.settings.general');
-			}
+			})
 		});
 
 		self.addHotkey({
 			combo: '/',
 			description: 'HOTKEY.FOCUS_ON_SEARCH',
-			callback: (event, key) => {
-				if(!router.isPopupState($state.current.name)){
-					event.preventDefault();
-					document.getElementById('top-search').focus();
-				}
-			}
+			callback: notWhenPopupOpened((event, key) => {
+				event.preventDefault();
+				document.getElementById('top-search').focus();
+			})
 		});
 
 		self.addHotkey({
 			combo: 'esc',
 			description: 'HOTKEY.LEAVE_FROM_SEARCH',
-			callback: (event, key) => {
-				if(!router.isPopupState($state.current.name)) {
-					event.preventDefault();
-					document.getElementById('top-search').blur();
-				}
-			},
+			callback: notWhenPopupOpened((event, key) => {
+				event.preventDefault();
+				document.getElementById('top-search').blur();
+			}),
 			allowIn: ['INPUT']
 		});
 
 		self.addHotkey({
 			combo: '?',
 			description: 'HOTKEY.CHEATSHEET',
-			callback: (event, key) => {
+			callback: notWhenPopupOpened((event, key) => {
 				if ($state.current.name.includes('.hotkeys')) {
 					event.preventDefault();
 					router.hidePopup();
@@ -178,7 +181,7 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 					event.preventDefault();
 					router.showPopup('hotkeys');
 				}
-			},
+			}),
 			allowIn: ['INPUT']
 		});
 
