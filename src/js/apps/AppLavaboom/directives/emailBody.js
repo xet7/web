@@ -15,11 +15,9 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, user) => {
 		},
 		link  : (scope, el, attrs) => {
 			$timeout(() => {
-				scope.status = {
-					isDropdownOpened: []
-				};
+				scope.emails = [];
 
-				scope.switchContextMenu = index => scope.status.isDropdownOpened[index] = !scope.status.isDropdownOpened[index];
+				scope.switchContextMenu = index => scope.emails[index].isDropdownOpened = !scope.emails[index].isDropdownOpened;
 
 				const emailBody = transformEmailBody(scope.emailBody);
 				console.log('email body is: ', scope.emailBody, emailBody);
@@ -30,9 +28,16 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, user) => {
 				angular.forEach(emailBodyHtml.find('a'), e => {
 					e = angular.element(e);
 					if (e.attr('href').startsWith('mailto:')) {
-						e.attr('href', $state.href('.popup.compose', {to: e.attr('href').replace('mailto:', '').trim()}));
+						const toEmail = e.attr('href').replace('mailto:', '').trim();
+						scope.emails.push({
+							email: toEmail,
+							isDropdownOpened: false
+						});
+
+						e.attr('href', $state.href('.popup.compose', {to: toEmail}));
 						e.attr('ng-right-click', `switchContextMenu(${i})`);
-						e.wrap(`<email-context-menu is-open="status.isDropdownOpened[${i}]"></email-context-menu>`);
+
+						e.wrap(`<email-context-menu email="emails[${i}].email" is-open="emails[${i}].isDropdownOpened"></email-context-menu>`);
 						i++;
 					} else
 						e.attr('target', '_blank');

@@ -4,7 +4,7 @@
 	ui-select(multiple, theme="bootstrap", style="width: 100%;", title="{{'MAIN.COMPOSE.TITLE_PERSON' | translate}}",
 		tagging="tagTransform", tagging-tokens="{{taggingTokens}}", reset-search-input="true", ng-model="#{defs.model}")
 		ui-select-match(placeholder="{{'MAIN.COMPOSE.PLC_SELECT_PERSON' | translate}}", ng-class="$item.name")
-			email-context-menu(is-open="status.isDropdownOpened")
+			email-context-menu(email="$item.email", is-open="status.isDropdownOpened")
 				span(ng-click="tagClicked($select, $item, #{defs.model})", ng-right-click="switchContextMenu()")
 					| {{$item.getDisplayName()}} &#60;{{$item.email}}&#62; (
 					span(ng-show="$item.isError && $item.isNotFoundError") {{'MAIN.COMPOSE.LB_ERROR_NOT_FOUND' | translate}}
