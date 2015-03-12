@@ -1,20 +1,13 @@
-.row.settings-panel.ng-cloak
+.row.settings-panel.ng-cloak(ng-controller="CtrlSettingsPlan")
 	form.settings.col-xs-12.col-xs-offset-6
-		.form-wrap
-			h4 Lavaboom (Basic)
+		.form-wrap(ng-repeat="(name, plan) in plans")
+			h4 {{plan.TITLE}}
 			.price-tag
-				span.text FREE
+				span.text {{plan.LB_TAG}}
 				span.caret
 			ul.list-group.suppress-borders
-				li.list-group-item
-					| 1,000MB of Space
-					br
-					| 		    		Super-strong PGP-Encryptionx
-					br
-					| 		    		Zero Knowledge Data Handling
-					br
-					| 		    		Slick Web-App
+				li.list-group-item(ng-repeat="item in plan.LB_ITEMS") {{item}}
+				li.list-group-item(ng-show="name == currentPlanName")
 					hr
-					| 		    		This is your current plan
+					| {{'MAIN.SETTINGS.PLAN.LB_CURRENT' | translate}}
 					span.icon.icon-tick.pull-right.icon-circle
-					br

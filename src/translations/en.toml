@@ -196,6 +196,7 @@
 	LB_CONTACTS = "Contacts"
 	LB_SETTINGS = "Settings"
 	LB_LOGOUT = "Logout"
+	LB_COPYRIGHT = "&#169; Lavaboom 2015"
 
 [MAIN.COMPOSE]
 	LB_TO = "To"
@@ -228,6 +229,7 @@
 	LB_ATTACHMENT_STATUS_UPLOADING = "uploading"
     LB_ATTACHMENT_STATUS_UPLOADING_ERROR = "cannot upload"
     LB_ATTACHMENT_STATUS_UPLOADED = "uploaded"
+    BTN_DELETE = "delete"
 
 [MAIN.SETTINGS.MENU]
 	KEYS = "Keys"
@@ -251,6 +253,30 @@
 	TITLE_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts"
 	LB_KEYBOARD_SHORTCUTS = "Enabled"
 	LB_SECURED_IMAGES = "Don't show external images(security risk)"
+
+[MAIN.SETTINGS.PROFILE]
+	TITLE_NAME = "Name"
+	LB_USERNAME = "Username"
+	LB_FIRST_NAME = "First Name"
+	LB_LAST_NAME = "Last Name"
+	LB_DISPLAY_NAME = "Display Name"
+	TITLE_SIGNATURE = "Signature"
+	LB_SIGNATURE_ENABLED = "Signature Enabled"
+	TITLE_NEWSLETTER = "Newsletter"
+	LB_SEND_ME_NEWS = "Send me News about Lavaboom"
+
+[MAIN.SETTINGS.PLAN]
+	LB_CURRENT = "This is your current plan"
+
+[MAIN.SETTINGS.PLAN.BASIC]
+	TITLE = "Lavaboom (Basic)"
+	LB_TAG = "FREE"
+	LB_ITEMS = "1,000MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+
+[MAIN.SETTINGS.PLAN.TEST]
+	TITLE = "Lavaboom (Test)"
+	LB_TAG = "SECRET"
+	LB_ITEMS = "1,000MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
 
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
