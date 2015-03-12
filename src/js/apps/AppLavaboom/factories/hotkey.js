@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
+module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state, router) => {
     var hotkeyList = ['?'];
     var isActive = true;
 
@@ -46,108 +46,111 @@ module.exports = /*@ngInject*/($translate, hotkeys, $rootScope, $state) => {
         console.log('Hotkeys', 'Removed all hotkeys');
     };
 
+	const notWhenPopupOpened = (callback) => {
+		return (event, key) => {
+			if (!router.isPopupState($state.current.name))
+				return callback(event, key);
+		};
+	};
+
     Hotkey.addGlobalHotkeys = () => {
         Hotkey.addHotkey({
             combo: ['c', 'n'],
             description: 'HOTKEY.COMPOSE_EMAIL',
-            callback: (event, key) => {
+            callback: notWhenPopupOpened((event, key) => {
                 event.preventDefault();
                 $rootScope.showPopup('compose');
-            }
+            })
         });
 
         Hotkey.addHotkey({
             combo: ['ctrl+i', 'command+i'],
             description: 'HOTKEY.GOTO_INBOX',
-            callback: (event, key) => {
+            callback: notWhenPopupOpened((event, key) => {
                 event.preventDefault();
                 $state.go('main.inbox.label', {labelName: 'Inbox'});
-            }
+            })
         });
 
         Hotkey.addHotkey({
             combo: ['ctrl+d', 'command+d'],
             description: 'HOTKEY.GOTO_DRAFTS',
-            callback: (event, key) => {
+            callback: notWhenPopupOpened((event, key) => {
                 event.preventDefault();
                 $state.go('main.inbox.label', {labelName: 'Drafts'});
-            }
+            })
         });
 
         Hotkey.addHotkey({
             combo: ['ctrl+s', 'command+s'],
             description: 'HOTKEY.GOTO_SENT',
-            callback: (event, key) => {
+            callback: notWhenPopupOpened((event, key) => {
                 event.preventDefault();
                 $state.go('main.inbox.label', {labelName: 'Sent'});
-            }
+            })
         });
 
         Hotkey.addHotkey({
             combo: ['ctrl+m', 'command+m'],
             description: 'HOTKEY.GOTO_SPAM',
-            callback: (event, key) => {
+            callback: notWhenPopupOpened((event, key) => {
                 event.preventDefault();
                 $state.go('main.inbox.label', {labelName: 'Spam'});
-            }
+            })
         });
 
         Hotkey.addHotkey({
             combo: ['ctrl+t', 'command+t'],
             description: 'HOTKEY.GOTO_STARRED',
-            callback: (event, key) => {
+            callback: notWhenPopupOpened((event, key) => {
                 event.preventDefault();
                 $state.go('main.inbox.label', {labelName: 'Starred'});
-            }
+            })
         });
 
         Hotkey.addHotkey({
             combo: ['ctrl+h', 'command+h'],
             description: 'HOTKEY.GOTO_TRASH',
-            callback: (event, key) => {
+            callback: notWhenPopupOpened((event, key) => {
                 event.preventDefault();
                 $state.go('main.inbox.label', {labelName: 'Trash'});
-            }
+            })
         });
 
         Hotkey.addHotkey({
             combo: ['ctrl+x', 'command+x'],
             description: 'HOTKEY.GOTO_CONTACTS',
-            callback: (event, key) => {
+            callback: notWhenPopupOpened((event, key) => {
                 event.preventDefault();
                 $state.go('main.contacts');
-            }
+            })
         });
 
         Hotkey.addHotkey({
             combo: ['ctrl+e', 'command+e'],
             description: 'HOTKEY.GOTO_SETTINGS',
-            callback: (event, key) => {
+            callback: notWhenPopupOpened((event, key) => {
                 event.preventDefault();
                 $state.go('main.settings.general');
-            }
+            })
         });
 
         Hotkey.addHotkey({
             combo: '/',
             description: 'HOTKEY.FOCUS_ON_SEARCH',
-            callback: (event, key) => {
-                if($rootScope.isPopupState($state.current.name) === false){
-                    event.preventDefault();
-                    document.getElementById('top-search').focus();
-                }
-            }
+            callback: notWhenPopupOpened((event, key) => {
+				event.preventDefault();
+				document.getElementById('top-search').focus();
+            })
         });
 
         Hotkey.addHotkey({
             combo: 'esc',
             description: 'HOTKEY.LEAVE_FROM_SEARCH',
-            callback: (event, key) => {
-                if($rootScope.isPopupState($state.current.name) === false) {
-                    event.preventDefault();
-                    document.getElementById('top-search').blur();
-                }
-            },
+            callback: notWhenPopupOpened((event, key) => {
+				event.preventDefault();
+				document.getElementById('top-search').blur();
+            }),
             allowIn: ['INPUT']
         });
 
