@@ -1,19 +1,4 @@
-module.exports = /*@ngInject*/($q, $http, $templateCache, $compile) => {
-	const getTemplate = (url) => {
-		let deferred = $q.defer();
-
-		let template = $templateCache.get(url);
-		if (template)
-			deferred.resolve(template);
-		else {
-			$http.get(url)
-				.then(result => deferred.resolve(result.data))
-				.catch(err => deferred.reject(err));
-		}
-
-		return deferred.promise;
-	};
-
+module.exports = /*@ngInject*/($templateCache, $compile) => {
 	return {
 		restrict : 'E',
 		scope: {
@@ -21,9 +6,8 @@ module.exports = /*@ngInject*/($q, $http, $templateCache, $compile) => {
 			email: '='
 		},
 		link  : (scope, el, attrs) => {
-			getTemplate('partials/directives/emailContextMenu.html')
+			$templateCache.fetch('partials/directives/emailContextMenu.html')
 				.then(template => {
-					console.log('got template', template);
 					const compiledTemplate = $compile(template)(scope);
 					el.prepend(compiledTemplate);
 				});
