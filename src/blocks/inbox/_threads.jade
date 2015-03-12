@@ -31,7 +31,7 @@
 						.input-group
 							label.search-icon.input-group-addon(for="top-search")
 								span.icon-search
-							input#top-search.search.form-control(type="text", placeholder="Search Emails", ng-model="searchText")
+							input#top-search.search.form-control(type="text", placeholder="{{'INBOX.PLC_SEARCH' | translate}}", ng-model="searchText")
 	.mail-list-group
 		div.pane-status(ng-show="isLoadingSign")
 			img(src="/img/loader.svg")

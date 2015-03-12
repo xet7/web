@@ -66,6 +66,6 @@ div#compose-wrapper
 						div(ng-bind="attachment.attachment.dateModified | date")
 						br
 						span.text-muted {{attachment.status}}
-						a.btn.btn-block.btn-lg.btn-primary(type="button", ng-click="deleteAttachment(attachment, $index)", ng-autodisable) delete
+						a.btn.btn-block.btn-lg.btn-primary(type="button", ng-click="deleteAttachment(attachment, $index)", ng-autodisable) {{'MAIN.COMPOSE.BTN_DELETE' | translate}}
 		.mask(ng-show="isWarning", ng-click="reject()")
 

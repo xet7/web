@@ -20,5 +20,6 @@ module.exports = {
 	SET_READ_AFTER_TIMEOUT: 3000,
 	KEYS_BACKUP_README: 'https://lavaboom.com/placeholder/help/backup-file',
 	POPUP_AUTO_HIDE_DELAY: 500,
-	ORDERED_LABELS: ['Inbox', 'Sent', 'Starred', 'Drafts', 'Trash', 'Spam']
+	ORDERED_LABELS: ['Inbox', 'Sent', 'Starred', 'Drafts', 'Trash', 'Spam'],
+	PLAN_LIST: ['BASIC', 'TEST']
 };
