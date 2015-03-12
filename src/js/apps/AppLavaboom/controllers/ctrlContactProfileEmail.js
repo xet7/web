@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $interval, $translate, co, consts, inbox, saver) => {
-	let translations = {};
+	const translations = {};
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
 		translations.LB_EMAIL_NOT_FOUND = $translate.instant('MAIN.CONTACTS.LB_EMAIL_NOT_FOUND');

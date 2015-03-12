@@ -1,5 +1,6 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, ContactEmail) => {
 	$scope.contactId = $stateParams.contactId;
+	const email = $stateParams.email;
 
 	const translations = {};
 
@@ -7,8 +8,12 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 		translations.LB_NEW_CONTACT = $translate.instant('MAIN.CONTACTS.LB_NEW_CONTACT');
 	});
 
+	console.log('ctrl contact profile', $scope.contactId);
+
 	if ($scope.contactId == 'new') {
 		$scope.details = contacts.newContact();
+		if (email && !$scope.details.getEmail(email))
+			$scope.details.privateEmails.push(new ContactEmail($scope.details, {name: email}, 'private'));
 	} else {
 		$scope.details = contacts.getContactById($scope.contactId);
 

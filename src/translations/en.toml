@@ -316,3 +316,7 @@
     GOTO_TRASH			 = "Go to Trash"
     GOTO_CONTACTS		 = "Go to Contacts"
     GOTO_SETTINGS		 = "Go to Settings"
+
+[CONTEXT_MENU.EMAIL]
+	LB_ADD_CONTACT = "Add contact"
+	LB_REPLY = "Reply"

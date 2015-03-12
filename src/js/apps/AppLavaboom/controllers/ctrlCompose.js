@@ -224,6 +224,14 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		$scope.isError = false;
 	});
 
+	const newHiddenEmail = email => {
+		return new ContactEmail(null, {
+			name: 'hidden',
+			email,
+			isNew: true
+		}, 'hidden');
+	};
+
 	let emailTransform = email => {
 		if (!email)
 			return null;
@@ -235,15 +243,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				return e;
 		}
 
-		return new ContactEmail(null, {
-			name: 'hidden',
-			email,
-			isNew: true
-		}, 'hidden');
+		return newHiddenEmail(email);
 	};
 
 	$scope.$bind('contacts-changed', () => {
-		let toEmailContact = toEmail ? new Contact({email: toEmail}) : null;
+		let toEmailContact = emailTransform(toEmail);
 
 		let people = [...contacts.people.values()];
 		let map = people.reduce((a, c) => {
@@ -296,7 +300,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			$scope.form = {
 				person: {},
 				selected: {
-					to: [],
+					to: toEmailContact ? [toEmailContact] : [],
 					cc: [],
 					bcc: [],
 					from: contacts.myself
