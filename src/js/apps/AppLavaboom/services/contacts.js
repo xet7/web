@@ -88,7 +88,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 		} else
 			self.myself = null;
 
-		$rootScope.$bind('keyring-updated', () => {
+		self.people = yield self.list();
+
+		$rootScope.$on('keyring-updated', () => {
 			self.people = new Map();
 			co(function *(){
 				self.people = yield self.list();
