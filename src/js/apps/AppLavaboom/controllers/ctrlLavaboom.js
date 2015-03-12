@@ -17,6 +17,8 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 			translationsCh(true);
 	});
 
+	$scope.ddEventFilter = (name, event) => event.target.id.startsWith('taTextElement');
+
 	$scope.initializeApplication = () => co(function *(){
 		try {
 			var connectionPromise = LavaboomAPI.connect();
