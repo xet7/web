@@ -18,5 +18,12 @@ module.exports = /*@ngInject*/($delegate, $rootScope) => {
 		});
 	};
 
+	$delegate.bindAsObject = (translations, prefix = '', map = null) => {
+		$rootScope.$bind('$translateChangeSuccess', () => {
+			const translation = $delegate.instant(Object.keys(translations), prefix);
+			angular.extend(translations, map ? map(translation) : translation);
+		});
+	};
+
 	return $delegate;
 };
