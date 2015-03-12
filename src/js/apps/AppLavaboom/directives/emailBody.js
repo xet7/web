@@ -15,15 +15,25 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, user) => {
 		},
 		link  : (scope, el, attrs) => {
 			$timeout(() => {
+				scope.status = {
+					isDropdownOpened: []
+				};
+
+				scope.switchContextMenu = index => scope.status.isDropdownOpened[index] = !scope.status.isDropdownOpened[index];
+
 				const emailBody = transformEmailBody(scope.emailBody);
 				console.log('email body is: ', scope.emailBody, emailBody);
 
 				const emailBodyHtml = angular.element('<div>' + $sanitize(emailBody) + '</div>');
 
+				let i = 0;
 				angular.forEach(emailBodyHtml.find('a'), e => {
 					e = angular.element(e);
 					if (e.attr('href').startsWith('mailto:')) {
 						e.attr('href', $state.href('.popup.compose', {to: e.attr('href').replace('mailto:', '').trim()}));
+						e.attr('ng-right-click', `switchContextMenu(${i})`);
+						e.wrap(`<email-context-menu is-open="status.isDropdownOpened[${i}]"></email-context-menu>`);
+						i++;
 					} else
 						e.attr('target', '_blank');
 				});
@@ -35,7 +45,9 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, user) => {
 							e.attr('src', '/img/no-image.png');
 					});
 
-				el.append(emailBodyHtml);
+				const emailBodyCompiled = $compile(emailBodyHtml)(scope);
+
+				el.append(emailBodyCompiled);
 			});
 		}
 	};
