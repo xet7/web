@@ -7,7 +7,10 @@ module.exports = /*@ngInject*/($delegate, $q, $http) => {
 			deferred.resolve(template);
 		else {
 			$http.get(url)
-				.then(result => deferred.resolve(result.data))
+				.then(result => {
+					$delegate.put(url, result.data);
+					deferred.resolve(result.data);
+				})
 				.catch(err => deferred.reject(err));
 		}
 
