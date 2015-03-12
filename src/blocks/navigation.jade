@@ -8,7 +8,7 @@ div#left-panel.ng-cloak
 				a(ng-click="showPopup('compose')")
 					span.icon-compose
 					span.action {{'MAIN.NAV.LB_COMPOSE' | translate}}
-			li(ng-class="{ active: $state.includes('main.inbox.label', {labelName: label.name}) }", ng-repeat="(name, label) in labelsByName track by label.id")
+			li(ng-class="{ active: $state.includes('main.inbox.label', {labelName: label.name}) }", ng-repeat="label in labels track by label.id")
 				a(ui-sref="main.inbox.label({labelName: label.name, threadId: getThreadForLabel(label.name)})")
 					span(ng-class="label.iconClass")
 					span.action(ng-bind="label.name")
