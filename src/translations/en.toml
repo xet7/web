@@ -24,6 +24,7 @@
 	LB_SORTED_BY_CREATION_DATE_ASC = "Sorted by creation date +"
 	LB_SORTED_BY_MODIFICATION_DATE_DESC = "Sorted by modification date -"
 	LB_SORTED_BY_MODIFICATION_DATE_ASC = "Sorted by modification date +"
+	PLC_SEARCH = "Search Emails"
 
 [INBOX.DOWNLOAD]
 	TITLE = "Downloading your attachment"
@@ -164,6 +165,7 @@
     INFO5 = "You can back up your keychain anytime in your Settings, or enable Lavaboom Sync to allow us to manage your keys for you."
     BTN_BACKUP_NOW = "Back up my key now"
 	BTN_BACKUP_LATER = "Do it later"
+	LB_PRIVATE_PC = "This is private computer"
 
 [LOGIN.IMPORT_KEY]
 	TITLE = "Please Upload Key"
@@ -180,6 +182,8 @@
 [LOGIN.AUTH]
 	BTN_GO_TO_MY_INBOX = "Go to my Inbox"
 	BTN_NO_ACCOUNT_YET = "No Account Yet? Sign up Here!"
+	LB_KEEP_ME_LOGGED_IN = "Keep me logged in"
+	LB_PRIVATE_PC = "This is private computer"
 
 # Generic error messages for Lavaboom REST API
 [LAVABOOM.API.ERROR]
@@ -253,6 +257,7 @@
 	TITLE_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts"
 	LB_KEYBOARD_SHORTCUTS = "Enabled"
 	LB_SECURED_IMAGES = "Don't show external images(security risk)"
+	PLC_SELECT_LANGUAGE = "Select a language"
 
 [MAIN.SETTINGS.PROFILE]
 	TITLE_NAME = "Name"
