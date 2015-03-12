@@ -1,11 +1,11 @@
 module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, user) => {
-	const emailRegex = /(\S+@[-A-Z0-9_.]*[A-Z0-9])/ig;
-	const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+	const emailRegex = /[^"'](\s*)(\S+@[-A-Z0-9_.]*[A-Z0-9])/ig;
+	const urlRegex = /[^"'](\s*)(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 
 	const transformEmailBody = (emailBody) => {
 		return emailBody
-			.replace(emailRegex, '<a href="mailto:$1">$1</a>')
-			.replace(urlRegex, '<a href="$1">$1</a>');
+			.replace(emailRegex, '$1<a href="mailto:$2">$2</a>')
+			.replace(urlRegex, '$1<a href="$2">$2</a>');
 	};
 
 	return {
