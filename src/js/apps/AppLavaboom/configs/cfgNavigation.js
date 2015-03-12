@@ -59,7 +59,7 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 		},
 
 		'main.contacts.profile': {
-			url: '/profile/:contactId',
+			url: '/profile/:contactId?email',
 			templateUrl: 'partials/contacts/contacts.profile.html',
 			controller: 'CtrlContactProfile'
 		},
