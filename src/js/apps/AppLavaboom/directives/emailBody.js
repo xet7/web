@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, user) => {
+module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateCache, co, user) => {
 	const emailRegex = /[^"'](\s*)(\S+@[-A-Z0-9_.]*[A-Z0-9])/ig;
 	const urlRegex = /[^"'](\s*)(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 
@@ -11,10 +11,13 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, user) => {
 	return {
 		restrict : 'A',
 		scope: {
-			emailBody: '='
+			emailBody: '=',
+			noImageTemplateUrl: '@'
 		},
 		link  : (scope, el, attrs) => {
-			$timeout(() => {
+			co(function *(){
+				const noImageTemplate = yield $templateCache.fetch(scope.noImageTemplateUrl);
+
 				scope.emails = [];
 
 				scope.switchContextMenu = index => scope.emails[index].isDropdownOpened = !scope.emails[index].isDropdownOpened;
@@ -47,7 +50,7 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, user) => {
 					angular.forEach(emailBodyHtml.find('img'), e => {
 						e = angular.element(e);
 						if (!e.attr('src').startsWith('data:'))
-							e.attr('src', '/img/no-image.png');
+							e.replaceWith(noImageTemplate);
 					});
 
 				const emailBodyCompiled = $compile(emailBodyHtml)(scope);
