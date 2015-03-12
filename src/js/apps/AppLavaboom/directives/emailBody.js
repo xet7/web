@@ -1,4 +1,13 @@
 module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, user) => {
+	const emailRegex = /(\S+@\S+)/ig;
+	const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+
+	const transformEmailBody = (emailBody) => {
+		return emailBody
+			.replace(emailRegex, '<a href="mailto:$1">$1</a>')
+			.replace(urlRegex, '<a href="$1">$1</a>');
+	};
+
 	return {
 		restrict : 'A',
 		scope: {
@@ -6,7 +15,10 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, user) => {
 		},
 		link  : (scope, el, attrs) => {
 			$timeout(() => {
-				const emailBodyHtml = angular.element('<div>' + $sanitize(scope.emailBody) + '</div>');
+				const emailBody = transformEmailBody(scope.emailBody);
+				console.log('email body is: ', scope.emailBody, emailBody);
+
+				const emailBodyHtml = angular.element('<div>' + $sanitize(emailBody) + '</div>');
 
 				angular.forEach(emailBodyHtml.find('a'), e => {
 					e = angular.element(e);
