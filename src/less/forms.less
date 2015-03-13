@@ -95,7 +95,10 @@ input[type=checkbox]:checked + label:before {
 // buttons
 .btn{
 	background-image: none !important;
-	bodrer: 0;
+	border: 0;
+	&:hover{
+		.opacity(.9);
+	}
 	&:active{
 		transform: traslateZ (.8rem);
 	}
@@ -103,7 +106,14 @@ input[type=checkbox]:checked + label:before {
 .btn-primary{
 	background: @lava;
 	border-color: transparent;
+	&:hover{
+		background:@lava-light;
+	}
+	&[disabled]{
+		background-color: @lava-gray-light;
+	}
 }
+
 
 input:focus{
 	box-shadow: none;
