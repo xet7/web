@@ -1,9 +1,9 @@
-var Buffer = require('buffer/').Buffer;
+let Buffer = require('buffer/').Buffer;
 
 module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window, $translate, consts, LavaboomAPI, co, crypto, cryptoKeys, loader) {
 	const self = this;
 
-	var translations = {};
+	const translations = {};
 	$rootScope.$bind('$translateChangeSuccess', () => {
 		translations.LB_BYE = $translate.instant('LOADER.LB_BYE');
 	});
@@ -16,16 +16,24 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	this.settings = {};
 	this.defaultSettings = {
 		isShowComposeScreenWarning: true,
-		isHotkeyEnabled: true
+		isHotkeyEnabled: true,
+		isSecuredImages: true
+	};
+
+	const setupSettings = (settings) => {
+		self.settings = angular.extend({},
+			self.defaultSettings,
+			settings ? settings : {}
+		);
 	};
 
 	// primary key
 	this.key = null;
 
-	var token = null;
-	var isAuthenticated = false;
+	let token = null;
+	let isAuthenticated = false;
 
-	var setupUserBasicInformation = (username) => {
+	const setupUserBasicInformation = (username) => {
 		username = self.transformUserName(username);
 
 		self.name = username;
@@ -35,15 +43,15 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		return username;
 	};
 
-	var restoreAuth = () => {
+	const restoreAuth = () => {
 		token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
 
 		if (token)
 			LavaboomAPI.setAuthToken(token);
 	};
 
-	var persistAuth = (isRemember = true) => {
-		var storage = isRemember ? localStorage : sessionStorage;
+	const persistAuth = (isRemember = true) => {
+		let storage = isRemember ? localStorage : sessionStorage;
 		storage.lavaboomToken = token;
 	};
 
@@ -54,16 +62,16 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	this.isAuthenticated = () => token && isAuthenticated;
 
 	this.syncKeys = () => co(function *(){
-		var res = yield LavaboomAPI.keys.list(self.name);
+		let res = yield LavaboomAPI.keys.list(self.name);
 
-		var keysByFingerprint = res.body.keys ? res.body.keys.reduce((a, k) => {
+		let keysByFingerprint = res.body.keys ? res.body.keys.reduce((a, k) => {
 			a[k.id] = k;
 			return a;
 		}, {}) : {};
 
-		var publicKeys = crypto.getAvailablePublicKeysForEmail(self.email);
+		let publicKeys = crypto.getAvailablePublicKeysForEmail(self.email);
 
-		var keysCreationPromises = [];
+		let keysCreationPromises = [];
 
 		publicKeys.forEach(key => {
 			if (!keysByFingerprint[key.primaryKey.fingerprint]) {
@@ -80,9 +88,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	this.authenticate = () => co(function * () {
 		restoreAuth();
 
-		var res = yield LavaboomAPI.accounts.get('me');
+		let res = yield LavaboomAPI.accounts.get('me');
 
-		self.settings = res.body.user.settings ? res.body.user.settings : {};
+		setupSettings(res.body.user.settings);
 		$rootScope.$broadcast('user-settings');
 
 		setupUserBasicInformation(res.body.user.name);
@@ -100,7 +108,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		if (self.settings.isLavaboomSynced)
 			cryptoKeys.importKeys(self.settings.keyring);
 
-		var res = yield LavaboomAPI.keys.get(self.email);
+		let res = yield LavaboomAPI.keys.get(self.email);
 		self.key = res.body.key;
 
 		if (!isAuthenticated) {
@@ -135,7 +143,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 			try {
 				restoreAuth();
 
-				var res = yield LavaboomAPI.tokens.create({
+				let res = yield LavaboomAPI.tokens.create({
 					type: 'auth',
 					username: username,
 					password: self.calculateHash(password)
@@ -163,7 +171,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 				self.key = res.body.key;
 
 				res = yield LavaboomAPI.accounts.get('me');
-				self.settings = res.body.user.settings ? res.body.user.settings : {};
+				setupSettings(res.body.user.settings);
 				setupUserBasicInformation(res.body.user.name);
 
 				if (self.settings.isLavaboomSynced)

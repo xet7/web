@@ -1,6 +1,8 @@
 function AngularApplication (applicationName) {
 	let applicationModule = null;
 
+	const capitalize = (name) => name.substr(0, 1).toUpperCase() + name.substr(1);
+
 	this.create = (productionOnlyDependencies, dependencies) => {
 		applicationModule = angular.module(applicationName, (process.env.IS_PRODUCTION ? productionOnlyDependencies :[]).concat(dependencies));
 	};
@@ -51,8 +53,6 @@ function AngularApplication (applicationName) {
 				applicationModule.service(serviceName, bulks.services[serviceName]);
 			}
 		}
-
-		var capitalize = (name) => name.substr(0, 1).toUpperCase() + name.substr(1);
 
 		if (bulks.factories) {
 			for (let factoryName of Object.keys(bulks.factories)) {

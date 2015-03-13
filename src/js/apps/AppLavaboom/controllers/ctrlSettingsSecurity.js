@@ -64,13 +64,13 @@ module.exports = /*@ngInject*/($scope, $timeout, utils, user, crypto, cryptoKeys
 		inbox.invalidateEmailCache();
 	};
 
-	var updateTimeout = null;
+	let updateTimeout = null;
 	$scope.$watch('settings.isLavaboomSynced', (o, n) => {
 		if (o === n)
 			return;
 
 		if($scope.settings.isLavaboomSynced){
-			var keysBackup = cryptoKeys.exportKeys(user.email);
+			let keysBackup = cryptoKeys.exportKeys(user.email);
 			$scope.settings.keyring = keysBackup;
 		}else{
 			$scope.settings.keyring = '';

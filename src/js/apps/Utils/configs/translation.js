@@ -1,7 +1,7 @@
-var fs = require('fs');
+let fs = require('fs');
 
 module.exports = /*@ngInject*/($translateProvider, consts) => {
-	var setDefaultTranslation = (translation) => {
+	const setDefaultTranslation = (translation) => {
 		return $translateProvider.translations(consts.DEFAULT_LANG, translation);
 	};
 

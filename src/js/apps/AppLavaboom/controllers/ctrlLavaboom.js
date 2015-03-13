@@ -1,8 +1,8 @@
-var chan = require('chan');
+let chan = require('chan');
 
-module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate, LavaboomAPI, co, translate, crypto, user, inbox, contacts, Hotkey, loader) => {
-	var translations = {};
-	var translationsCh = chan();
+module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate, LavaboomAPI, co, translate, crypto, user, inbox, contacts, hotkey, loader) => {
+	const translations = {};
+	const translationsCh = chan();
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
 		translations.LB_INITIALIZING_I18N = $translate.instant('LOADER.LB_INITIALIZING_I18N');
@@ -17,16 +17,18 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 			translationsCh(true);
 	});
 
+	$scope.ddEventFilter = (name, event) => event.target.id.startsWith('taTextElement');
+
 	$scope.initializeApplication = () => co(function *(){
 		try {
-			var connectionPromise = LavaboomAPI.connect();
+			let connectionPromise = LavaboomAPI.connect();
 
 			if (!$rootScope.isInitialized)
 				yield translationsCh;
 
 			loader.incProgress(translations.LB_INITIALIZING_I18N, 1);
 
-			var translateInitialization = translate.initialize();
+			let translateInitialization = translate.initialize();
 
 			loader.incProgress(translations.LB_INITIALIZING_OPENPGP, 1);
 
@@ -45,16 +47,11 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 
 			$rootScope.isInitialized = true;
 
-			Hotkey.toggleHotkeys(user.settings.isHotkeyEnabled);
+			hotkey.initialize(user.settings.isHotkeyEnabled);
 			return {lbDone: translations.LB_SUCCESS};
 		} catch (error) {
 			throw {message: translations.LB_INITIALIZATION_FAILED, error: error};
 		}
-	});
-
-	$rootScope.$on('$stateChangeStart', () => {
-		Hotkey.clearHotkeys();
-		Hotkey.addGlobalHotkeys();
 	});
 
 	$scope.onApplicationReady = () => {

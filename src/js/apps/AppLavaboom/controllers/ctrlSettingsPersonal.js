@@ -7,22 +7,25 @@ module.exports = /*@ngInject*/($scope, $timeout, user) => {
 		$scope.settings = user.settings;
 	});
 
-	var clearTimeout = null;
+	const timeouts = {
+		clear: null,
+		update: null
+	};
+
 	$scope.$watch('status', () => {
 		if ($scope.status) {
-			clearTimeout = $timeout.schedule(clearTimeout, () => {
+			timeouts.clear = $timeout.schedule(timeouts.clear, () => {
 				$scope.status = '';
 			}, 1000);
 		}
 	});
 
-	var updateTimeout = null;
 	$scope.$watch('settings', (o, n) => {
 		if (o === n)
 			return;
 
 		if (Object.keys($scope.settings).length > 0) {
-			updateTimeout = $timeout.schedule(updateTimeout, () => {
+			timeouts.update = $timeout.schedule(timeouts.update, () => {
 				user.update($scope.settings)
 					.then(() => {
 						$scope.status = 'saved!';

@@ -1,9 +1,7 @@
-window.coJS = require('co');
-let AngularApplication = require('../helpers/angularApplication');
+const AngularApplication = require('../helpers/angularApplication');
+const bulkRequire = require('bulk-require');
+const application = new AngularApplication('AppLavaboomLogin');
 
-var bulkRequire = require('bulk-require');
-
-let application = new AngularApplication('AppLavaboomLogin');
 application.create(
 	[
 		'templates'

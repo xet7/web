@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, consts) => {
-	var translations = {};
+	const translations = {};
 
 	$rootScope.$bind('$translateChangeSuccess', () => {
 		translations.LB_NEW = $translate.instant('MAIN.COMPOSE.LB_NEW');
@@ -14,7 +14,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		let self = this;
 
 		let tooltip = '';
-		var label = '';
+		let label = '';
 		let t = null;
 		let isLoadingKey = false;
 		let isLoadedKey = false;

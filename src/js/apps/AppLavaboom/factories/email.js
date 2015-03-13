@@ -1,5 +1,8 @@
 module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
-	let Email = function(opt, manifest) {
+	const reRegex =
+		/([\[\(] *)?(RE?S?|FYI|RIF|I|FS|VB|RV|ENC|ODP|PD|YNT|ILT|SV|VS|VL|AW|WG|ΑΠ|ΣΧΕΤ|ΠΡΘ|תגובה|הועבר|主题|转发|FWD?) *([-:;)\]][ :;\])-]*|$)|\]+ *$/i;
+
+	function Email (opt, manifest) {
 		this.id =  opt.id;
 		this.threadId = opt.thread;
 		this.isEncrypted = opt.isEncrypted;
@@ -18,6 +21,16 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 		this.preview = opt.preview;
 		this.body = opt.body;
 		this.attachments = opt.attachments ? opt.attachments : [];
+	}
+
+	Email.getSubjectWithoutRe = (subject) => subject.replace(reRegex, '');
+
+	Email.isSecuredKeys = (keys) => !Object.keys(keys).some(e => !keys[e]);
+
+	Email.keysMapToList = (keys) => {
+		const publicKeysValues = Object.keys(keys).filter(e => keys[e]).map(e => keys[e]);
+
+		return [...publicKeysValues];
 	};
 
 	Email.toEnvelope = ({body, attachmentIds, threadId}, manifest, keys) => co(function *() {
@@ -29,12 +42,15 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 		if (!threadId)
 			threadId = null;
 
-		let isSecured = !Object.keys(keys).some(e => !keys[e]);
+		let isSecured = Email.isSecuredKeys(keys);
+
+		const subjectHash = openpgp.util.hexstrdump(openpgp.crypto.hash.sha256(Email.getSubjectWithoutRe(manifest.subject)));
 
 		if (isSecured) {
 			keys[user.email] = user.key.key;
-			let publicKeysValues = Object.keys(keys).filter(e => keys[e]).map(e => keys[e]);
-			let publicKeys = [...publicKeysValues];
+			let publicKeys = Email.keysMapToList(keys);
+
+			console.log('Email.toEnvelope keys', keys, publicKeys);
 
 			let manifestString = manifest.stringify();
 
@@ -50,6 +66,7 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 				to: manifest.to,
 				cc: manifest.cc,
 				bcc: manifest.bcc,
+				subject_hash: subjectHash,
 
 				files: attachmentIds,
 				thread: threadId
@@ -64,6 +81,7 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 			cc: manifest.cc,
 			bcc: manifest.bcc,
 			subject: manifest.subject,
+			subject_hash: subjectHash,
 			body: body,
 
 			files: attachmentIds,

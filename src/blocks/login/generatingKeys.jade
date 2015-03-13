@@ -3,7 +3,6 @@ form.ng-cloak(ng-class="{'errors': currentErrorMessage}")
 
 	.progress
 		.progress-bar(role='progressbar', aria-valuenow='{{progress}}', aria-valuemin='0', aria-valuemax='100', style='width: {{progress}}%;')
-			span.sr-only {{progress}}% Complete
 
 	p.lead(ng-bind="label")
 	p.text-center(ng-bind="'LOGIN.GENERATING_KEYS.LB_DO_NOT_CLOSE' | translate")

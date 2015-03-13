@@ -66,7 +66,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	});
 
 	this.getEmailsByThreadId = (threadId) => co(function *() {
-		const emails = (yield LavaboomAPI.emails.list({thread: threadId})).body.emails;
+		const emails = (yield LavaboomAPI.emails.list({thread: threadId, sort: '-date_created'})).body.emails;
 
 		return emails ? yield emails.map(e => Email.fromEnvelope(e)) : [];
 	});
@@ -84,10 +84,13 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	this.getLabels = () => co(function *() {
 		const labels = (yield LavaboomAPI.labels.list()).body.labels;
 
-		const r = labels.reduce((a, label) => {
-			a.byName[label.name] = a.byId[label.id] = new Label(label);
+		const r = labels.reduce((a, labelOpts) => {
+			const label = new Label(labelOpts);
+			a.byName[label.name] = a.byId[label.id] = label;
 			return a;
-		}, {byName: {}, byId: {}});
+		}, {byName: {}, byId: {}, list: []});
+
+		r.list = consts.ORDERED_LABELS.map(labelName => r.byName[labelName]);
 
 		$rootScope.$broadcast('inbox-labels', r);
 
@@ -105,9 +108,12 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 		yield LavaboomAPI.labels.create({name});
 	});
 
-	this.downloadAttachment = (id) => co(function *(){
-		const res =  yield LavaboomAPI.files.get(id);
-		return (yield crypto.decodeEnvelope(res.body.file, '', 'raw')).data;
+	this.downloadAttachment = (email, attachmentId) => co(function *(){
+		const res =  yield LavaboomAPI.files.list({
+			email: email,
+			name: attachmentId + '.pgp'
+		});
+		return (yield crypto.decodeEnvelope(res.body.files[0], '', 'raw')).data;
 	});
 
 	this.uploadAttachment = (envelope) => co(function *(){
@@ -153,10 +159,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 	this.send = (opts, manifest, keys) => co(function * () {
 		sendEnvelope = yield Email.toEnvelope(opts, manifest, keys);
-
-		return {
-			isEncrypted: sendEnvelope.kind == 'manifest'
-		};
 	});
 
 	this.confirmSend = () =>  co(function * () {

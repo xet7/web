@@ -1,11 +1,12 @@
 module.exports = /*@ngInject*/(contacts) => {
 	const hash = (data) => openpgp.util.hexstrdump(openpgp.crypto.hash.sha256(data));
 
-	const ManifestPart = function (manifestPart) {
+	function ManifestPart (manifestPart) {
 		const self = this;
 
 		this.id = manifestPart.id;
 		this.size = manifestPart.size;
+		this.filename = manifestPart.filename;
 		this.hash = manifestPart.hash;
 
 		this.isValid = (body) => body.length == self.size && hash(body) == self.hash;
@@ -21,9 +22,9 @@ module.exports = /*@ngInject*/(contacts) => {
 		}
 
 		this.isHtml = () => self.contentType.includes('/html');
-	};
+	}
 
-	const Manifest = function (manifest) {
+	function Manifest (manifest) {
 		const self = this;
 
 		const formatFrom = (fromAddress) => {
@@ -45,7 +46,7 @@ module.exports = /*@ngInject*/(contacts) => {
 		this.subject = manifest.headers.subject;
 
 		this.getDestinationEmails = () => {
-			let emails = new Set([
+			const emails = new Set([
 				...self.to,
 				...self.cc,
 				...self.bcc
@@ -54,7 +55,7 @@ module.exports = /*@ngInject*/(contacts) => {
 			return [...emails];
 		};
 
-		this.getFileById = (id) => self.parts.find(p => p.id == id);
+		this.getFileById = (id) => manifest.parts.find(p => p.id == id);
 		
 		this.setBody = (data, contentType) => {
 			manifest.parts.push({
@@ -76,8 +77,8 @@ module.exports = /*@ngInject*/(contacts) => {
 				hash: hash(data),
 				filename: fileName,
 				content_type: contentType ? contentType : 'application/octet-stream',
-				charset: 'urf-8',
-				filesize: data.length
+				charset: 'utf-8',
+				size: data.length
 			});
 		};
 
@@ -86,12 +87,12 @@ module.exports = /*@ngInject*/(contacts) => {
 		};
 
 		this.stringify = () => JSON.stringify(manifest);
-	};
+	}
 
 	Manifest.defaultVersion = '1.0.0';
 
 	Manifest.create = ({fromEmail, to, cc, bcc, subject}) => {
-		let manifest = {
+		const manifest = {
 			version: Manifest.defaultVersion,
 			headers: {
 				from: fromEmail,

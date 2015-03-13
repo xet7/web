@@ -1,8 +1,8 @@
 module.exports = /*@ngInject*/function ($rootScope, $state, $modal, $timeout) {
 	const self = this;
 
-	var isInitialized = false;
-	var delayedPopup = null;
+	let isInitialized = false;
+	let delayedPopup = null;
 
 	$rootScope.whenInitialized(() => {
 		isInitialized = true;
@@ -29,11 +29,18 @@ module.exports = /*@ngInject*/function ($rootScope, $state, $modal, $timeout) {
 	};
 
 	this.showPopup = (stateName, params) => {
+		if (self.currentModal) {
+			self.currentModal.close();
+			self.currentModal = null;
+		}
+
 		stateName = `.popup.${stateName}`;
 		if (!params)
 			params = {};
 
-		$state.go(self.getPrimaryStateName($state.current.name) + stateName, params);
+		$timeout(() => {
+			$state.go(self.getPrimaryStateName($state.current.name) + stateName, params);
+		});
 	};
 
 	this.hidePopup = () => {
@@ -41,6 +48,7 @@ module.exports = /*@ngInject*/function ($rootScope, $state, $modal, $timeout) {
 			self.currentModal.close();
 			self.currentModal = null;
 		}
+
 		$timeout(() => {
 			$state.go(self.getPrimaryStateName($state.current.name));
 		});

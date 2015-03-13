@@ -1,11 +1,11 @@
 module.exports = /*@ngInject*/() => {
-	var classes = {
+	const classes = {
 		'Drafts': 'draft',
 		'Spam': 'ban',
 		'Starred': 'star'
 	};
 
-	var Label = function(opt) {
+	function Label (opt) {
 		const self = this;
 
 		this.id = opt.id;
@@ -17,9 +17,9 @@ module.exports = /*@ngInject*/() => {
 
 		this.iconClass = `icon-${classes[this.name] ? classes[this.name] : this.name.toLowerCase()}`;
 
-		var unreadFromServer = opt.unread_threads_count;
-		var unreadThreads = {};
-		var readThreads = {};
+		const unreadFromServer = opt.unread_threads_count;
+		const unreadThreads = {};
+		const readThreads = {};
 
 		this.threadsUnread = unreadFromServer;
 
@@ -30,7 +30,7 @@ module.exports = /*@ngInject*/() => {
 			unreadThreads[tid] = true;
 			self.threadsUnread = unreadFromServer + Object.keys(unreadThreads).length - Object.keys(readThreads).length;
 		};
-	};
+	}
 
 	return Label;
 };

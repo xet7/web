@@ -6,7 +6,7 @@ module.exports = /*@ngInject*/($scope, $state, $window, user, signUp, crypto, cr
 		isPrivateComputer: false
 	};
 
-	var navigateMainApplication = () => {
+	const navigateMainApplication = () => {
 		user.update({state: 'ok'});
 
 		crypto.options.isPrivateComputer = $scope.form.isPrivateComputer;
