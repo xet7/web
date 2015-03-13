@@ -3,7 +3,7 @@ module.exports = /*@ngInject*/($delegate, $q, $rootScope) => {
 	$delegate.instant = (name, prefix = '') => {
 		if (angular.isArray(name))
 			return name.reduce((a, c) => {
-				const name = prefix ? prefix + '.' + c : c;
+				const name = prefix && !c.includes('.') ? prefix + '.' + c : c;
 
 				a[name.split('.').slice(-1)[0]] = instant(name);
 				return a;
