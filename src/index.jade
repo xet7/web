@@ -26,6 +26,10 @@ html(lang="en")
 		meta(name="msapplication-TileColor", content="#000000")
 		meta(name="msapplication-TileImage", content="#{resolveAsset('/img/assets/mstile-144x144.png')}")
 		meta(name="msapplication-config", content="#{resolveAsset('/img/assets/browserconfig.xml')}")
+		script(src="//cdn.ravenjs.com/1.1.15/jquery,native/raven.min.js")
+		script.
+			Raven.config('https://4ecdcebcd998497e86011e3daad1183a@app.getsentry.com/39552', {
+			}).install();
 	body
 		#loader-container
 			.login-app.login
