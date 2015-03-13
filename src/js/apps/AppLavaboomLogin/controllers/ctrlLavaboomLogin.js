@@ -1,6 +1,4 @@
-let chan = require('chan');
-
-module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, LavaboomAPI, translate, co, crypto, loader, user) => {
+module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, LavaboomAPI, translate, co, crypto, loader, user, signUp) => {
 	const translations = {
 		LB_INITIALIZING_I18N: '',
 		LB_INITIALIZING_OPENPGP: '',
@@ -34,16 +32,11 @@ module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, Lavab
 				console.log('opts', opts);
 				if (opts) {
 
-					if (opts.state) {
+					signUp.isPartiallyFlow = !!opts.state;
+					if (signUp.isPartiallyFlow) {
 						yield user.authenticate();
 
-						if (opts.state == 'generateKeys') {
-							yield $state.go('generateKeys');
-						} else if (opts.state == 'lavaboomSync') {
-							yield $state.go('lavaboomSync');
-						} else if (opts.state == 'backupKeys') {
-							yield $state.go('backupKeys');
-						}
+						yield $state.go(opts.state);
 					}
 				}
 				return {lbDone: translations.LB_SUCCESS};

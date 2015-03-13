@@ -170,6 +170,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		return co(function *(){
 			let freshKeys = yield openpgp.generateKeyPair({numBits: numBits, userId: nameEmail, passphrase: password});
 
+			console.log('keys generated', freshKeys);
+
 			keyring.publicKeys.importKey(freshKeys.publicKeyArmored);
 			keyring.privateKeys.importKey(freshKeys.privateKeyArmored);
 			keyring.store();
