@@ -6,6 +6,7 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
 	this.tokenSignup = null;
 	this.details = null;
 	this.password = null;
+	this.isPartiallyFlow = false;
 
 	this.register = (username, altEmail) => {
 		let transformedUsername = user.transformUserName(username);
