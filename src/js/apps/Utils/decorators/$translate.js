@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($delegate, $rootScope) => {
+module.exports = /*@ngInject*/($delegate, $q, $rootScope) => {
 	const instant = $delegate.instant;
 	$delegate.instant = (name, prefix = '') => {
 		if (angular.isArray(name))
@@ -13,16 +13,37 @@ module.exports = /*@ngInject*/($delegate, $rootScope) => {
 	};
 
 	$delegate.bind = (translations, names, prefix = '') => {
+		let deferred = $q.defer();
+
 		$rootScope.$bind('$translateChangeSuccess', () => {
-			angular.extend(translations, $delegate.instant(names, prefix));
+			try {
+				const translation = $delegate.instant(names, prefix);
+				angular.extend(translations, translation);
+
+				deferred.resolve(translations);
+			} catch (err) {
+				deferred.reject(err);
+			}
 		});
+
+		return deferred.promise;
 	};
 
 	$delegate.bindAsObject = (translations, prefix = '', map = null) => {
+		let deferred = $q.defer();
+
 		$rootScope.$bind('$translateChangeSuccess', () => {
-			const translation = $delegate.instant(Object.keys(translations), prefix);
-			angular.extend(translations, map ? map(translation) : translation);
+			try {
+				const translation = $delegate.instant(Object.keys(translations), prefix);
+				angular.extend(translations, map ? map(translation) : translation);
+
+				deferred.resolve(translations);
+			} catch (err) {
+				deferred.reject(err);
+			}
 		});
+
+		return deferred.promise;
 	};
 
 	return $delegate;
