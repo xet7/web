@@ -23,18 +23,18 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	$scope.sortedLabel = '';
 	$scope.sortQuery = inbox.sortQuery;
 
-	const translations = {};
+	const translations = {
+		LB_SORT_BY_CREATION_DATE_DESC : '',
+		LB_SORT_BY_CREATION_DATE_ASC : '',
+		LB_SORT_BY_MODIFICATION_DATE_DESC : '',
+		LB_SORT_BY_MODIFICATION_DATE_ASC : '',
+		LB_SORTED_BY_CREATION_DATE_DESC : '',
+		LB_SORTED_BY_CREATION_DATE_ASC : '',
+		LB_SORTED_BY_MODIFICATION_DATE_DESC : '',
+		LB_SORTED_BY_MODIFICATION_DATE_ASC : ''
+	};
 
-	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_SORT_BY_CREATION_DATE_DESC = $translate.instant('INBOX.LB_SORT_BY_CREATION_DATE_DESC');
-		translations.LB_SORT_BY_CREATION_DATE_ASC = $translate.instant('INBOX.LB_SORT_BY_CREATION_DATE_ASC');
-		translations.LB_SORT_BY_MODIFICATION_DATE_DESC = $translate.instant('INBOX.LB_SORT_BY_MODIFICATION_DATE_DESC');
-		translations.LB_SORT_BY_MODIFICATION_DATE_ASC = $translate.instant('INBOX.LB_SORT_BY_MODIFICATION_DATE_ASC');
-		translations.LB_SORTED_BY_CREATION_DATE_DESC = $translate.instant('INBOX.LB_SORTED_BY_CREATION_DATE_DESC');
-		translations.LB_SORTED_BY_CREATION_DATE_ASC = $translate.instant('INBOX.LB_SORTED_BY_CREATION_DATE_ASC');
-		translations.LB_SORTED_BY_MODIFICATION_DATE_DESC = $translate.instant('INBOX.LB_SORTED_BY_MODIFICATION_DATE_DESC');
-		translations.LB_SORTED_BY_MODIFICATION_DATE_ASC = $translate.instant('INBOX.LB_SORTED_BY_MODIFICATION_DATE_ASC');
-
+	$translate.bindAsObject(translations, 'INBOX', null, () => {
 		$scope.sorts = [
 			{
 				query: '-date_created',

@@ -1,13 +1,13 @@
 module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, consts) => {
-	const translations = {};
+	const translations = {
+		LB_NEW : '',
+		LB_PRIVATE : '',
+		LB_BUSINESS : '',
+		LB_HIDDEN : '',
+		'MAIN.CONTACTS.LB_EMAIL_NOT_FOUND' : ''
+	};
 
-	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_NEW = $translate.instant('MAIN.COMPOSE.LB_NEW');
-		translations.LB_PRIVATE = $translate.instant('MAIN.COMPOSE.LB_PRIVATE');
-		translations.LB_BUSINESS = $translate.instant('MAIN.COMPOSE.LB_BUSINESS');
-		translations.LB_HIDDEN = $translate.instant('MAIN.COMPOSE.LB_HIDDEN');
-		translations.LB_EMAIL_NOT_FOUND = $translate.instant('MAIN.CONTACTS.LB_EMAIL_NOT_FOUND');
-	});
+	$translate.bindAsObject(translations, 'MAIN.COMPOSE');
 
 	function ContactEmail (contact, opts, kind) {
 		let inbox = $injector.get('inbox');
@@ -34,7 +34,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 
 				tooltip = '';
 			} catch (err) {
-				tooltip = translations.LB_EMAIL_NOT_FOUND;
+				tooltip = translations['MAIN.CONTACTS.LB_EMAIL_NOT_FOUND'];
 				self.key = null;
 				throw err;
 			} finally {

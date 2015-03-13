@@ -3,10 +3,10 @@ let Buffer = require('buffer/').Buffer;
 module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window, $translate, consts, LavaboomAPI, co, crypto, cryptoKeys, loader) {
 	const self = this;
 
-	const translations = {};
-	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_BYE = $translate.instant('LOADER.LB_BYE');
-	});
+	const translations = {
+		LB_BYE: ''
+	};
+	$translate.bindAsObject(translations, 'LOADER');
 
 	this.name = '';
 	this.email = '';

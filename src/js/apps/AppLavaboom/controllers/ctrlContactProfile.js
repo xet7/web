@@ -2,11 +2,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 	$scope.contactId = $stateParams.contactId;
 	const email = $stateParams.email;
 
-	const translations = {};
-
-	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_NEW_CONTACT = $translate.instant('MAIN.CONTACTS.LB_NEW_CONTACT');
-	});
+	const translations = {
+		LB_NEW_CONTACT: ''
+	};
+	$translate.bindAsObject(translations, 'MAIN.CONTACTS');
 
 	console.log('ctrl contact profile', $scope.contactId);
 

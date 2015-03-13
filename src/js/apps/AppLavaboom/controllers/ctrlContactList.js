@@ -2,12 +2,12 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 	$scope.selectedContactId = null;
 	$scope.searchText = '';
 
-	let translations = {};
+	const translations = {
+		LB_NEW_CONTACT_SHORT: '',
+		LB_EMPTY_CONTACT_SHORT: ''
+	};
 
-	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_NEW_CONTACT_SHORT = $translate.instant('MAIN.CONTACTS.LB_NEW_CONTACT');
-		translations.LB_EMPTY_CONTACT_SHORT = $translate.instant('MAIN.CONTACTS.LB_EMPTY_CONTACT');
-	});
+	$translate.bindAsObject(translations, 'MAIN.CONTACTS');
 
 	const findContact = (cid) => {
 		let letterIndex = 0;

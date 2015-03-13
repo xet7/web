@@ -2,22 +2,23 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $interval, $tim
 	let [emailId, fileId] = [$stateParams.emailId, $stateParams.fileId];
 
 	let timePassed = 0;
-	const translations = {};
+	// TODO: implement proper estimation
+	let estimatedTime = 1000 * 3;
 
 	$scope.progress = 0;
 	$scope.label = '';
 
-	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_ACQUIRING = $translate.instant('INBOX.DOWNLOAD.LB_ACQUIRING');
-		translations.LB_DOWNLOADING = $translate.instant('INBOX.DOWNLOAD.LB_DOWNLOADING');
-		translations.LB_DECRYPTING = $translate.instant('INBOX.DOWNLOAD.LB_DECRYPTING');
-		translations.LB_TAKES_MORE = $translate.instant('INBOX.DOWNLOAD.LB_TAKES_MORE');
-		translations.LB_COMPLETED = $translate.instant('INBOX.DOWNLOAD.LB_COMPLETED');
+	const translations = {
+		LB_ACQUIRING : '',
+		LB_DOWNLOADING : '',
+		LB_DECRYPTING : '',
+		LB_TAKES_MORE : '',
+		LB_COMPLETED : ''
+	};
+
+	$translate.bindAsObject(translations, 'INBOX.DOWNLOAD', null, () => {
 		$scope.label = translations.LB_ACQUIRING;
 	});
-
-	// TODO: implement proper estimation
-	let estimatedTime = 1000 * 3;
 
 	console.log('downloading file. Email id', emailId, 'file id', fileId);
 

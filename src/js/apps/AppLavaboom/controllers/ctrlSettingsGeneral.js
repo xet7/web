@@ -12,15 +12,15 @@ module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeo
         $scope.settings = user.settings;
     });
 
-	const translations = {};
+	const translations = {
+		'GLOBAL.LB_NOT_IMPLEMENTED': '',
+		LB_SORT_BY_DISPLAY_NAME : '',
+		LB_SORT_BY_FIRST_NAME : '',
+		LB_SORT_BY_LAST_NAME : ''
+	};
 
-	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_NOT_IMPLEMENTED = $translate.instant('GLOBAL.LB_NOT_IMPLEMENTED');
-		translations.LB_SORT_BY_DISPLAY_NAME = $translate.instant('MAIN.SETTINGS.GENERAL.LB_SORT_BY_DISPLAY_NAME');
-		translations.LB_SORT_BY_FIRST_NAME = $translate.instant('MAIN.SETTINGS.GENERAL.LB_SORT_BY_FIRST_NAME');
-		translations.LB_SORT_BY_LAST_NAME = $translate.instant('MAIN.SETTINGS.GENERAL.LB_SORT_BY_LAST_NAME');
-
-		$scope.notImplemented = [{name: translations.LB_NOT_IMPLEMENTED}];
+	$translate.bindAsObject(translations, 'MAIN.SETTINGS.GENERAL', null, () => {
+		$scope.notImplemented = [{name: translations['GLOBAL.LB_NOT_IMPLEMENTED']}];
 		$scope.sortBy = [
 			{name: translations.LB_SORT_BY_DISPLAY_NAME},
 			{name: translations.LB_SORT_BY_FIRST_NAME},

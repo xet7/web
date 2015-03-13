@@ -3,17 +3,18 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $interval, $timeout, 
 		$state.go('login');
 
 	let timePassed = 0;
-	const translations = {};
-
 	$scope.progress = 0;
 	$scope.label = '';
 
-	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_GENERATING = $translate.instant('LOGIN.GENERATING_KEYS.LB_GENERATING');
-		translations.LB_READY = $translate.instant('LOGIN.GENERATING_KEYS.LB_READY');
-		translations.LB_REACHED = $translate.instant('LOGIN.GENERATING_KEYS.LB_REACHED');
-		translations.LB_ERROR = $translate.instant('LOGIN.GENERATING_KEYS.LB_ERROR');
-		translations.LB_UPLOADING = $translate.instant('LOGIN.GENERATING_KEYS.LB_UPLOADING');
+	const translations = {
+		LB_GENERATING : '',
+		LB_READY : '',
+		LB_REACHED : '',
+		LB_ERROR : '',
+		LB_UPLOADING : ''
+	};
+
+	$translate.bindAsObject(translations, 'LOGIN.GENERATING_KEYS', null, () => {
 		$scope.label = translations.LB_GENERATING;
 	});
 

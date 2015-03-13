@@ -29,13 +29,16 @@ module.exports = /*@ngInject*/($delegate, $q, $rootScope) => {
 		return deferred.promise;
 	};
 
-	$delegate.bindAsObject = (translations, prefix = '', map = null) => {
+	$delegate.bindAsObject = (translations, prefix = '', map = null, postProcess = null) => {
 		let deferred = $q.defer();
 
 		$rootScope.$bind('$translateChangeSuccess', () => {
 			try {
 				const translation = $delegate.instant(Object.keys(translations), prefix);
 				angular.extend(translations, map ? map(translation) : translation);
+
+				if (postProcess)
+					postProcess();
 
 				deferred.resolve(translations);
 			} catch (err) {

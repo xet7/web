@@ -1,12 +1,4 @@
-module.exports = /*@ngInject*/($injector, $rootScope, $translate, co, user, utils, crypto, Manifest) => {
-	const translations = {};
-
-	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_AND_ONE_OTHER = $translate.instant('LOADER.LB_AND_ONE_OTHER');
-		translations.LB_AND_TWO_OTHERS = $translate.instant('LOADER.LB_AND_TWO_OTHERS');
-		translations.LB_AND_OTHERS = $translate.instant('LOADER.LB_AND_OTHERS');
-	});
-
+module.exports = /*@ngInject*/($injector, co, utils, crypto, Manifest) => {
 	function Thread(opt, manifest, labels) {
 		const self = this;
 

@@ -1,11 +1,11 @@
 module.exports = /*@ngInject*/($rootScope, $translate, contacts) => {
-	const translations = {};
+	const translations = {
+		LB_AND_ONE_OTHER : '',
+		LB_AND_TWO_OTHERS : '',
+		LB_AND_OTHERS : ''
+	};
 
-	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_AND_ONE_OTHER = $translate.instant('INBOX.LB_AND_ONE_OTHER');
-		translations.LB_AND_TWO_OTHERS = $translate.instant('INBOX.LB_AND_TWO_OTHERS');
-		translations.LB_AND_OTHERS = $translate.instant('INBOX.LB_AND_OTHERS');
-	});
+	$translate.bindAsObject(translations, 'INBOX');
 
 	return (membersList) => {
 		let members = membersList
