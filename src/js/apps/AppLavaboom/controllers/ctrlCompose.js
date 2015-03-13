@@ -13,7 +13,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.isWarning = false;
 	$scope.isError = false;
 	$scope.isXCC = false;
-	$scope.isShowWarning = false;
+	$scope.isSkipWarning = user.settings.isSkipComposeScreenWarning;
 	$scope.attachments = [];
 
 	const hiddenContacts = {};
@@ -121,15 +121,15 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		}
 	});
 
-	$scope.$watch('isShowWarning', (o, n) => {
+	$scope.$watch('isSkipWarning', (o, n) => {
 		if (o == n)
 			return;
 
-		user.update({isShowComposeScreenWarning: $scope.isShowWarning});
+		user.update({isSkipComposeScreenWarning: $scope.isSkipWarning});
 	});
 
-	$scope.toggleIsShowWarning = (event) => {
-		$scope.isShowWarning = !$scope.isShowWarning;
+	$scope.toggleIsSkipWarning = (event) => {
+		$scope.isSkipWarning = !$scope.isSkipWarning;
 	};
 
 	$scope.isValid = () => $scope.__form.$valid &&
@@ -179,7 +179,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 			console.log('compose send status', sendStatus);
 
-			if (isSecured) {
+			if (isSecured || $scope.isSkipWarning) {
 				yield $scope.confirm();
 			} else {
 				$scope.isWarning = true;
