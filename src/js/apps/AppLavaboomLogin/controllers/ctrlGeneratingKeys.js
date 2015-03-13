@@ -46,7 +46,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $interval, $timeout, 
 			$scope.label = translations.LB_READY;
 
 			$timeout(() => {
-				$state.go('lavaboomSync');
+				if (signUp.isPartiallyFlow)
+					$state.go('backupKeys');
+				else
+					$state.go('lavaboomSync');
 			}, consts.LAVABOOM_SYNC_REDIRECT_DELAY);
 		} catch (err) {
 			console.log('login app: keys generation error', err);
