@@ -50,6 +50,12 @@ module.exports = /*@ngInject*/($scope, $timeout, utils, user, crypto, cryptoKeys
 			});
 	};
 
+	$scope.generateKeys = () => {
+		loader.resetProgress();
+		loader.showLoader(true);
+		loader.loadLoginApplication({state: 'generateKeys', noDelay: true});
+	};
+
 	$scope.removeDecryptedKeys = () => {
 		crypto.removeSensitiveKeys(true);
 	};

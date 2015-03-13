@@ -302,6 +302,7 @@
 	BTN_IMPORT_KEYS = "Import keys"
 	LB_DECRYPTED = "Decrypted"
 	LAVABOOM_SYNC = "Lavaboom Sync"
+	BTN_GENERATE_KEYS = "Generate new key-pair"
 
 [MAIN.CONTACTS]
 	PLC_SEARCH_CONTACTS = "Search Contacts"
