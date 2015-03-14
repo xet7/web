@@ -100,9 +100,9 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 
 			let domain = self.email.split('@')[1];
 			if (domain)
-				domain = domain.trim();
+				domain = domain.trim().toLowerCase();
 
-			if (domain == consts.ROOT_DOMAIN) {
+			if (consts.ROOT_DOMAIN_LIST.includes(domain)) {
 				isLoadingKey = true;
 
 				let promise;
