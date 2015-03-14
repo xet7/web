@@ -1,6 +1,4 @@
-let Buffer = require('buffer/').Buffer;
-
-module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window, $translate, consts, LavaboomAPI, co, crypto, cryptoKeys, loader) {
+module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window, $translate, consts, LavaboomAPI, co, crypto, cryptoKeys, loader, utils) {
 	const self = this;
 
 	const translations = {
@@ -57,7 +55,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 	this.transformUserName = (username) => username.split('.').join('').toLowerCase();
 
-	this.calculateHash = (password) => (new Buffer(openpgp.crypto.hash.sha256(password), 'binary')).toString('hex');
+	this.calculateHash = (password) => utils.hexify(openpgp.crypto.hash.sha256(password));
 
 	this.isAuthenticated = () => token && isAuthenticated;
 
