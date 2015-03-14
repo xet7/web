@@ -75,6 +75,7 @@ module.exports = /*@ngInject*/($scope, $timeout, co, utils, user, crypto, crypto
 
 		if (Object.keys($scope.settings).length > 0) {
 			updateTimeout = $timeout.schedule(updateTimeout, () => {
+				// todo: handle errors
 				user.update($scope.settings)
 					.then(() => {
 
