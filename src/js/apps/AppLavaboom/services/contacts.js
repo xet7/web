@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, LavaboomAPI, Contact) {
+module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, utils, LavaboomAPI, Contact) {
 	const self = this;
 	let emptyContact = null;
 
@@ -49,8 +49,18 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 		}
 
 		contact.id = r.body.contact.id;
-
 		self.people.set(contact.id, contact);
+
+		// todo: finish hidden contacts deletion
+		const emails = utils.uniq([...contact.privateEmails.map(e => e.email), ...contact.businessEmails.map(e => e.email)]);
+		for(let e of emails) {
+			const c = self.getContactByEmail(e);
+			if (c.isPrivate()) {
+				yield self.deleteContact(c.id);
+
+				break;
+			}
+		}
 
 		$rootScope.$broadcast('contacts-changed');
 
