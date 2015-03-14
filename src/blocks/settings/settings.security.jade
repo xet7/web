@@ -15,7 +15,7 @@
 						label {{'MAIN.SETTINGS.SECURITY.LB_CONFIRM_PASSWORD' | translate}}
 						input.form-control(type='password', ng-model="form.passwordRepeat", required, match="form.password")
 					.text-control.btn-control
-						.btn.btn-block.btn-primary(ng-disabled="updatePass.$invalid || isProcessing", ng-click="changePassword()") {{'MAIN.SETTINGS.SECURITY.BTN_CONFIRM' | translate}}
+						button.btn.btn-block.btn-primary(type="button", ng-disabled="updatePass.$invalid", ng-click="changePassword()", ng-autodisable) {{'MAIN.SETTINGS.SECURITY.BTN_CONFIRM' | translate}}
 				//li.list-group-item
 					.text-control
 						label Passphrase

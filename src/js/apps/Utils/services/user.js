@@ -124,6 +124,13 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		});
 	};
 
+	this.updatePassword = (oldPassword, newPassword) => co(function *(){
+		yield LavaboomAPI.accounts.update('me', {
+			current_password: self.calculateHash(oldPassword),
+			new_password: self.calculateHash(newPassword)
+		});
+	});
+
 	this.updateKey = (fingerprint) => co(function * () {
 		return yield LavaboomAPI.accounts.update('me', {
 			public_key: fingerprint
@@ -158,7 +165,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 					return;
 				}
 
-				// what, why?
+				// todo: probably we don't need this
 				try {
 					res = yield LavaboomAPI.keys.get(self.email);
 				} catch (err) {
