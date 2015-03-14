@@ -44,7 +44,7 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 		})
 
 		.state('verifyInvite', {
-			url: '/verifyInvite',
+			url: '/verifyInvite/{userName}/{inviteCode}',
 			templateUrl: 'partials/login/verifyInvite.html',
 			controller:'CtrlVerify'
 		})
