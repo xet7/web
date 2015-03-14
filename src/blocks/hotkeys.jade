@@ -1,8 +1,9 @@
-.cfp-hotkeys-container.fade(ng-class='{"in": helpVisible}', style='display: none;')
+.cfp-hotkeys-container.fade(ng-class='{"in": helpVisible}')
 	.cfp-hotkeys
 		h4.cfp-hotkeys-title {{ title }}
-		dl(ng-repeat='hotkey in hotkeys')
-			dt.cfp-hotkeys-keys
+		.key-row(ng-repeat='hotkey in hotkeys')
+			.cfp-hotkeys-keys
 				span.cfp-hotkeys-key.label.label-default(ng-repeat='key in hotkey.combo track by $index') {{ key }}
-			dd.cfp-hotkeys-text {{ hotkey.description }}
-		.cfp-hotkeys-close(ng-click='toggleCheatSheet()') ×
+			.cfp-hotkeys-text {{ hotkey.description }}
+		.cfp-hotkeys-close(ng-click='toggleCheatSheet()')
+			span.icon-close

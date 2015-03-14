@@ -1,8 +1,11 @@
-module.exports = /*@ngInject*/($scope, $state, co, user, signUp) => {
+module.exports = /*@ngInject*/($scope, $state, $stateParams, co, user, signUp) => {
+	const userName = $stateParams.userName;
+	const inviteCode = $stateParams.inviteCode;
+
 	$scope.isUsernameDefined = signUp.reserve ? true : false;
 	$scope.form = {
-		username: signUp.reserve ? signUp.reserve.originalUsername : '',
-		token: '',
+		username: userName ? userName : (signUp.reserve ? signUp.reserve.originalUsername : ''),
+		token: inviteCode ? inviteCode : '',
 		isNews: true
 	};
 

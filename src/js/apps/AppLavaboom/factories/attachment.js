@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/(co, user, crypto, utils, fileReader, Email) => {
-	var Attachment = function(file) {
+	function Attachment(file) {
 		const self = this;
 
 		angular.extend(this, {
@@ -15,7 +15,7 @@ module.exports = /*@ngInject*/(co, user, crypto, utils, fileReader, Email) => {
 			self.body = yield fileReader.readAsText(file);
 			self.size = self.body ? self.body.length : 0;
 		});
-	};
+	}
 
 	Attachment.toEnvelope = (attachment, keys) => co(function *() {
 		const isSecured = Email.isSecuredKeys(keys);
@@ -33,7 +33,7 @@ module.exports = /*@ngInject*/(co, user, crypto, utils, fileReader, Email) => {
 	});
 
 	Attachment.fromEnvelope = (envelope) => co(function *() {
-		var data = yield crypto.decodeEnvelope(envelope, 'data');
+		const data = yield crypto.decodeEnvelope(envelope, 'data');
 
 		switch (data.majorVersion) {
 			default:

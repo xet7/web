@@ -11,9 +11,10 @@ module.exports = function () {
 
 	// default index redirect
 	app.use(function (req, res, next) {
-		console.log('serve', req.url);
 		if (req.url == '/')
 			req.url = '/index.html';
+
+		console.log('serve', req.url);
 		next();
 	});
 
@@ -23,7 +24,19 @@ module.exports = function () {
 	}));
 
 	// serve content, search for pre-compiled gzip with gracefully fallback to plaintext
+	['css', 'img', 'js', 'partials', 'translations', 'vendor'].forEach(function (folder) {
+		app.use(staticGzip(paths.output + '/' + folder));
+	});
+
+	// server index
 	app.use(staticGzip(paths.output));
+
+	// html5 support
+	app.all('/*', function(req, res, next) {
+		req.url = '/index.html';
+
+		staticGzip(paths.output)(req, res, next);
+	});
 
 	// woa!
 	var server = http.Server(app);

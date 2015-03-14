@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $timeout, utils, user, crypto, cryptoKeys, LavaboomAPI, fileReader, inbox, saver) => {
+module.exports = /*@ngInject*/($scope, $timeout, co, utils, user, crypto, cryptoKeys, LavaboomAPI, fileReader, inbox, saver) => {
 	$scope.email = user.email;
 	$scope.settings = {};
 
@@ -30,24 +30,21 @@ module.exports = /*@ngInject*/($scope, $timeout, utils, user, crypto, cryptoKeys
 		$scope.isAnyUndecryptedKeys = $scope.keys.some(k => !k.isDecrypted);
 	});
 
-	$scope.isProcessing = false;
 	$scope.passwordUpdateStatus = '';
 
-	$scope.changePassword = () => {
-		$scope.isProcessing = true;
-		LavaboomAPI.accounts.update('me', {
-			current_password: user.calculateHash($scope.form.oldPassword),
-			new_password: user.calculateHash($scope.form.password)
-		})
-			.then(() => {
-				$scope.passwordUpdateStatus = 'saved!';
-			})
-			.catch(err => {
-				$scope.passwordUpdateStatus = err.message;
-			})
-			.finally(() => {
-				$scope.isProcessing = false;
-			});
+	$scope.changePassword = () => co(function *(){
+		try {
+			yield user.updatePassword($scope.form.oldPassword, $scope.form.password);
+			$scope.passwordUpdateStatus = 'saved!';
+		} catch (err) {
+			$scope.passwordUpdateStatus = err.message;
+		}
+	});
+
+	$scope.generateKeys = () => {
+		loader.resetProgress();
+		loader.showLoader(true);
+		loader.loadLoginApplication({state: 'choosePasswordIntro', noDelay: true});
 	};
 
 	$scope.removeDecryptedKeys = () => {
@@ -64,13 +61,13 @@ module.exports = /*@ngInject*/($scope, $timeout, utils, user, crypto, cryptoKeys
 		inbox.invalidateEmailCache();
 	};
 
-	var updateTimeout = null;
+	let updateTimeout = null;
 	$scope.$watch('settings.isLavaboomSynced', (o, n) => {
 		if (o === n)
 			return;
 
 		if($scope.settings.isLavaboomSynced){
-			var keysBackup = cryptoKeys.exportKeys(user.email);
+			let keysBackup = cryptoKeys.exportKeys(user.email);
 			$scope.settings.keyring = keysBackup;
 		}else{
 			$scope.settings.keyring = '';

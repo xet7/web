@@ -8,7 +8,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 	$scope.emails = [];
 
 	if ($scope.selectedTid) {
-		var t = $timeout(() => {
+		let t = $timeout(() => {
 			$scope.isLoading = true;
 		}, consts.LOADER_SHOW_DELAY);
 
@@ -45,6 +45,20 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 	}
 
 	let emails = null;
+
+	$rootScope.$on('inbox-emails', (e, threadId) => {
+		if (threadId != $scope.selectedTid)
+			return;
+
+		co(function *() {
+			$scope.isLoading = true;
+			try {
+				$scope.emails = yield inbox.getEmailsByThreadId(threadId);
+			} finally {
+				$scope.isLoading = false;
+			}
+		});
+	});
 
 	$rootScope.$on('emails-list-hide', () => {
 		emails = $scope.emails;

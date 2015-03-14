@@ -5,8 +5,8 @@ module.exports = /*@ngInject*/($compile, fileReader) => {
 			openFile: '&',
 			openError: '&'
 		},
-		link  : function(scope, el, attrs) {
-			var buttonEl = angular.element('<input class="hidden" type="file" file-select get-file="getFile(file)"/>');
+		link  : (scope, el, attrs) => {
+			const buttonEl = angular.element('<input class="hidden" type="file" file-select get-file="getFile(file)"/>');
 			$compile(buttonEl)(scope);
 
 			el.bind('click', () => buttonEl[0].click());

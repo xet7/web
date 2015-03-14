@@ -1,29 +1,23 @@
-var chan = require('chan');
+module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, LavaboomAPI, translate, co, crypto, loader, user, signUp) => {
+	const translations = {
+		LB_INITIALIZING_I18N: '',
+		LB_INITIALIZING_OPENPGP: '',
+		LB_INITIALIZATION_FAILED: '',
+		LB_SUCCESS: ''
+	};
 
-module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, LavaboomAPI, translate, co, crypto, loader, user) => {
-	var translations = {};
-	var translationsCh = chan();
-
-	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_INITIALIZING_I18N = $translate.instant('LOADER.LB_INITIALIZING_I18N');
-		translations.LB_INITIALIZING_OPENPGP = $translate.instant('LOADER.LB_INITIALIZING_OPENPGP');
-		translations.LB_INITIALIZATION_FAILED = $translate.instant('LOADER.LB_INITIALIZATION_FAILED');
-		translations.LB_SUCCESS = $translate.instant('LOADER.LB_SUCCESS');
-
-		if ($translate.instant('LANG.CODE') === translate.getCurrentLangCode())
-			translationsCh(true);
-	});
+	const translationPromise = $translate.bindAsObject(translations, 'LOADER');
 
 	$scope.initializeApplication = (opts) => co(function *(){
 		try {
-			var connectionPromise = LavaboomAPI.connect();
+			let connectionPromise = LavaboomAPI.connect();
 
 			if (!$rootScope.isInitialized)
-				yield translationsCh;
+				yield translationPromise;
 
 			loader.incProgress(translations.LB_INITIALIZING_I18N, 1);
 
-			var translateInitialization = translate.initialize();
+			let translateInitialization = translate.initialize();
 
 			loader.incProgress(translations.LB_INITIALIZING_OPENPGP, 5);
 
@@ -38,16 +32,11 @@ module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, Lavab
 				console.log('opts', opts);
 				if (opts) {
 
-					if (opts.state) {
+					signUp.isPartiallyFlow = !!opts.state;
+					if (signUp.isPartiallyFlow) {
 						yield user.authenticate();
 
-						if (opts.state == 'generateKeys') {
-							yield $state.go('generateKeys');
-						} else if (opts.state == 'lavaboomSync') {
-							yield $state.go('lavaboomSync');
-						} else if (opts.state == 'backupKeys') {
-							yield $state.go('backupKeys');
-						}
+						yield $state.go(opts.state);
 					}
 				}
 				return {lbDone: translations.LB_SUCCESS};

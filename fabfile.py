@@ -44,6 +44,7 @@ def deploy():
 		run('mkdir -p ' + tmp_dir + '/web/dist')
 		put('dist.tgz', tmp_dir + '/web/dist.tgz')
 		put('Dockerfile', tmp_dir + '/web/Dockerfile')
+		put('website.conf', tmp_dir + '/web/website.conf')
 
 		with cd('web'):
 			run('tar -xzvf dist.tgz')

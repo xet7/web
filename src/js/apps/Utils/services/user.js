@@ -1,12 +1,10 @@
-var Buffer = require('buffer/').Buffer;
-
-module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window, $translate, consts, LavaboomAPI, co, crypto, cryptoKeys, loader) {
+module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window, $translate, consts, LavaboomAPI, co, crypto, cryptoKeys, loader, utils) {
 	const self = this;
 
-	var translations = {};
-	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_BYE = $translate.instant('LOADER.LB_BYE');
-	});
+	const translations = {
+		LB_BYE: ''
+	};
+	$translate.bindAsObject(translations, 'LOADER');
 
 	this.name = '';
 	this.email = '';
@@ -15,17 +13,25 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	// information about user from API
 	this.settings = {};
 	this.defaultSettings = {
-		isShowComposeScreenWarning: true,
-		isHotkeyEnabled: true
+		isSkipComposeScreenWarning: false,
+		isHotkeyEnabled: true,
+		isSecuredImages: true
+	};
+
+	const setupSettings = (settings) => {
+		self.settings = angular.extend({},
+			self.defaultSettings,
+			settings ? settings : {}
+		);
 	};
 
 	// primary key
 	this.key = null;
 
-	var token = null;
-	var isAuthenticated = false;
+	let token = null;
+	let isAuthenticated = false;
 
-	var setupUserBasicInformation = (username) => {
+	const setupUserBasicInformation = (username) => {
 		username = self.transformUserName(username);
 
 		self.name = username;
@@ -35,35 +41,35 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		return username;
 	};
 
-	var restoreAuth = () => {
+	const restoreAuth = () => {
 		token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
 
 		if (token)
 			LavaboomAPI.setAuthToken(token);
 	};
 
-	var persistAuth = (isRemember = true) => {
-		var storage = isRemember ? localStorage : sessionStorage;
+	const persistAuth = (isRemember = true) => {
+		let storage = isRemember ? localStorage : sessionStorage;
 		storage.lavaboomToken = token;
 	};
 
 	this.transformUserName = (username) => username.split('.').join('').toLowerCase();
 
-	this.calculateHash = (password) => (new Buffer(openpgp.crypto.hash.sha256(password), 'binary')).toString('hex');
+	this.calculateHash = (password) => utils.hexify(openpgp.crypto.hash.sha256(password));
 
 	this.isAuthenticated = () => token && isAuthenticated;
 
 	this.syncKeys = () => co(function *(){
-		var res = yield LavaboomAPI.keys.list(self.name);
+		let res = yield LavaboomAPI.keys.list(self.name);
 
-		var keysByFingerprint = res.body.keys ? res.body.keys.reduce((a, k) => {
+		let keysByFingerprint = res.body.keys ? res.body.keys.reduce((a, k) => {
 			a[k.id] = k;
 			return a;
 		}, {}) : {};
 
-		var publicKeys = crypto.getAvailablePublicKeysForEmail(self.email);
+		let publicKeys = crypto.getAvailablePublicKeysForEmail(self.email);
 
-		var keysCreationPromises = [];
+		let keysCreationPromises = [];
 
 		publicKeys.forEach(key => {
 			if (!keysByFingerprint[key.primaryKey.fingerprint]) {
@@ -80,9 +86,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	this.authenticate = () => co(function * () {
 		restoreAuth();
 
-		var res = yield LavaboomAPI.accounts.get('me');
+		let res = yield LavaboomAPI.accounts.get('me');
 
-		self.settings = res.body.user.settings ? res.body.user.settings : {};
+		setupSettings(res.body.user.settings);
 		$rootScope.$broadcast('user-settings');
 
 		setupUserBasicInformation(res.body.user.name);
@@ -100,7 +106,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		if (self.settings.isLavaboomSynced)
 			cryptoKeys.importKeys(self.settings.keyring);
 
-		var res = yield LavaboomAPI.keys.get(self.email);
+		let res = yield LavaboomAPI.keys.get(self.email);
 		self.key = res.body.key;
 
 		if (!isAuthenticated) {
@@ -117,6 +123,13 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 			settings: self.settings
 		});
 	};
+
+	this.updatePassword = (oldPassword, newPassword) => co(function *(){
+		yield LavaboomAPI.accounts.update('me', {
+			current_password: self.calculateHash(oldPassword),
+			new_password: self.calculateHash(newPassword)
+		});
+	});
 
 	this.updateKey = (fingerprint) => co(function * () {
 		return yield LavaboomAPI.accounts.update('me', {
@@ -135,7 +148,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 			try {
 				restoreAuth();
 
-				var res = yield LavaboomAPI.tokens.create({
+				let res = yield LavaboomAPI.tokens.create({
 					type: 'auth',
 					username: username,
 					password: self.calculateHash(password)
@@ -152,7 +165,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 					return;
 				}
 
-				// what, why?
+				// todo: probably we don't need this
 				try {
 					res = yield LavaboomAPI.keys.get(self.email);
 				} catch (err) {
@@ -163,7 +176,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 				self.key = res.body.key;
 
 				res = yield LavaboomAPI.accounts.get('me');
-				self.settings = res.body.user.settings ? res.body.user.settings : {};
+				setupSettings(res.body.user.settings);
 				setupUserBasicInformation(res.body.user.name);
 
 				if (self.settings.isLavaboomSynced)

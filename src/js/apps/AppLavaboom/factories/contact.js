@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
-	var Contact = function(opt) {
+	function Contact (opt) {
 		const self = this;
 
 		angular.extend(this, opt);
@@ -14,7 +14,7 @@ module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
 		this.isCustomName = () => self.firstName && self.lastName && self.name != `${self.firstName.trim()} ${self.lastName.trim()}`;
 
 		this.getFullName = () => self.isCustomName() ? self.name + ` (${self.firstName.trim()} ${self.lastName.trim()})` :
-			(self.isPrivate() ? '' + self.hiddenEmail.email : self.name);
+			(self.isHidden() ? '' + self.hiddenEmail.email : self.name);
 
 		this.isMatchEmail = (email) =>
 			(self.hiddenEmail && self.hiddenEmail.email == email) ||
@@ -29,7 +29,7 @@ module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
 			return self.name;
 		};
 
-		this.isPrivate = () => !!self.hiddenEmail || self.name == '$hidden';
+		this.isHidden = () => !!self.hiddenEmail || self.name == '$hidden';
 
 		this.isSecured = () => {
 			if (self.hiddenEmail && !self.hiddenEmail.isSecured())
@@ -65,19 +65,19 @@ module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
 		};
 
 		this.getSecureClass = () => `sec-${self.isSecured() ? 1 : 0}`;
-	};
+	}
 
-	var secureFields = ['name', 'firstName', 'lastName', 'companyName', 'privateEmails', 'businessEmails', 'hiddenEmail'];
+	const secureFields = ['name', 'firstName', 'lastName', 'companyName', 'privateEmails', 'businessEmails', 'hiddenEmail'];
 
 	Contact.toEnvelope = (contact) => co(function *() {
-		let data = secureFields.reduce((a, field) => {
+		const data = secureFields.reduce((a, field) => {
 			a[field] = contact[field];
 			return a;
 		}, {});
 
 		console.log('contact to envelope', data);
 
-		var envelope = yield crypto.encodeEnvelopeWithKeys({
+		const envelope = yield crypto.encodeEnvelopeWithKeys({
 			data: data,
 			encoding: 'json'
 		}, [user.key.key], 'data');
@@ -87,7 +87,7 @@ module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
 	});
 
 	Contact.fromEnvelope = (envelope) => co(function *() {
-		var data = yield crypto.decodeEnvelope(envelope, 'data');
+		const data = yield crypto.decodeEnvelope(envelope, 'data');
 
 		console.log('Contact.fromEnvelope data', data);
 

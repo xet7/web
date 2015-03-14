@@ -1,12 +1,11 @@
 module.exports = /*@ngInject*/($scope, $state, co, signUp) => {
 	$scope.form = {
 		username: '',
-		email: '',
-		isNews: true
+		email: ''
 	};
 
 	$scope.requestSecure = () => co(function *(){
-		yield signUp.register($scope.form.username, $scope.form.email, $scope.form.isNews);
+		yield signUp.register($scope.form.username, $scope.form.email);
 
 		yield $state.go('reservedUsername');
 	});

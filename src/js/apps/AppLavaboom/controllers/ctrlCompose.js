@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
-							   consts, co, user, contacts, inbox, router, Manifest, Contact, Hotkey, ContactEmail, Email, Attachment) => {
+							   consts, co, user, contacts, inbox, router, Manifest, Contact, hotkey, ContactEmail, Email, Attachment) => {
 	$scope.toolbar = [
 		['h1', 'h2', 'h3'],
 		['bold', 'italics', 'underline'],
@@ -13,7 +13,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.isWarning = false;
 	$scope.isError = false;
 	$scope.isXCC = false;
-	$scope.isShowWarning = false;
+	$scope.isSkipWarning = user.settings.isSkipComposeScreenWarning;
 	$scope.attachments = [];
 
 	const hiddenContacts = {};
@@ -121,18 +121,19 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		}
 	});
 
-	$scope.$watch('isShowWarning', (o, n) => {
+	$scope.$watch('isSkipWarning', (o, n) => {
 		if (o == n)
 			return;
 
-		user.update({isShowComposeScreenWarning: $scope.isShowWarning});
+		user.update({isSkipComposeScreenWarning: $scope.isSkipWarning});
 	});
 
-	$scope.toggleIsShowWarning = (event) => {
-		$scope.isShowWarning = !$scope.isShowWarning;
+	$scope.toggleIsSkipWarning = (event) => {
+		$scope.isSkipWarning = !$scope.isSkipWarning;
 	};
 
-	$scope.isValid = () => $scope.__form.$valid && $scope.form.selected.to.length > 0 && $scope.form.subject.length > 0 && $scope.form.body.length > 0;
+	$scope.isValid = () => $scope.__form.$valid &&
+		$scope.form && $scope.form.selected.to.length > 0 && $scope.form.subject.length > 0 && $scope.form.body.length > 0;
 
 	$scope.send = () => co(function *() {
 		if (!$scope.isValid())
@@ -148,7 +149,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			bcc = $scope.form.selected.bcc.map(e => e.email);
 
 		let keys = yield ([...$scope.form.selected.to, ...$scope.form.selected.cc, ...$scope.form.selected.bcc].reduce((a, e) => {
-			a[e.email] = co.def(e.loadKey(), null);
+			a[e.email] = co.transform(co.def(e.loadKey(), null), v => v ? v.key : v);
 			return a;
 		}, {}));
 
@@ -163,13 +164,14 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			bcc,
 			subject: $scope.form.subject
 		});
+
 		manifest.setBody($scope.form.body, 'text/html');
 		for(let attachmentStatus of $scope.attachments)
 			manifest.addAttachment(attachmentStatus.attachment.id,
 				attachmentStatus.attachment.body, attachmentStatus.attachment.name, attachmentStatus.attachment.type);
 
 		try {
-			var sendStatus = yield inbox.send({
+			let sendStatus = yield inbox.send({
 				body: $scope.form.body,
 				attachmentIds: $scope.attachments.map(a => a.id),
 				threadId
@@ -177,7 +179,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 			console.log('compose send status', sendStatus);
 
-			if (isSecured) {
+			if (isSecured || $scope.isSkipWarning) {
 				yield $scope.confirm();
 			} else {
 				$scope.isWarning = true;
@@ -222,7 +224,15 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		$scope.isError = false;
 	});
 
-	let emailTransform = function (email) {
+	const newHiddenEmail = email => {
+		return new ContactEmail(null, {
+			name: 'hidden',
+			email,
+			isNew: true
+		}, 'hidden');
+	};
+
+	let emailTransform = email => {
 		if (!email)
 			return null;
 
@@ -233,15 +243,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				return e;
 		}
 
-		return new ContactEmail(null, {
-			name: 'hidden',
-			email,
-			isNew: true
-		}, 'hidden');
+		return newHiddenEmail(email);
 	};
 
 	$scope.$bind('contacts-changed', () => {
-		let toEmailContact = toEmail ? new Contact({email: toEmail}) : null;
+		let toEmailContact = emailTransform(toEmail);
 
 		let people = [...contacts.people.values()];
 		let map = people.reduce((a, c) => {
@@ -294,7 +300,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			$scope.form = {
 				person: {},
 				selected: {
-					to: [],
+					to: toEmailContact ? [toEmailContact] : [],
 					cc: [],
 					bcc: [],
 					from: contacts.myself
@@ -325,7 +331,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		}
 	};
 
-	$scope.tagTransform = function (newTag) {
+	$scope.tagTransform = newTag => {
 		if (!newTag)
 			return null;
 
@@ -384,7 +390,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				);
 		};
 
-	Hotkey.addHotkey({
+	hotkey.addHotkey({
         combo: ['ctrl+enter', 'command+enter'],
         description: 'HOTKEY.SEND_EMAIL',
         callback: (event, key) => {

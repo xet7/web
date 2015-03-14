@@ -1,8 +1,9 @@
 module.exports = {
 	API_URI: process.env.API_URI,
 	ROOT_DOMAIN: process.env.TLD,
+	ROOT_DOMAIN_LIST: ['lavaboom.com', 'lavaboom.io', 'lavaboom.co'],
 	DEFAULT_LANG: 'en',
-	DEFAULT_KEY_LENGTH: 2048,
+	DEFAULT_KEY_LENGTH: 4096,
 	ESTIMATED_KEY_GENERATION_TIME_SECONDS: 24,
 	INBOX_REDIRECT_DELAY: 1000,
 	LAVABOOM_SYNC_REDIRECT_DELAY: 1000,
@@ -19,5 +20,7 @@ module.exports = {
 	INBOX_EMAILS_CACHE_TTL: 60 * 10 * 1000,
 	SET_READ_AFTER_TIMEOUT: 3000,
 	KEYS_BACKUP_README: 'https://lavaboom.com/placeholder/help/backup-file',
-	POPUP_AUTO_HIDE_DELAY: 500
+	POPUP_AUTO_HIDE_DELAY: 500,
+	ORDERED_LABELS: ['Inbox', 'Drafts', 'Sent', 'Starred', 'Spam', 'Trash'],
+	PLAN_LIST: ['BASIC', 'TEST']
 };

@@ -8,7 +8,7 @@ div#left-panel.ng-cloak
 				a(ng-click="showPopup('compose')")
 					span.icon-compose
 					span.action {{'MAIN.NAV.LB_COMPOSE' | translate}}
-			li(ng-class="{ active: $state.includes('main.inbox.label', {labelName: label.name}) }", ng-repeat="(name, label) in labelsByName track by label.id")
+			li(ng-class="{ active: $state.includes('main.inbox.label', {labelName: label.name}) }", ng-repeat="label in labels track by label.id")
 				a(ui-sref="main.inbox.label({labelName: label.name, threadId: getThreadForLabel(label.name)})")
 					span(ng-class="label.iconClass")
 					span.action(ng-bind="label.name")
@@ -23,7 +23,7 @@ div#left-panel.ng-cloak
 					span.icon-cog
 					span.action {{'MAIN.NAV.LB_SETTINGS' | translate}}
 			li.logout
-				small &#169; Lavaboom 2015
+				small {{'MAIN.NAV.LB_COPYRIGHT' | translate}}
 				a(href="#", ng-click="logout()")
 					span.icon-power
 					span.action {{'MAIN.NAV.LB_LOGOUT' | translate}}

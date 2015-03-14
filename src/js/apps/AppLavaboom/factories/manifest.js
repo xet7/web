@@ -1,7 +1,7 @@
 module.exports = /*@ngInject*/(contacts) => {
 	const hash = (data) => openpgp.util.hexstrdump(openpgp.crypto.hash.sha256(data));
 
-	const ManifestPart = function (manifestPart) {
+	function ManifestPart (manifestPart) {
 		const self = this;
 
 		this.id = manifestPart.id;
@@ -11,7 +11,7 @@ module.exports = /*@ngInject*/(contacts) => {
 
 		this.isValid = (body) => body.length == self.size && hash(body) == self.hash;
 
-		// hack
+		// todo: hack, there should be just one content type
 		const contentType = manifestPart.content_type || manifestPart['content-type'];
 		if (contentType) {
 			this.contentType = (contentType.defaultValue ? contentType.defaultValue : contentType).toLowerCase();
@@ -22,9 +22,9 @@ module.exports = /*@ngInject*/(contacts) => {
 		}
 
 		this.isHtml = () => self.contentType.includes('/html');
-	};
+	}
 
-	const Manifest = function (manifest) {
+	function Manifest (manifest) {
 		const self = this;
 
 		const formatFrom = (fromAddress) => {
@@ -46,7 +46,7 @@ module.exports = /*@ngInject*/(contacts) => {
 		this.subject = manifest.headers.subject;
 
 		this.getDestinationEmails = () => {
-			let emails = new Set([
+			const emails = new Set([
 				...self.to,
 				...self.cc,
 				...self.bcc
@@ -87,12 +87,12 @@ module.exports = /*@ngInject*/(contacts) => {
 		};
 
 		this.stringify = () => JSON.stringify(manifest);
-	};
+	}
 
 	Manifest.defaultVersion = '1.0.0';
 
 	Manifest.create = ({fromEmail, to, cc, bcc, subject}) => {
-		let manifest = {
+		const manifest = {
 			version: Manifest.defaultVersion,
 			headers: {
 				from: fromEmail,

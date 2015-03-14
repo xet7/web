@@ -6,19 +6,19 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
 	this.tokenSignup = null;
 	this.details = null;
 	this.password = null;
+	this.isPartiallyFlow = false;
 
-	this.register = (username, altEmail, isNews) => {
-		var transformedUsername = user.transformUserName(username);
+	this.register = (username, altEmail) => {
+		let transformedUsername = user.transformUserName(username);
 
 		self.reserve = {
 			originalUsername: username,
 			username: transformedUsername,
-			altEmail: altEmail,
-			isNews: isNews
+			altEmail: altEmail
 		};
 
 		return co(function * (){
-			var res = yield LavaboomAPI.accounts.create.register({
+			let res = yield LavaboomAPI.accounts.create.register({
 				username: transformedUsername,
 				alt_email: altEmail
 			});
@@ -37,7 +37,7 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
 		};
 
 		return co(function * (){
-			var res = yield LavaboomAPI.accounts.create.verify({
+			let res = yield LavaboomAPI.accounts.create.verify({
 				username: self.tokenSignup.username,
 				invite_code: self.tokenSignup.token
 			});
@@ -57,10 +57,10 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
 
 			yield user.signIn(self.tokenSignup.username, password, true);
 
-			var settings = angular.extend({},
+			let settings = angular.extend({},
 				self.details,
 				user.defaultSettings, {
-					isSubscribedToNews: (self.reserve ? self.reserve.isNews : false) || self.tokenSignup.isNews,
+					isSubscribedToNews: self.tokenSignup.isNews,
 					state: 'incomplete'
 				});
 

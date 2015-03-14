@@ -300,6 +300,9 @@ gulp.task('lint:scripts', function () {
 		.pipe(plg.jshint())
 		.pipe(plg.jshint.reporter(plg.jshintStylish))
 		.pipe(plg.jshint.reporter('fail'));
+		/*.pipe(plg.eslint())
+		 .pipe(plg.eslint.format())
+		 .pipe(plg.eslint.failOnError());*/
 });
 
 
@@ -449,17 +452,15 @@ gulp.task('lr', ['build:jade'], function () {
 		return gulp.src(paths.markup.input)
 			.pipe(livereloadPipeline(true)());
 	}
+	if (isServe) {
+		serve();
+		isServe = false;
+	}
 	isFirstBuild = false;
 });
 
 // Compile files
 gulp.task('compile', ['clean', 'tests', 'lint:scripts'], function() {
-	// start local http server
-	if (isServe) {
-		serve();
-		isServe = false;
-	}
-
 	gulp.start(compileSteps.concat(['compile:finished']));
 });
 

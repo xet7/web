@@ -1,9 +1,8 @@
 window.coJS = require('co');
-let AngularApplication = require('../helpers/angularApplication');
+const AngularApplication = require('../helpers/angularApplication');
+const bulkRequire = require('bulk-require');
+const application = new AngularApplication('utils');
 
-var bulkRequire = require('bulk-require');
-
-let application = new AngularApplication('utils');
 application.create(
 	[
 	],
@@ -29,14 +28,14 @@ application.registerBulks(
 	])
 );
 
-(function (loader) {
-	var token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
+((loader) => {
+	const token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
 
-	var Checker = function (url, Promise) {
+	function Checker (url, Promise) {
 		console.log('checker', url);
 		this.check = () => new Promise((resolve, reject) => {
 			if (token) {
-				var api = Lavaboom.getInstance(url, null, 'sockjs');
+				const api = Lavaboom.getInstance(url, null, 'sockjs');
 				api.authToken = token;
 
 				api.connect()
@@ -61,7 +60,7 @@ application.registerBulks(
 									console.log('checker: keys.get error', err);
 									loader.loadLoginApplication({state: 'generateKeys', noDelay: true});
 								});
-						}).catch(function (err) {
+						}).catch(err => {
 							console.log('checker: accounts.get(me) error', err);
 							loader.loadLoginApplication({noDelay: true});
 							resolve();
@@ -77,7 +76,7 @@ application.registerBulks(
 				resolve();
 			}
 		});
-	};
+	}
 
 	window.checkerFactory = (Promise) => new Checker(process.env.API_URI, Promise);
 })(window.loader);

@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/(co) => {
-	const Cache = function (name, opts = {}) {
+	function Cache (name, opts = {}) {
 		let cacheByKey = {};
 		let cacheById = {};
 		const self = this;
@@ -128,7 +128,7 @@ module.exports = /*@ngInject*/(co) => {
 			cacheByKey = {};
 			cacheById = {};
 		};
-	};
+	}
 
 	return Cache;
 };

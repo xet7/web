@@ -26,8 +26,8 @@ div#compose-wrapper
 										span {{'MAIN.COMPOSE.BTN_REJECT' | translate}}
 								li.dropdown-checkbox.text-center
 									.checkbox
-										input#check1(type='checkbox', name="isShowWarning", ng-model="isShowWarning")
-										label(for='isShowWarning', ng-click="$event.stopPropagation(); toggleIsShowWarning($event)") {{'MAIN.COMPOSE.LB_ASK_ME_AGAIN' | translate}}
+										input#check1(type='checkbox', name="isSkipWarning", ng-model="isSkipWarning")
+										label(for='isSkipWarning', ng-click="$event.stopPropagation(); toggleIsSkipWarning($event)") {{'MAIN.COMPOSE.LB_ASK_ME_AGAIN' | translate}}
 						li
 							button.btn.btn-default(ng-click="hidePopup()")
 								span.icon-close
@@ -66,6 +66,6 @@ div#compose-wrapper
 						div(ng-bind="attachment.attachment.dateModified | date")
 						br
 						span.text-muted {{attachment.status}}
-						a.btn.btn-block.btn-lg.btn-primary(type="button", ng-click="deleteAttachment(attachment, $index)", ng-autodisable) delete
+						a.btn.btn-block.btn-lg.btn-primary(type="button", ng-click="deleteAttachment(attachment, $index)", ng-autodisable) {{'MAIN.COMPOSE.BTN_DELETE' | translate}}
 		.mask(ng-show="isWarning", ng-click="reject()")
 

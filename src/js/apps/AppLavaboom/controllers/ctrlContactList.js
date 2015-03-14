@@ -1,13 +1,13 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, user, Hotkey) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, user, hotkey) => {
 	$scope.selectedContactId = null;
 	$scope.searchText = '';
 
-	let translations = {};
+	const translations = {
+		LB_NEW_CONTACT_SHORT: '',
+		LB_EMPTY_CONTACT_SHORT: ''
+	};
 
-	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_NEW_CONTACT_SHORT = $translate.instant('MAIN.CONTACTS.LB_NEW_CONTACT');
-		translations.LB_EMPTY_CONTACT_SHORT = $translate.instant('MAIN.CONTACTS.LB_EMPTY_CONTACT');
-	});
+	$translate.bindAsObject(translations, 'MAIN.CONTACTS');
 
 	const findContact = (cid) => {
 		let letterIndex = 0;
@@ -62,7 +62,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 	$scope.$bind('contacts-changed', () => {
 		let oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
 
-		$scope.list = [...contacts.people.values()].filter(c => !c.isPrivate());
+		$scope.list = [...contacts.people.values()].filter(c => !c.isHidden());
 
 		const group = (map, letter, item) => {
 			if (!map[letter])
@@ -109,7 +109,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 		$scope.selectedContactId = $stateParams.contactId;
 
 		const addHotkeys = () => {
-			const moveContacts = function(delta) {
+			const moveContacts = delta => {
 				let oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
 
 				if (oldContactPosition) {
@@ -128,13 +128,13 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 				moveContacts(1);
 			};
 
-			Hotkey.addHotkey({
+			hotkey.addHotkey({
 				combo: ['h', 'k', 'left', 'up'],
 				description: 'HOTKEY.MOVE_UP',
 				callback: moveUp
 			});
 
-			Hotkey.addHotkey({
+			hotkey.addHotkey({
 				combo: ['j', 'l', 'right', 'down'],
 				description: 'HOTKEY.MOVE_DOWN',
 				callback: moveDown
