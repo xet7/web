@@ -62,7 +62,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 	$scope.$bind('contacts-changed', () => {
 		let oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
 
-		$scope.list = [...contacts.people.values()].filter(c => !c.isPrivate());
+		$scope.list = [...contacts.people.values()].filter(c => !c.isHidden());
 
 		const group = (map, letter, item) => {
 			if (!map[letter])

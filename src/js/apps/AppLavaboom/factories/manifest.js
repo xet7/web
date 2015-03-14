@@ -11,7 +11,7 @@ module.exports = /*@ngInject*/(contacts) => {
 
 		this.isValid = (body) => body.length == self.size && hash(body) == self.hash;
 
-		// hack
+		// todo: hack, there should be just one content type
 		const contentType = manifestPart.content_type || manifestPart['content-type'];
 		if (contentType) {
 			this.contentType = (contentType.defaultValue ? contentType.defaultValue : contentType).toLowerCase();

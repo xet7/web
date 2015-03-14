@@ -46,19 +46,13 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		if (!opts)
 			opts = {};
 
-		switch (kind) {
-			case 'private':
-				label = translations.LB_PRIVATE;
-				break;
-			case 'business':
-				label = translations.LB_BUSINESS;
-				break;
-			case 'hidden':
-				label = (opts.isNew ? `${translations.LB_NEW} ` : '') + translations.LB_HIDDEN;
-				break;
-			default:
-				throw new Error('Invalid contact email kind "' + kind + '"!');
-		}
+		label = {
+			'private': translations.LB_PRIVATE,
+			'business': translations.LB_BUSINESS,
+			'hidden': (opts.isNew ? `${translations.LB_NEW} ` : '') + translations.LB_HIDDEN
+		}[kind];
+		if (!label)
+			throw new Error('Invalid contact email kind "' + kind + '"!');
 
 		this.email = opts.email ? opts.email : '';
 		this.name = opts.name ? opts.name : '';
@@ -89,10 +83,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 					return self.key;
 
 				if (isLoadingKey) {
-					try {
-						yield t;
-					} catch (e) {
-					}
+					yield co.def(t, null);
 
 					return self.key;
 				}

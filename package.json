@@ -68,7 +68,7 @@
     "http-static-gzip-regexp": "0.0.2",
     "jasmine": "^2.1.1",
     "jasmine-reporters": "^1.0.1",
-    "jshint": "^2.6.0",
+    "jshint": "^2.6.3",
     "jshint-stylish": "^1.0.0",
     "lazypipe": "^0.2.2",
     "levenshtein": "^1.0.5",

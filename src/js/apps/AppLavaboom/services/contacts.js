@@ -55,7 +55,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, utils, 
 		const emails = utils.uniq([...contact.privateEmails.map(e => e.email), ...contact.businessEmails.map(e => e.email)]);
 		for(let e of emails) {
 			const c = self.getContactByEmail(e);
-			if (c.isPrivate()) {
+			if (c.isHidden()) {
 				yield self.deleteContact(c.id);
 
 				break;
