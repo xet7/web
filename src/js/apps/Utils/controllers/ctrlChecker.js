@@ -1,29 +1,22 @@
-module.exports = /*@ngInject*/(co, $scope) => {
-	const url = process.env.API_URI;
+module.exports = /*@ngInject*/(co, consts, LavaboomAPI, $scope) => {
 	const token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
 
-	console.log('ctrlChecker');
-
 	$scope.initializeApplication = (opts) => co(function *(){
-		console.log('checking...');
 		if (!token) {
 			console.log('checker: no token found!');
 			loader.loadLoginApplication({noDelay: true});
 			return;
 		}
 
-		const api = Lavaboom.getInstance(url, null, 'sockjs');
-		api.authToken = token;
-
 		try {
-			yield api.connect();
+			yield LavaboomAPI.connect();
 
 			try {
-				const me = yield api.accounts.get('me');
+				const me = yield LavaboomAPI.accounts.get('me');
 				console.log('checker: accounts.get(me) success', me);
 
 				try {
-					const res = yield api.keys.get(`${me.body.user.name}@${process.env.TLD}`);
+					const res = yield LavaboomAPI.keys.get(`${me.body.user.name}@${process.env.TLD}`);
 					console.log('checker: keys.get success', res);
 
 					if (!me.body.user.settings || me.body.user.settings.state != 'ok') {
