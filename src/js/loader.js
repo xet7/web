@@ -16,14 +16,18 @@
 
 	const // containers
 		loaderContainer = document.getElementById('loader-container'),
+		checkerAppContainer = document.getElementById('checker-app-container'),
 		loginAppContainer = document.getElementById('login-app-container'),
 		mainAppContainer = document.getElementById('main-app-container'),
 		containers = [loaderContainer, loginAppContainer, mainAppContainer];
 
 	const
 		CHECKER = {
+			appName: 'utils',
+			container: checkerAppContainer,
 			afterProgressText: 'Checking...',
 			afterProgressValue: 30,
+			isHidden: true,
 			scripts: [
 				{
 					src: SRC_UTILS_VENDOR,
@@ -200,13 +204,14 @@
 					.then(r => {
 						console.log('loader: initialized application', app.appName, 'with result', r);
 
-						showContainer(app, opts.lbDone ? opts.lbDone : (r && r.lbDone ? r.lbDone : null), opts.noDelay ? true : false)
-							.then(() => {
-								if (rootScope.onApplicationReady)
-									rootScope.$apply(() => {
-										rootScope.onApplicationReady();
-									});
-							});
+						if (!app.isHidden)
+							showContainer(app, opts.lbDone ? opts.lbDone : (r && r.lbDone ? r.lbDone : null), opts.noDelay ? true : false)
+								.then(() => {
+									if (rootScope.onApplicationReady)
+										rootScope.$apply(() => {
+											rootScope.onApplicationReady();
+										});
+								});
 					})
 					.catch(err => {
 						self.setProgressText(err.message);
@@ -269,16 +274,7 @@
 
 		this.initialize = () => {
 			progress = 10;
-			loadScripts(CHECKER)
-				.then(() => {
-					const checker = window.checkerFactory(Promise);
-					console.log('checker', checker);
-					checker.check()
-						.catch(e => {
-							console.error(e);
-							self.setProgressText(LB_FAIL);
-						});
-				})
+			loadApplication(CHECKER)
 				.catch(e => {
 					console.error(e);
 					self.setProgressText(LB_FAIL);
