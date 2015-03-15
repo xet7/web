@@ -1,11 +1,10 @@
 module.exports = /*@ngInject*/(co, consts, LavaboomAPI, $scope) => {
 	const token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
 
-	$scope.initializeApplication = (opts) => co(function *(){
+	const check = (opts) => co(function *(){
 		if (!token) {
 			console.log('checker: no token found!');
-			loader.loadLoginApplication({noDelay: true});
-			return;
+			return {noDelay: true};
 		}
 
 		try {
@@ -22,24 +21,29 @@ module.exports = /*@ngInject*/(co, consts, LavaboomAPI, $scope) => {
 					if (!me.body.user.settings || me.body.user.settings.state != 'ok') {
 						console.log('checker: user haven\'t decided with keys');
 
-						if (me.body.user.settings.state == 'backupKeys') {
-							loader.loadLoginApplication({state: 'backupKeys', noDelay: true});
-						} else {
-							loader.loadLoginApplication({state: 'lavaboomSync', noDelay: true});
-						}
-					} else
-						loader.loadMainApplication({noDelay: true});
+						if (me.body.user.settings.state == 'backupKeys')
+							return {state: 'backupKeys', noDelay: true};
+
+						return {state: 'lavaboomSync', noDelay: true};
+					}
+
+					return {noDelay: true};
 				} catch(err) {
 					console.log('checker: keys.get error', err);
-					loader.loadLoginApplication({state: 'generateKeys', noDelay: true});
+					return {state: 'generateKeys', noDelay: true};
 				}
 			} catch(err) {
 				console.log('checker: accounts.get(me) error', err);
-				loader.loadLoginApplication({noDelay: true});
+				return {noDelay: true};
 			}
 		} catch (err) {
 			console.log('checker: error, cannot connect', err);
 			throw err;
 		}
+	});
+
+	$scope.initializeApplication = (opts) => co(function *(){
+		const loginAppOpts = yield check(opts);
+		loader.loadLoginApplication(loginAppOpts);
 	});
 };
