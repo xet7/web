@@ -13,18 +13,16 @@ module.exports = /*@ngInject*/($scope, $timeout, co, utils, user, crypto, crypto
 	});
 
 	$scope.$bind('keyring-updated', () => {
-		$scope.keys = crypto.getAvailableEncryptedPrivateKeys().map(k => {
-			return {
-				keyId: utils.hexify(k.primaryKey.keyid.bytes),
-				isDecrypted: crypto.getDecryptedPrivateKeyByFingerprint(k.primaryKey.fingerprint).primaryKey.isDecrypted,
-				decryptPassword: '',
-				decryptIsSuccess: null,
-				decryptTime: null,
-				fingerprint: k.primaryKey.fingerprint,
-				created: k.primaryKey.created,
-				user: k.users[0].userId.userid
-			};
-		});
+		$scope.keys = crypto.getAvailableEncryptedPrivateKeys().map(k => ({
+			keyId: utils.hexify(k.primaryKey.keyid.bytes),
+			isDecrypted: crypto.getDecryptedPrivateKeyByFingerprint(k.primaryKey.fingerprint).primaryKey.isDecrypted,
+			decryptPassword: '',
+			decryptIsSuccess: null,
+			decryptTime: null,
+			fingerprint: k.primaryKey.fingerprint,
+			created: k.primaryKey.created,
+			user: k.users[0].userId.userid
+		}));
 		console.log('keyring-updated', $scope.keys);
 
 		$scope.isAnyUndecryptedKeys = $scope.keys.some(k => !k.isDecrypted);
