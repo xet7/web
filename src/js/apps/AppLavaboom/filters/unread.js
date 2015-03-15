@@ -1,5 +1,5 @@
-module.exports = /*@ngInject*/() => {
-	return number => {
+module.exports = /*@ngInject*/() =>
+	number => {
 		if (!number || number < 1)
 			return '';
 
@@ -8,4 +8,3 @@ module.exports = /*@ngInject*/() => {
 
 		return '999+';
 	};
-};

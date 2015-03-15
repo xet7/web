@@ -2,13 +2,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 	let self = this;
 
 	let wrapOpenpgpKeyring = (keyring) => {
-		let findByFingerprint = (keys, fingerprint) => {
-			return keys.find(k => k.primaryKey.fingerprint == fingerprint);
-		};
+		let findByFingerprint = (keys, fingerprint) => keys.find(k => k.primaryKey.fingerprint == fingerprint);
 
-		let findIndexByFingerprint = (keys, fingerprint) => {
-			return keys.findIndex(k => k.primaryKey.fingerprint == fingerprint);
-		};
+		let findIndexByFingerprint = (keys, fingerprint) => keys.findIndex(k => k.primaryKey.fingerprint == fingerprint);
 
 		keyring.publicKeys.findByFingerprint = (fingerprint) => findByFingerprint(keyring.publicKeys.keys, fingerprint);
 		keyring.privateKeys.findByFingerprint = (fingerprint) => findByFingerprint(keyring.privateKeys.keys, fingerprint);
@@ -101,17 +97,11 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 
 	this.getAvailableSourceEmails = () => getAvailableEmails(keyring.privateKeys);
 
-	this.getAvailableEncryptedPrivateKeys = () => {
-		return keyring.privateKeys.keys;
-	};
+	this.getAvailableEncryptedPrivateKeys = () => keyring.privateKeys.keys;
 
-	this.getAvailableEncryptedPrivateKeysForEmail = (email) => {
-		return keyring.privateKeys.getForAddress(email);
-	};
+	this.getAvailableEncryptedPrivateKeysForEmail = (email) => keyring.privateKeys.getForAddress(email);
 
-	this.getAvailablePublicKeysForEmail = (email) => {
-		return keyring.publicKeys.getForAddress(email);
-	};
+	this.getAvailablePublicKeysForEmail = (email) => keyring.publicKeys.getForAddress(email);
 
 	this.getDecryptedPrivateKeyByFingerprint = (fingerprint) => {
 		let k = localKeyring.privateKeys.findByFingerprint(fingerprint);

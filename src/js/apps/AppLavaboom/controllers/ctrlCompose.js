@@ -224,13 +224,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		$scope.isError = false;
 	});
 
-	const newHiddenEmail = email => {
-		return new ContactEmail(null, {
-			name: 'hidden',
-			email,
-			isNew: true
-		}, 'hidden');
-	};
+	const newHiddenEmail = email => new ContactEmail(null, {
+		name: 'hidden',
+		email,
+		isNew: true
+	}, 'hidden');
 
 	let emailTransform = email => {
 		if (!email)

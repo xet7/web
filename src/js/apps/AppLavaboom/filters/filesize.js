@@ -1,5 +1,5 @@
-module.exports = /*@ngInject*/() => {
-	return size => {
+module.exports = /*@ngInject*/() =>
+	size => {
 		if (isNaN(size))
 			size = 0;
 
@@ -25,4 +25,3 @@ module.exports = /*@ngInject*/() => {
 
 		return size.toFixed(2) + ' Tb';
 	};
-};

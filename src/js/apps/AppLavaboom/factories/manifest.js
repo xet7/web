@@ -65,9 +65,7 @@ module.exports = /*@ngInject*/(contacts) => {
 			});
 		};
 
-		this.getPart = (id = 'body') => {
-			return new ManifestPart(manifest.parts.find(p => p.id == id));
-		};
+		this.getPart = (id = 'body') => new ManifestPart(manifest.parts.find(p => p.id == id));
 
 		this.files = manifest.parts.filter(p => p.id != 'body').map(p => new ManifestPart(p));
 
@@ -82,9 +80,7 @@ module.exports = /*@ngInject*/(contacts) => {
 			});
 		};
 
-		this.isValid = () => {
-			return !!manifest.parts.find(p => p.id == 'body');
-		};
+		this.isValid = () => !!manifest.parts.find(p => p.id == 'body');
 
 		this.stringify = () => JSON.stringify(manifest);
 	}

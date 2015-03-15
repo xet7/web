@@ -14,9 +14,7 @@ module.exports = /*@ngInject*/($injector, co, utils, crypto, Manifest) => {
 		this.isLabel = (labelName) => this.labels.some(lid => labels.byId[lid] && labels.byId[lid].name == labelName);
 		this.addLabel = (labelName) => utils.uniq(self.labels.concat([labels.byName[labelName].id]));
 
-		this.removeLabel = (labelName) => {
-			return self.labels.filter(x => x != labels.byName[labelName].id);
-		};
+		this.removeLabel = (labelName) => self.labels.filter(x => x != labels.byName[labelName].id);
 
 		this.isRead = opt.is_read;
 		this.secure = opt.secure;

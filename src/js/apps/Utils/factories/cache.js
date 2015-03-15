@@ -56,16 +56,13 @@ module.exports = /*@ngInject*/(co) => {
 			delete cacheById[id];
 		};
 
-		this.exposeIds = () => {
-			return Object.keys(cacheById).reduce((a, id) => {
+		this.exposeIds = () =>
+			Object.keys(cacheById).reduce((a, id) => {
 				a[id] = cacheById[id].value;
 				return a;
 			}, {});
-		};
 
-		this.exposeKeys = (key) => {
-			return cacheByKey[key] ? cacheByKey[key].value : null;
-		};
+		this.exposeKeys = (key) => cacheByKey[key] ? cacheByKey[key].value : null;
 
 		this.put = (key, value) => {
 			const date = new Date();
