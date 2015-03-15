@@ -1,31 +1,19 @@
 window.coJS = require('co');
-const AngularApplication = require('../helpers/angularApplication');
 const bulkRequire = require('bulk-require');
-const application = new AngularApplication('utils');
 
-application.create(
-	[
-	],
-	[
+const AngularApplication = require('../helpers/angularApplication');
+const application = new AngularApplication({
+	applicationName: 'utils',
+	dependencies: [
 		'lavaboom.api',
 		'ui.router',
 		'pascalprecht.translate',
 		'angular-co'
 	]
-);
+});
 
 application.registerBulks(
-	bulkRequire(__dirname + '/Utils/', [
-		'runs/*.js',
-		'decorators/*.js',
-		'filters/*.js',
-		'constants/*.js',
-		'configs/*.js',
-		'directives/*.js',
-		'factories/*.js',
-		'services/*.js',
-		'controllers/*.js'
-	])
+	bulkRequire(__dirname + '/Utils/', '**/*.js')
 );
 
 ((loader) => {

@@ -1,4 +1,7 @@
-function AngularApplication ({applicationName, productionOnlyDependencies, dependencies}) {
+function AngularApplication ({applicationName, dependencies, productionOnlyDependencies}) {
+	if (!productionOnlyDependencies)
+		productionOnlyDependencies = [];
+
 	const capitalize = (name) => name.substr(0, 1).toUpperCase() + name.substr(1);
 
 	const applicationModule = angular.module(applicationName, (process.env.IS_PRODUCTION ? productionOnlyDependencies :[]).concat(dependencies));
