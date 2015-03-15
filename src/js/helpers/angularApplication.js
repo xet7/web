@@ -1,16 +1,24 @@
-function AngularApplication (applicationName) {
-	let applicationModule = null;
-
+function AngularApplication ({applicationName, productionOnlyDependencies, dependencies}) {
 	const capitalize = (name) => name.substr(0, 1).toUpperCase() + name.substr(1);
 
-	this.create = (productionOnlyDependencies, dependencies) => {
-		applicationModule = angular.module(applicationName, (process.env.IS_PRODUCTION ? productionOnlyDependencies :[]).concat(dependencies));
-	};
+	const applicationModule = angular.module(applicationName, (process.env.IS_PRODUCTION ? productionOnlyDependencies :[]).concat(dependencies));
 
 	this.registerBulks = (bulks) => {
 		if (bulks.runs) {
 			for (let runName of Object.keys(bulks.runs)) {
 				applicationModule.run(bulks.runs[runName]);
+			}
+		}
+
+		if (bulks.configs) {
+			for (let configName of Object.keys(bulks.configs)) {
+				applicationModule.config(bulks.configs[configName]);
+			}
+		}
+
+		if (bulks.constants) {
+			for (let constsName of Object.keys(bulks.constants)) {
+				applicationModule.constant(constsName, bulks.constants[constsName]);
 			}
 		}
 
@@ -30,27 +38,9 @@ function AngularApplication (applicationName) {
 			}
 		}
 
-		if (bulks.configs) {
-			for (let configName of Object.keys(bulks.configs)) {
-				applicationModule.config(bulks.configs[configName]);
-			}
-		}
-
-		if (bulks.constants) {
-			for (let constsName of Object.keys(bulks.constants)) {
-				applicationModule.constant(constsName, bulks.constants[constsName]);
-			}
-		}
-
 		if (bulks.directives) {
 			for (let directiveName of Object.keys(bulks.directives)) {
 				applicationModule.directive(directiveName, bulks.directives[directiveName]);
-			}
-		}
-
-		if (bulks.services) {
-			for (let serviceName of Object.keys(bulks.services)) {
-				applicationModule.service(serviceName, bulks.services[serviceName]);
 			}
 		}
 
@@ -61,12 +51,20 @@ function AngularApplication (applicationName) {
 			}
 		}
 
+		if (bulks.services) {
+			for (let serviceName of Object.keys(bulks.services)) {
+				applicationModule.service(serviceName, bulks.services[serviceName]);
+			}
+		}
+
 		if (bulks.controllers) {
 			for (let controllerName of Object.keys(bulks.controllers)) {
 				let declarativeControllerName = capitalize(controllerName);
 				applicationModule.controller(declarativeControllerName, bulks.controllers[controllerName]);
 			}
 		}
+
+		return this;
 	};
 }
 

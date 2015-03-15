@@ -1,12 +1,12 @@
-const AngularApplication = require('../helpers/angularApplication');
 const bulkRequire = require('bulk-require');
-const application = new AngularApplication('AppLavaboom');
 
-application.create(
-	[
+const AngularApplication = require('../helpers/angularApplication');
+const application = new AngularApplication({
+	applicationName: 'AppLavaboom',
+	productionOnlyDependencies: [
 		'templates'
 	],
-	[
+	dependencies: [
 		'utils',
 		'lavaboom.api',
 		'ngSanitize',
@@ -21,8 +21,9 @@ application.create(
 		'cfp.hotkeys',
 		'angularMoment'
 	]
-);
+});
 
-application.registerBulks(
-	bulkRequire(__dirname + '/AppLavaboom/', '**/*.js')
-);
+application
+	.registerBulks(
+		bulkRequire(__dirname + '/AppLavaboom/', '**/*.js')
+	);
