@@ -12,23 +12,20 @@
 			li.list-group-item
 				.text-control
 					label {{'MAIN.SETTINGS.PROFILE.LB_USERNAME' | translate}}
-					input.field-icon.form-control(disabled='', ng-model="name")
-					span.icon-lock
+					input.form-control(disabled='', ng-model="name")
+					span
 			li.list-group-item
 				.text-control
 					label {{'MAIN.SETTINGS.PROFILE.LB_FIRST_NAME' | translate}}
-					input.field-icon.form-control(ng-model="settings.firstName")
-					span.icon-edit
+					input.form-control(ng-model="settings.firstName")
 			li.list-group-item
 				.text-control
 					label {{'MAIN.SETTINGS.PROFILE.LB_LAST_NAME' | translate}}
-					input.field-icon.icon-edit.form-control(ng-model="settings.lastName")
-					span.icon-edit
+					input.form-control(ng-model="settings.lastName")
 			li.list-group-item
 				.text-control
 					label {{'MAIN.SETTINGS.PROFILE.LB_DISPLAY_NAME' | translate}}
-					input.field-icon.icon-edit.form-control(ng-model="settings.displayName")
-					span.icon-edit
+					input.form-control(ng-model="settings.displayName")
 		h4 {{'MAIN.SETTINGS.PROFILE.TITLE_SIGNATURE' | translate}}
 		ul.list-group
 			li.list-group-item
@@ -41,7 +38,7 @@
 				.text-control
 					.signature
 						div(text-angular="", ng-model="settings.signatureHtml")
-					span.icon-edit
+					
 		h4 {{'MAIN.SETTINGS.PROFILE.TITLE_NEWSLETTER' | translate}}
 		ul.list-group
 			li.list-group-item
