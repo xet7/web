@@ -1,20 +1,20 @@
 module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, consts) => {
-	var translations = {};
+	const translations = {
+		LB_NEW : '',
+		LB_PRIVATE : '',
+		LB_BUSINESS : '',
+		LB_HIDDEN : '',
+		'MAIN.CONTACTS.LB_EMAIL_NOT_FOUND' : ''
+	};
 
-	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_NEW = $translate.instant('MAIN.COMPOSE.LB_NEW');
-		translations.LB_PRIVATE = $translate.instant('MAIN.COMPOSE.LB_PRIVATE');
-		translations.LB_BUSINESS = $translate.instant('MAIN.COMPOSE.LB_BUSINESS');
-		translations.LB_HIDDEN = $translate.instant('MAIN.COMPOSE.LB_HIDDEN');
-		translations.LB_EMAIL_NOT_FOUND = $translate.instant('MAIN.CONTACTS.LB_EMAIL_NOT_FOUND');
-	});
+	$translate.bindAsObject(translations, 'MAIN.COMPOSE');
 
 	function ContactEmail (contact, opts, kind) {
 		let inbox = $injector.get('inbox');
 		let self = this;
 
 		let tooltip = '';
-		var label = '';
+		let label = '';
 		let t = null;
 		let isLoadingKey = false;
 		let isLoadedKey = false;
@@ -34,7 +34,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 
 				tooltip = '';
 			} catch (err) {
-				tooltip = translations.LB_EMAIL_NOT_FOUND;
+				tooltip = translations['MAIN.CONTACTS.LB_EMAIL_NOT_FOUND'];
 				self.key = null;
 				throw err;
 			} finally {
@@ -46,19 +46,13 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		if (!opts)
 			opts = {};
 
-		switch (kind) {
-			case 'private':
-				label = translations.LB_PRIVATE;
-				break;
-			case 'business':
-				label = translations.LB_BUSINESS;
-				break;
-			case 'hidden':
-				label = (opts.isNew ? `${translations.LB_NEW} ` : '') + translations.LB_HIDDEN;
-				break;
-			default:
-				throw new Error('Invalid contact email kind "' + kind + '"!');
-		}
+		label = {
+			'private': translations.LB_PRIVATE,
+			'business': translations.LB_BUSINESS,
+			'hidden': (opts.isNew ? `${translations.LB_NEW} ` : '') + translations.LB_HIDDEN
+		}[kind];
+		if (!label)
+			throw new Error('Invalid contact email kind "' + kind + '"!');
 
 		this.email = opts.email ? opts.email : '';
 		this.name = opts.name ? opts.name : '';
@@ -89,10 +83,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 					return self.key;
 
 				if (isLoadingKey) {
-					try {
-						yield t;
-					} catch (e) {
-					}
+					yield co.def(t, null);
 
 					return self.key;
 				}
@@ -100,9 +91,9 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 
 			let domain = self.email.split('@')[1];
 			if (domain)
-				domain = domain.trim();
+				domain = domain.trim().toLowerCase();
 
-			if (domain == consts.ROOT_DOMAIN) {
+			if (consts.ROOT_DOMAIN_LIST.includes(domain)) {
 				isLoadingKey = true;
 
 				let promise;

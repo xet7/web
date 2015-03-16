@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, $stateParams, $translate, co, user, inbox, consts, Hotkey) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, $stateParams, $translate, co, user, inbox, consts, hotkey) => {
 	$scope.labelName = $stateParams.labelName;
 	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
 	if ($scope.selectedTid)
@@ -23,18 +23,18 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	$scope.sortedLabel = '';
 	$scope.sortQuery = inbox.sortQuery;
 
-	var translations = {};
+	const translations = {
+		LB_SORT_BY_CREATION_DATE_DESC : '',
+		LB_SORT_BY_CREATION_DATE_ASC : '',
+		LB_SORT_BY_MODIFICATION_DATE_DESC : '',
+		LB_SORT_BY_MODIFICATION_DATE_ASC : '',
+		LB_SORTED_BY_CREATION_DATE_DESC : '',
+		LB_SORTED_BY_CREATION_DATE_ASC : '',
+		LB_SORTED_BY_MODIFICATION_DATE_DESC : '',
+		LB_SORTED_BY_MODIFICATION_DATE_ASC : ''
+	};
 
-	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_SORT_BY_CREATION_DATE_DESC = $translate.instant('INBOX.LB_SORT_BY_CREATION_DATE_DESC');
-		translations.LB_SORT_BY_CREATION_DATE_ASC = $translate.instant('INBOX.LB_SORT_BY_CREATION_DATE_ASC');
-		translations.LB_SORT_BY_MODIFICATION_DATE_DESC = $translate.instant('INBOX.LB_SORT_BY_MODIFICATION_DATE_DESC');
-		translations.LB_SORT_BY_MODIFICATION_DATE_ASC = $translate.instant('INBOX.LB_SORT_BY_MODIFICATION_DATE_ASC');
-		translations.LB_SORTED_BY_CREATION_DATE_DESC = $translate.instant('INBOX.LB_SORTED_BY_CREATION_DATE_DESC');
-		translations.LB_SORTED_BY_CREATION_DATE_ASC = $translate.instant('INBOX.LB_SORTED_BY_CREATION_DATE_ASC');
-		translations.LB_SORTED_BY_MODIFICATION_DATE_DESC = $translate.instant('INBOX.LB_SORTED_BY_MODIFICATION_DATE_DESC');
-		translations.LB_SORTED_BY_MODIFICATION_DATE_ASC = $translate.instant('INBOX.LB_SORTED_BY_MODIFICATION_DATE_ASC');
-
+	$translate.bindAsObject(translations, 'INBOX', null, () => {
 		$scope.sorts = [
 			{
 				query: '-date_created',
@@ -245,19 +245,19 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			moveThreads(1);
 		};
 		
-		Hotkey.addHotkey({
+		hotkey.addHotkey({
 			combo: ['h', 'k', 'left', 'up'],
 			description: 'HOTKEY.MOVE_UP',
 			callback: moveUp
 		});
 
-		Hotkey.addHotkey({
+		hotkey.addHotkey({
 			combo: ['j', 'l', 'right', 'down'],
 			description: 'HOTKEY.MOVE_DOWN',
 			callback: moveDown
 		});
 
-		Hotkey.addHotkey({
+		hotkey.addHotkey({
 			combo: 'a',
 			description: 'HOTKEY.ARCHIVE_EMAIL',
 			callback: (event, key) => {
@@ -266,7 +266,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			}
 		});
 
-		Hotkey.addHotkey({
+		hotkey.addHotkey({
 			combo: 'd',
 			description: 'HOTKEY.DELETE_EMAIL',
 			callback: (event, key) => {
@@ -275,7 +275,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			}
 		});
 
-		Hotkey.addHotkey({
+		hotkey.addHotkey({
 			combo: 'r',
 			description: 'HOTKEY.REPLY_EMAIL',
 			callback: (event, key) => {

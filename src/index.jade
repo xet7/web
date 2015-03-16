@@ -1,5 +1,7 @@
 html(lang="en")
+
 	head
+		base(href="/")
 		meta(charset="utf-8")
 		meta(http-equiv="X-UA-Compatible", content="IE=edge")
 		meta(name="viewport", content="width=device-width, initial-scale=1")
@@ -17,7 +19,7 @@ html(lang="en")
 		link(rel="apple-touch-icon", sizes="76x76", href="#{resolveAsset('/img/assets/apple-touch-icon-76x76.png')}")
 		link(rel="apple-touch-icon", sizes="152x152", href="#{resolveAsset('/img/assets/apple-touch-icon-152x152.png')}")
 		link(rel="apple-touch-icon", sizes="180x180", href="#{resolveAsset('/img/assets/apple-touch-icon-180x180.png')}")
-		link(rel="shortcut icon", href="#{resolveAsset('/img/assets/favicon.ico?12411')}")
+		link(rel="shortcut icon", href="#{resolveAsset('/img/assets/favicon.ico')}")
 		link(rel="icon", type="image/png", href="#{resolveAsset('/img/assets/favicon-192x192.png')}", sizes="192x192")
 		link(rel="icon", type="image/png", href="#{resolveAsset('/img/assets/favicon-160x160.png')}", sizes="160x160")
 		link(rel="icon", type="image/png", href="#{resolveAsset('/img/assets/favicon-96x96.png')}", sizes="96x96")
@@ -26,6 +28,7 @@ html(lang="en")
 		meta(name="msapplication-TileColor", content="#000000")
 		meta(name="msapplication-TileImage", content="#{resolveAsset('/img/assets/mstile-144x144.png')}")
 		meta(name="msapplication-config", content="#{resolveAsset('/img/assets/browserconfig.xml')}")
+
 	body
 		#loader-container
 			.login-app.login

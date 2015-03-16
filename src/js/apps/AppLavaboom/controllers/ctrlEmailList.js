@@ -8,7 +8,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 	$scope.emails = [];
 
 	if ($scope.selectedTid) {
-		var t = $timeout(() => {
+		let t = $timeout(() => {
 			$scope.isLoading = true;
 		}, consts.LOADER_SHOW_DELAY);
 

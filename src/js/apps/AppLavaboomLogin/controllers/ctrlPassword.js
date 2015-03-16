@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($scope, $state, signUp, co) => {
-	if (!signUp.tokenSignup || !signUp.details)
+	if (!signUp.isPartiallyFlow && (!signUp.tokenSignup || !signUp.details))
 		$state.go('login');
 
 	$scope.form = {
@@ -8,7 +8,12 @@ module.exports = /*@ngInject*/($scope, $state, signUp, co) => {
 	};
 
 	$scope.updatePassword = () => co(function *(){
-		yield signUp.setup($scope.form.password);
+		if (signUp.isPartiallyFlow)
+			signUp.password = $scope.form.password;
+		else {
+			yield signUp.setup($scope.form.password);
+		}
+
 		yield $state.go('generateKeys');
 	});
 };

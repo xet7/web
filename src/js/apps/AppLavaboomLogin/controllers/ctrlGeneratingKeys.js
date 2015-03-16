@@ -2,22 +2,23 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $interval, $timeout, 
 	if (!user.isAuthenticated())
 		$state.go('login');
 
-	var timePassed = 0;
-	var translations = {};
-
+	let timePassed = 0;
 	$scope.progress = 0;
 	$scope.label = '';
 
-	$rootScope.$bind('$translateChangeSuccess', () => {
-		translations.LB_GENERATING = $translate.instant('LOGIN.GENERATING_KEYS.LB_GENERATING');
-		translations.LB_READY = $translate.instant('LOGIN.GENERATING_KEYS.LB_READY');
-		translations.LB_REACHED = $translate.instant('LOGIN.GENERATING_KEYS.LB_REACHED');
-		translations.LB_ERROR = $translate.instant('LOGIN.GENERATING_KEYS.LB_ERROR');
-		translations.LB_UPLOADING = $translate.instant('LOGIN.GENERATING_KEYS.LB_UPLOADING');
+	const translations = {
+		LB_GENERATING : '',
+		LB_READY : '',
+		LB_REACHED : '',
+		LB_ERROR : '',
+		LB_UPLOADING : ''
+	};
+
+	$translate.bindAsObject(translations, 'LOGIN.GENERATING_KEYS', null, () => {
 		$scope.label = translations.LB_GENERATING;
 	});
 
-	var progressBarInterval = $interval(() => {
+	let progressBarInterval = $interval(() => {
 		$scope.progress = Math.floor(++timePassed / consts.ESTIMATED_KEY_GENERATION_TIME_SECONDS * 95);
 		if ($scope.progress >= 95) {
 			$scope.label = translations.LB_REACHED;
@@ -28,7 +29,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $interval, $timeout, 
 
 	co(function *() {
 		try {
-			var res = yield crypto.generateKeys(user.nameEmail, signUp.password, consts.DEFAULT_KEY_LENGTH);
+			let res = yield crypto.generateKeys(user.nameEmail, signUp.password, consts.DEFAULT_KEY_LENGTH);
 			console.log('login app: keys generated', res);
 
 			$interval.cancel(progressBarInterval);
@@ -45,7 +46,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $interval, $timeout, 
 			$scope.label = translations.LB_READY;
 
 			$timeout(() => {
-				$state.go('lavaboomSync');
+				if (signUp.isPartiallyFlow)
+					$state.go('backupKeys');
+				else
+					$state.go('lavaboomSync');
 			}, consts.LAVABOOM_SYNC_REDIRECT_DELAY);
 		} catch (err) {
 			console.log('login app: keys generation error', err);

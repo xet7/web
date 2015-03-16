@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProvider) => {
-	$locationProvider.hashPrefix('!');
+	$locationProvider.html5Mode(true);
 
 	// small hack - both routers(login && main app) work at the same time, so we need to troubleshot this
 	$urlRouterProvider.otherwise(($injector, $location) => {
@@ -9,7 +9,7 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 		return '/label/Inbox';
 	});
 
-	var primaryStates = {
+	const primaryStates = {
 		'empty': {
 			url: '/'
 		},
@@ -59,7 +59,7 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 		},
 
 		'main.contacts.profile': {
-			url: '/profile/:contactId',
+			url: '/profile/:contactId?email',
 			templateUrl: 'partials/contacts/contacts.profile.html',
 			controller: 'CtrlContactProfile'
 		},
@@ -94,11 +94,11 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 		}
 	};
 
-	var PopupAbstractState = function () {
+	function PopupAbstractState () {
 		this.abstract = true;
-	};
+	}
 
-	var popupStates = {
+	const popupStates = {
 		'compose': function () {
 			this.url =  '/compose?replyThreadId&to';
 
@@ -111,10 +111,18 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 					size: 'lg'
 				});
 			};
+		},
+		'hotkeys': function () {
+			this.url =  '/hotkeys';
 
 			// @ngInject
-			this.onExit = (router) => {
-				router.hidePopup();
+			this.onEnter = (router) => {
+				router.createPopup({
+					templateUrl: 'partials/hotkeys.html',
+					controller: 'CtrlHotkeys',
+					backdrop: 'static',
+					size: 'lg'
+				});
 			};
 		},
 		'download': function () {
@@ -129,20 +137,15 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 					size: 'lg'
 				});
 			};
-
-			// @ngInject
-			this.onExit = (router) => {
-				router.hidePopup();
-			};
 		}
 	};
 
-	var declareState = (name, state) => {
+	const declareState = (name, state) => {
 		console.log('creating state ', name);
 		$stateProvider.state(name, state);
 	};
 
-	for(let stateName in primaryStates) {
+	for(let stateName of Object.keys(primaryStates)) {
 		declareState(stateName, primaryStates[stateName]);
 
 		if (!primaryStates[stateName].abstract) {

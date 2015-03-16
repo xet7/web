@@ -1,7 +1,5 @@
-var Buffer = require('buffer/').Buffer;
-
 module.exports = /*@ngInject*/function() {
-	this.hexify = (binaryString) => (new Buffer(binaryString, 'binary')).toString('hex');
+	this.hexify = (binaryString) => openpgp.util.hexstrdump(binaryString);
 
 	this.uniq = (array, key = null) => {
 		if (!key)

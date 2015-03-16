@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProvider) => {
-	$locationProvider.hashPrefix('!');
+	$locationProvider.html5Mode(true);
 
 	// small hack - both routers(login && main app) work at the same time, so we need to troubleshot this
 	$urlRouterProvider.otherwise(($injector, $location) => {
@@ -44,7 +44,7 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 		})
 
 		.state('verifyInvite', {
-			url: '/verifyInvite',
+			url: '/verifyInvite/{userName}/{inviteCode}',
 			templateUrl: 'partials/login/verifyInvite.html',
 			controller:'CtrlVerify'
 		})

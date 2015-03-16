@@ -1,8 +1,8 @@
-module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, LavaboomAPI, Contact) {
+module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, utils, LavaboomAPI, Contact) {
 	const self = this;
-	var emptyContact = null;
+	let emptyContact = null;
 
-	var deleteLocally = (contactId) => {
+	const deleteLocally = (contactId) => {
 		if (self.people.has(contactId)) {
 			self.people.delete(contactId);
 		}
@@ -12,7 +12,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 		if (emptyContact)
 			return emptyContact;
 
-		var id = 'new';
+		let id = 'new';
 		emptyContact = new Contact({
 			id: id,
 			isSecured: true,
@@ -27,9 +27,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 	};
 
 	this.list = () => co(function *() {
-		var contacts = (yield LavaboomAPI.contacts.list()).body.contacts;
+		const contacts = (yield LavaboomAPI.contacts.list()).body.contacts;
 
-		var list = contacts ? yield co.map(contacts, Contact.fromEnvelope) : [];
+		let list = contacts ? yield co.map(contacts, Contact.fromEnvelope) : [];
 		return list.reduce((map, c) => {
 			map.set(c.id, c);
 			return map;
@@ -37,8 +37,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 	});
 
 	this.createContact = (contact) => co(function *() {
-		var envelope = yield Contact.toEnvelope(contact);
-		var r = yield LavaboomAPI.contacts.create(envelope);
+		let envelope = yield Contact.toEnvelope(contact);
+		let r = yield LavaboomAPI.contacts.create(envelope);
 
 		if (contact.id) {
 			if (contact.id == 'new') {
@@ -49,8 +49,18 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 		}
 
 		contact.id = r.body.contact.id;
-
 		self.people.set(contact.id, contact);
+
+		// todo: finish hidden contacts deletion
+		const emails = utils.uniq([...contact.privateEmails.map(e => e.email), ...contact.businessEmails.map(e => e.email)]);
+		for(let e of emails) {
+			const c = self.getContactByEmail(e);
+			if (c.isHidden()) {
+				yield self.deleteContact(c.id);
+
+				break;
+			}
+		}
 
 		$rootScope.$broadcast('contacts-changed');
 
@@ -58,8 +68,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 	});
 
 	this.updateContact = (contact) => co(function *() {
-		var envelope = yield Contact.toEnvelope(contact);
-		var r = yield LavaboomAPI.contacts.update(contact.id, envelope);
+		let envelope = yield Contact.toEnvelope(contact);
+		let r = yield LavaboomAPI.contacts.update(contact.id, envelope);
 
 		$rootScope.$broadcast('contacts-changed');
 
@@ -88,7 +98,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, Lavaboo
 		} else
 			self.myself = null;
 
-		$rootScope.$bind('keyring-updated', () => {
+		self.people = yield self.list();
+
+		$rootScope.$on('keyring-updated', () => {
 			self.people = new Map();
 			co(function *(){
 				self.people = yield self.list();

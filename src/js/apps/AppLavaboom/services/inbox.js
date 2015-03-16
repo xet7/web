@@ -84,10 +84,13 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	this.getLabels = () => co(function *() {
 		const labels = (yield LavaboomAPI.labels.list()).body.labels;
 
-		const r = labels.reduce((a, label) => {
-			a.byName[label.name] = a.byId[label.id] = new Label(label);
+		const r = labels.reduce((a, labelOpts) => {
+			const label = new Label(labelOpts);
+			a.byName[label.name] = a.byId[label.id] = label;
 			return a;
-		}, {byName: {}, byId: {}});
+		}, {byName: {}, byId: {}, list: []});
+
+		r.list = consts.ORDERED_LABELS.map(labelName => r.byName[labelName]);
 
 		$rootScope.$broadcast('inbox-labels', r);
 
