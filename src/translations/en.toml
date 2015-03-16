@@ -200,7 +200,7 @@
 	LB_CONTACTS = "Contacts"
 	LB_SETTINGS = "Settings"
 	LB_LOGOUT = "Logout"
-	LB_COPYRIGHT = "&#169; Lavaboom 2015"
+	LB_COPYRIGHT = "© Lavaboom 2015"
 
 [MAIN.COMPOSE]
 	LB_TO = "To"
