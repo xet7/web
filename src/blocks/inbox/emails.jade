@@ -14,6 +14,15 @@ div.pane-status(ng-if="selectedTid === null")
 				li
 					button.btn.btn-default
 						span.icon-arrow-right
+				li.spacer
+					button.btn.btn-default
+						span.icon-star-outline
+				li
+					button.btn.btn-default
+						span.icon-ban
+				li
+					button.btn.btn-default
+						span.icon-trash
 div(ng-if="selectedTid !== null").main-view
 	.pane-status(ng-show="isLoading")
 		img(src="/img/loader.svg")
