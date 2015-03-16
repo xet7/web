@@ -6,6 +6,7 @@
 		tagging="tagTransform", tagging-tokens="{{taggingTokens}}", reset-search-input="true", ng-model="#{defs.model}")
 		ui-select-match(placeholder="{{'MAIN.COMPOSE.PLC_SELECT_PERSON' | translate}}", ng-class="$item.name")
 			email-context-menu(email="$item.email", is-open="status.isDropdownOpened")
+				span.icon-star(ng-show="$item.isStar")
 				span(ng-click="tagClicked($select, $item, #{defs.model})", ng-right-click="switchContextMenu()")
 					| {{$item.getDisplayName()}} &#60;{{$item.email}}&#62; (
 					span(ng-show="$item.isError && $item.isNotFoundError") {{'MAIN.COMPOSE.LB_ERROR_NOT_FOUND' | translate}}
@@ -18,14 +19,18 @@
 		ui-select-choices(repeat="personEmail in people | filter: personFilter($select.search)")
 			span(ng-show="personEmail && personEmail.isError && personEmail.isNotFoundError") &#60;{{personEmail.email}}&#62; {{'MAIN.COMPOSE.LB_ERROR_NOT_FOUND' | translate}}
 			span(ng-show="personEmail && personEmail.isError && !personEmail.isNotFoundError") &#60;{{personEmail.email}}&#62; {{'MAIN.COMPOSE.LB_ERROR_UNKNOWN' | translate}}
+
 			div(ng-if="personEmail && !personEmail.isError && personEmail.isTag")
 				div(ng-show="!personEmail.isHidden()") {{personEmail.getDisplayName()}}
+				span.icon-star(ng-show="personEmail.isStar")
 				small {{personEmail.getLabel()}} {{'MAIN.COMPOSE.LB_EMAIL' | translate}}:
 					span {{personEmail.email}}
 					img.inverted.loading(src="/img/loader.svg", ng-show="personEmail.isLoadingKey()")
 					span(class="icon-lock {{personEmail.getSecureClass()}}", ng-show="!personEmail.isLoadingKey()")
+
 			div(ng-if="personEmail && !personEmail.isError && !personEmail.isTag")
 				div(ng-show="!personEmail.isHidden()", ng-bind-html="personEmail.getDisplayName() | highlight: $select.search")
+				span.icon-star(ng-show="personEmail.isStar")
 				small {{personEmail.getLabel()}} {{'MAIN.COMPOSE.LB_EMAIL' | translate}}:
 					span(ng-bind-html="personEmail.email | highlight: $select.search")
 					span(class="icon-lock {{personEmail.getSecureClass()}}")
