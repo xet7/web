@@ -21,9 +21,15 @@
 	input[type=text], input[type=email], input[type=password], textarea, .btn, .checkbox label:before{
 		border-radius: .2rem;
 		background: @lava-login-gray-dark;
+		// Change the white to any color ;)
+		&:-webkit-autofill {
+		    -webkit-box-shadow: 0 0 0px 1000px @lava-login-gray-dark inset;
+		}
+
 		border: 0;
 		box-shadow: none;
 		color: @lava-login-gray-lighter;
+		-webkit-text-fill-color: @lava-login-gray-lighter !important;
 		background-position: 95% 50% !important;
 		
 		&.loading{
