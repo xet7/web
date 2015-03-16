@@ -249,15 +249,21 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 		let people = [...contacts.people.values()];
 		let map = people.reduce((a, c) => {
-			if (c.hiddenEmail)
+			if (c.hiddenEmail && c.hiddenEmail.email)
 				a.set(c.hiddenEmail.email, c.hiddenEmail);
 
 			return a;
 		}, new Map());
 
 		map = people.reduce((a, c) => {
-			c.privateEmails.forEach(e => a.set(e.email, e));
-			c.businessEmails.forEach(e => a.set(e.email, e));
+			c.privateEmails.forEach(e => {
+				if (e.email)
+					a.set(e.email, e);
+			});
+			c.businessEmails.forEach(e => {
+				if (e.email)
+					a.set(e.email, e);
+			});
 
 			return a;
 		}, map);
