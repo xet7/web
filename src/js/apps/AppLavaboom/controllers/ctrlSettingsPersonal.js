@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $timeout, user) => {
+module.exports = /*@ngInject*/($scope, $timeout, user, co) => {
 	$scope.name = user.styledName;
 	$scope.status = '';
 	$scope.settings = {};
@@ -25,15 +25,14 @@ module.exports = /*@ngInject*/($scope, $timeout, user) => {
 			return;
 
 		if (Object.keys($scope.settings).length > 0) {
-			timeouts.update = $timeout.schedule(timeouts.update, () => {
-				user.update($scope.settings)
-					.then(() => {
-						$scope.status = 'saved!';
-					})
-					.catch(() => {
-						$scope.status = 'ops...';
-					});
-			}, 1000);
+			timeouts.update = $timeout.schedulePromise(timeouts.update, () => co(function *(){
+				try {
+					yield user.update($scope.settings);
+					$scope.status = 'saved!';
+				} catch (err) {
+					$scope.status = 'ops...';
+				}
+			}), 1000);
 		}
 	}, true);
 };

@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeout, translate, user, hotkey) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeout, translate, user, hotkey, co) => {
 	$scope.form = {
 		selectedLanguage: null,
 		contactsSortBy: null
@@ -70,18 +70,18 @@ module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeo
     });
 
     $scope.$watch('settings', (o, n) => {
-        if (o === n) return;
+        if (o === n)
+			return;
 
         if (Object.keys($scope.settings).length > 0) {
-			timeouts.update = $timeout.schedule(timeouts.update, () => {
-                user.update($scope.settings)
-                .then(() => {
-                    $scope.status = 'saved!';
-                })
-                .catch(() => {
-                    $scope.status = 'ops...';
-                });
-            }, 1000);
+			timeouts.update = $timeout.schedulePromise(timeouts.update, () => co(function *(){
+				try {
+					yield user.update($scope.settings);
+					$scope.status = 'saved!';
+				} catch (err) {
+					$scope.status = 'ops...';
+				}
+            }), 1000);
         }
     }, true);
 
