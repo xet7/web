@@ -157,6 +157,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 				persistAuth(isRemember);
 				isAuthenticated = true;
 
+				res = yield LavaboomAPI.accounts.get('me');
+				setupSettings(res.body.user.settings);
+				setupUserBasicInformation(res.body.user.name, res.body.user.styled_name);
+
 				res = yield LavaboomAPI.keys.list(self.name);
 				if (!res.body.keys || res.body.keys.length < 1) {
 					yield $state.go('generateKeys');
@@ -172,10 +176,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 				}
 
 				self.key = res.body.key;
-
-				res = yield LavaboomAPI.accounts.get('me');
-				setupSettings(res.body.user.settings);
-				setupUserBasicInformation(res.body.user.name, res.body.user.styled_name);
 
 				if (self.settings.isLavaboomSynced)
 					cryptoKeys.importKeys(self.settings.keyring);
