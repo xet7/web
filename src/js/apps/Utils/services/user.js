@@ -136,7 +136,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	});
 
 	this.signIn = (username, password, isRemember, isPrivateComputer) => {
-		username = setupUserBasicInformation(username.split('@')[0].trim());
+		setupUserBasicInformation(username.split('@')[0].trim());
 
 		crypto.initialize({
 			isRememberPasswords: isRemember
@@ -175,7 +175,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 				res = yield LavaboomAPI.accounts.get('me');
 				setupSettings(res.body.user.settings);
-				setupUserBasicInformation(res.body.user.name);
+				setupUserBasicInformation(res.body.user.name, res.body.user.styled_name);
 
 				if (self.settings.isLavaboomSynced)
 					cryptoKeys.importKeys(self.settings.keyring);
