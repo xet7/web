@@ -1,6 +1,7 @@
 This is the web application written using angular.js, jade, less
 
 **How to report a issue?**
+
 You've found something that looks weird, you suppose this is a bug?
 In order to speed up issue processing, please include the following information:
 - where it took place (.com / .io / .co)
