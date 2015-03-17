@@ -248,19 +248,32 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		let toEmailContact = emailTransform(toEmail);
 
 		let people = [...contacts.people.values()];
-		let map = people.reduce((a, c) => {
-			if (c.hiddenEmail)
-				a.set(c.hiddenEmail.email, c.hiddenEmail);
+		let map = new Map();
 
-			return a;
-		}, new Map());
+		const insertEmails = (checkEmail) => {
+			people.reduce((a, c) => {
+				if (c.hiddenEmail && c.hiddenEmail.email && checkEmail(c.hiddenEmail))
+					a.set(c.hiddenEmail.email, c.hiddenEmail);
 
-		map = people.reduce((a, c) => {
-			c.privateEmails.forEach(e => a.set(e.email, e));
-			c.businessEmails.forEach(e => a.set(e.email, e));
+				return a;
+			}, map);
 
-			return a;
-		}, map);
+			people.reduce((a, c) => {
+				c.privateEmails.forEach(e => {
+					if (e.email && checkEmail(e))
+						a.set(e.email, e);
+				});
+				c.businessEmails.forEach(e => {
+					if (e.email && checkEmail(e))
+						a.set(e.email, e);
+				});
+
+				return a;
+			}, map);
+		};
+
+		insertEmails(e => e.isStar);
+		insertEmails(e => !e.isStar);
 
 		if (toEmailContact)
 			map.set(toEmailContact.email, toEmailContact);
@@ -333,11 +346,15 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		if (!newTag)
 			return null;
 
-		let p = newTag.split('@');
+		const match = newTag.match(/<([^>]*)>/);
+		const emailInside = match ? match[1] : null;
+		const emailTemplate = emailInside ? emailInside : newTag;
+
+		let p = emailTemplate.split('@');
 
 		let [name, email] = p.length > 1
 			? [p[0].trim(), `${p[0].trim()}@${p[1].trim()}`]
-			: [newTag.trim(), `${newTag.trim()}@${consts.ROOT_DOMAIN}`];
+			: [emailTemplate.trim(), `${emailTemplate.trim()}@${consts.ROOT_DOMAIN}`];
 
 		if (newHiddenContact) {
 			if (newHiddenContact.email == email)
