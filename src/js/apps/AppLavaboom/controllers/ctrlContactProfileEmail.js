@@ -1,13 +1,20 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $interval, $translate, co, consts, inbox, saver) => {
+module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, saver) => {
+	$scope.selectedContactId = $stateParams.contactId;
+	$scope.isNotFound = false;
+	$scope.emails = [];
+
 	const translations = {
 		LB_EMAIL_NOT_FOUND: ''
 	};
 	$translate.bindAsObject(translations, 'MAIN.CONTACTS');
 
-	$scope.isNotFound = false;
-
 	$scope.downloadPublicKey = () => {
 		saver.saveAs($scope.currentEmail.key.key, `${$scope.currentEmail.email}-publicKey.txt`);
+	};
+
+	$scope.remove = () => {
+		console.log('remove from', $scope.details[$scope.emails], $scope.currentEmail.$$hashKey);
+		$scope.details[$scope.emails] = $scope.details[$scope.emails].filter(e => e.$$hashKey != $scope.currentEmail.$$hashKey);
 	};
 
 	$scope.$watch('currentEmail.name', () => {
