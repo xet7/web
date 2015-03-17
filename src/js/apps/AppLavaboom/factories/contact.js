@@ -67,7 +67,7 @@ module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
 		this.getSecureClass = () => `sec-${self.isSecured() ? 1 : 0}`;
 	}
 
-	const secureFields = ['name', 'firstName', 'lastName', 'companyName', 'privateEmails', 'businessEmails', 'hiddenEmail'];
+	const secureFields = ['name', 'firstName', 'lastName', 'companyName', 'privateEmails', 'businessEmails', 'hiddenEmail', 'isStar'];
 
 	Contact.toEnvelope = (contact) => co(function *() {
 		const data = secureFields.reduce((a, field) => {
