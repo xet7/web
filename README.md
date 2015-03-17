@@ -5,7 +5,7 @@ This is the web application written using angular.js, jade, less
 You've found something that looks weird, you suppose this is a bug?
 In order to speed up issue processing, please include the following information:
 - where it took place (.com / .io / .co)
-- when it took place (example: today 14:00 UTC, please avoid using timezone time and provide time in UTC)
+- when it took place (example: today 14:00 UTC, please avoid using timezone and provide time in UTC)
 - screenshot if possible (for UX related issues)
 - console logs if possible (copy-paste the Console output from Ctrl/Cmd+Alt+I)
 
