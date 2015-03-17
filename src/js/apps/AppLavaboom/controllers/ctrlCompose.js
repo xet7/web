@@ -346,11 +346,15 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		if (!newTag)
 			return null;
 
-		let p = newTag.split('@');
+		const match = newTag.match(/<([^>]*)>/);
+		const emailInside = match ? match[1] : null;
+		const emailTemplate = emailInside ? emailInside : newTag;
+
+		let p = emailTemplate.split('@');
 
 		let [name, email] = p.length > 1
 			? [p[0].trim(), `${p[0].trim()}@${p[1].trim()}`]
-			: [newTag.trim(), `${newTag.trim()}@${consts.ROOT_DOMAIN}`];
+			: [emailTemplate.trim(), `${emailTemplate.trim()}@${consts.ROOT_DOMAIN}`];
 
 		if (newHiddenContact) {
 			if (newHiddenContact.email == email)
