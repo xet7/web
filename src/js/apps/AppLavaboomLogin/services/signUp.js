@@ -9,17 +9,15 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
 	this.isPartiallyFlow = false;
 
 	this.register = (username, altEmail) => {
-		let transformedUsername = user.transformUserName(username);
-
 		self.reserve = {
 			originalUsername: username,
-			username: transformedUsername,
+			username: username,
 			altEmail: altEmail
 		};
 
 		return co(function * (){
 			let res = yield LavaboomAPI.accounts.create.register({
-				username: transformedUsername,
+				username: username,
 				alt_email: altEmail
 			});
 
@@ -28,8 +26,6 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
 	};
 
 	this.verifyInvite = (username, token, isNews) => {
-		username = user.transformUserName(username);
-
 		self.tokenSignup = {
 			username: username,
 			token: token,

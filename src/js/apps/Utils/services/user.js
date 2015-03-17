@@ -7,6 +7,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	$translate.bindAsObject(translations, 'LOADER');
 
 	this.name = '';
+	this.styledName = '';
 	this.email = '';
 	this.nameEmail = '';
 
@@ -31,10 +32,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	let token = null;
 	let isAuthenticated = false;
 
-	const setupUserBasicInformation = (username) => {
-		username = self.transformUserName(username);
-
+	const setupUserBasicInformation = (username, styledUsername) => {
 		self.name = username;
+		self.styledName = styledUsername;
 		self.email = `${username}@${consts.ROOT_DOMAIN}`;
 		self.nameEmail = `${self.name} <${self.email}>`;
 
@@ -52,8 +52,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		let storage = isRemember ? localStorage : sessionStorage;
 		storage.lavaboomToken = token;
 	};
-
-	this.transformUserName = (username) => username.split('.').join('').toLowerCase();
 
 	this.calculateHash = (password) => utils.hexify(openpgp.crypto.hash.sha256(password));
 
@@ -91,7 +89,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		setupSettings(res.body.user.settings);
 		$rootScope.$broadcast('user-settings');
 
-		setupUserBasicInformation(res.body.user.name);
+		setupUserBasicInformation(res.body.user.name, res.body.user.styled_name);
 
 		if (!isAuthenticated) {
 			isAuthenticated = true;

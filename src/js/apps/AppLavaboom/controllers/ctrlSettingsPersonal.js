@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($scope, $timeout, user) => {
-	$scope.name = user.name;
+	$scope.name = user.styledName;
 	$scope.status = '';
 	$scope.settings = {};
 
