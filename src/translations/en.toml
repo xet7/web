@@ -303,6 +303,7 @@
 	LB_DECRYPTED = "Decrypted"
 	LAVABOOM_SYNC = "Lavaboom Sync"
 	BTN_GENERATE_KEYS = "Generate new key-pair"
+	BTN_DOWNLOAD = "Download this public key"
 
 [MAIN.CONTACTS]
 	PLC_SEARCH_CONTACTS = "Search Contacts"
@@ -327,6 +328,7 @@
     LB_NO_PRIVATE_KEY_FOUND2 = "Please go to "
     LB_SETTINGS = "settings"
     LB_NO_PRIVATE_KEY_FOUND3 = " and check your key"
+    LB_REMOVE = "Remove this email"
 
 [HOTKEY]
 	TITLE          		 = "Shortcuts cheatsheet"

@@ -24,13 +24,16 @@ module.exports = /*@ngInject*/() => {
 		this.threadsUnread = unreadFromServer;
 
 		this.addUnreadThreadId = (tid) => {
-			if (self.name == 'Sent')
-				return;
-
 			unreadThreads[tid] = true;
-			self.threadsUnread = unreadFromServer + Object.keys(unreadThreads).length - Object.keys(readThreads).length;
+			self.threadsUnread = unreadFromServer + Object.keys(unreadThreads).length;
+		};
+
+		this.addReadThreadId = (tid) => {
+			delete unreadThreads[tid];
+			self.threadsUnread = unreadFromServer + Object.keys(unreadThreads).length;
 		};
 	}
+
 
 	return Label;
 };

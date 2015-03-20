@@ -103,6 +103,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 
 	this.getAvailablePublicKeysForEmail = (email) => keyring.publicKeys.getForAddress(email);
 
+	this.getPublicKeyByFingerprint = (fingerprint) => keyring.publicKeys.findByFingerprint(fingerprint);
+
 	this.getDecryptedPrivateKeyByFingerprint = (fingerprint) => {
 		let k = localKeyring.privateKeys.findByFingerprint(fingerprint);
 		if (k)

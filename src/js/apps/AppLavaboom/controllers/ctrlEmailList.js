@@ -7,6 +7,24 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 	$scope.selectedTid = $stateParams.threadId;
 	$scope.emails = [];
 
+	let markAsReadTimeout = null;
+
+	const setRead = () => {
+		markAsReadTimeout = $timeout(() => {
+			inbox.setThreadReadStatus($scope.selectedTid);
+		}, consts.SET_READ_AFTER_TIMEOUT);
+
+		$scope.$on('$destroy', () => {
+			if (markAsReadTimeout)
+				$timeout.cancel(markAsReadTimeout);
+		});
+	};
+
+	$rootScope.$on('inbox-new', (e, threadId) => {
+		if (threadId == $scope.selectedTid)
+			setRead();
+	});
+
 	if ($scope.selectedTid) {
 		let t = $timeout(() => {
 			$scope.isLoading = true;
@@ -28,15 +46,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 				}
 
 				$scope.emails = yield emailsPromise;
-
-				const markAsReadTimeout = $timeout(() => {
-						inbox.setThreadReadStatus($scope.selectedTid);
-					}, consts.SET_READ_AFTER_TIMEOUT);
-
-				$scope.$on('$destroy', () => {
-					if (markAsReadTimeout)
-						$timeout.cancel(markAsReadTimeout);
-				});
+				setRead();
 			} finally {
 				$timeout.cancel(t);
 				$scope.isLoading = false;

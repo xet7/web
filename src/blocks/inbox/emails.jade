@@ -35,6 +35,9 @@ div(ng-if="selectedTid !== null").main-view
 					| {{'MAIN.COMPOSE.LB_FROM' | translate}}:
 					strong(ng-bind="email.fromAllPretty")
 					br
+					| {{'MAIN.COMPOSE.LB_TO' | translate}}:
+					strong(ng-bind="email.toPretty")
+					br
 					| {{'MAIN.COMPOSE.LB_SUBJECT' | translate}}:
 					span(ng-bind="email.subject")
 				.col-xs-2.when

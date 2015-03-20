@@ -13,16 +13,20 @@ module.exports = /*@ngInject*/($scope, $timeout, co, utils, user, crypto, crypto
 	});
 
 	$scope.$bind('keyring-updated', () => {
-		$scope.keys = crypto.getAvailableEncryptedPrivateKeys().map(k => ({
-			keyId: utils.hexify(k.primaryKey.keyid.bytes),
-			isDecrypted: crypto.getDecryptedPrivateKeyByFingerprint(k.primaryKey.fingerprint).primaryKey.isDecrypted,
-			decryptPassword: '',
-			decryptIsSuccess: null,
-			decryptTime: null,
-			fingerprint: k.primaryKey.fingerprint,
-			created: k.primaryKey.created,
-			user: k.users[0].userId.userid
-		}));
+		$scope.keys = crypto.getAvailableEncryptedPrivateKeys().map(k => {
+			const key = crypto.getDecryptedPrivateKeyByFingerprint(k.primaryKey.fingerprint);
+
+			return {
+				keyId: utils.hexify(k.primaryKey.keyid.bytes),
+				isDecrypted: key && key.primaryKey.isDecrypted,
+				decryptPassword: '',
+				decryptIsSuccess: null,
+				decryptTime: null,
+				fingerprint: k.primaryKey.fingerprint,
+				created: k.primaryKey.created,
+				user: k.users[0].userId.userid
+			};
+		});
 		console.log('keyring-updated', $scope.keys);
 
 		$scope.isAnyUndecryptedKeys = $scope.keys.some(k => !k.isDecrypted);
@@ -49,6 +53,11 @@ module.exports = /*@ngInject*/($scope, $timeout, co, utils, user, crypto, crypto
 		crypto.removeSensitiveKeys(true);
 	};
 
+	$scope.downloadKey = (keyMeta) => {
+		const key = crypto.getPublicKeyByFingerprint(keyMeta.fingerprint);
+		saver.saveAs(key.armor(), user.name + '.pgp');
+	};
+
 	$scope.exportKeys = () => {
 		let keysBackup = cryptoKeys.exportKeys();
 		saver.saveAs(keysBackup, cryptoKeys.getExportFilename(keysBackup, user.name));
@@ -72,16 +81,14 @@ module.exports = /*@ngInject*/($scope, $timeout, co, utils, user, crypto, crypto
 		}
 
 		if (Object.keys($scope.settings).length > 0) {
-			updateTimeout = $timeout.schedule(updateTimeout, () => {
+			updateTimeout = $timeout.schedulePromise(updateTimeout, () => co(function *(){
 				// todo: handle errors
-				user.update($scope.settings)
-					.then(() => {
+				try {
+					yield user.update($scope.settings);
+				} catch (err) {
 
-					})
-					.catch(() => {
-
-					});
-			}, 1000);
+				}
+			}), 1000);
 		}
 	}, true);
 };

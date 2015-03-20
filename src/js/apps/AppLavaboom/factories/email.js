@@ -18,6 +18,10 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 			: (angular.isArray(opt.from) ? opt.from : [opt.from]);
 		this.fromAllPretty = manifest ? manifest.from.map(e => e.prettyName).join(',')
 			: (angular.isArray(opt.from) ? opt.from.join(',') : opt.from);
+
+		this.to = manifest ? manifest.to : [];
+		this.toPretty = this.to.join(',');
+
 		this.preview = opt.preview;
 		this.body = opt.body;
 		this.attachments = opt.attachments ? opt.attachments : [];

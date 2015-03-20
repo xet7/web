@@ -1,5 +1,3 @@
-let chan = require('chan');
-
 module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate, LavaboomAPI, co, translate, crypto, user, inbox, contacts, hotkey, loader) => {
 	const translations = {
 		LB_INITIALIZING_I18N : '',
