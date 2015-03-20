@@ -99,7 +99,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	});
 
 	this.initialize = () => co(function *(){
-		let labels = yield self.getLabels();
+		const info = yield LavaboomAPI.info();
+		console.log('info', info);
+
+		const labels = yield self.getLabels();
 
 		if (!labels.byName.Drafts)
 			yield self.createLabel('Drafts');
