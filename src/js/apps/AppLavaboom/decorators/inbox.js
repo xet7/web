@@ -198,15 +198,17 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 
 		const thread = threadsCache.getById(threadId);
 
-		const labels = yield self.getLabels();
-		thread.labels.forEach(lid => {
-			const labelName = labels.byId[lid].name;
-			console.log('setThreadReadStatus decorator for threadId', threadId, 'labelName', labelName);
-			if (['Inbox'].includes(labelName))
-				labels.byName[labelName].addReadThreadId(threadId);
-		});
+		if (thread) {
+			const labels = yield self.getLabels();
+			thread.labels.forEach(lid => {
+				const labelName = labels.byId[lid].name;
+				console.log('setThreadReadStatus decorator for threadId', threadId, 'labelName', labelName);
+				if (['Inbox'].includes(labelName))
+					labels.byName[labelName].addReadThreadId(threadId);
+			});
 
-		$rootScope.$broadcast('inbox-labels', labels);
+			$rootScope.$broadcast('inbox-labels', labels);
+		}
 
 		if (thread && thread.isRead)
 			return;
@@ -284,6 +286,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 			self.invalidateThreadCache();
 		});
 		$rootScope.$on('logout', () => {
+			console.log('invalidate inbox caches');
 			self.invalidateEmailCache();
 			self.invalidateThreadCache();
 		});
