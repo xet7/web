@@ -8,10 +8,10 @@ div#compose-wrapper
 						li(ng-show="isError")
 							span {{'MAIN.COMPOSE.LB_ERROR' | translate}}
 						li
-							button.btn.btn-default(ng-click="isXCC = !isXCC", ng-disabled="isWarning")
+							button.btn.btn-default(ng-click="isXCC = !isXCC", ng-disabled="isWarning", tooltip="{{'MAIN.COMPOSE.TOOLTIP_XCC' | translate}}", tooltip-append-to-body="true")
 								span.icon-tick
 						li.btn-group.dropdown(dropdown="", is-open="isWarning")
-							button.btn.btn-default(ng-disabled="isWarning || !isValid()", type="submit", ng-click="send()")
+							button.btn.btn-default(ng-disabled="isWarning || !isValid()", type="submit", ng-click="send()", tooltip="{{'MAIN.COMPOSE.TOOLTIP_SEND' | translate}}", tooltip-append-to-body="true")
 								span.icon-sent
 							ul.dropdown-menu(role="menu")
 								li
@@ -29,7 +29,7 @@ div#compose-wrapper
 										input#check1(type='checkbox', name="isSkipWarning", ng-model="isSkipWarning")
 										label(for='isSkipWarning', ng-click="$event.stopPropagation(); toggleIsSkipWarning($event)") {{'MAIN.COMPOSE.LB_ASK_ME_AGAIN' | translate}}
 						li
-							button.btn.btn-default(ng-click="hidePopup()")
+							button.btn.btn-default(ng-click="hidePopup()", tooltip="{{'MAIN.COMPOSE.TOOLTIP_DISCARD' | translate}}", tooltip-append-to-body="true")
 								span.icon-close
 		header#compose-header
 			.table-list
