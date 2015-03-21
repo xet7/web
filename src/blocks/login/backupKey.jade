@@ -18,10 +18,10 @@ form.steps-form.ng-cloak(ng-class="{'errors': currentErrorMessage}")
 			p {{'LOGIN.BACKUP_KEY.INFO3' | translate}}
 			p {{'LOGIN.BACKUP_KEY.INFO4' | translate}}
 			p {{'LOGIN.BACKUP_KEY.INFO5' | translate}}
-
-	.checkbox
-		input#check1(type='checkbox', name="check1", ng-model="form.isPrivateComputer")
-		label(for='check1') {{'LOGIN.BACKUP_KEY.LB_PRIVATE_PC' | translate}}
+			hr.blank
+			.checkbox
+				input#check1(type='checkbox', name="check1", ng-model="form.isPrivateComputer")
+				label(for='check1') {{'LOGIN.BACKUP_KEY.LB_PRIVATE_PC' | translate}}
 	hr.blank
 
 	footer
