@@ -1,9 +1,12 @@
+.only-print{
+	display: none;
+}
 @media print {
    #leftPanel, #mail-list, .filters{
    	display: none;
    }
    #mail-thread, #content, .main-view{
-   	padding: 0; margin: 0;
+   	padding: 0 !important; margin: 0 !important;
    	position: static;
    	width: 100%;
    }
@@ -12,9 +15,18 @@
 
    }
 
+   .logo{
+   	width: 20%;
+   	display: block;
+   	filter: grayscale(100%);
+   }
+
    .mail{
    	border-color: transparent; box-shadow: none !important;
    	border-bottom: 1px solid @border-site-wide;
    	padding: 0 !important; margin: 0 !important;
+   	&:hover{
+   		border: 1px solid transparent !important;
+   	}
    }
 }
