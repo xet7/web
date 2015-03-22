@@ -1,5 +1,5 @@
-module.exports = /*@ngInject*/($parse) => {
-	return (scope, element, attrs) => {
+module.exports = /*@ngInject*/($parse) =>
+	(scope, element, attrs) => {
 		const fn = $parse(attrs.ngRightClick);
 		element.bind('contextmenu', event => {
 			scope.$apply(() => {
@@ -8,4 +8,3 @@ module.exports = /*@ngInject*/($parse) => {
 			});
 		});
 	};
-};

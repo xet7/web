@@ -27,7 +27,5 @@ module.exports = /*@ngInject*/function() {
 		loader.showLoader(isImmediate);
 	};
 
-	this.isMainApplication = () => {
-		return loader.isMainApplication();
-	};
+	this.isMainApplication = () => loader.isMainApplication();
 };

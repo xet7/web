@@ -1,5 +1,5 @@
 // colors
-@lava: #4CBCDD;
+@lava: #3BBADC;
 @lava-dark: darken(@lava, 30%);
 @lava-light: lighten(@lava, 5%);
 @lava-gray: #3A4045;
@@ -21,7 +21,7 @@
 @lava-compose-header-fg: #61676f;
 
 //login colors
-@lava-login-lava: #3BBADC;				//Blue #3BBADC	
+@lava-login-lava: @lava;				//Blue #3BBADC	
 @lava-login-gray-lightest: lighten(#CCCBD0, 45%);
 @lava-login-gray-lighter: #CCCBD0;		//very light grey (input text) #CCCBD0
 @lava-login-gray-light: #9D9FA3;		//light grey (Headline) #9D9FA3
@@ -94,7 +94,7 @@
 @mail-thread-width-sm: 100% - @mail-list-width-sm;
 @mail-thread-padding: 15px 0 8px 39px;
 
-@filter-height: 3.9rem;
+@filter-height: 4.4rem;
 
 @mail-list-block-buttons-width: 9%;
 @mail-list-block-summary-width: 67%;
@@ -103,8 +103,7 @@
 @actions-buttons-width: 100% - @actions-search-width - @mail-list-block-buttons-width;
 
 //borders
-@border-site-wide: 1px solid @lava-gray-lighter;
-@border-site-wide: 1px solid @lava-gray-lighter;
+@border-site-wide: 1pt solid @lava-gray-lighter;
 
 //animations!!!
 @lava-ease-out-in: cubic-bezier(0.500, -0.215, 0.380, 1.245);

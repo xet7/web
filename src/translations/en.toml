@@ -200,7 +200,7 @@
 	LB_CONTACTS = "Contacts"
 	LB_SETTINGS = "Settings"
 	LB_LOGOUT = "Logout"
-	LB_COPYRIGHT = "&#169; Lavaboom 2015"
+	LB_COPYRIGHT = "© Lavaboom 2015"
 
 [MAIN.COMPOSE]
 	LB_TO = "To"
@@ -234,6 +234,9 @@
     LB_ATTACHMENT_STATUS_UPLOADING_ERROR = "cannot upload"
     LB_ATTACHMENT_STATUS_UPLOADED = "uploaded"
     BTN_DELETE = "delete"
+    TOOLTIP_XCC = "Add CC or BCC"
+    TOOLTIP_SEND = "Send"
+    TOOLTIP_DISCARD = "Discard"
 
 [MAIN.SETTINGS.MENU]
 	KEYS = "Keys"
@@ -303,6 +306,7 @@
 	LB_DECRYPTED = "Decrypted"
 	LAVABOOM_SYNC = "Lavaboom Sync"
 	BTN_GENERATE_KEYS = "Generate new key-pair"
+	BTN_DOWNLOAD = "Download this public key"
 
 [MAIN.CONTACTS]
 	PLC_SEARCH_CONTACTS = "Search Contacts"
@@ -327,6 +331,7 @@
     LB_NO_PRIVATE_KEY_FOUND2 = "Please go to "
     LB_SETTINGS = "settings"
     LB_NO_PRIVATE_KEY_FOUND3 = " and check your key"
+    LB_REMOVE = "Remove this email"
 
 [HOTKEY]
 	TITLE          		 = "Shortcuts cheatsheet"

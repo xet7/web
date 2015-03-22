@@ -1,3 +1,2 @@
-module.exports = /*@ngInject*/() => {
-	return (v, defaultValue) => v ? v : defaultValue;
-};
+module.exports = /*@ngInject*/() =>
+	(v, defaultValue) => v ? v : defaultValue;

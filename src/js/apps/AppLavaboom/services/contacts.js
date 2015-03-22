@@ -109,13 +109,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, utils, 
 		});
 	});
 
-	this.getContactById = (id) => {
-		return self.people.get(id);
-	};
+	this.getContactById = (id) => self.people.get(id);
 
-	this.getContactByEmail = (email) => {
-		return [...self.people.values()].find(c => c.isMatchEmail(email));
-	};
+	this.getContactByEmail = (email) => [...self.people.values()].find(c => c.isMatchEmail(email));
 
 	$rootScope.$on('user-authenticated', () => {
 		self.myself = new Contact({

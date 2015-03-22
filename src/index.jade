@@ -8,7 +8,7 @@ html(lang="en")
 		meta(name="description", content="")
 		meta(name="author", content="")
 		title Lavaboom
-		link(href='//fonts.googleapis.com/css?family=Roboto:100,300,400',rel='stylesheet',type='text/css')
+		link(href='//fonts.googleapis.com/css?family=Roboto:100,300,400,500',rel='stylesheet',type='text/css')
 		link(href="#{resolveAsset('/css/lavaboom.css')}", rel="stylesheet")
 		link(rel="apple-touch-icon", sizes="57x57", href="#{resolveAsset('/img/assets/apple-touch-icon-57x57.png')}")
 		link(rel="apple-touch-icon", sizes="114x114", href="#{resolveAsset('/img/assets/apple-touch-icon-114x114.png')}")
@@ -40,6 +40,8 @@ html(lang="en")
 								.progress
 									#loader-progress-bar.progress-bar(role='progressbar', aria-valuenow='0', aria-valuemin='0', aria-valuemax='100', style='width: 0%;')
 								p#loader-progress-text.lead Initializing...
+
+		#checker-app-container.hidden(ng-controller="CtrlChecker")
 
 		#login-app-container.hidden(ng-controller="CtrlLavaboomLogin")
 			div(ng-if="isInitialized && isShown")

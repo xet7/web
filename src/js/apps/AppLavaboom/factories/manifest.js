@@ -40,7 +40,7 @@ module.exports = /*@ngInject*/(contacts) => {
 
 		this.from = angular.isArray(manifest.headers.from) ? manifest.headers.from.map(e => formatFrom(e)) : [formatFrom(manifest.headers.from)];
 
-		this.to = manifest.headers.to;
+		this.to = angular.isArray(manifest.headers.to) ? manifest.headers.to : [manifest.headers.to];
 		this.cc = manifest.headers.cc ? manifest.headers.cc : [];
 		this.bcc = manifest.headers.bcc ? manifest.headers.bcc : [];
 		this.subject = manifest.headers.subject;
@@ -65,9 +65,7 @@ module.exports = /*@ngInject*/(contacts) => {
 			});
 		};
 
-		this.getPart = (id = 'body') => {
-			return new ManifestPart(manifest.parts.find(p => p.id == id));
-		};
+		this.getPart = (id = 'body') => new ManifestPart(manifest.parts.find(p => p.id == id));
 
 		this.files = manifest.parts.filter(p => p.id != 'body').map(p => new ManifestPart(p));
 
@@ -82,9 +80,7 @@ module.exports = /*@ngInject*/(contacts) => {
 			});
 		};
 
-		this.isValid = () => {
-			return !!manifest.parts.find(p => p.id == 'body');
-		};
+		this.isValid = () => !!manifest.parts.find(p => p.id == 'body');
 
 		this.stringify = () => JSON.stringify(manifest);
 	}

@@ -1,12 +1,9 @@
-const AngularApplication = require('../helpers/angularApplication');
 const bulkRequire = require('bulk-require');
-const application = new AngularApplication('AppLavaboomLogin');
 
-application.create(
-	[
-		'templates'
-	],
-	[
+const AngularApplication = require('../helpers/angularApplication');
+const application = new AngularApplication({
+	applicationName: 'AppLavaboomLogin',
+	dependencies: [
 		'utils',
 		'lavaboom.api',
 		'ui.router',
@@ -14,19 +11,12 @@ application.create(
 		'ngMessages',
 		'angular-co',
 		'ngAutodisable'
+	],
+	productionOnlyDependencies: [
+		'templates'
 	]
-);
+});
 
 application.registerBulks(
-	bulkRequire(__dirname + '/AppLavaboomLogin/', [
-		'runs/*.js',
-		'decorators/*.js',
-		'filters/*.js',
-		'constants/*.js',
-		'configs/*.js',
-		'directives/*.js',
-		'factories/*.js',
-		'services/*.js',
-		'controllers/*.js'
-	])
+	bulkRequire(__dirname + '/AppLavaboomLogin/', '**/*.js')
 );
