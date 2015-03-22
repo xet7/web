@@ -7,7 +7,7 @@
 		overflow-y: auto;
 		.mail-list-item{
 			display: block;
-			// padding: .6em 0 0.54em;
+			padding: 1rem;
 			border-bottom: @border-site-wide;
 			color: @lava-text;
 			.no-underlines();
@@ -15,7 +15,7 @@
 
 			
 			cursor: pointer;
-			font-size: 86%;
+			// font-size: 86%;
 			// line-height: 15px;
 			&:not(:last-child){
 				// border-bottom: 0;
@@ -29,6 +29,7 @@
 
 			h5{
 				color: @lava-heading;
+				margin: 0;
 			}
 			.subject{
 				color: @lava-heading;
@@ -42,8 +43,31 @@
 
 			.when{
 				.text-right();
-				width: 100% - @mail-list-block-buttons-width - @mail-list-block-summary-width;
+				width: 4rem;
 			}
+
+			.icon-unread{
+				color: @lava;
+			}
+
+			.buttons{
+				width: @mail-list-block-buttons-width;
+				> div{
+					width: @mail-list-block-buttons-width;
+					height: 3.1rem;
+					span{
+						display:block;
+						font-size: 1.8rem;
+						line-height: 2.2rem;
+						vertical-align: baseline;
+					}
+				}
+			}
+
+			.details{
+				width: 100%;
+			}
+
 			
 		}
 		.active .mail-list-item{
