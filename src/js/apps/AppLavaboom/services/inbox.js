@@ -83,11 +83,14 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 		const r = labels.reduce((a, labelOpts) => {
 			const label = new Label(labelOpts);
+			if (label.name == 'Drafts')
+				return a;
+
 			a.byName[label.name] = a.byId[label.id] = label;
 			return a;
 		}, {byName: {}, byId: {}, list: []});
 
-		r.list = consts.ORDERED_LABELS.map(labelName => r.byName[labelName]);
+		r.list = consts.ORDERED_LABELS.map(labelName => r.byName[labelName]).filter(e => !!e);
 
 		$rootScope.$broadcast('inbox-labels', r);
 
@@ -100,8 +103,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 		const labels = yield self.getLabels();
 
-		if (!labels.byName.Drafts)
-			yield self.createLabel('Drafts');
+		/*if (!labels.byName.Drafts)
+			yield self.createLabel('Drafts');*/
 	});
 
 	this.createLabel = (name) => co(function *(){
