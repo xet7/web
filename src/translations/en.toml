@@ -48,6 +48,7 @@
 	LB_SORTED_BY_MODIFICATION_DATE_DESC = "Sorted by modification date -"
 	LB_SORTED_BY_MODIFICATION_DATE_ASC = "Sorted by modification date +"
 	PLC_SEARCH = "Search Emails"
+	LB_NO_IMAGE = "External images blocked"
 
 [INBOX.DOWNLOAD]
 	TITLE = "Downloading your attachment"
