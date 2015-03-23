@@ -34,10 +34,15 @@
 					label.switch
 						input(type='checkbox', ng-model="settings.isSignatureEnabled")
 						i
-			li.list-group-item
+			li.list-group-item(collapse="!settings.isSignatureEnabled")
 				.text-control
 					.signature
 						div(text-angular="", ng-model="settings.signatureHtml")
+							p.text-center
+								a(href="http://lavaboom.com", target="_blank")
+									strong Sent with Lavaboom - your secure email provider.
+									br
+									| Get your own address at to lavaboom.com
 					
 		h4 {{'MAIN.SETTINGS.PROFILE.TITLE_NEWSLETTER' | translate}}
 		ul.list-group

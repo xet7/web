@@ -26,6 +26,7 @@ div.pane-status(ng-if="selectedTid === null")
 div(ng-if="selectedTid !== null").main-view
 	.pane-status(ng-show="isLoading")
 		img(src="/img/loader.svg")
+	img.logo.only-print(src="/img/Lavaboom-logo-full.svg")
 	.row.no-gutter.mail(ng-repeat="email in emails")
 		.col-xs-24
 			header.row.no-gutter

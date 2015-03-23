@@ -196,7 +196,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		delete sessionStorage.lavaboomToken;
 	};
 
-	this.logout = () => {
+	this.logout = () => co(function *(){
 		$rootScope.$broadcast('logout');
 
 		self.settings = {};
@@ -207,8 +207,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		isAuthenticated = false;
 		token = '';
 
+		yield $state.go('empty');
+
 		loader.resetProgress();
 		loader.showLoader(true);
 		loader.loadLoginApplication({lbDone: translations.LB_BYE});
-	};
+	});
 };

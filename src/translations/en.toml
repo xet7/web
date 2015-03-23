@@ -253,6 +253,9 @@
     LB_ATTACHMENT_STATUS_UPLOADING_ERROR = "cannot upload"
     LB_ATTACHMENT_STATUS_UPLOADED = "uploaded"
     BTN_DELETE = "delete"
+    TOOLTIP_XCC = "Add CC or BCC"
+    TOOLTIP_SEND = "Send"
+    TOOLTIP_DISCARD = "Discard"
 
 [MAIN.SETTINGS.MENU]
 	KEYS = "Keys"
