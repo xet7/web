@@ -1,5 +1,6 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $state, co, inbox, user) => {
 	$scope.$state = $state;
+	$scope.name = user.styledName;
 
 	co(function *(){
 		$scope.labels = (yield inbox.getLabels()).list;
