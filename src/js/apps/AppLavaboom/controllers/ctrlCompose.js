@@ -412,6 +412,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
             event.preventDefault();
             $scope.send();
         },
-        allowIn: ['INPUT', 'SELECT', 'TEXTAREA', 'P', 'DIV']
+        allowIn: ['INPUT', 'SELECT', 'TEXTAREA']
     });
 };
