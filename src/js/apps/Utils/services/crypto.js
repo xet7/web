@@ -69,6 +69,14 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		return [...keys.values()];
 	};
 
+	this.isWebCrypto = () => {
+		return !!window.crypto || !!window.msCrypto;
+	};
+
+	this.isWebWorker = () => {
+		return !!window.Worker;
+	};
+
 	this.decodeRaw = (message) => co(function *(){
 		if (!message)
 			throw new Error('nothing_to_decrypt');
