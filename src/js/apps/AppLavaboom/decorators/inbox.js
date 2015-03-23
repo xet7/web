@@ -1,4 +1,6 @@
-module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, utils, Cache, Proxy) => {
+const sleep = require('co-sleep');
+
+module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, utils, LavaboomAPI, Cache, Proxy) => {
 	const self = $delegate;
 
 	const proxy = new Proxy($delegate);
@@ -82,7 +84,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 
 		let value = threadsCache.get(labelName);
 		if (!value || (!value.isEnd && offset >= value.list.length)) {
-			console.log('doing requestList api call with args', args, new Error());
+			console.log('doing requestList api call with args', args);
 			let newList = yield requestList(...args);
 			if (!newList)
 				newList = [];
@@ -241,8 +243,18 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 		return email;
 	}, true);
 
-	proxy.methodCall('__handleEvent', function *(__handleEvent, args) {
-		const [event] = args;
+	$delegate.invalidateThreadCache = () => {
+		threadsCache.invalidateAll();
+	};
+
+	$delegate.invalidateEmailCache = () => {
+		emailsCache.invalidateAll();
+	};
+
+	const events = [];
+
+	const handleEvent = (event) => co(function *(){
+		console.log('got server event', event);
 
 		const labels = cache.get('labels');
 
@@ -267,17 +279,17 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 
 		$rootScope.$broadcast(`inbox-emails`, event.thread);
 		$rootScope.$broadcast(`inbox-new`, event.thread);
-
-		yield __handleEvent(...args);
 	});
 
-	$delegate.invalidateThreadCache = () => {
-		threadsCache.invalidateAll();
-	};
-
-	$delegate.invalidateEmailCache = () => {
-		emailsCache.invalidateAll();
-	};
+	co(function *() {
+		while (true) {
+			if (events.length > 0) {
+				const event = events.shift();
+				yield handleEvent(event);
+			}
+			yield sleep(100);
+		}
+	});
 
 	$rootScope.whenInitialized(() => {
 		$rootScope.$on('keyring-updated', () => {
@@ -290,6 +302,9 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 			self.invalidateEmailCache();
 			self.invalidateThreadCache();
 		});
+
+		LavaboomAPI.subscribe('receipt', (msg) => events.push(msg));
+		LavaboomAPI.subscribe('delivery', (msg) => events.push(msg));
 	});
 
 	return $delegate;

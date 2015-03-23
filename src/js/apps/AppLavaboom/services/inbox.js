@@ -4,10 +4,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	this.selectedTidByLabelName = {};
 	this.sortQuery = '-date_created';
 
-	this.__handleEvent = (event) => co(function *(){
-		console.log('got server event', event);
-	});
-
 	this.getThreadById = (threadId) => co(function *() {
 		const thread = (yield LavaboomAPI.threads.get(threadId)).body.thread;
 
@@ -176,9 +172,4 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	this.rejectSend = () => {
 		sendEnvelope = null;
 	};
-
-	$rootScope.whenInitialized(() => {
-		LavaboomAPI.subscribe('receipt', (msg) => self.__handleEvent(msg));
-		LavaboomAPI.subscribe('delivery', (msg) => self.__handleEvent(msg));
-	});
 };
