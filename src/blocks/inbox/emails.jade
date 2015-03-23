@@ -41,7 +41,7 @@ div(ng-if="selectedTid !== null").main-view
 					| {{'MAIN.COMPOSE.LB_SUBJECT' | translate}}:
 					span(ng-bind="email.subject")
 				.col-xs-2.when
-					span(ng-bind="email.date | amCalendar")
+					span(ng-bind="email.date | timeAgo")
 				.col-xs-1.secure
 					a.icon-secure
 			.mail-content.row.no-gutter

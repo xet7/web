@@ -1,5 +1,28 @@
 [LANG]
 	CODE = "en"
+	FULL_CODE = "en_US"
+
+# timeago i18n data, empty means default
+[DATES.TIMEAGO]
+	PREFIX_AGO = "" 
+	PREFIX_FROM_NOW = "" 
+	SUFFIX_AGO = "" 
+	SUFFIX_FROM_NOW = "" 
+	SECONDS = "" 
+	MINUTE = "" 
+	MINUTES = ""
+	HOUR = ""
+	HOURS = "" 
+	DAY = "" 
+	DAYS = "" 
+	MONTH = "" 
+	MONTHS = "" 
+	YEAR = ""
+	YEARS = ""
+
+[DATES]
+	TODAY = "Today"
+    YESTERDAY = "Yesterday"
 
 [INBOX]
 	NO_PREVIEW_AVAILABLE = "No preview available"
@@ -50,10 +73,6 @@
 	LB_PRIVATE_KEY = "Private Key"
     LB_PUBLIC_KEY = "Public Key"
     LB_NOT_IMPLEMENTED = "Not yet implemented"
-
-[DATES]
-	TODAY = "Today"
-	YESTERDAY = "Yesterday"
 
 [VALIDATION]
 	LB_REQUIRED = "This field is required"

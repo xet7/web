@@ -10,7 +10,6 @@ module.exports = /*@ngInject*/function($rootScope, $http, $translate, co, consts
 	});
 
 	this.getCurrentLangCode = () => localStorage.lang ? localStorage.lang : consts.DEFAULT_LANG;
-	
 
 	this.switchLanguage = (langKey) => {
 		localStorage.lang = langKey;
