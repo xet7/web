@@ -89,6 +89,8 @@
 @mail-list-width-sm: 38.7%;
 @mail-list-padding-left: 46px;
 @mail-list-padding-right: 85px;
+@mail-list-padding: 1.1rem;
+@mail-list-icon-color: @lava-gray-light;
 
 @mail-thread-width: 100% - @mail-list-width;
 @mail-thread-width-sm: 100% - @mail-list-width-sm;
@@ -96,8 +98,9 @@
 
 @filter-height: 4.4rem;
 
-@mail-list-block-buttons-width: 9%;
-@mail-list-block-summary-width: 67%;
+@mail-list-block-buttons-width: 4.4rem;
+@mail-list-block-summary-width: auto;
+@mail-list-meta-width: 8.8rem;
 
 @actions-search-width: 50%;
 @actions-buttons-width: 100% - @actions-search-width - @mail-list-block-buttons-width;
@@ -227,6 +230,7 @@ body{
 	> * {
 		margin: 0;
 	}
+	margin: 0;
 }
 
 .vertical-align(@pos : 'relative'){
@@ -258,9 +262,21 @@ body{
 
 .lava-font{
 	font-weight: @base-font-weight !important;
+	.medium{
+		font-weight: 400;
+	}
+	strong, .strong{
+		font-weight: 500;
+	}
 	@media (-webkit-min-device-pixel-ratio: 2), 
 		(min-resolution: 192dpi) { 
 		font-weight: @light-font-weight !important;
+		.medium{
+			font-weight: 300;
+		}
+		strong, .strong{
+			font-weight: 400;
+		}
 	}
 }
 
