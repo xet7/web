@@ -45,6 +45,10 @@ html(lang="en")
 
 		#login-app-container.hidden(ng-controller="CtrlLavaboomLogin")
 			div(ng-if="isInitialized && isShown")
+				ul.nav.navbar-nav.navbar-right
+					li.spacer(ng-repeat="notification in notifications")
+						span(class="{{notification.cssClass}}")
+						span(title="{{notification.title}}") {{notification.text}}
 				.login-app.login
 					.container.main-container
 						.row

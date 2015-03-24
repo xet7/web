@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
+module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils) {
 	let self = this;
 
 	let wrapOpenpgpKeyring = (keyring) => {
@@ -69,14 +69,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		return [...keys.values()];
 	};
 
-	this.isWebCrypto = () => {
-		return !!window.crypto || !!window.msCrypto;
-	};
-
-	this.isWebWorker = () => {
-		return !!window.Worker;
-	};
-
 	this.decodeRaw = (message) => co(function *(){
 		if (!message)
 			throw new Error('nothing_to_decrypt');
@@ -144,6 +136,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co) {
 		self.options = opt;
 
 		if (!isInitialized) {
+			openpgp.key.generate({numBits: 1024, userId: 'test@test', passphrase: 'test'}).catch(err => {
+				console.error('!gg!', err);
+			});
+
 			openpgp.initWorker('/vendor/openpgp.worker.js');
 
 			isInitialized = true;

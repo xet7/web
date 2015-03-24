@@ -2,16 +2,19 @@ div.pane-status(ng-if="selectedTid === null")
 	.col-xs-24 {{'INBOX.LB_NOTHING_SELECTED' | translate}}
 
 .filters.row.no-gutter.lava-icon-row
-	nav.navbar.navbar-inverse(role="navigation", ng-if="selectedTid")
+	nav.navbar.navbar-inverse(role="navigation")
 		div
-			ul.nav.navbar-nav.navbar-right(ng-show="selectedTid")
-				li
+			ul.nav.navbar-nav.navbar-right
+				li.spacer(ng-repeat="notification in notifications")
+					span(class="{{notification.cssClass}}")
+					span(title="{{notification.title}}") {{notification.text}}
+				li(ng-show="selectedTid")
 					button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid})")
 						span.icon-reply
-				li
+				li(ng-show="selectedTid")
 					button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid})")
 						span.icon-reply-all
-				li
+				li(ng-show="selectedTid")
 					button.btn.btn-default
 						span.icon-arrow-right
 div(ng-if="selectedTid").main-view

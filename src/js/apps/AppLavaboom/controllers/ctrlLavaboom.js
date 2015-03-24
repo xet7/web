@@ -1,4 +1,5 @@
-module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate, LavaboomAPI, co, translate, crypto, user, inbox, contacts, hotkey, loader) => {
+module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
+							   tests, LavaboomAPI, co, translate, crypto, user, inbox, contacts, hotkey, loader, notifications) => {
 	const translations = {
 		LB_INITIALIZING_I18N : '',
 		LB_INITIALIZING_OPENPGP : '',
@@ -19,6 +20,10 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 
 			if (!$rootScope.isInitialized)
 				yield translationPromise;
+
+			yield tests.initialize();
+
+			tests.performCompatibilityChecks();
 
 			loader.incProgress(translations.LB_INITIALIZING_I18N, 1);
 

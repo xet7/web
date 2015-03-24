@@ -1,6 +1,14 @@
 [LANG]
 	CODE = "en"
 
+[NOTIFICATIONS]
+	WEB_CRYPTO_IS_NOT_AVAILABLE_TITLE="Crypto works much slower, please upgrade your browser"
+	WEB_CRYPTO_IS_NOT_AVAILABLE_TEXT="Web Crypto isn't available"
+	WEB_CRYPTO_LIMITED_TITLE="Crypto keys generation works much slower, please upgrade your browser"
+    WEB_CRYPTO_LIMITED_TEXT="Web crypto support is limited"
+	WEB_WORKERS_IS_NOT_AVAILABLE_TITLE="Application may be unresponsive, please upgrade your browser"
+    WEB_WORKERS_IS_NOT_AVAILABLE_TEXT="Web Workers aren't available"
+
 [INBOX]
 	NO_PREVIEW_AVAILABLE = "No preview available"
 	LOADING = "Loading..."
