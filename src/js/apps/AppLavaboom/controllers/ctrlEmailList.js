@@ -2,10 +2,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 	console.log('loading emails list', $stateParams.threadId);
 
 	$scope.isLoading = false;
-
 	$scope.labelName = $stateParams.labelName;
 	$scope.selectedTid = $stateParams.threadId;
 	$scope.emails = [];
+
+	let isThreads = false;
 
 	const setRead = () => co(function *(){
 		yield utils.sleep(consts.SET_READ_AFTER_TIMEOUT);
@@ -19,9 +20,12 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 			setRead();
 	});
 
-	$rootScope.$on(`inbox-threads`, (e, labelName) => {
-
+	$rootScope.$on(`inbox-threads-received`, (e, labelName) => {
+		if ($scope.labelName == labelName)
+			isThreads = true;
 	});
+
+	$rootScope.$broadcast(`inbox-threads-status-request`, $scope.labelName, $scope.selectedTid);
 
 	if ($scope.selectedTid) {
 		let t = $timeout(() => {
@@ -43,7 +47,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 					return;
 				}
 
+				yield utils.wait(() => isThreads);
+
 				$scope.emails = yield emailsPromise;
+
 				setRead();
 			} finally {
 				$timeout.cancel(t);
