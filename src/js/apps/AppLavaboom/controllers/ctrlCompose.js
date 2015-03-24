@@ -182,7 +182,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 			if (isSecured) {
 				$scope.form.body = inbox.getMumbledFormattedBody();
-				
+
 				yield utils.sleep(consts.MUMBLE_SHOW_DELAY);
 
 				yield $scope.confirm();
