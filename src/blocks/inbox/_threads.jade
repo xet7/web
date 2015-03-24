@@ -30,30 +30,28 @@
 			img(src="/img/loader.svg")
 		div.pane-status(ng-show="!isLoadingSign && threadsList.length < 1") {{'INBOX.LB_NOTHING_FOUND' | translate}}
 		div(infinite-scroll="scroll()", infinite-scroll-disabled="isLoading || isDisabled", infinite-scroll-parent="true")
-			div(ng-repeat="thread in threadsList | filter: searchFilter as filteredThreadsList track by thread.id", ng-class="{active: selectedTid == thread.id}", ng-click="selectThread(thread.id)")
+			div.item-wrapper(ng-repeat="thread in threadsList | filter: searchFilter as filteredThreadsList track by thread.id", ng-class="{active: selectedTid == thread.id}", ng-click="selectThread(thread.id)")
 				.mail-list-item
-					.table-list.no-gutter
-						.buttons.text-center.cell
-							div.icon-holder
+					.mail-list-wrapper
+						.buttons.text-center
+							div.icon-holder.read
 								span.icon-star(ng-show="thread.isLabel('Starred') && thread.isRead")
 								//- span.icon-star-outline(ng-show="!thread.isLabel('Starred')  && thread.isRead")
 								span.icon-unread(ng-show="!thread.isRead && !thread.isLabel('Starred')")
-							div.icon-holder
+							div.icon-holder.reply
 								span.icon-reply
-							div.icon-holder
+							div.icon-holder.forward
 								span.icon-arrow-right
-						.cell.details
-							h5(ng-bind="thread.members | members")
-							p.subject(ng-bind="thread.subject")
+						.details
+							p.strong.pack.title(ng-bind="thread.members | members", title="{{thread.members | members}}")
+							p.medium.subject(ng-bind="thread.subject")
 							//p.summary(ng-bind-html="thread.headerEmail.preview ? thread.headerEmail.preview.data.text : 'INBOX.NO_PREVIEW_AVAILABLE' | translate")
-						.when.cell
-							span.date.lava-icon-row(ng-bind="thread.created | timeAgo")
-							br
-							br
+						.when
+							span.date(ng-bind="thread.created | lavadate", title = "{{thread.created | timeAgo}}")
 							.lava-icon-row
-								a(ng-show="thread.attachmentsCount > 0")
+								span(ng-show="thread.attachmentsCount > 0")
 									span.icon-paper-clip
-								a(ng-show="thread.secure == 'all' || thread.secure == 'some'")
+								span(ng-show="thread.secure == 'all' || thread.secure == 'some'")
 									span.icon-lock
-								a(ng-show="thread.secure == 'none'|| thread.secure == 'some'")
+								span(ng-show="thread.secure == 'none'|| thread.secure == 'some'")
 									span.icon-unlock
