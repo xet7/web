@@ -17,10 +17,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 		const trashLabelId = labels.byName.Trash.id;
 		const spamLabelId = labels.byName.Spam.id;
-		const draftsLabelId = labels.byName.Drafts.id;
+		const draftsLabelId = labels.byName.Drafts ? labels.byName.Drafts.id : null;
 
 		const lbs = thread.labels;
-		return lbs.includes(trashLabelId) || lbs.includes(spamLabelId) || lbs.includes(draftsLabelId)
+		return lbs.includes(trashLabelId) || lbs.includes(spamLabelId) || (draftsLabelId && lbs.includes(draftsLabelId))
 			? yield self.requestDeleteForcefully(thread)
 			: yield self.requestSetLabel(thread, 'Trash');
 	});
