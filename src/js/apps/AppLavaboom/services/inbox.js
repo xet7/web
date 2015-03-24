@@ -1,6 +1,8 @@
 module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts, co, LavaboomAPI, user, crypto, contacts, Email, Thread, Label) {
 	const self = this;
 
+	const newLineRegex = /(\r\n|\n)/g;
+
 	this.selectedTidByLabelName = {};
 	this.sortQuery = '-date_created';
 
@@ -159,10 +161,16 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	});
 
 	let sendEnvelope = null;
+	let isSecured = false;
 
 	this.send = (opts, manifest, keys) => co(function * () {
+		isSecured = Email.isSecuredKeys(keys);
 		sendEnvelope = yield Email.toEnvelope(opts, manifest, keys);
 	});
+
+	this.getMumbledFormattedBody = () => {
+		return sendEnvelope && sendEnvelope.body ? sendEnvelope.body.replace(newLineRegex, '<br />') : '';
+	};
 
 	this.confirmSend = () =>  co(function * () {
 		const res = yield LavaboomAPI.emails.create(sendEnvelope);

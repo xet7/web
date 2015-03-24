@@ -1,4 +1,6 @@
-module.exports = /*@ngInject*/function() {
+const sleep = require('co-sleep');
+
+module.exports = /*@ngInject*/function(co) {
 	this.hexify = (binaryString) => openpgp.util.hexstrdump(binaryString);
 
 	this.uniq = (array, key = null) => {
@@ -10,4 +12,8 @@ module.exports = /*@ngInject*/function() {
 			return map;
 		}, new Map()).values()];
 	};
+
+	this.sleep = (time) => co(function *(){
+		yield sleep(time);
+	});
 };

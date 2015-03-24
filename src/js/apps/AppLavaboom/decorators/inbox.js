@@ -1,5 +1,3 @@
-const sleep = require('co-sleep');
-
 module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, utils, LavaboomAPI, Cache, Proxy) => {
 	const self = $delegate;
 
@@ -287,7 +285,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 				const event = events.shift();
 				yield handleEvent(event);
 			}
-			yield sleep(100);
+			yield utils.sleep(100);
 		}
 	});
 
