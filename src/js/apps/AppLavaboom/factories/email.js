@@ -3,24 +3,25 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 		/([\[\(] *)?(RE?S?|FYI|RIF|I|FS|VB|RV|ENC|ODP|PD|YNT|ILT|SV|VS|VL|AW|WG|ΑΠ|ΣΧΕΤ|ΠΡΘ|תגובה|הועבר|主题|转发|FWD?) *([-:;)\]][ :;\])-]*|$)|\]+ *$/i;
 
 	function Email (opt, manifest) {
+		const self = this;
+
 		this.id =  opt.id;
 		this.threadId = opt.thread;
-		this.isEncrypted = opt.isEncrypted;
-		this.subject = manifest ? manifest.subject : opt.name;
-		if (!this.subject)
-			this.subject = 'unknown subject';
-
 		this.date = opt.date_created;
+
 		this.manifest = manifest;
+		this.subject = manifest ? manifest.subject : opt.name;
 		this.files = manifest ? manifest.files : [];
 
 		this.from = manifest ? manifest.from
-			: (angular.isArray(opt.from) ? opt.from : [opt.from]);
-		this.fromAllPretty = manifest ? manifest.from.map(e => e.prettyName).join(',')
-			: (angular.isArray(opt.from) ? opt.from.join(',') : opt.from);
+			: (angular.isArray(opt.from)
+				? opt.from.map(e => Manifest.formatFrom(e))
+				: [Manifest.formatFrom(opt.from)]
+			  );
+		this.fromAllPretty = self.from.map(e => e.prettyName).join(',');
 
 		this.to = manifest ? manifest.to : [];
-		this.toPretty = this.to.join(',');
+		this.toPretty = self.to.join(',');
 
 		this.preview = opt.preview;
 		this.body = opt.body;
@@ -109,7 +110,6 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 		}
 
 		let email = new Email(angular.extend({}, envelope, {
-			isEncrypted: true,
 			body: body,
 			preview: body
 		}), manifestRaw ? Manifest.createFromJson(manifestRaw) : null);
