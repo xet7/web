@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, $templateCache, $interpolate,
-							   utils, consts, co, router, dateFilter,
+							   utils, consts, co, router,
 							   user, contacts, inbox, Manifest, Contact, hotkey, ContactEmail, Email, Attachment) => {
 	$scope.toolbar = [
 		['h1', 'h2', 'h3'],
@@ -184,7 +184,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, $te
 				const replyArgs = {
 					body: body,
 					replyHeader: {
-						date: dateFilter(lastEmail.date),
+						date: lastEmail.date,
 						name: lastEmail.from[0].name,
 						email: lastEmail.from[0].address
 					},

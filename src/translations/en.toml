@@ -37,7 +37,7 @@
 	LB_SORTED_BY_MODIFICATION_DATE_DESC = "Sorted by modification date -"
 	LB_SORTED_BY_MODIFICATION_DATE_ASC = "Sorted by modification date +"
 	PLC_SEARCH = "Search Emails"
-	REPLY_HEADER = "On {{date}}, {{name}} {{email}} wrote"
+	REPLY_HEADER = "On {{date | date}}, {{name}} {{email}} wrote"
 
 [INBOX.DOWNLOAD]
 	TITLE = "Downloading your attachment"
