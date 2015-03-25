@@ -9,7 +9,7 @@ module.exports = /*@ngInject*/($injector, co, utils, crypto, Manifest) => {
 		this.modified = opt.date_modified;
 		this.members = opt.members;
 		this.labels = opt.labels;
-		this.attachmentsCount = opt.attachments_count;
+		this.attachmentsCount = manifest && manifest.files ? manifest.files.length : 0;
 
 		this.isLabel = (labelName) => this.labels.some(lid => labels.byId[lid] && labels.byId[lid].name == labelName);
 		this.addLabel = (labelName) => utils.uniq(self.labels.concat([labels.byName[labelName].id]));
