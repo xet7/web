@@ -117,6 +117,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		return thread.subject.toLowerCase().includes(searchText) || thread.members.some(m => m.toLowerCase().includes(searchText));
 	};
 
+	$rootScope.$on(`inbox-threads-status-request`, (e, labelName, selectedTid) => {
+		if ($scope.labelName == labelName && $scope.threads[selectedTid])
+			$rootScope.$broadcast(`inbox-threads-received`, labelName);
+	});
+
 	$rootScope.$on(`inbox-threads`, (e, labelName) => {
 		co (function *(){
 			console.log('inbox-threads', labelName);
@@ -168,6 +173,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 						$rootScope.$broadcast('emails-list-restore');
 				});
 			}
+
+			$rootScope.$broadcast(`inbox-threads-received`, labelName);
 		});
 	});
 

@@ -1,10 +1,51 @@
-module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateCache, co, user) => {
-	const emailRegex = /[^"'](\s*)(\S+@[-A-Z0-9_.]*[A-Z0-9])/ig;
-	const urlRegex = /[^"'](\s*)(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+let fs = require('fs');
 
-	const transformEmailBody = (emailBody) => emailBody
-		.replace(emailRegex, '$1<a href="mailto:$2">$2</a>')
-		.replace(urlRegex, '$1<a href="$2">$2</a>');
+module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateCache, co, user) => {
+	const emailRegex = /([-A-Z0-9_.]*[A-Z0-9]@[-A-Z0-9_.]*[A-Z0-9])/ig;
+	const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+
+	const getDOM = (html) => {
+		var dom = new DOMParser().parseFromString(html, 'text/html');
+		return dom.querySelector('body');
+	};
+
+	const transformDOM = (dom, transforms, level = 0) => {
+		for(let node of dom.childNodes) {
+			if (node.nodeName == '#text') {
+				const data = node.data.trim();
+				const parent = node.parentNode;
+
+				if (!data || !parent)
+					continue;
+
+				let newData = node.data;
+				for (let t of transforms)
+					newData = newData.replace(t.regex, t.replace);
+
+				if (newData != node.data) {
+					const newDataDOM = getDOM(newData);
+					let newDataNodes = [];
+					for (let i = 0; i < newDataDOM.childNodes.length; i++)
+						newDataNodes.push(newDataDOM.childNodes[i]);
+
+					parent.removeChild(node);
+					for (let i = 0; i < newDataNodes.length; i++)
+						parent.appendChild(newDataNodes[i]);
+				}
+			}
+			else if (node.nodeName.toLowerCase() != 'a' && node.childNodes)
+				transformDOM(node, transforms, level + 1);
+		}
+
+		if (level === 0)
+			return dom.innerHTML;
+	};
+
+	const transformEmailDOM = (dom) =>
+		transformDOM(dom, [
+			{regex:emailRegex, replace: '<a href="mailto:$1">$1</a>'},
+			{regex: urlRegex, replace: '<a href="$1">$1</a>'}
+		]);
 
 	return {
 		restrict : 'A',
@@ -20,35 +61,46 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 
 				scope.switchContextMenu = index => scope.emails[index].isDropdownOpened = !scope.emails[index].isDropdownOpened;
 
-				const emailBody = transformEmailBody(scope.emailBody);
-				console.log('email body is: ', scope.emailBody, emailBody);
+				const dom = getDOM(scope.emailBody);
+				const emailBody = transformEmailDOM(dom);
 
 				const emailBodyHtml = angular.element('<div>' + $sanitize(emailBody) + '</div>');
 
 				let i = 0;
 				angular.forEach(emailBodyHtml.find('a'), e => {
 					e = angular.element(e);
-					if (e.attr('href').startsWith('mailto:')) {
-						const toEmail = e.attr('href').replace('mailto:', '').trim();
-						scope.emails.push({
-							email: toEmail,
-							isDropdownOpened: false
-						});
+					let href = e.attr('href');
 
-						e.attr('href', $state.href('.popup.compose', {to: toEmail}));
-						e.attr('ng-right-click', `switchContextMenu(${i})`);
+					if (href) {
+						href = href.trim();
 
-						e.wrap(`<email-context-menu email="emails[${i}].email" is-open="emails[${i}].isDropdownOpened"></email-context-menu>`);
-						i++;
-					} else
-						e.attr('target', '_blank');
+						if (href.startsWith('mailto:')) {
+							const toEmail = href.replace('mailto:', '').trim();
+							scope.emails.push({
+								email: toEmail,
+								isDropdownOpened: false
+							});
+
+							e.attr('href', $state.href('.popup.compose', {to: toEmail}));
+							e.attr('ng-right-click', `switchContextMenu(${i})`);
+
+							e.wrap(`<email-context-menu email="emails[${i}].email" is-open="emails[${i}].isDropdownOpened"></email-context-menu>`);
+							i++;
+						} else
+							e.attr('target', '_blank');
+					}
 				});
 
 				if (user.settings.isSecuredImages)
 					angular.forEach(emailBodyHtml.find('img'), e => {
 						e = angular.element(e);
-						if (!e.attr('src').startsWith('data:'))
-							e.replaceWith(noImageTemplate);
+						let src = e.attr('src');
+
+						if (src) {
+							src = src.trim();
+							if (!src.startsWith('data:'))
+								e.replaceWith(noImageTemplate);
+						}
 					});
 
 				const emailBodyCompiled = $compile(emailBodyHtml)(scope);

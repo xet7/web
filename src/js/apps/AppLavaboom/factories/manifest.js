@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/(contacts) => {
+module.exports = /*@ngInject*/(contacts, utils) => {
 	const hash = (data) => openpgp.util.hexstrdump(openpgp.crypto.hash.sha256(data));
 
 	function ManifestPart (manifestPart) {
@@ -11,7 +11,7 @@ module.exports = /*@ngInject*/(contacts) => {
 
 		this.isValid = (body) => body.length == self.size && hash(body) == self.hash;
 
-		// todo: hack, there should be just one content type
+		// todo: hack, there should be just one content type, blocked: https://github.com/lavab/mailer/issues/33
 		const contentType = manifestPart.content_type || manifestPart['content-type'];
 		if (contentType) {
 			this.contentType = (contentType.defaultValue ? contentType.defaultValue : contentType).toLowerCase();
@@ -27,30 +27,23 @@ module.exports = /*@ngInject*/(contacts) => {
 	function Manifest (manifest) {
 		const self = this;
 
-		const formatFrom = (fromAddress) => {
-			const address = fromAddress.address ? fromAddress.address : fromAddress;
-			const fromContact = contacts.getContactByEmail(address);
-			const name = fromAddress.name ? fromAddress.name : (fromContact ? fromContact.getFullName() : '');
-			return {
-				address,
-				name,
-				prettyName: address + (name ? ` (${name})` : '')
-			};
-		};
+		this.from = angular.isArray(manifest.headers.from)
+			? manifest.headers.from.map(e => Manifest.formatFrom(e))
+			: [Manifest.formatFrom(manifest.headers.from)];
+		this.to = angular.isArray(manifest.headers.to)
+			? manifest.headers.to
+			: [manifest.headers.to];
 
-		this.from = angular.isArray(manifest.headers.from) ? manifest.headers.from.map(e => formatFrom(e)) : [formatFrom(manifest.headers.from)];
-
-		this.to = angular.isArray(manifest.headers.to) ? manifest.headers.to : [manifest.headers.to];
 		this.cc = manifest.headers.cc ? manifest.headers.cc : [];
 		this.bcc = manifest.headers.bcc ? manifest.headers.bcc : [];
 		this.subject = manifest.headers.subject;
 
 		this.getDestinationEmails = () => {
-			const emails = new Set([
+			const emails = utils.uniq([
 				...self.to,
 				...self.cc,
 				...self.bcc
-			]).values();
+			]);
 
 			return [...emails];
 		};
@@ -84,6 +77,17 @@ module.exports = /*@ngInject*/(contacts) => {
 
 		this.stringify = () => JSON.stringify(manifest);
 	}
+
+	Manifest.formatFrom = (fromAddress) => {
+		const address = fromAddress.address ? fromAddress.address : fromAddress;
+		const fromContact = contacts.getContactByEmail(address);
+		const name = fromAddress.name ? fromAddress.name : (fromContact ? fromContact.getFullName() : '');
+		return {
+			address,
+			name,
+			prettyName: address + (name ? ` (${name})` : '')
+		};
+	};
 
 	Manifest.defaultVersion = '1.0.0';
 

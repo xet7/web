@@ -1,5 +1,6 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
-							   consts, co, user, contacts, inbox, router, Manifest, Contact, hotkey, ContactEmail, Email, Attachment) => {
+							   utils, consts, co, router,
+							   user, contacts, inbox, Manifest, Contact, hotkey, ContactEmail, Email, Attachment) => {
 	$scope.toolbar = [
 		['h1', 'h2', 'h3'],
 		['bold', 'italics', 'underline'],
@@ -179,9 +180,18 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 			console.log('compose send status', sendStatus);
 
-			if (isSecured || $scope.isSkipWarning) {
+			if (isSecured) {
+				$scope.form.body = inbox.getMumbledFormattedBody();
+
+				yield utils.sleep(consts.MUMBLE_SHOW_DELAY);
+
 				yield $scope.confirm();
-			} else {
+			} else if ($scope.isSkipWarning)
+			{
+				yield $scope.confirm();
+			}
+			else
+			{
 				$scope.isWarning = true;
 			}
 		} catch (err) {

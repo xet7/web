@@ -1,6 +1,8 @@
 module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts, co, LavaboomAPI, user, crypto, contacts, Email, Thread, Label) {
 	const self = this;
 
+	const newLineRegex = /(\r\n|\n)/g;
+
 	this.selectedTidByLabelName = {};
 	this.sortQuery = '-date_created';
 
@@ -15,10 +17,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 		const trashLabelId = labels.byName.Trash.id;
 		const spamLabelId = labels.byName.Spam.id;
-		const draftsLabelId = labels.byName.Drafts.id;
+		const draftsLabelId = labels.byName.Drafts ? labels.byName.Drafts.id : null;
 
 		const lbs = thread.labels;
-		return lbs.includes(trashLabelId) || lbs.includes(spamLabelId) || lbs.includes(draftsLabelId)
+		return lbs.includes(trashLabelId) || lbs.includes(spamLabelId) || (draftsLabelId && lbs.includes(draftsLabelId))
 			? yield self.requestDeleteForcefully(thread)
 			: yield self.requestSetLabel(thread, 'Trash');
 	});
@@ -139,7 +141,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 		const threads = (yield LavaboomAPI.threads.list({
 			label: label.id,
-			attachments_count: true,
 			sort: self.sortQuery,
 			offset: offset,
 			limit: limit
@@ -159,10 +160,16 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	});
 
 	let sendEnvelope = null;
+	let isSecured = false;
 
 	this.send = (opts, manifest, keys) => co(function * () {
+		isSecured = Email.isSecuredKeys(keys);
 		sendEnvelope = yield Email.toEnvelope(opts, manifest, keys);
 	});
+
+	this.getMumbledFormattedBody = () => {
+		return sendEnvelope && sendEnvelope.body ? sendEnvelope.body.replace(newLineRegex, '<br />') : '';
+	};
 
 	this.confirmSend = () =>  co(function * () {
 		const res = yield LavaboomAPI.emails.create(sendEnvelope);
