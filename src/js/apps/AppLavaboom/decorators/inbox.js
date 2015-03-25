@@ -148,8 +148,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 
 		const labels = yield self.getLabels();
 		const newLabels = yield requestModifyLabel(...args);
-		const setLabels = new Set([...thread.labels.map(labelId => labels.byId[labelId].name), ...newLabels.map(labelId => labels.byId[labelId].name)]);
-		const allLabels = [...setLabels.values()];
+		const allLabels = utils.uniq([...thread.labels.map(labelId => labels.byId[labelId].name), ...newLabels.map(labelId => labels.byId[labelId].name)]);
 
 		// update cache if any
 		const oldThread = threadsCache.getById(thread.id);
