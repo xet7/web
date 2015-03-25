@@ -15,7 +15,7 @@ module.exports = function () {
 			req.url = '/index.html';
 
 		console.log('serve', req.url);
-		res.setHeader('X-Powered-By', '');
+		res.setHeader('X-Powered-By', 'Darth Vader');
 		next();
 	});
 
