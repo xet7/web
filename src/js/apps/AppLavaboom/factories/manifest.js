@@ -1,3 +1,5 @@
+const mimelib = require('mimelib');
+
 module.exports = /*@ngInject*/(contacts, utils) => {
 	const hash = (data) => openpgp.util.hexstrdump(openpgp.crypto.hash.sha256(data));
 
@@ -79,6 +81,9 @@ module.exports = /*@ngInject*/(contacts, utils) => {
 	}
 
 	Manifest.formatFrom = (fromAddress) => {
+		if (!fromAddress.address)
+			fromAddress = mimelib.parseAddresses(fromAddress)[0];
+
 		const address = fromAddress.address ? fromAddress.address : fromAddress;
 		const fromContact = contacts.getContactByEmail(address);
 		const name = fromAddress.name ? fromAddress.name : (fromContact ? fromContact.getFullName() : '');

@@ -13,6 +13,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 
 	const translationPromise = $translate.bindAsObject(translations, 'LOADER');
 
+	$scope.xxx = {date: 1, name: 2, email: 3};
 	$scope.notificationsInfo = [];
 	$scope.notificationsImportant = [];
 

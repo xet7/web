@@ -72,6 +72,8 @@
     "jshint-stylish": "^1.0.0",
     "lazypipe": "^0.2.2",
     "levenshtein": "^1.0.5",
+    "mimelib": "^0.2.19",
+    "mimelib-noiconv": "^0.1.9",
     "node-fs": "^0.1.7",
     "semver": "^4.2.0",
     "setimmediate": "^1.0.2",
