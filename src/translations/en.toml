@@ -8,6 +8,10 @@
     WEB_CRYPTO_LIMITED_TEXT="Web crypto support is limited"
 	WEB_WORKERS_IS_NOT_AVAILABLE_TITLE="Application may be unresponsive, please upgrade your browser"
     WEB_WORKERS_IS_NOT_AVAILABLE_TEXT="Web Workers aren't available"
+    SERVED_BY_TITLE = "The content has been served to you by %SERVED_BY%"
+    SERVED_BY_TEXT = "served by %SERVED_BY%"
+    SERVED_BY_UNKNOWN_TITLE = "Nobody knows who is it and where it comes from"
+    SERVED_BY_UNKNOWN_TEXT = "Served by mysterious ninja"
 
 [INBOX]
 	NO_PREVIEW_AVAILABLE = "No preview available"

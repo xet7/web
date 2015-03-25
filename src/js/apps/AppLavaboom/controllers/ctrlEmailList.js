@@ -1,15 +1,10 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParams, utils, co, inbox, consts, notifications) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParams, utils, co, inbox, consts) => {
 	console.log('loading emails list', $stateParams.threadId);
 
 	$scope.isLoading = false;
 	$scope.labelName = $stateParams.labelName;
 	$scope.selectedTid = $stateParams.threadId;
 	$scope.emails = [];
-
-	$scope.notifications = [];
-	$rootScope.$bind('notifications', () => {
-		$scope.notifications = notifications.get();
-	});
 
 	let isThreads = false;
 

@@ -1,4 +1,5 @@
-module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, LavaboomAPI, tests, notifications, translate, co, crypto, loader, user, signUp) => {
+module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate,
+							   LavaboomAPI, utils, tests, notifications, translate, co, crypto, loader, user, signUp) => {
 	const translations = {
 		LB_INITIALIZING_I18N: '',
 		LB_INITIALIZING_OPENPGP: '',
@@ -8,10 +9,13 @@ module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate, Lavab
 
 	const translationPromise = $translate.bindAsObject(translations, 'LOADER');
 
-	$scope.notifications = [];
+	$scope.notificationsInfo = [];
+	$scope.notificationsImportant = [];
 
 	$rootScope.$bind('notifications', () => {
-		$scope.notifications = notifications.get();
+		const list = utils.toArray(notifications.get());
+		$scope.notificationsInfo = list.filter(n => n.type == 'info');
+		$scope.notificationsImportant = list.filter(n => n.type != 'info');
 	});
 
 	$scope.initializeApplication = (opts) => co(function *(){

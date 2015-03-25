@@ -15,6 +15,13 @@ module.exports = /*@ngInject*/function(co) {
 		}, new Map()).values()];
 	};
 
+	this.toArray = (obj) => {
+		return Object.keys(obj).reduce((a, k) => {
+			a.push(obj[k]);
+			return a;
+		}, []);
+	};
+
 	this.sleep = (time) => co(function *(){
 		yield sleep(time);
 	});

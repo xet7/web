@@ -1,5 +1,6 @@
 module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
-							   tests, LavaboomAPI, co, translate, crypto, user, inbox, contacts, hotkey, loader, notifications) => {
+							   notifications, tests, utils,
+							   LavaboomAPI, co, translate, crypto, user, inbox, contacts, hotkey, loader) => {
 	const translations = {
 		LB_INITIALIZING_I18N : '',
 		LB_INITIALIZING_OPENPGP : '',
@@ -11,6 +12,15 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 	};
 
 	const translationPromise = $translate.bindAsObject(translations, 'LOADER');
+
+	$scope.notificationsInfo = [];
+	$scope.notificationsImportant = [];
+
+	$rootScope.$bind('notifications', () => {
+		const list = utils.toArray(notifications.get());
+		$scope.notificationsInfo = list.filter(n => n.type == 'info');
+		$scope.notificationsImportant = list.filter(n => n.type != 'info');
+	});
 
 	$scope.ddEventFilter = (name, event) => event.target.id.startsWith('taTextElement');
 

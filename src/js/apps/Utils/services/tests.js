@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/function($rootScope, $translate, co, notifications) {
+module.exports = /*@ngInject*/function($rootScope, $translate, $http, co, notifications) {
 	const self = this;
 
 	const notifications18n = {
@@ -7,8 +7,14 @@ module.exports = /*@ngInject*/function($rootScope, $translate, co, notifications
 		WEB_WORKERS_IS_NOT_AVAILABLE_TITLE: '',
 		WEB_WORKERS_IS_NOT_AVAILABLE_TEXT: '',
 		WEB_CRYPTO_LIMITED_TITLE: '',
-		WEB_CRYPTO_LIMITED_TEXT: ''
+		WEB_CRYPTO_LIMITED_TEXT: '',
+		SERVED_BY_TITLE: '',
+		SERVED_BY_TEXT: '',
+		SERVED_BY_UNKNOWN_TITLE: '',
+		SERVED_BY_UNKNOWN_TEXT: ''
 	};
+
+	let poweredBy = '';
 
 	this.initialize = () => co(function *(){
 		yield $translate.bindAsObject(notifications18n, 'NOTIFICATIONS');
@@ -33,6 +39,22 @@ module.exports = /*@ngInject*/function($rootScope, $translate, co, notifications
 				title: notifications18n.WEB_CRYPTO_LIMITED_TITLE,
 				text: notifications18n.WEB_CRYPTO_LIMITED_TEXT
 			});
+
+		const headRes = yield $http.head('/');
+		poweredBy = headRes.headers('X-Powered-By');
+
+		if (poweredBy) {
+			notifications.set('powered-by', {
+				title: notifications18n.SERVED_BY_TITLE.replace('%SERVED_BY%', poweredBy),
+				text: notifications18n.SERVED_BY_TEXT.replace('%SERVED_BY%', poweredBy),
+				type: 'info'
+			});
+		} else
+			notifications.set('powered-by', {
+				title: notifications18n.SERVED_BY_UNKNOWN_TITLE,
+				text: notifications18n.SERVED_BY_UNKNOWN_TEXT,
+				type: 'info'
+			});
 	});
 
 	this.isWebCrypto = () => {
@@ -52,4 +74,6 @@ module.exports = /*@ngInject*/function($rootScope, $translate, co, notifications
 			return false;
 		}
 	});
+
+	this.getPoweredBy = () => poweredBy;
 };
