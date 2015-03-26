@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, consts) => {
+module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, consts, contacts) => {
 	const translations = {
 		LB_NEW : '',
 		LB_PRIVATE : '',
@@ -121,6 +121,26 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 
 		this.isLoadingKey = () => isLoadingKey;
 	}
+
+	ContactEmail.newHiddenEmail = email => new ContactEmail(null, {
+		name: 'hidden',
+		email,
+		isNew: true
+	}, 'hidden');
+
+	ContactEmail.transform = email => {
+		if (!email)
+			return null;
+
+		let c = contacts.getContactByEmail(email);
+		if (c) {
+			let e = c.getEmail(email);
+			if (e)
+				return e;
+		}
+
+		return ContactEmail.newHiddenEmail(email);
+	};
 
 	return ContactEmail;
 };

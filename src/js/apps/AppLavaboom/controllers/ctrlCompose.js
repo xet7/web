@@ -243,28 +243,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		manifest = null;
 	};
 
-	const newHiddenEmail = email => new ContactEmail(null, {
-		name: 'hidden',
-		email,
-		isNew: true
-	}, 'hidden');
-
-	let emailTransform = email => {
-		if (!email)
-			return null;
-
-		let c = contacts.getContactByEmail(email);
-		if (c) {
-			let e = c.getEmail(email);
-			if (e)
-				return e;
-		}
-
-		return newHiddenEmail(email);
-	};
-
 	$scope.$bind('contacts-changed', () => {
-		let toEmailContact = emailTransform(toEmail);
+		let toEmailContact = ContactEmail.transform(toEmail);
 
 		let people = [...contacts.people.values()];
 		let map = new Map();
@@ -309,7 +289,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			co(function *() {
 				let thread = yield inbox.getThreadById(replyThreadId);
 
-				let to = emailTransform(thread.members[0]);
+				let to = ContactEmail.transform(thread.members[0]);
 				console.log('reply to', thread.members[0], to);
 				$scope.form = {
 					person: {},
