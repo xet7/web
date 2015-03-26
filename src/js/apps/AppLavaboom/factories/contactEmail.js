@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, consts, contacts) => {
+module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, consts) => {
 	const translations = {
 		LB_NEW : '',
 		LB_PRIVATE : '',
@@ -129,6 +129,8 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 	}, 'hidden');
 
 	ContactEmail.transform = email => {
+		let contacts = $injector.get('contacts');
+
 		if (!email)
 			return null;
 

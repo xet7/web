@@ -1,4 +1,6 @@
-section.email(ng-bind-html="body")
+section.email
+	section.body(ng-bind-html="body")
+	footer.signature(ng-bind-html="signature")
 	section.replied-to
 		header {{'INBOX.REPLY_HEADER' | translate:replyHeader}}:
 		section(ng-bind-html="replyBody")

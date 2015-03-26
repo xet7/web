@@ -1,34 +1,49 @@
 module.exports = /*@ngInject*/function ($rootScope, $templateCache, $compile, co, utils) {
 	const self = this;
 
-	this.buildReplyTemplate = (body, replyHeader, replyBody) => co(function *(){
-		const template = yield $templateCache.fetch('/partials/inbox/reply.html');
+	const compile = (template, args) => co(function *(){
+		const marker = openpgp.util.hexstrdump(openpgp.crypto.random.getRandomBytes(16));
 		const templateFunction = $compile(template + '<span ng-bind-html="marker"></span>');
 
-		const marker = openpgp.util.hexstrdump(openpgp.crypto.random.getRandomBytes(16));
-		const replyArgs = {
-			body,
-			replyHeader,
-			replyBody,
-			marker
-		};
+		const isolatedScope = $rootScope.$new(true);
 
-		body = templateFunction(replyArgs);
+		for(let arg in args)
+			isolatedScope[arg] = args[arg];
+		isolatedScope.marker = marker;
 
-		yield utils.wait(() => body.contents().includes(marker));
+		const body = templateFunction(isolatedScope);
+		console.log('compile body(0)', body);
 
-		console.log('reply body(1)', body);
+		yield utils.wait(() => body.text().includes(marker));
 
-		for (let e of body.find('span')) {
+		console.log('compile body(1)', body);
+
+		angular.forEach(body.find('span'), e => {
 			e = angular.element(e);
-			if (e.text() == marker) {
+			if (e.text() == marker)
 				e.remove();
-				break;
-			}
-		}
+		});
 
-		console.log('reply body(2)', body);
+		console.log('compile body(2)', body);
 
-		return body.contents();
+		return body.html();
+	});
+
+	this.buildRepliedTemplate = (body, signature, replyHeader, replyBody) => co(function *(){
+		const template = yield $templateCache.fetch('/partials/inbox/repliedEmail.html');
+		return yield compile(template, {
+			body,
+			signature,
+			replyHeader,
+			replyBody
+		});
+	});
+
+	this.buildDirectTemplate = (body, signature) => co(function *(){
+		const template = yield $templateCache.fetch('/partials/inbox/directEmail.html');
+		return yield compile(template, {
+			body,
+			signature
+		});
 	});
 };

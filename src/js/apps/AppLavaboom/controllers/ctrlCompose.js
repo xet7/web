@@ -173,20 +173,25 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 		try {
 			let body = $scope.form.body;
+			const signature = user.settings.isSignatureEnabled && user.settings.signatureHtml ? user.settings.signatureHtml : '';
 
+			let templateBody = '';
 			if (replyThreadId) {
 				const emails = yield inbox.getEmailsByThreadId(replyThreadId);
 				const lastEmail = emails[0];
 
-				body = yield composeHelpers.buildReplyTemplate(body, {
+				templateBody = yield composeHelpers.buildRepliedTemplate(body, signature, {
 					date: lastEmail.date,
 					name: lastEmail.from[0].name,
 					email: lastEmail.from[0].address
 				}, lastEmail.body.data);
-			}
+			} else
+				templateBody = yield composeHelpers.buildDirectTemplate(body, signature);
+
+			console.log('template body', templateBody);
 
 			let sendStatus = yield inbox.send({
-				body: body,
+				body: templateBody,
 				attachmentIds: $scope.attachments.map(a => a.id),
 				threadId: replyThreadId
 			}, manifest, keys);
@@ -280,11 +285,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		$scope.people = [...map.values()];
 		console.log('$scope.people', $scope.people);
 
-		let bindUserSignature = () => {
-			if (user.settings.isSignatureEnabled && user.settings.signatureHtml)
-				$scope.form.body = $scope.form.body + user.settings.signatureHtml;
-		};
-
 		if (replyThreadId) {
 			co(function *() {
 				let thread = yield inbox.getThreadById(replyThreadId);
@@ -303,8 +303,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 					subject: `Re: ${Email.getSubjectWithoutRe(thread.subject)}`,
 					body: ''
 				};
-
-				bindUserSignature();
 			});
 		} else {
 			$scope.form = {
@@ -319,8 +317,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				subject: '',
 				body: ''
 			};
-
-			bindUserSignature();
 		}
 
 		console.log('$scope.form', $scope.form);
