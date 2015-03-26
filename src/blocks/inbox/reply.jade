@@ -1,4 +1,4 @@
-section.email {{body}}
+section.email(ng-bind-html="body")
 	section.replied-to
 		header {{'INBOX.REPLY_HEADER' | translate:replyHeader}}:
-		section {{replyBody}}
+		section(ng-bind-html="replyBody")

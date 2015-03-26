@@ -1,5 +1,5 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, $templateCache, $interpolate,
-							   utils, consts, co, router,
+module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
+							   utils, consts, co, router, composeHelpers,
 							   user, contacts, inbox, Manifest, Contact, hotkey, ContactEmail, Email, Attachment) => {
 	$scope.toolbar = [
 		['h1', 'h2', 'h3'],
@@ -178,20 +178,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate, $te
 				const emails = yield inbox.getEmailsByThreadId(replyThreadId);
 				const lastEmail = emails[0];
 
-				const template = yield $templateCache.fetch('/partials/inbox/reply.html');
-				const templateFunction = $interpolate(template);
-
-				const replyArgs = {
-					body: body,
-					replyHeader: {
-						date: lastEmail.date,
-						name: lastEmail.from[0].name,
-						email: lastEmail.from[0].address
-					},
-					replyBody: lastEmail.body.data
-				};
-
-				body = templateFunction(replyArgs);
+				body = yield composeHelpers.buildReplyTemplate(body, {
+					date: lastEmail.date,
+					name: lastEmail.from[0].name,
+					email: lastEmail.from[0].address
+				}, lastEmail.body.data);
 			}
 
 			let sendStatus = yield inbox.send({
