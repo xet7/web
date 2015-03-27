@@ -50,7 +50,7 @@ div(ng-if="selectedTid").main-view
 							span(ng-bind="file.filename")
 							br
 							span(ng-bind="file.size | filesize")
-			ul.nav.navbar-nav.navbar-right
+			ul.nav.navbar-nav.navbar-right.navbar-right-buttons
 				li(ng-show="selectedTid")
 					button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
 						span.icon-reply

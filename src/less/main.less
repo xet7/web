@@ -5,6 +5,21 @@
 	color: red;
 }
 
+.mail {
+	.navbar-right-buttons {
+		position: absolute;
+		right:0;
+		bottom: 0;
+		opacity:0;
+		transition:opacity 0.2s linear;
+	}
+	&:hover {
+		.navbar-right-buttons {
+			opacity: 1;
+		}
+	}
+}
+
 .list-pane{
 	width: @mail-list-width;
 	position: absolute;
