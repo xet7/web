@@ -19,6 +19,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 	const hiddenContacts = {};
 	const replyThreadId = $stateParams.replyThreadId;
+	const replyEmailId = $stateParams.replyEmailId;
+	const replyFromEmailId = $stateParams.replyFromEmailId;
 	const toEmail = $stateParams.to;
 	let manifest = null;
 	let newHiddenContact = null;

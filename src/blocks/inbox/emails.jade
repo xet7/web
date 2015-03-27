@@ -12,15 +12,6 @@ div.pane-status(ng-if="selectedTid === null")
 				li.spacer(ng-repeat="notification in notificationsImportant")
 					span(class="{{notification.cssClass}}")
 					span(title="{{notification.title}}") {{notification.text}}
-				li(ng-show="selectedTid")
-					button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid})")
-						span.icon-reply
-				li(ng-show="selectedTid")
-					button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid})")
-						span.icon-reply-all
-				li(ng-show="selectedTid")
-					button.btn.btn-default
-						span.icon-arrow-right
 div(ng-if="selectedTid").main-view
 	.pane-status(ng-show="isLoading")
 		img(src="/img/loader.svg")
@@ -59,3 +50,13 @@ div(ng-if="selectedTid").main-view
 							span(ng-bind="file.filename")
 							br
 							span(ng-bind="file.size | filesize")
+			ul.nav.navbar-nav.navbar-right
+				li(ng-show="selectedTid")
+					button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
+						span.icon-reply
+				li(ng-show="selectedTid")
+					button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid, replyFromEmailId: email.id})")
+						span.icon-reply-all
+				li(ng-show="selectedTid")
+					button.btn.btn-default
+						span.icon-arrow-right
