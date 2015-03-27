@@ -421,8 +421,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
         callback: (event, key) => {
             event.preventDefault();
             $scope.send();
-        },
-        allowIn: ['INPUT', 'SELECT', 'TEXTAREA', 'DIV']
+        }
     });
 
 	textAngularHelpers.ctrlEnterCallback = $scope.send;
