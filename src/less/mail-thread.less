@@ -3,6 +3,19 @@
 }
 
 .mail{
+	.navbar-right-buttons {
+		position: absolute;
+		right:0;
+		bottom: 0;
+		opacity:0;
+		transition:opacity 0.2s linear;
+	}
+	&:hover {
+		.navbar-right-buttons {
+			opacity: 1;
+		}
+	}
+
 	border: @border-site-wide;
 	border-left-width: 0; border-right-width: 0;
 	padding: @mail-thread-padding !important;
