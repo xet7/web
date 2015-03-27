@@ -178,15 +178,29 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			const signature = user.settings.isSignatureEnabled && user.settings.signatureHtml ? user.settings.signatureHtml : '';
 
 			let templateBody = '';
-			if (replyThreadId) {
-				const emails = yield inbox.getEmailsByThreadId(replyThreadId);
-				const lastEmail = emails[0];
+			if (replyEmailId) {
+				const email = yield inbox.getEmailById(replyEmailId);
 
-				templateBody = yield composeHelpers.buildRepliedTemplate(body, signature, {
-					date: lastEmail.date,
-					name: lastEmail.from[0].name,
-					email: lastEmail.from[0].address
-				}, lastEmail.body.data);
+				templateBody = yield composeHelpers.buildRepliedTemplate(body, signature, [{
+					date: email.date,
+					name: email.from[0].name,
+					address: email.from[0].address,
+					body: email.body.data
+				}]);
+			} else if (replyFromEmailId) {
+				const emails = yield inbox.getEmailsByThreadId(replyThreadId);
+				const replies = emails.reduce((a, email) => {
+					if (a.length > 0 || email.id == replyFromEmailId)
+						a.push({
+							date: email.date,
+							name: email.from[0].name,
+							address: email.from[0].address,
+							body: email.body.data
+						});
+					return a;
+				}, []);
+
+				templateBody = yield composeHelpers.buildRepliedTemplate(body, signature, replies);
 			} else
 				templateBody = yield composeHelpers.buildDirectTemplate(body, signature);
 
