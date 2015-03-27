@@ -12,8 +12,9 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 			throw new Error('Backup keys are corrupted!');
 
 		Object.keys(importObj.body.key_pairs).forEach(email => {
-			importObj.body.key_pairs[email].prv.forEach(privateKey => {
+			importObj.body.key_pairs[email].prv.forEach(privateKeyArmored => {
 				try {
+					const privateKey = openpgp.key.readArmored(privateKeyArmored).keys[0];
 					crypto.importPrivateKey(privateKey);
 				} catch (error) {
 				}
@@ -26,7 +27,6 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 			});
 		});
 
-		crypto.storeKeyring();
 		crypto.initialize(crypto.options);
 	};
 

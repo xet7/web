@@ -25,30 +25,14 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils) {
 	}, {}));
 
 	const applyPasswordToKeyPair = (privateKey, password) => {
+		if (privateKey.primaryKey.isDecrypted)
+			return true;
+
 		try {
 			return privateKey.decrypt(password);
 		} catch (catchedError) {
 			console.error(catchedError);
 			return false;
-		}
-	};
-
-	const persistKey = (privateKey, storage = 'local', isDecrypted = false) => {
-		const newKeyArmored = privateKey.armor();
-
-		if (storage == 'local') {
-			// todo: check for security bug, probably we persist in wrong place
-			const selectedKeyring = isDecrypted ? localKeyring : keyring;
-
-			const i = selectedKeyring.privateKeys.findIndexByFingerprint(privateKey.primaryKey.fingerprint);
-			if (i > -1)
-				selectedKeyring.privateKeys.keys.splice(i, 1);
-
-			selectedKeyring.privateKeys.importKey(newKeyArmored);
-			selectedKeyring.store();
-		} else {
-			sessionKeyring.privateKeys.importKey(newKeyArmored);
-			sessionKeyring.store();
 		}
 	};
 
@@ -92,6 +76,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils) {
 	};
 
 	const getSecureStorageName = () => self.options.isPrivateComputer ? 'local' : 'session';
+	const getSecureKeyring = () => self.options.isPrivateComputer ? localKeyring : sessionKeyring;
 
 	this.options = {};
 
@@ -127,6 +112,11 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils) {
 
 	this.getAvailableEncryptedPrivateKeysForEmail = (email) => keyring.privateKeys.getForAddress(email);
 
+	this.getAvailableDecryptedPrivateKeysForEmail = (email) => utils.uniq([
+		...localKeyring.privateKeys.getForAddress(email),
+		...sessionKeyring.privateKeys.getForAddress(email)
+	], e => e.primaryKey.fingerprint);
+
 	this.getAvailablePublicKeysForEmail = (email) => keyring.publicKeys.getForAddress(email);
 
 	this.getPublicKeyByFingerprint = (fingerprint) => keyring.publicKeys.findByFingerprint(fingerprint);
@@ -144,14 +134,24 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils) {
 	};
 
 	this.importPublicKey = (publicKey) => {
-		keyring.publicKeys.importKey(publicKey);
+		if (!publicKey)
+			return;
+
+		keyring.publicKeys.importKey(publicKey.armor ? publicKey.armor() : publicKey);
+		keyring.store();
 	};
 
+	/*
+	 const i = selectedKeyring.privateKeys.findIndexByFingerprint(privateKey.primaryKey.fingerprint);
+	 if (i > -1)
+	 selectedKeyring.privateKeys.keys.splice(i, 1);
+	 */
 	this.importPrivateKey = (privateKey) => {
-		keyring.privateKeys.importKey(privateKey);
-	};
+		if (!privateKey)
+			return;
 
-	this.storeKeyring = () => {
+		const keyring = privateKey.primaryKey.isDecrypted ? getSecureKeyring() : keyring;
+		keyring.privateKeys.importKey(privateKey);
 		keyring.store();
 	};
 
@@ -162,24 +162,20 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils) {
 		self.options = opt;
 
 		if (!isInitialized) {
-			openpgp.key.generate({numBits: 1024, userId: 'test@test', passphrase: 'test'}).catch(err => {
-				console.error('!gg!', err);
-			});
-
 			openpgp.initWorker('/vendor/openpgp.worker.js');
-
 			isInitialized = true;
 		}
 
-		const sessionDecryptedStore = new openpgp.Keyring.localstore();
-		sessionDecryptedStore.storage = window.sessionStorage;
-		const localDecryptedStore = new openpgp.Keyring.localstore('openpgp-decrypted-');
+		{
+			let sessionDecryptedStore = new openpgp.Keyring.localstore();
+			sessionDecryptedStore.storage = window.sessionStorage;
+			let localDecryptedStore = new openpgp.Keyring.localstore('openpgp-decrypted-');
 
-		keyring = wrapOpenpgpKeyring(new openpgp.Keyring());
-		localKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(localDecryptedStore));
-		sessionKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(sessionDecryptedStore));
+			keyring = wrapOpenpgpKeyring(new openpgp.Keyring());
+			localKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(localDecryptedStore));
+			sessionKeyring = wrapOpenpgpKeyring(new openpgp.Keyring(sessionDecryptedStore));
+		}
 
-		console.log('!broadcasting keyring-updated from crypto.initialize');
 		$rootScope.$broadcast('keyring-updated');
 	};
 
@@ -194,19 +190,20 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils) {
 
 			console.log('keys generated', freshKeys);
 
-			keyring.publicKeys.importKey(freshKeys.publicKeyArmored);
-			keyring.privateKeys.importKey(freshKeys.privateKeyArmored);
-			keyring.store();
+			const publicKey = openpgp.key.readArmored(freshKeys.publicKeyArmored).keys[0];
+			const privateKey = openpgp.key.readArmored(freshKeys.privateKeyArmored).keys[0];
+
+			self.importPublicKey(publicKey);
+			self.importPrivateKey(privateKey);
 
 			return {
-				pub: openpgp.key.readArmored(freshKeys.publicKeyArmored).keys[0],
-				prv: openpgp.key.readArmored(freshKeys.privateKeyArmored).keys[0]
+				pub: publicKey,
+				prv: privateKey
 			};
 		});
 	};
 
 	this.changePassword = (privateKey, newPassword) => {
-		const storage = getSecureStorageName();
 		try {
 			if (!privateKey.primaryKey.isDecrypted) {
 				privateKey = sessionKeyring.privateKeys.findByFingerprint(privateKey.primaryKey.fingerprint);
@@ -219,7 +216,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils) {
 			const packets = privateKey.getAllKeyPackets();
 			packets.forEach(packet => packet.encrypt(newPassword));
 
-			persistKey(privateKey, storage, !newPassword);
+			self.importPrivateKey(privateKey);
 
 			return true;
 		} catch (catchedError) {
