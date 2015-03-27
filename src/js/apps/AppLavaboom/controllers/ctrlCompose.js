@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
-							   utils, consts, co, router, composeHelpers,
+							   utils, consts, co, router, composeHelpers, textAngularHelpers,
 							   user, contacts, inbox, Manifest, Contact, hotkey, ContactEmail, Email, Attachment) => {
 	$scope.toolbar = [
 		['h1', 'h2', 'h3'],
@@ -7,7 +7,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		['justifyLeft', 'justifyCenter', 'justifyRight'],
 		['ul', 'ol'],
 		['indent', 'outdent', 'quote'],
-		['insertImage']
+		['insertImage', 'submit']
 	];
 	$scope.taggingTokens = 'SPACE|,|/';
 
@@ -422,6 +422,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
             event.preventDefault();
             $scope.send();
         },
-        allowIn: ['INPUT', 'SELECT', 'TEXTAREA']
+        allowIn: ['INPUT', 'SELECT', 'TEXTAREA', 'DIV']
     });
+
+	textAngularHelpers.ctrlEnterCallback = $scope.send;
 };
