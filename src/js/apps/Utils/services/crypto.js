@@ -37,6 +37,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils) {
 		const newKeyArmored = privateKey.armor();
 
 		if (storage == 'local') {
+			// todo: check for security bug, probably we persist in wrong place
 			const selectedKeyring = isDecrypted ? localKeyring : keyring;
 
 			const i = selectedKeyring.privateKeys.findIndexByFingerprint(privateKey.primaryKey.fingerprint);

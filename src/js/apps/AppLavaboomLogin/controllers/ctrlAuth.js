@@ -1,11 +1,5 @@
-module.exports = /*@ngInject*/($scope, $rootScope, $window, $interval, co, user, loader) => {
-	let signInSettings = null;
-	try {
-		signInSettings = JSON.parse(localStorage.signInSettings);
-	} catch(err) {
-		console.error('Cannot read sign in settings', err);
-		signInSettings = null;
-	}
+module.exports = /*@ngInject*/($scope, $rootScope, $window, $interval, co, user, loader, utils) => {
+	let signInSettings = utils.def(() => JSON.parse(localStorage.signInSettings), null);
 
 	$scope.form = {
 		username: '',
