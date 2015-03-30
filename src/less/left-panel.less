@@ -14,10 +14,12 @@
 		// padding: @left-panel-padding;
 		// .h3();
 		// color: #fff;
+		height: 8.8rem;
 		img{
 			width: 16.5rem;
 			position: relative;
 			left: .3rem;
+			top: .7rem;
 		}
 	}
 
@@ -31,7 +33,7 @@
 				padding: @left-panel-padding;
 				color: @lava-gray-light;
 				position: relative;
-				line-height: 2.0rem;
+				line-height: @filter-height;
 				.no-underlines();
 				white-space: nowrap;
 				font-size: 1.2em;
@@ -71,7 +73,6 @@
 				a{
 					background: @lava-red;
 					color: @lava-left-panel-icon-hover;
-					padding-top: .58em; padding-bottom: .75em;
 					> span:first-child{
 						color: @lava-left-panel-icon-hover;
 					}
