@@ -2,13 +2,14 @@
 	display: none;
 }
 @media print {
-   #leftPanel, #mail-list, .filters{
-   	display: none;
+   #leftPanel, #mail-list, .filters, .mail .navbar-right-buttons{
+   	display: none !important;
    }
    #mail-thread, #content, .main-view{
    	padding: 0 !important; margin: 0 !important;
    	position: static;
    	width: 100%;
+      height: auto !important;
    }
 
    .filters{
@@ -21,12 +22,20 @@
    	filter: grayscale(100%);
    }
 
+   .details-pane{
+      height: auto;
+      position: static;
+   }
+
    .mail{
    	border-color: transparent; box-shadow: none !important;
    	border-bottom: 1px solid @border-site-wide;
    	padding: 0 !important; margin: 0 !important;
    	&:hover{
    		border: 1px solid transparent !important;
+         .navbar-right-buttons{
+            display: none;
+         }
    	}
    }
 }
