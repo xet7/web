@@ -25,6 +25,8 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 
 	$scope.ddEventFilter = (name, event) => event.target.id.startsWith('taTextElement');
 
+	$scope.tooltipDelay = () => (window.getComputedStyle(document.getElementById('compose-action')).display==='none') ? true : 1000000;
+
 	const initializeTimeAgo = () => {
 		const datesTranslations = {
 			PREFIX_AGO: '',
