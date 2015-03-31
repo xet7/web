@@ -1,4 +1,4 @@
-#mail-list.list-pane.ng-cloak(ng-controller="CtrlThreadList")
+#mail-list.list-pane.ng-cloak
 	.filters.row.no-gutter.lava-icon-row
 		nav.navbar.navbar-inverse(role="navigation")
 			div
@@ -9,16 +9,6 @@
 						ul.dropdown-menu(role="menu")
 							li(ng-repeat="sort in sorts", ng-class="{selected: sortQuery == sort.query}")
 								a(ng-click="sortThreads(sort.query)") {{sort.label}}
-					li
-						button.btn.btn-default(ng-click="starThread(selectedTid)")
-							span.icon-star(ng-show="selectedTid && threads[selectedTid].isLabel('Starred')")
-							span.icon-star-outline(ng-show="selectedTid && !threads[selectedTid].isLabel('Starred')")
-					li
-						button.btn.btn-default(ng-click="spamThread(selectedTid)", ng-show="labelName != 'Spam'")
-							span.icon-ban
-					li
-						button.btn.btn-default(ng-click="deleteThread(selectedTid)")
-							span.icon-trash
 				form.navbar-form-alt
 					.form-group
 						.input-group
