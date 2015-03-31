@@ -69,11 +69,13 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, CryptoKeysSto
 		return [...keys.values()];
 	};
 
-	const authenticate = (privateKey, password) => {
+	const authenticate = (privateKey, password, isPersist = false) => {
 		if (!applyPasswordToKeyPair(privateKey, password))
 			return false;
 
-		changePasswordForPrivateKey(privateKey, '');
+		const updatedPrivateKey = changePasswordForPrivateKey(privateKey, '');
+		if (isPersist && updatedPrivateKey)
+			self.importPrivateKey(updatedPrivateKey);
 
 		return true;
 	};
@@ -109,8 +111,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, CryptoKeysSto
 	this.getAvailableSourceEmails = () => getAvailableEmails(keyring.privateKeys);
 
 	this.getAvailablePrivateKeys = () => keyring.privateKeys.keys;
-
-	this.getAvailableDecryptedPrivateKeysForEmail = (email) => keyring.privateKeys.getForAddress(email).filter(e => e.primaryKey.isDecrypted);
 
 	this.getAvailablePublicKeysForEmail = (email) => keyring.publicKeys.getForAddress(email);
 
@@ -223,9 +223,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, CryptoKeysSto
 		const failedFingerprints = [];
 
 		keyring.privateKeys.getForAddress(email).forEach(privateKey => {
-			if (authenticate(privateKey, password))
+			if (authenticate(privateKey, password, true)) {
 				decryptedFingerprints.push(privateKey.primaryKey.fingerprint);
-			else
+			} else
 				failedFingerprints.push(privateKey.primaryKey.fingerprint);
 		});
 
@@ -239,7 +239,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, CryptoKeysSto
 	};
 
 	this.authenticate = (privateKey, password) => {
-		if (!authenticate(privateKey, password))
+		if (!authenticate(privateKey, password, true))
 			return false;
 
 		$rootScope.$broadcast('keyring-updated');

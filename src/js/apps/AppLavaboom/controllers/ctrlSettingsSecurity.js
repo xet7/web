@@ -34,8 +34,8 @@ module.exports = /*@ngInject*/($scope, $timeout, co, utils, user, crypto, crypto
 
 	$scope.changePassword = () => co(function *(){
 		try {
-			crypto.changePassword(user.email, $scope.form.oldPassword, $scope.form.password);
 			yield user.updatePassword($scope.form.oldPassword, $scope.form.password);
+			crypto.changePassword(user.email, $scope.form.oldPassword, $scope.form.password);
 
 			$scope.passwordUpdateStatus = 'saved!';
 		} catch (err) {
