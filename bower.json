@@ -35,7 +35,8 @@
     "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.4.5",
     "angular-translate": "~2.6.1",
     "angular-translate-loader-static-files": "~2.6.1",
-    "angular-timeago": "~0.1.9"
+    "angular-timeago": "~0.1.9",
+    "openpgp-js": "https://github.com/lavab/openpgpjs/archive/0.10.1/multi-threading.tar.gz"
   },
   "resolutions": {
     "angular": "~1.3.8",
