@@ -159,7 +159,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 	this.initialize = (opt = {}) => {
 		const storedOptions = utils.def(() => JSON.parse(localStorage['lava-crypto-options']), {});
 		self.options = angular.extend({}, defaultOptions, storedOptions, opt);
-		localStorage['lava-crypto-options'] = self.options;
+		localStorage['lava-crypto-options'] = JSON.stringify(self.options);
 
 		if (!isInitialized) {
 			openpgp.initWorker('/vendor/openpgp.worker.js');
