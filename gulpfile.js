@@ -436,7 +436,6 @@ var compileSteps = [
 		'build:translations',
 		'copy:images',
 		'copy:fonts',
-		'copy:vendor',
 		'build:styles'
 	]
 	.concat(scriptBuildSteps);
@@ -444,10 +443,10 @@ var compileSteps = [
 gulp.task('compile:finished', compileSteps, function() {
 	fs.writeFileSync('manifest.json', JSON.stringify(manifest, null, 4));
 
-	gulp.start(['build:jade', 'lr']);
+	gulp.start(['build:jade', 'copy:vendor', 'lr']);
 });
 
-gulp.task('lr', ['build:jade'], function () {
+gulp.task('lr', ['build:jade', 'copy:vendor'], function () {
 	if (!isFirstBuild) {
 		return gulp.src(paths.markup.input)
 			.pipe(livereloadPipeline(true)());

@@ -4,7 +4,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	if ($scope.selectedTid)
 		inbox.selectedTidByLabelName[$scope.labelName] = $scope.selectedTid;
 
-	console.log('CtrlThreadList loaded', $scope.selectedTid);
+	console.log('CtrlInbox loaded', $scope.selectedTid);
 
 	$scope.threads = {};
 	$scope.threadsList = [];
@@ -212,21 +212,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		requestList();
 	};
 
-	$scope.spamThread = (tid) => {
-		console.log('spamThread', tid, $scope.threads[tid]);
-		inbox.requestSetLabel($scope.threads[tid], 'Spam');
-	};
-
-	$scope.deleteThread = (tid) => {
-		console.log('deleteThread', tid, $scope.threads[tid]);
-		inbox.requestDelete($scope.threads[tid]);
-	};
-
-	$scope.starThread = (tid) => {
-		console.log('starThread', tid, $scope.threads[tid]);
-		inbox.requestSwitchLabel($scope.threads[tid], 'Starred');
-	};
-
 	requestList();
 
     // Add hotkeys
@@ -251,7 +236,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			event.preventDefault();
 			moveThreads(1);
 		};
-		
+
 		hotkey.addHotkey({
 			combo: ['h', 'k', 'left', 'up'],
 			description: 'HOTKEY.MOVE_UP',

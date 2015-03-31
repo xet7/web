@@ -45,7 +45,7 @@ module.exports = {
 		output: output + 'partials/'
 	},
 	vendor: {
-		input: 'src/vendor/*',
+		input: ['src/vendor/*', 'src/bower_components/openpgp-js/dist/*'],
 		output: output + 'vendor/'
 	},
 	translations : {

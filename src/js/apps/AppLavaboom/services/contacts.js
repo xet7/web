@@ -29,7 +29,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, utils, 
 	this.list = () => co(function *() {
 		const contacts = (yield LavaboomAPI.contacts.list()).body.contacts;
 
-		let list = contacts ? yield co.map(contacts, Contact.fromEnvelope) : [];
+		let list = contacts ? yield contacts.map(Contact.fromEnvelope) : [];
 		return list.reduce((map, c) => {
 			map.set(c.id, c);
 			return map;

@@ -12,29 +12,42 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 			throw new Error('Backup keys are corrupted!');
 
 		Object.keys(importObj.body.key_pairs).forEach(email => {
-			importObj.body.key_pairs[email].prv.forEach(privateKey => {
+			importObj.body.key_pairs[email].prv.forEach(privateKeyArmored => {
 				try {
-					crypto.importPrivateKey(privateKey);
+					for(let key of openpgp.key.readArmored(privateKeyArmored).keys) {
+						if (!crypto.getPrivateKeyByFingerprint(key.primaryKey.fingerprint))
+							crypto.importPrivateKey(key);
+						else
+							console.log('skip private key import - already existing', key.primaryKey.fingerprint);
+					}
 				} catch (error) {
+					console.warn('cannot import private key', privateKeyArmored, error);
 				}
 			});
-			importObj.body.key_pairs[email].pub.forEach(publicKey => {
+			importObj.body.key_pairs[email].pub.forEach(publicKeyArmored => {
 				try {
-					crypto.importPublicKey(publicKey);
+					for(let key of openpgp.key.readArmored(publicKeyArmored).keys) {
+						if (!crypto.getPublicKeyByFingerprint(key.primaryKey.fingerprint))
+							crypto.importPublicKey(key);
+						else
+							console.log('skip public key import - already existing', key.primaryKey.fingerprint);
+					}
 				} catch (error) {
+					console.warn('cannot import public key', publicKeyArmored, error);
 				}
 			});
 		});
 
-		crypto.storeKeyring();
-		crypto.initialize(crypto.options);
+		crypto.initialize();
 	};
 
 	this.exportKeys = (email = null) => {
+		const keyring = crypto.createKeyring(false);
+
 		let keyPairs = (email ? [email] : crypto.getAvailableSourceEmails()).reduce((a, email) => {
 			a[email] = {
-				prv: crypto.getAvailableEncryptedPrivateKeysForEmail(email).map(k => k.armor()),
-				pub: crypto.getAvailablePublicKeysForEmail(email).map(k => k.armor())
+				prv: keyring.privateKeys.getForAddress(email).map(k => k.armor()),
+				pub: keyring.publicKeys.getForAddress(email).map(k => k.armor())
 			};
 			return a;
 		}, {});
