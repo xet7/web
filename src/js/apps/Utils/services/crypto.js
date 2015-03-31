@@ -1,9 +1,13 @@
-module.exports = /*@ngInject*/function($q, $rootScope, consts, co, CryptoKeysStorage) {
+module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, CryptoKeysStorage) {
 	const self = this;
 
 	let storage = null;
 	let keyring = null;
 	let isInitialized = false;
+
+	const defaultOptions = {
+		isPrivateComputer: false
+	};
 
 	const wrapOpenpgpKeyring = (keyring) => {
 		const findByFingerprint = (keys, fingerprint) => keys.find(k => k.primaryKey.fingerprint == fingerprint);
@@ -153,10 +157,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, CryptoKeysSto
 	};
 
 	this.initialize = (opt = {}) => {
-		if (!opt.isPrivateComputer)
-			opt.isPrivateComputer = false;
-
-		self.options = opt;
+		const storedOptions = utils.def(() => JSON.parse(localStorage['lava-crypto-options']), {});
+		self.options = angular.extend({}, defaultOptions, storedOptions, opt);
+		localStorage['lava-crypto-options'] = self.options;
 
 		if (!isInitialized) {
 			openpgp.initWorker('/vendor/openpgp.worker.js');

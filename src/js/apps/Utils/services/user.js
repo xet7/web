@@ -43,7 +43,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	};
 
 	const restoreAuth = () => {
-		token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
+		token = sessionStorage['lava-token'] ? sessionStorage['lava-token'] : localStorage['lava-token'];
 
 		if (token)
 			LavaboomAPI.setAuthToken(token);
@@ -51,7 +51,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 	const persistAuth = (isRemember = true) => {
 		let storage = isRemember ? localStorage : sessionStorage;
-		storage.lavaboomToken = token;
+		storage['lava-token'] = token;
 	};
 
 	this.calculateHash = (password) => utils.hexify(openpgp.crypto.hash.sha256(password));
@@ -191,8 +191,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	};
 
 	this.removeTokens = () => {
-		delete localStorage.lavaboomToken;
-		delete sessionStorage.lavaboomToken;
+		delete localStorage['lava-token'];
+		delete sessionStorage['lava-token'];
 	};
 
 	this.logout = () => co(function *(){

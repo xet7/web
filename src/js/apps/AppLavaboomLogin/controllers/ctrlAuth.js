@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($scope, $rootScope, $window, $interval, co, user, loader, utils) => {
-	let signInSettings = utils.def(() => JSON.parse(localStorage.signInSettings), null);
+	let signInSettings = utils.def(() => JSON.parse(localStorage['sign-in-settings']), null);
 
 	$scope.form = {
 		username: '',
@@ -8,7 +8,7 @@ module.exports = /*@ngInject*/($scope, $rootScope, $window, $interval, co, user,
 	};
 
 	$scope.$watch('form', (o, n) => {
-		localStorage.signInSettings = JSON.stringify({
+		localStorage['sign-in-settings'] = JSON.stringify({
 			isPrivateComputer: $scope.form.isPrivateComputer
 		});
 	}, true);

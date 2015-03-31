@@ -28,7 +28,7 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 			});
 		});
 
-		crypto.initialize(crypto.options);
+		crypto.initialize();
 	};
 
 	this.exportKeys = (email = null) => {
