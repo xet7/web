@@ -167,7 +167,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 		localStorage['lava-crypto-options'] = JSON.stringify(self.options);
 
 		if (!isInitialized) {
-			const threadsCount = navigator.hardwareConcurrency ? navigator.hardwareConcurrency : 4;
+			const threadsCount = navigator.hardwareConcurrency ? navigator.hardwareConcurrency : consts.CRYPTO_DEFAULT_THREAD_POOL_SIZE;
 
 			console.log('Initialize openpgp in multi-threading mode, workers count: ', threadsCount);
 			openpgp.initWorker('/vendor/openpgp.worker.js', {threadsCount: threadsCount});

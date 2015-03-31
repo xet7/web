@@ -23,5 +23,6 @@ module.exports = {
 	KEYS_BACKUP_README: 'https://lavaboom.com/placeholder/help/backup-file',
 	POPUP_AUTO_HIDE_DELAY: 500,
 	ORDERED_LABELS: ['Inbox', 'Drafts', 'Sent', 'Starred', 'Spam', 'Trash'],
-	PLAN_LIST: ['BASIC', 'TEST']
+	PLAN_LIST: ['BASIC', 'TEST'],
+	CRYPTO_DEFAULT_THREAD_POOL_SIZE: 4
 };
