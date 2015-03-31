@@ -14,14 +14,24 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 		Object.keys(importObj.body.key_pairs).forEach(email => {
 			importObj.body.key_pairs[email].prv.forEach(privateKeyArmored => {
 				try {
-					crypto.importPrivateKey(privateKeyArmored);
+					for(let key of openpgp.key.readArmored(privateKeyArmored).keys) {
+						if (!crypto.getPrivateKeyByFingerprint(key.primaryKey.fingerprint))
+							crypto.importPrivateKey(key);
+						else
+							console.log('skip private key import - already existing', key.primaryKey.fingerprint);
+					}
 				} catch (error) {
 					console.warn('cannot import private key', privateKeyArmored, error);
 				}
 			});
 			importObj.body.key_pairs[email].pub.forEach(publicKeyArmored => {
 				try {
-					crypto.importPublicKey(publicKeyArmored);
+					for(let key of openpgp.key.readArmored(publicKeyArmored).keys) {
+						if (!crypto.getPublicKeyByFingerprint(key.primaryKey.fingerprint))
+							crypto.importPublicKey(key);
+						else
+							console.log('skip public key import - already existing', key.primaryKey.fingerprint);
+					}
 				} catch (error) {
 					console.warn('cannot import public key', publicKeyArmored, error);
 				}
