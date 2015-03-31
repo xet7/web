@@ -13,18 +13,16 @@ module.exports = /*@ngInject*/($scope, $timeout, co, utils, user, crypto, crypto
 	});
 
 	$scope.$bind('keyring-updated', () => {
-		$scope.keys = crypto.getAvailableEncryptedPrivateKeys().map(k => {
-			const key = crypto.getDecryptedPrivateKeyByFingerprint(k.primaryKey.fingerprint);
-
+		$scope.keys = crypto.getAvailablePrivateKeys().map(key => {
 			return {
-				keyId: utils.hexify(k.primaryKey.keyid.bytes),
+				keyId: utils.hexify(key.primaryKey.keyid.bytes),
 				isDecrypted: key && key.primaryKey.isDecrypted,
 				decryptPassword: '',
 				decryptIsSuccess: null,
 				decryptTime: null,
-				fingerprint: k.primaryKey.fingerprint,
-				created: k.primaryKey.created,
-				user: k.users[0].userId.userid
+				fingerprint: key.primaryKey.fingerprint,
+				created: key.primaryKey.created,
+				user: key.users[0].userId.userid
 			};
 		});
 		console.log('keyring-updated', $scope.keys);
@@ -36,12 +34,7 @@ module.exports = /*@ngInject*/($scope, $timeout, co, utils, user, crypto, crypto
 
 	$scope.changePassword = () => co(function *(){
 		try {
-			crypto.authenticateByEmail(user.email, $scope.form.oldPassword);
-			const privateKeys = crypto.getAvailableDecryptedPrivateKeysForEmail(user.email);
-
-			privateKeys.forEach(privateKey =>
-				crypto.changePassword(privateKey, $scope.form.password));
-
+			crypto.changePassword(user.email, $scope.form.oldPassword, $scope.form.password);
 			yield user.updatePassword($scope.form.oldPassword, $scope.form.password);
 
 			$scope.passwordUpdateStatus = 'saved!';

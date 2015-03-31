@@ -139,9 +139,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	this.signIn = (username, password, isRemember, isPrivateComputer) => {
 		setupUserBasicInformation(username.split('@')[0].trim());
 
-		crypto.initialize({
-			isRememberPasswords: isRemember
-		});
+		crypto.initialize();
 
 		return co(function * (){
 			try {
@@ -181,7 +179,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 				if (self.settings.isLavaboomSynced)
 					cryptoKeys.importKeys(self.settings.keyring);
 
-				crypto.options.isPrivateComputer = isPrivateComputer;
+				crypto.initialize({isPrivateComputer: isPrivateComputer});
 				crypto.authenticateByEmail(self.email, password);
 
 				$rootScope.$broadcast('user-authenticated');

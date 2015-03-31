@@ -14,15 +14,16 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 		Object.keys(importObj.body.key_pairs).forEach(email => {
 			importObj.body.key_pairs[email].prv.forEach(privateKeyArmored => {
 				try {
-					const privateKey = openpgp.key.readArmored(privateKeyArmored).keys[0];
-					crypto.importPrivateKey(privateKey);
+					crypto.importPrivateKey(privateKeyArmored);
 				} catch (error) {
+					console.warn('cannot import private key', privateKeyArmored, error);
 				}
 			});
-			importObj.body.key_pairs[email].pub.forEach(publicKey => {
+			importObj.body.key_pairs[email].pub.forEach(publicKeyArmored => {
 				try {
-					crypto.importPublicKey(publicKey);
+					crypto.importPublicKey(publicKeyArmored);
 				} catch (error) {
+					console.warn('cannot import public key', publicKeyArmored, error);
 				}
 			});
 		});
@@ -31,10 +32,12 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 	};
 
 	this.exportKeys = (email = null) => {
+		const keyring = crypto.createKeyring(false);
+
 		let keyPairs = (email ? [email] : crypto.getAvailableSourceEmails()).reduce((a, email) => {
 			a[email] = {
-				prv: crypto.getAvailableEncryptedPrivateKeysForEmail(email).map(k => k.armor()),
-				pub: crypto.getAvailablePublicKeysForEmail(email).map(k => k.armor())
+				prv: keyring.privateKeys.getForAddress(email).map(k => k.armor()),
+				pub: keyring.publicKeys.getForAddress(email).map(k => k.armor())
 			};
 			return a;
 		}, {});
