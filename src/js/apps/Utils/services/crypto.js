@@ -91,12 +91,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 			throw new Error('nothing_to_decrypt');
 
 		const pgpMessage = openpgp.message.readArmored(message);
-		const promises = getDecryptedPrivateKeys().map(key => {
+
+		const decryptResults = yield getDecryptedPrivateKeys().map(key => {
 			return co.def(openpgp.decryptMessage(key, pgpMessage), null);
 		});
-		console.log('decrypt call decodeRaw, yield promises', promises);
-
-		const decryptResults = yield promises;
 
 		const r = decryptResults.find(r => r);
 		if (!r)
@@ -148,8 +146,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 			: [openpgp.key.readArmored(privateKeySubst).keys, privateKeySubst];
 
 		for(let privateKey of privateKeys) {
-			console.log('importing private key, looking for the same key with fingerprint',
-				privateKey.primaryKey.fingerprint, 'is decrypted?', privateKey.primaryKey.isDecrypted);
 			const i = keyring.privateKeys.findIndexByFingerprint(privateKey.primaryKey.fingerprint);
 			if (i > -1) {
 				console.log('remove existing private key with fingerprint', privateKey.primaryKey.fingerprint, 'index', i);
@@ -212,8 +208,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 
 	this.changePassword = (email, oldPassword, newPassword) => {
 		const privateKeys = keyring.privateKeys.getForAddress(email);
-		console.log('change password, private keys:', privateKeys);
-
 		privateKeys.forEach(privateKey => {
 			if (authenticate(privateKey, oldPassword)) {
 				const updatedPrivateKey = changePasswordForPrivateKey(privateKey, newPassword);
@@ -224,9 +218,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 				}
 			}
 		});
-
-		const privateKeys2 = keyring.privateKeys.getForAddress(email);
-		console.log('change password, private keys 2:', privateKeys2);
 	};
 
 	this.authenticateByEmail = (email, password) => {
