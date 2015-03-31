@@ -45,12 +45,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 		}
 	};
 
-	const getAvailableEmails = (keys) => Object.keys(keys.keys.reduce((a, k) => {
-		const email = k.users[0].userId.userid.match(/<([^>]+)>/)[1];
-		a[email] = true;
-		return a;
-	}, {}));
-
 	const applyPasswordToKeyPair = (privateKey, password) => {
 		if (privateKey.primaryKey.isDecrypted)
 			return true;
@@ -63,15 +57,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 		}
 	};
 
-	const getDecryptedPrivateKeys = () => {
-		const keys = keyring.privateKeys.keys.reduce((keys, k) => {
-			if (k.primaryKey.isDecrypted)
-				keys.set(k.primaryKey.fingerprint, k);
-			return keys;
-		}, new Map());
-
-		return [...keys.values()];
-	};
+	const getDecryptedPrivateKeys = () => keyring.privateKeys.keys.filter(k => k.primaryKey.isDecrypted);
 
 	const authenticate = (privateKey, password, isPersist = false) => {
 		if (!applyPasswordToKeyPair(privateKey, password))
@@ -115,7 +101,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 		};
 	});
 
-	this.getAvailableSourceEmails = () => getAvailableEmails(keyring.privateKeys);
+	this.getAvailableSourceEmails = () => utils.uniq(
+		keyring.privateKeys.keys.map(k => k.users[0].userId.userid.match(/<([^>]+)>/)[1])
+	);
 
 	this.getAvailablePrivateKeys = () => keyring.privateKeys.keys;
 
