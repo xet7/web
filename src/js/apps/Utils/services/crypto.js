@@ -91,7 +91,12 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 			throw new Error('nothing_to_decrypt');
 
 		const pgpMessage = openpgp.message.readArmored(message);
-		const decryptResults = yield getDecryptedPrivateKeys().map(key => co.def(openpgp.decryptMessage(key, pgpMessage), null));
+		const promises = getDecryptedPrivateKeys().map(key => {
+			return co.def(openpgp.decryptMessage(key, pgpMessage), null);
+		});
+		console.log('decrypt call decodeRaw, yield promises', promises);
+
+		const decryptResults = yield promises;
 
 		const r = decryptResults.find(r => r);
 		if (!r)
@@ -162,7 +167,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 		localStorage['lava-crypto-options'] = JSON.stringify(self.options);
 
 		if (!isInitialized) {
-			openpgp.initWorker('/vendor/openpgp.worker.js');
+			const threadsCount = navigator.hardwareConcurrency ? navigator.hardwareConcurrency : 4;
+
+			console.log('Initialize openpgp in multi-threading mode, workers count: ', threadsCount);
+			openpgp.initWorker('/vendor/openpgp.worker.js', {threadsCount: threadsCount});
 			isInitialized = true;
 		}
 
