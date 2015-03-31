@@ -23,6 +23,8 @@
 		}
 	}
 
+	
+
 	#navigation {
 		position: absolute;
 		top: 0; left: 0; right: 0; bottom: 0;
@@ -123,6 +125,10 @@
 			}
 		}
 
+		.tooltip{
+			display: inherit;
+		}
+
 		#navigation ul li > a{
 			padding: @left-panel-padding-sm;
 		}
@@ -140,6 +146,12 @@
 			font-size: .7em;
 			padding: .2rem .3rem;
 			right: 1.0rem;
+		}
+	}
+
+	@media (min-width: @screen-lg-min) { 
+		.tooltip{
+			display: none !important;
 		}
 	}
 }
