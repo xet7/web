@@ -29,18 +29,10 @@ module.exports = /*@ngInject*/(contacts, utils) => {
 	function Manifest (manifest) {
 		const self = this;
 
-		const parseAddresses = (src) => {
-			if (src)
-				return angular.isArray(src)
-					? src.map(e => Manifest.formatFrom(e))
-					: [Manifest.formatFrom(src)];
-			return [];
-		};
-
-		this.from = parseAddresses(manifest.headers.from);
-		this.to = parseAddresses(manifest.headers.to);
-		this.cc = parseAddresses(manifest.headers.cc);
-		this.bcc = parseAddresses(manifest.headers.bcc);
+		this.from = Manifest.parseAddresses(manifest.headers.from);
+		this.to = Manifest.parseAddresses(manifest.headers.to);
+		this.cc = Manifest.parseAddresses(manifest.headers.cc);
+		this.bcc = Manifest.parseAddresses(manifest.headers.bcc);
 
 		this.subject = manifest.headers.subject;
 
@@ -84,7 +76,15 @@ module.exports = /*@ngInject*/(contacts, utils) => {
 		this.stringify = () => JSON.stringify(manifest);
 	}
 
-	Manifest.formatFrom = (fromAddress) => {
+	Manifest.parseAddresses = (src) => {
+		if (!src)
+			return [];
+
+		return (angular.isArray(src) ? src : [src])
+			.map(e => Manifest.formatAddress(e));
+	};
+
+	Manifest.formatAddress = (fromAddress) => {
 		if (!fromAddress.address)
 			fromAddress = mimelib.parseAddresses(fromAddress)[0];
 
