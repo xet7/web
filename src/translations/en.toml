@@ -65,6 +65,7 @@
 
 	FORWARD_HEADER = "---------- Forwarded message ----------"
 	FORWARD_FROM = "From"
+	FORWARD_DATE = "Date"
 	FORWARD_TO = "To"
 	FORWARD_SUBJECT = "Subject"
 	FORWARD_CC = "Cc"

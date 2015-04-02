@@ -18,14 +18,17 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 				? opt.from.map(e => Manifest.formatFrom(e))
 				: [Manifest.formatFrom(opt.from)]
 			  );
-		this.fromAllPretty = self.from.map(e => e.prettyName).join(',');
+
+		const prettify = (a) => a.map(e => e.prettyName).join(',');
+
+		this.fromAllPretty = prettify(self.from);
 
 		this.to = manifest ? manifest.to : [];
-		this.toPretty = self.to.join(',');
+		this.toPretty = prettify(self.to);
 		this.cc = manifest ? manifest.cc : [];
-		this.ccPretty = self.cc.join(',');
+		this.ccPretty = prettify(self.cc);
 		this.bcc = manifest ? manifest.bcc : [];
-		this.bccPretty = self.bcc.join(',');
+		this.bccPretty = prettify(self.bcc);
 
 		this.preview = opt.preview;
 		this.body = opt.body;

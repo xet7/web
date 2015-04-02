@@ -5,7 +5,7 @@ section.email
 		header {{'INBOX.FORWARD_HEADER' | translate}}
 			ul
 				li
-					header {{'INBOX.FORWARD_FROM | translate}}:
+					header {{'INBOX.FORWARD_FROM' | translate}}:
 					| {{email.fromAllPretty}}
 				li
 					header {{'INBOX.FORWARD_DATE' | translate}}:
@@ -17,9 +17,9 @@ section.email
 					header {{'INBOX.FORWARD_TO' | translate}}:
 					| {{email.toPretty}}
 				li(ng-if="email.cc && email.cc.length > 0")
-					header {{'INBOX.FORWARD_CC' | translate}}::
-					|{{ email.ccPretty}}
+					header {{'INBOX.FORWARD_CC' | translate}}:
+					|{{email.ccPretty}}
 				li(ng-if="email.bcc && email.bcc.length > 0")
-					header {{'INBOX.FORWARD_BCC' | translate}}::
+					header {{'INBOX.FORWARD_BCC' | translate}}:
 					| {{ email.bccPretty}}
 		section(ng-bind-html="email.body.data")
