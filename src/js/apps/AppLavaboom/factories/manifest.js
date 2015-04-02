@@ -36,8 +36,18 @@ module.exports = /*@ngInject*/(contacts, utils) => {
 			? manifest.headers.to
 			: [manifest.headers.to];
 
-		this.cc = manifest.headers.cc ? manifest.headers.cc : [];
-		this.bcc = manifest.headers.bcc ? manifest.headers.bcc : [];
+		if (manifest.headers.cc)
+			this.cc = angular.isArray(manifest.headers.cc)
+				? manifest.headers.cc.map(e => Manifest.formatFrom(e))
+				: [Manifest.formatFrom(manifest.headers.cc)];
+		else
+			this.cc = [];
+		if (manifest.headers.bcc)
+			this.bcc = angular.isArray(manifest.headers.bcc)
+				? manifest.headers.bcc.map(e => Manifest.formatFrom(e))
+				: [Manifest.formatFrom(manifest.headers.bcc)];
+		else
+			this.bcc = [];
 		this.subject = manifest.headers.subject;
 
 		this.getDestinationEmails = () => {
