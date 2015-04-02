@@ -6,17 +6,20 @@ section.email
 			ul
 				li
 					header From:
-					| email.from
+					| {{email.fromAllPretty}}
 				li
 					header Date:
-					| email.date
+					| {{email.date | date}}
 				li
 					header Subject:
-					| email.subject
+					| {{email.subject}}
 				li
 					header To:
-					| email.to
-				li
+					| {{email.toPretty}}
+				li(ng-if="email.cc && email.cc.length > 0")
 					header Cc:
-					| email.cc
-		section(ng-bind-html="email.body")
+					|{{ email.ccPretty}}
+				li(ng-if="email.bcc && email.bcc.length > 0")
+					header Bcc:
+					| {{ email.bccPretty}}
+		section(ng-bind-html="email.body.data")

@@ -22,6 +22,10 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 
 		this.to = manifest ? manifest.to : [];
 		this.toPretty = self.to.join(',');
+		this.cc = manifest ? manifest.cc : [];
+		this.ccPretty = self.cc.join(',');
+		this.bcc = manifest ? manifest.bcc : [];
+		this.bccPretty = self.bcc.join(',');
 
 		this.preview = opt.preview;
 		this.body = opt.body;
