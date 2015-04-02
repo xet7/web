@@ -5,6 +5,12 @@
 		.fill-abs();
 		top: @filter-height;
 		overflow-y: auto;
+
+		.item-wrapper:first-child{
+			.details{
+				border-color: transparent;
+			}
+		}
 		.mail-list-item{
 			display: block;
 			// padding: 1rem;
@@ -19,11 +25,12 @@
 			cursor: pointer;
 			// font-size: 86%;
 			// line-height: 15px;
-			&:not(:last-child){
-				// border-bottom: 0;
-			}
+			
 			&:hover:not(.active){
-				background-color: @lava-gray-lighter;
+				background-color: @list-group-hover-bg;
+				.details{
+					border-color: transparent;
+				}
 			}
 			>*{
 				margin: 0;
@@ -65,7 +72,7 @@
 			}
 
 			.icon-lock{
-				color: @lava;
+				// color: @lava;
 			}
 
 			.icon-unlock{
