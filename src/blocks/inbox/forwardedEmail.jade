@@ -1,0 +1,22 @@
+section.email
+	section.body(ng-bind-html="body")
+	footer.signature(ng-bind-html="signature")
+	section.replied-to(ng-repeat="email in forwardEmails")
+		header ---------- Forwarded message ----------
+			ul
+				li
+					header From:
+					| email.from
+				li
+					header Date:
+					| email.date
+				li
+					header Subject:
+					| email.subject
+				li
+					header To:
+					| email.to
+				li
+					header Cc:
+					| email.cc
+		section(ng-bind-html="email.body")
