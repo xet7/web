@@ -100,7 +100,7 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 
 	const popupStates = {
 		'compose': function () {
-			this.url =  '/compose?replyThreadId&replyEmailId&replyFromEmailId&to';
+			this.url =  '/compose?replyThreadId&replyEmailId&replyFromEmailId&forwardEmailId&to';
 
 			// @ngInject
 			this.onEnter = (router) => {

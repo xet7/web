@@ -21,6 +21,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	const replyThreadId = $stateParams.replyThreadId;
 	const replyEmailId = $stateParams.replyEmailId;
 	const replyFromEmailId = $stateParams.replyFromEmailId;
+	const forwardEmailId = $stateParams.forwardEmailId;
 	const toEmail = $stateParams.to;
 	let manifest = null;
 	let newHiddenContact = null;
@@ -301,8 +302,15 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		$scope.people = [...map.values()];
 		console.log('$scope.people', $scope.people);
 
-		if (replyThreadId) {
-			co(function *() {
+		co(function *() {
+			let body = '';
+
+			if (forwardEmailId) {
+				const emails = [yield inbox.getEmailById(forwardEmailId)];
+				body = yield composeHelpers.buildForwardedTemplate(body, '', emails);
+			}
+
+			if (replyThreadId) {
 				let thread = yield inbox.getThreadById(replyThreadId);
 
 				let to = ContactEmail.transform(thread.members[0]);
@@ -317,25 +325,25 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 					},
 					fromEmails: [contacts.myself],
 					subject: `Re: ${Email.getSubjectWithoutRe(thread.subject)}`,
-					body: ''
+					body: body
 				};
-			});
-		} else {
-			$scope.form = {
-				person: {},
-				selected: {
-					to: toEmailContact ? [toEmailContact] : [],
-					cc: [],
-					bcc: [],
-					from: contacts.myself
-				},
-				fromEmails: [contacts.myself],
-				subject: '',
-				body: ''
-			};
-		}
+			} else {
+				$scope.form = {
+					person: {},
+					selected: {
+						to: toEmailContact ? [toEmailContact] : [],
+						cc: [],
+						bcc: [],
+						from: contacts.myself
+					},
+					fromEmails: [contacts.myself],
+					subject: '',
+					body: body
+				};
+			}
 
-		console.log('$scope.form', $scope.form);
+			console.log('$scope.form', $scope.form);
+		});
 	});
 
 	$scope.clearTo = () => $scope.form.selected.to = [];

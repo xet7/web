@@ -13,15 +13,19 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 		this.subject = manifest ? manifest.subject : opt.name;
 		this.files = manifest ? manifest.files : [];
 
-		this.from = manifest ? manifest.from
-			: (angular.isArray(opt.from)
-				? opt.from.map(e => Manifest.formatFrom(e))
-				: [Manifest.formatFrom(opt.from)]
-			  );
-		this.fromAllPretty = self.from.map(e => e.prettyName).join(',');
+		const prettify = (a) => a.map(e => e.prettyName).join(',');
+
+		this.from = manifest ? manifest.from : Manifest.parseAddresses(opt.from);
+		this.fromAllPretty = prettify(self.from);
 
 		this.to = manifest ? manifest.to : [];
-		this.toPretty = self.to.join(',');
+		this.toPretty = prettify(self.to);
+
+		this.cc = manifest ? manifest.cc : [];
+		this.ccPretty = prettify(self.cc);
+
+		this.bcc = manifest ? manifest.bcc : [];
+		this.bccPretty = prettify(self.bcc);
 
 		this.preview = opt.preview;
 		this.body = opt.body;

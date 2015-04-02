@@ -63,6 +63,15 @@
 	REPLY_HEADER = "On {{date | date}}, {{name}} {{address}} wrote"
 	LB_NO_IMAGE = "External images blocked"
 
+	FORWARD_HEADER = "---------- Forwarded message ----------"
+	FORWARD_FROM = "From"
+	FORWARD_DATE = "Date"
+	FORWARD_TO = "To"
+	FORWARD_SUBJECT = "Subject"
+	FORWARD_CC = "Cc"
+	FORWARD_BCC = "Bcc"
+
+
 [INBOX.DOWNLOAD]
 	TITLE = "Downloading your attachment"
 	LB_ACQUIRING = "Acquiring information..."

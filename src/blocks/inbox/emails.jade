@@ -69,5 +69,5 @@ div(ng-if="selectedTid").main-view
 					button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid, replyFromEmailId: email.id})")
 						span.icon-reply-all
 				li(ng-show="selectedTid")
-					button.btn.btn-default
+					button.btn.btn-default(ng-click="showPopup('compose', {forwardEmailId: email.id})")
 						span.icon-arrow-right

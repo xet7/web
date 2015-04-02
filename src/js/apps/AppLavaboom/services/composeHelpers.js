@@ -29,6 +29,15 @@ module.exports = /*@ngInject*/function ($rootScope, $templateCache, $compile, co
 		return body.html();
 	});
 
+	this.buildForwardedTemplate = (body, signature, forwardEmails) => co(function *(){
+		const template = yield $templateCache.fetch('/partials/inbox/forwardedEmail.html');
+		return yield compile(template, {
+			body,
+			signature,
+			forwardEmails
+		});
+	});
+
 	this.buildRepliedTemplate = (body, signature, replies) => co(function *(){
 		const template = yield $templateCache.fetch('/partials/inbox/repliedEmail.html');
 		return yield compile(template, {
