@@ -22,7 +22,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 		const lbs = thread.labels;
 		return lbs.includes(trashLabelId) || lbs.includes(spamLabelId) || (draftsLabelId && lbs.includes(draftsLabelId))
 			? yield self.requestDeleteForcefully(thread)
-			: yield self.requestSetLabel(thread, 'Trash');
+			: yield self.requestAddLabel(thread, 'Trash');
 	});
 
 	this.requestDeleteForcefully = (thread) => co(function *() {

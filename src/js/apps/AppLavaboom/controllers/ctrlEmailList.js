@@ -17,7 +17,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 
 	$scope.spamThread = (tid) => {
 		console.log('spamThread', tid, $scope.threads[tid]);
-		inbox.requestSetLabel($scope.threads[tid], 'Spam');
+		inbox.requestAddLabel($scope.threads[tid], 'Spam');
 	};
 
 	$scope.deleteThread = (tid) => {

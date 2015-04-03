@@ -77,46 +77,57 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		this.switchCollapse = () => isCollapsed = !isCollapsed;
 
 		this.loadKey = (isReload = false) => co(function *(){
-			if (!isReload) {
-				console.log('loadKey', isLoadedKey, isLoadingKey, self.key);
-				if (isLoadedKey)
-					return self.key;
+			try {
+				if (!isReload) {
+					console.log('loadKey', isLoadedKey, isLoadingKey, self.key);
+					if (isLoadedKey)
+						return self.key;
 
-				if (isLoadingKey) {
-					yield co.def(t, null);
+					if (isLoadingKey) {
+						yield co.def(t, null);
 
-					return self.key;
+						return self.key;
+					}
 				}
+
+				let domain = self.email.split('@')[1];
+				if (domain)
+					domain = domain.trim().toLowerCase();
+
+				if (consts.ROOT_DOMAIN_LIST.includes(domain)) {
+					isLoadingKey = true;
+
+					let promise;
+					[t, promise] = $timeout.schedulePromise(t, () => loadKey(), 1000);
+					yield promise;
+					console.log('scheduled promise completed');
+				} else {
+					if (t)
+						$timeout.cancel(t);
+					isLoadingKey = false;
+
+					tooltip = '';
+					self.key = null;
+				}
+
+				self.isError = self.isNotFoundError = false;
+
+				return self.key;
+			} catch (err) {
+				self.isError = true;
+				if (err.original.status == 404)
+					self.isNotFoundError = true;
+
+				throw err;
 			}
-
-			let domain = self.email.split('@')[1];
-			if (domain)
-				domain = domain.trim().toLowerCase();
-
-			if (consts.ROOT_DOMAIN_LIST.includes(domain)) {
-				isLoadingKey = true;
-
-				let promise;
-				[t, promise] = $timeout.schedulePromise(t, () => loadKey(), 1000);
-				yield promise;
-				console.log('scheduled promise completed');
-			} else {
-				if (t)
-					$timeout.cancel(t);
-				isLoadingKey = false;
-
-				tooltip = '';
-				self.key = null;
-			}
-
-			return self.key;
 		});
 
 		this.cancelKeyLoading = () => {
-			console.log('cancelKeyLoading for email', self.email, new Error(''));
+			console.log('cancelKeyLoading for email', self.email);
 			if (t)
 				$timeout.cancel(t);
 			isLoadingKey = false;
+			self.isError = self.isNotFoundError = false;
 		};
 
 		this.isLoadingKey = () => isLoadingKey;

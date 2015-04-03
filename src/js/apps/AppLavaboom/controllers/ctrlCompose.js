@@ -396,16 +396,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			isNew: true
 		}, 'hidden');
 
-		co(function* (){
-			try {
-				yield newHiddenContact.loadKey();
-			} catch (err) {
-				newHiddenContact.isError = true;
-				if (err.original.status == 404) {
-					newHiddenContact.isNotFoundError = true;
-				}
-			}
-		});
+		newHiddenContact.loadKey();
 
 		hiddenContacts[newHiddenContact.email] = newHiddenContact;
 		return newHiddenContact;
