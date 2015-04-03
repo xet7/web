@@ -136,14 +136,11 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 
 		const [thread] = args;
 
-		threadsCache.removeById(thread.id);
-
 		const labelsRes = yield self.getLabels();
 
 		thread.labels.forEach(labelId => {
 			const labelName = labelsRes.byId[labelId].name;
-
-			console.log('requestDeleteForcefully broadcast inbox-threads for', labelName);
+			threadsCache.invalidate(labelName);
 			$rootScope.$broadcast(`inbox-threads`, labelName);
 		});
 
