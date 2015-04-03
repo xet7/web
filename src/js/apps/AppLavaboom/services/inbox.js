@@ -3,13 +3,34 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 	const newLineRegex = /(\r\n|\n)/g;
 
+	let sortQuery = '-date_created';
+
 	this.selectedTidByLabelName = {};
-	this.sortQuery = '-date_created';
+
+	this.getSortQuery = () => sortQuery;
+
+	this.setSortQuery = (query) => {
+		sortQuery = query;
+	};
 
 	this.getThreadById = (threadId) => co(function *() {
 		const thread = (yield LavaboomAPI.threads.get(threadId)).body.thread;
 
 		return thread ? yield Thread.fromEnvelope(thread) : null;
+	});
+
+	this.requestRestoreFromSpam = (thread) => co(function *() {
+		const labels = yield self.getLabels();
+
+		if (thread.isLabel('Spam'))
+			self.requestRemoveLabel(thread, 'Spam');
+	});
+
+	this.requestRestoreFromTrash = (thread) => co(function *() {
+		const labels = yield self.getLabels();
+
+		if (thread.isLabel('Trash'))
+			self.requestRemoveLabel(thread, 'Trash');
 	});
 
 	this.requestDelete = (thread) => co(function *() {
@@ -137,11 +158,18 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 	this.requestList = (labelName, offset, limit) => co(function *() {
 		const labels = yield self.getLabels();
-		const label = labels.byName[labelName];
+		const requestLabels = [labels.byName[labelName].id];
+
+		const excludeSpam = '-' + labels.byName.Spam.id;
+		const excludeTrash = '-' + labels.byName.Trash.id;
+		if (labelName != 'Spam')
+			requestLabels.push(excludeSpam);
+		if (labelName != 'Trash')
+			requestLabels.push(excludeTrash);
 
 		const threads = (yield LavaboomAPI.threads.list({
-			label: label.id,
-			sort: self.sortQuery,
+			label: requestLabels.join(','),
+			sort: sortQuery,
 			offset: offset,
 			limit: limit
 		})).body.threads;

@@ -9,16 +9,24 @@ div.pane-status(ng-if="selectedTid === null")
 					span(class="{{notification.cssClass}}")
 					span(title="{{notification.title}}") {{notification.text}}
 			ul.nav.navbar-nav
-				li
+				li(ng-show="selectedTid")
 					button.btn.btn-default(ng-click="deleteThread(selectedTid)")
 						span.icon-trash
-				li
-					button.btn.btn-default(ng-click="spamThread(selectedTid)", ng-show="labelName != 'Spam'")
+				li(ng-show="selectedTid && labelName != 'Spam'")
+					button.btn.btn-default(ng-click="spamThread(selectedTid)")
 						span.icon-ban
-				li
+				li(ng-show="selectedTid")
 					button.btn.btn-default(ng-click="starThread(selectedTid)")
 						span.icon-star(ng-show="selectedTid && threads[selectedTid].isLabel('Starred')")
 						span.icon-star-outline(ng-show="selectedTid && !threads[selectedTid].isLabel('Starred')")
+				li(ng-show="selectedTid && labelName == 'Spam'")
+					button.btn.btn-default(ng-click="restoreFromSpam(selectedTid)")
+						span.icon-ban
+						span.icon-plus
+				li(ng-show="selectedTid && labelName == 'Trash'")
+					button.btn.btn-default(ng-click="restoreFromTrash(selectedTid)")
+						span.icon-trash
+						span.icon-plus
 				li.spacer(ng-repeat="notification in notificationsInfo")
 					p.navbar-text
 						span(class="{{notification.cssClass}}")
