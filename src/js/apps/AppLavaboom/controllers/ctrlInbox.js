@@ -21,7 +21,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		isSortOpened: false
 	};
 	$scope.sortedLabel = '';
-	$scope.sortQuery = inbox.sortQuery;
+	$scope.sortQuery = inbox.getSortQuery();
 
 	const translations = {
 		LB_SORT_BY_CREATION_DATE_DESC : '',
@@ -93,8 +93,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 
 	$scope.sortThreads = (sortQuery) => {
 		console.log('sorting', sortQuery);
-		$scope.sortQuery = inbox.sortQuery = sortQuery;
-		inbox.invalidateThreadCache();
+		$scope.sortQuery = sortQuery;
+		inbox.setSortQuery(sortQuery);
 
 		$scope.offset = 0;
 		$scope.limit = 15;

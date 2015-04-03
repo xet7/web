@@ -26,36 +26,25 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 		CACHE_UNFOLD
 	));
 
-	const updateThreadLabels = (thread, labelsById, newLabels) => co(function *(){
-		// remove labels that do not exist in updated thread
-		thread.labels.forEach(lid => {
-			if (newLabels.includes(lid))
-				return;
+	const requestModifyLabelProxy = function *(requestModifyLabel, args){
+		const [thread] = args;
 
-			const labelName = labelsById[lid].name;
+		const labels = yield self.getLabels();
+		const newLabels = yield requestModifyLabel(...args);
+		const allLabels = utils.uniq([...thread.labels.map(labelId => labels.byId[labelId].name), ...newLabels.map(labelId => labels.byId[labelId].name)]);
 
-			const threads = threadsCache.get(labelName);
-			if (threads) {
-				const index = threads.list.findIndex(curThread => curThread.id == thread.id);
-				if (index > -1)
-					threads.list.splice(index, 1);
-			}
+		allLabels.forEach(labelName => {
+			threadsCache.invalidate(labelName);
 		});
 
-		// add new labels
-		newLabels.forEach(lid => {
-			if (thread.labels.includes(lid))
-				return;
+		for(let labelName of allLabels) {
+			console.log('requestModifyLabel proxy label update: ', labelName);
 
-			const labelName = labelsById[lid].name;
+			$rootScope.$broadcast(`inbox-threads`, labelName);
+		}
 
-			const threads = threadsCache.get(labelName);
-			if (threads)
-				threads.list.push(thread);
-		});
-
-		thread.labels = newLabels;
-	});
+		return newLabels;
+	};
 
 	proxy.methodCall('createLabel', function *(createLabel, args) {
 		const res = yield createLabel(...args);
@@ -80,9 +69,10 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 
 		console.log('proxy requestList', labelName, offset, limit);
 
+		const labels = yield self.getLabels();
+
 		let value = threadsCache.get(labelName);
 		if (!value || (!value.isEnd && offset >= value.list.length)) {
-			console.log('doing requestList api call with args', args);
 			let newList = yield requestList(...args);
 			if (!newList)
 				newList = [];
@@ -106,8 +96,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 
 		$rootScope.$broadcast(`inbox-threads`, labelName);
 
-		// todo: get rid of uniq(api bug)
-		return utils.uniq(value.list, t => t.id).slice(offset, offset + limit);
+		return value.list.slice(offset, offset + limit);
 	}, true);
 
 	self.requestListDirect = proxy.unbindedMethodCall('requestList', function *(requestList, args) {
@@ -115,8 +104,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 
 		const value = yield requestListProxy(requestList, args);
 
-		// todo: get rid of uniq(api bug)
-		return utils.uniq(value.list, t => t.id).slice(offset, offset + limit);
+		return value.list.slice(offset, offset + limit);
 	}, true);
 
 	proxy.methodCall('getThreadById', function *(getThreadById, args) {
@@ -142,30 +130,6 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 
 		return thread;
 	}, true);
-
-	const requestModifyLabelProxy = function *(requestModifyLabel, args){
-		const [thread] = args;
-
-		const labels = yield self.getLabels();
-		const newLabels = yield requestModifyLabel(...args);
-		const allLabels = utils.uniq([...thread.labels.map(labelId => labels.byId[labelId].name), ...newLabels.map(labelId => labels.byId[labelId].name)]);
-
-		// update cache if any
-		const oldThread = threadsCache.getById(thread.id);
-		if (oldThread) {
-			const labelsRes = yield self.getLabels();
-
-			yield updateThreadLabels(oldThread, labelsRes.byId, newLabels);
-		}
-
-		for(let labelName of allLabels) {
-			console.log('requestModifyLabel proxy label update: ', labelName);
-
-			$rootScope.$broadcast(`inbox-threads`, labelName);
-		}
-
-		return newLabels;
-	};
 
 	proxy.methodCall('requestDeleteForcefully', function *(requestDeleteForcefully, args) {
 		const res = yield requestDeleteForcefully(...args);
@@ -239,6 +203,11 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 
 		return email;
 	}, true);
+
+	proxy.methodSyncCall('setSortQuery', function (setSortQuery, args) {
+		self.invalidateThreadCache();
+		return setSortQuery(...args);
+	});
 
 	$delegate.invalidateThreadCache = () => {
 		threadsCache.invalidateAll();

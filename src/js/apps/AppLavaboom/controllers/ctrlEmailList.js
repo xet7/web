@@ -15,6 +15,16 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 		inbox.setThreadReadStatus($scope.selectedTid);
 	});
 
+	$scope.restoreFromSpam = (tid) => {
+		console.log('restoreFromSpam', tid, $scope.threads[tid]);
+		inbox.requestRestoreFromSpam($scope.threads[tid]);
+	};
+
+	$scope.restoreFromTrash = (tid) => {
+		console.log('restoreFromTrash', tid, $scope.threads[tid]);
+		inbox.requestRestoreFromTrash($scope.threads[tid]);
+	};
+
 	$scope.spamThread = (tid) => {
 		console.log('spamThread', tid, $scope.threads[tid]);
 		inbox.requestAddLabel($scope.threads[tid], 'Spam');
