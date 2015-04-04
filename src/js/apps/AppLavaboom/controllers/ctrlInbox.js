@@ -142,15 +142,19 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 				? $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid)
 				: -1;
 
+			console.log('inbox-threads selectedIndex 1: ', selectedIndex);
+
 			$scope.threadsList = threadsList;
 
 			if (!$scope.threadsList || $scope.threadsList.length < 1)
 				$state.go('main.inbox.label', {labelName: $scope.labelName, threadId: null});
 			else
-			if (selectedIndex > -1) {
+			if (selectedIndex > -1 && $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid) < 0) {
 				selectedIndex = Math.min(Math.max(selectedIndex, 0), $scope.threadsList.length - 1);
 				$scope.selectThread($scope.threadsList[selectedIndex].id);
 			}
+
+			console.log('inbox-threads selectedIndex 2: ', selectedIndex);
 
 			$scope.threads = $scope.threadsList.reduce((a, t) => {
 				a[t.id] = t;
