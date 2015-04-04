@@ -72,9 +72,9 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 				kind: 'manifest',
 				manifest: manifestEncoded.pgpData,
 
-				to: manifest.to,
-				cc: manifest.cc,
-				bcc: manifest.bcc,
+				to: manifest.to.map(e => e.address),
+				cc: manifest.cc.map(e => e.address),
+				bcc: manifest.bcc.map(e => e.address),
 				subject_hash: subjectHash,
 
 				files: attachmentIds,
