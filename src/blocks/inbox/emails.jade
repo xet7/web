@@ -32,10 +32,10 @@ div.pane-status(ng-if="selectedTid === null")
 						span(class="{{notification.cssClass}}")
 						span(title="{{notification.title}}") {{notification.text}}
 div(ng-if="selectedTid").main-view
-	.pane-status(ng-show="isLoading")
+	.pane-status(ng-show="isLoadingSign || emails.isLoading")
 		img(src="/img/loader.svg")
 	img.logo.only-print(src="/img/Lavaboom-logo-full.svg")
-	.row.no-gutter.mail(ng-repeat="email in emails")
+	.row.no-gutter.mail(ng-repeat="email in emails.list")
 		.col-xs-24
 			header.row.no-gutter
 				.col-xs-21

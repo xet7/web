@@ -1,13 +1,6 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParams, utils, co, inbox, consts) => {
 	console.log('loading emails list', $stateParams.threadId);
 
-	$scope.isLoading = false;
-	$scope.labelName = $stateParams.labelName;
-	$scope.selectedTid = $stateParams.threadId;
-	$scope.emails = [];
-
-	let isThreads = false;
-
 	const setRead = () => co(function *(){
 		yield utils.sleep(consts.SET_READ_AFTER_TIMEOUT);
 		if ($scope.$$destroyed)
@@ -45,20 +38,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 			setRead();
 	});
 
-	$rootScope.$on(`inbox-threads-received`, (e, labelName) => {
-		if ($scope.labelName == labelName)
-			isThreads = true;
-	});
-
-	$rootScope.$broadcast(`inbox-threads-status-request`, $scope.labelName, $scope.selectedTid);
-
 	if ($scope.selectedTid) {
-		let t = $timeout(() => {
-			$scope.isLoading = true;
-		}, consts.LOADER_SHOW_DELAY);
+		$scope.emails.list = [];
 
-		$scope.emails = [];
-
+		$scope.emails.isLoading = true;
 		co(function *(){
 			try {
 				const threadPromise = inbox.getThreadById($scope.selectedTid);
@@ -72,41 +55,28 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 					return;
 				}
 
-				yield utils.wait(() => isThreads);
+				yield utils.wait(() => $scope.isThreads);
 
-				$scope.emails = yield emailsPromise;
+				$scope.emails.list = yield emailsPromise;
 
 				setRead();
 			} finally {
-				$timeout.cancel(t);
-				$scope.isLoading = false;
+				$scope.emails.isLoading = false;
 			}
 		});
 	}
-
-	let emails = null;
 
 	$rootScope.$on('inbox-emails', (e, threadId) => {
 		if (threadId != $scope.selectedTid)
 			return;
 
 		co(function *() {
-			$scope.isLoading = true;
+			$scope.emails.isLoading = true;
 			try {
-				$scope.emails = yield inbox.getEmailsByThreadId(threadId);
+				$scope.emails.list = yield inbox.getEmailsByThreadId(threadId);
 			} finally {
-				$scope.isLoading = false;
+				$scope.emails.isLoading = false;
 			}
 		});
-	});
-
-	$rootScope.$on('emails-list-hide', () => {
-		emails = $scope.emails;
-		$scope.emails = [];
-	});
-
-	$rootScope.$on('emails-list-restore', () => {
-		if (emails)
-			$scope.emails = emails;
 	});
 };
