@@ -69,7 +69,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		$scope.sortedLabel = currentSort ? currentSort.labelSorted : '';
 	});
 
-	let emails = null;
 	let watchingFilteredThreadsList = null;
 	let setLoadingSignTimeout = null;
 
@@ -175,6 +174,9 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			$scope.isThreads = true;
 
 			if (!watchingFilteredThreadsList) {
+				let emails = null;
+				let emailsSelectedTid = null;
+
 				watchingFilteredThreadsList = $scope.$watch('filteredThreadsList', (o, n) => {
 					if (o == n)
 						return;
@@ -182,11 +184,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 					const r = $scope.filteredThreadsList.find(t => t.id == $scope.selectedTid);
 					if (!r) {
 						emails = $scope.emails.list;
+						emailsSelectedTid = $scope.selectedTid;
 						$scope.emails.list = [];
-						console.log('emails cleared');
-					} else if (emails) {
+					} else if (emails && $scope.selectedTid == emailsSelectedTid) {
 						$scope.emails.list = emails;
-						console.log('emails restored');
 					}
 				});
 			}

@@ -40,8 +40,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 
 	if ($scope.selectedTid) {
 		$scope.emails.list = [];
-
 		$scope.emails.isLoading = true;
+		console.log(':)');
 		co(function *(){
 			try {
 				const threadPromise = inbox.getThreadById($scope.selectedTid);
@@ -54,6 +54,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 					yield $state.go('main.inbox.label', {labelName: $scope.labelName, threadId: null});
 					return;
 				}
+
+				console.log('wait $scope.isThreads', $scope.isThreads);
 
 				yield utils.wait(() => $scope.isThreads);
 
