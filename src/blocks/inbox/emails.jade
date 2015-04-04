@@ -1,13 +1,9 @@
 div.pane-status(ng-if="selectedTid === null")
 	.col-xs-24 {{'INBOX.LB_NOTHING_SELECTED' | translate}}
 
-.filters.row.no-gutter.lava-icon-row
+.filters.row.no-gutter.lava-icon-row(class="notifications-{{notificationsInfo.length}}")
 	nav.navbar.navbar-inverse(role="navigation")
 		div
-			ul.nav.navbar-nav.navbar-right
-				li.spacer(ng-repeat="notification in notificationsImportant")
-					span(class="{{notification.cssClass}}")
-					span(title="{{notification.title}}") {{notification.text}}
 			ul.nav.navbar-nav
 				li
 					button.btn.btn-default(ng-click="deleteThread(selectedTid)")
@@ -19,10 +15,29 @@ div.pane-status(ng-if="selectedTid === null")
 					button.btn.btn-default(ng-click="starThread(selectedTid)")
 						span.icon-star(ng-show="selectedTid && threads[selectedTid].isLabel('Starred')")
 						span.icon-star-outline(ng-show="selectedTid && !threads[selectedTid].isLabel('Starred')")
-				li.spacer(ng-repeat="notification in notificationsInfo")
+	nav#notifications.navbar.navbar-inverse.notifications(ng-class="{ active: notificationsInfo.length }")
+		div(ng-repeat="notification in notificationsInfo")
+			ul.nav.navbar-nav
+				li
 					p.navbar-text
-						span(class="{{notification.cssClass}}")
 						span(title="{{notification.title}}") {{notification.text}}
+			ul.nav.navbar-nav.navbar-right
+				li
+					button.btn.btn-default
+						span.icon-trash
+						| OK
+
+		div(ng-repeat="notification in notificationsImportant", class="notifications-warning")
+			ul.nav.navbar-nav
+				li
+					p.navbar-text
+						span(title="{{notification.title}}") {{notification.text}}
+			ul.nav.navbar-nav.navbar-right
+				li
+					button.btn.btn-default
+						span.icon-trash
+						| OK
+
 div(ng-if="selectedTid").main-view
 	.pane-status(ng-show="isLoading")
 		img(src="/img/loader.svg")
