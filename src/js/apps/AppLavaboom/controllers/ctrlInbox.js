@@ -114,7 +114,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	};
 
 	$scope.replyThread = (event, tid) => {
-		event.stopPropagation(); // god damn
 		$scope.showPopup('compose', {replyThreadId: tid});
 	};
 
@@ -122,11 +121,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		let searchText = $scope.searchText.toLowerCase();
 		return thread.subject.toLowerCase().includes(searchText) || thread.members.some(m => m.toLowerCase().includes(searchText));
 	};
-
-	$rootScope.$on(`inbox-threads-status-request`, (e, labelName, selectedTid) => {
-		if ($scope.labelName == labelName && $scope.threads[selectedTid])
-			$rootScope.$broadcast(`inbox-threads-received`, labelName);
-	});
 
 	$rootScope.$on(`inbox-threads`, (e, labelName) => {
 		co (function *(){
