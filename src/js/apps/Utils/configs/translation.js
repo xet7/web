@@ -3,6 +3,7 @@ let fs = require('fs');
 module.exports = /*@ngInject*/($translateProvider, consts) => {
 	const setDefaultTranslation = (translation) =>
 		$translateProvider.translations(consts.DEFAULT_LANG, translation);
+	$translateProvider.useSanitizeValueStrategy('escaped');
 
 	setDefaultTranslation(
 		// browserify brfs: load pre-compiled default language so it will be available without extra request to the server

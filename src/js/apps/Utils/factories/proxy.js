@@ -38,6 +38,18 @@ module.exports = /*@ngInject*/(co) => {
 		this.methodCall = (call, proxy, isCache = false) => {
 			$delegate[call] = self.unbindedMethodCall(call, proxy, isCache);
 		};
+
+		this.unbindedMethodSyncCall = (call, proxy) => {
+			const original = $delegate[call];
+
+			return (...args) => function () {
+				return proxy(original, args);
+			};
+		};
+
+		this.methodSyncCall = (call, proxy) => {
+			$delegate[call] = self.unbindedMethodCall(call, proxy);
+		};
 	}
 
 	return Proxy;

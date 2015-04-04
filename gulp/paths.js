@@ -9,7 +9,12 @@ module.exports = {
 		input: 'src/js/*.js',
 		inputFolder: 'src/js/',
 		inputAll: 'src/js/**/*.js',
-		inputApps: ['./src/js/apps/utils.js', './src/js/apps/appLavaboom.js', './src/js/apps/appLavaboomLogin.js', './src/js/loader.js', './src/js/checker.js'],
+		inputApps: [
+			'./src/js/apps/utils.js',
+			'./src/js/apps/appLavaboom.js',
+			'./src/js/apps/appLavaboomLogin.js',
+			'./src/js/loader.js'
+		],
 		inputDeps: 'src/js/apps/*.toml',
 		inputAppsFolder: 'src/js/apps/',
 		output: output + 'js/'
@@ -40,7 +45,7 @@ module.exports = {
 		output: output + 'partials/'
 	},
 	vendor: {
-		input: 'src/vendor/*',
+		input: ['src/vendor/*', 'src/bower_components/openpgp-js/dist/*'],
 		output: output + 'vendor/'
 	},
 	translations : {

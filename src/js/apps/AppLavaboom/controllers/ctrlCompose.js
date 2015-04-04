@@ -1,12 +1,13 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
-							   consts, co, user, contacts, inbox, router, Manifest, Contact, hotkey, ContactEmail, Email, Attachment) => {
+							   utils, consts, co, router, composeHelpers, textAngularHelpers,
+							   user, contacts, inbox, Manifest, Contact, hotkey, ContactEmail, Email, Attachment) => {
 	$scope.toolbar = [
 		['h1', 'h2', 'h3'],
 		['bold', 'italics', 'underline'],
 		['justifyLeft', 'justifyCenter', 'justifyRight'],
 		['ul', 'ol'],
 		['indent', 'outdent', 'quote'],
-		['insertImage']
+		['insertImage', 'submit']
 	];
 	$scope.taggingTokens = 'SPACE|,|/';
 
@@ -17,24 +18,27 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.attachments = [];
 
 	const hiddenContacts = {};
-	const threadId = $stateParams.replyThreadId;
+	const replyThreadId = $stateParams.replyThreadId;
+	const replyEmailId = $stateParams.replyEmailId;
+	const replyFromEmailId = $stateParams.replyFromEmailId;
+	const forwardEmailId = $stateParams.forwardEmailId;
 	const toEmail = $stateParams.to;
 	let manifest = null;
 	let newHiddenContact = null;
 
-	const translations = {};
-	$translate.bind(translations, [
-		'LB_ATTACHMENT_STATUS_READING',
-		'LB_ATTACHMENT_STATUS_READING_ERROR',
-		'LB_ATTACHMENT_STATUS_DELETING_ERROR',
-		'LB_ATTACHMENT_STATUS_ENCRYPTING',
-		'LB_ATTACHMENT_STATUS_ENCRYPTING_ERROR',
-		'LB_ATTACHMENT_STATUS_FORMATTING',
-		'LB_ATTACHMENT_STATUS_FORMATTING_ERROR',
-		'LB_ATTACHMENT_STATUS_UPLOADING',
-		'LB_ATTACHMENT_STATUS_UPLOADING_ERROR',
-		'LB_ATTACHMENT_STATUS_UPLOADED'
-	], 'MAIN.COMPOSE');
+	const translations = {
+		LB_ATTACHMENT_STATUS_READING: '',
+		LB_ATTACHMENT_STATUS_READING_ERROR: '',
+		LB_ATTACHMENT_STATUS_DELETING_ERROR: '',
+		LB_ATTACHMENT_STATUS_ENCRYPTING: '',
+		LB_ATTACHMENT_STATUS_ENCRYPTING_ERROR: '',
+		LB_ATTACHMENT_STATUS_FORMATTING: '',
+		LB_ATTACHMENT_STATUS_FORMATTING_ERROR: '',
+		LB_ATTACHMENT_STATUS_UPLOADING: '',
+		LB_ATTACHMENT_STATUS_UPLOADING_ERROR: '',
+		LB_ATTACHMENT_STATUS_UPLOADED: ''
+	};
+	$translate.bindAsObject(translations, 'MAIN.COMPOSE');
 
 	const processAttachment = (attachmentStatus) => co(function *() {
 		attachmentStatus.status = translations.LB_ATTACHMENT_STATUS_READING;
@@ -171,17 +175,58 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				attachmentStatus.attachment.body, attachmentStatus.attachment.name, attachmentStatus.attachment.type);
 
 		try {
+			let body = $scope.form.body;
+			const signature = user.settings.isSignatureEnabled && user.settings.signatureHtml ? user.settings.signatureHtml : '';
+
+			let templateBody = '';
+			if (replyEmailId) {
+				const email = yield inbox.getEmailById(replyEmailId);
+
+				templateBody = yield composeHelpers.buildRepliedTemplate(body, signature, [{
+					date: email.date,
+					name: email.from[0].name,
+					address: email.from[0].address,
+					body: email.body.data
+				}]);
+			} else if (replyFromEmailId) {
+				const emails = yield inbox.getEmailsByThreadId(replyThreadId);
+				const replies = emails.reduce((a, email) => {
+					if (a.length > 0 || email.id == replyFromEmailId)
+						a.push({
+							date: email.date,
+							name: email.from[0].name,
+							address: email.from[0].address,
+							body: email.body.data
+						});
+					return a;
+				}, []);
+
+				templateBody = yield composeHelpers.buildRepliedTemplate(body, signature, replies);
+			} else
+				templateBody = yield composeHelpers.buildDirectTemplate(body, signature);
+
+			console.log('template body', templateBody);
+
 			let sendStatus = yield inbox.send({
-				body: $scope.form.body,
+				body: templateBody,
 				attachmentIds: $scope.attachments.map(a => a.id),
-				threadId
+				threadId: replyThreadId
 			}, manifest, keys);
 
 			console.log('compose send status', sendStatus);
 
-			if (isSecured || $scope.isSkipWarning) {
+			if (isSecured) {
+				$scope.form.body = inbox.getMumbledFormattedBody();
+
+				yield utils.sleep(consts.MUMBLE_SHOW_DELAY);
+
 				yield $scope.confirm();
-			} else {
+			} else if ($scope.isSkipWarning)
+			{
+				yield $scope.confirm();
+			}
+			else
+			{
 				$scope.isWarning = true;
 			}
 		} catch (err) {
@@ -220,32 +265,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		manifest = null;
 	};
 
-	$scope.clearError = () => co(function *(){
-		$scope.isError = false;
-	});
-
-	const newHiddenEmail = email => new ContactEmail(null, {
-		name: 'hidden',
-		email,
-		isNew: true
-	}, 'hidden');
-
-	let emailTransform = email => {
-		if (!email)
-			return null;
-
-		let c = contacts.getContactByEmail(email);
-		if (c) {
-			let e = c.getEmail(email);
-			if (e)
-				return e;
-		}
-
-		return newHiddenEmail(email);
-	};
-
 	$scope.$bind('contacts-changed', () => {
-		let toEmailContact = emailTransform(toEmail);
+		let toEmailContact = ContactEmail.transform(toEmail);
 
 		let people = [...contacts.people.values()];
 		let map = new Map();
@@ -281,16 +302,18 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		$scope.people = [...map.values()];
 		console.log('$scope.people', $scope.people);
 
-		let bindUserSignature = () => {
-			if (user.settings.isSignatureEnabled && user.settings.signatureHtml)
-				$scope.form.body = $scope.form.body + user.settings.signatureHtml;
-		};
+		co(function *() {
+			let body = '';
 
-		if (threadId) {
-			co(function *() {
-				let thread = yield inbox.getThreadById(threadId);
+			if (forwardEmailId) {
+				const emails = [yield inbox.getEmailById(forwardEmailId)];
+				body = yield composeHelpers.buildForwardedTemplate(body, '', emails);
+			}
 
-				let to = emailTransform(thread.members[0]);
+			if (replyThreadId) {
+				let thread = yield inbox.getThreadById(replyThreadId);
+
+				let to = ContactEmail.transform(thread.members[0]);
 				console.log('reply to', thread.members[0], to);
 				$scope.form = {
 					person: {},
@@ -302,29 +325,25 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 					},
 					fromEmails: [contacts.myself],
 					subject: `Re: ${Email.getSubjectWithoutRe(thread.subject)}`,
-					body: ''
+					body: body
 				};
+			} else {
+				$scope.form = {
+					person: {},
+					selected: {
+						to: toEmailContact ? [toEmailContact] : [],
+						cc: [],
+						bcc: [],
+						from: contacts.myself
+					},
+					fromEmails: [contacts.myself],
+					subject: '',
+					body: body
+				};
+			}
 
-				bindUserSignature();
-			});
-		} else {
-			$scope.form = {
-				person: {},
-				selected: {
-					to: toEmailContact ? [toEmailContact] : [],
-					cc: [],
-					bcc: [],
-					from: contacts.myself
-				},
-				fromEmails: [contacts.myself],
-				subject: '',
-				body: ''
-			};
-
-			bindUserSignature();
-		}
-
-		console.log('$scope.form', $scope.form);
+			console.log('$scope.form', $scope.form);
+		});
 	});
 
 	$scope.clearTo = () => $scope.form.selected.to = [];
@@ -377,16 +396,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			isNew: true
 		}, 'hidden');
 
-		co(function* (){
-			try {
-				yield newHiddenContact.loadKey();
-			} catch (err) {
-				newHiddenContact.isError = true;
-				if (err.original.status == 404) {
-					newHiddenContact.isNotFoundError = true;
-				}
-			}
-		});
+		newHiddenContact.loadKey();
 
 		hiddenContacts[newHiddenContact.email] = newHiddenContact;
 		return newHiddenContact;
@@ -395,7 +405,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.personFilter = (text) =>
 		(person) => {
 			text = text.toLowerCase();
-
 
 			return person &&
 				(!$scope.form || !$scope.form.selected.to.some(e => e.email == person.email)) && (
@@ -411,7 +420,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
         callback: (event, key) => {
             event.preventDefault();
             $scope.send();
-        },
-        allowIn: ['INPUT', 'SELECT', 'TEXTAREA']
+        }
     });
+
+	textAngularHelpers.ctrlEnterCallback = $scope.send;
 };

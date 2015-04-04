@@ -3,24 +3,29 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 		/([\[\(] *)?(RE?S?|FYI|RIF|I|FS|VB|RV|ENC|ODP|PD|YNT|ILT|SV|VS|VL|AW|WG|ΑΠ|ΣΧΕΤ|ΠΡΘ|תגובה|הועבר|主题|转发|FWD?) *([-:;)\]][ :;\])-]*|$)|\]+ *$/i;
 
 	function Email (opt, manifest) {
+		const self = this;
+
 		this.id =  opt.id;
 		this.threadId = opt.thread;
-		this.isEncrypted = opt.isEncrypted;
-		this.subject = manifest ? manifest.subject : opt.name;
-		if (!this.subject)
-			this.subject = 'unknown subject';
-
 		this.date = opt.date_created;
+
 		this.manifest = manifest;
+		this.subject = manifest ? manifest.subject : opt.name;
 		this.files = manifest ? manifest.files : [];
 
-		this.from = manifest ? manifest.from
-			: (angular.isArray(opt.from) ? opt.from : [opt.from]);
-		this.fromAllPretty = manifest ? manifest.from.map(e => e.prettyName).join(',')
-			: (angular.isArray(opt.from) ? opt.from.join(',') : opt.from);
+		const prettify = (a) => a.map(e => e.prettyName).join(',');
+
+		this.from = manifest ? manifest.from : Manifest.parseAddresses(opt.from);
+		this.fromAllPretty = prettify(self.from);
 
 		this.to = manifest ? manifest.to : [];
-		this.toPretty = this.to.join(',');
+		this.toPretty = prettify(self.to);
+
+		this.cc = manifest ? manifest.cc : [];
+		this.ccPretty = prettify(self.cc);
+
+		this.bcc = manifest ? manifest.bcc : [];
+		this.bccPretty = prettify(self.bcc);
 
 		this.preview = opt.preview;
 		this.body = opt.body;
@@ -67,9 +72,9 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 				kind: 'manifest',
 				manifest: manifestEncoded.pgpData,
 
-				to: manifest.to,
-				cc: manifest.cc,
-				bcc: manifest.bcc,
+				to: manifest.to.map(e => e.address),
+				cc: manifest.cc.map(e => e.address),
+				bcc: manifest.bcc.map(e => e.address),
 				subject_hash: subjectHash,
 
 				files: attachmentIds,
@@ -81,9 +86,9 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 			kind: 'raw',
 			content_type: 'text/html',
 
-			to: manifest.to,
-			cc: manifest.cc,
-			bcc: manifest.bcc,
+			to: manifest.to.map(e => e.address),
+			cc: manifest.cc.map(e => e.address),
+			bcc: manifest.bcc.map(e => e.address),
 			subject: manifest.subject,
 			subject_hash: subjectHash,
 			body: body,
@@ -109,7 +114,6 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 		}
 
 		let email = new Email(angular.extend({}, envelope, {
-			isEncrypted: true,
 			body: body,
 			preview: body
 		}), manifestRaw ? Manifest.createFromJson(manifestRaw) : null);

@@ -2,23 +2,40 @@ div.pane-status(ng-if="selectedTid === null")
 	.col-xs-24 {{'INBOX.LB_NOTHING_SELECTED' | translate}}
 
 .filters.row.no-gutter.lava-icon-row
-	nav.navbar.navbar-inverse(role="navigation", ng-if="selectedTid")
+	nav.navbar.navbar-inverse(role="navigation")
 		div
-			ul.nav.navbar-nav.navbar-right(ng-show="selectedTid")
-				li
-					button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid})")
-						span.icon-reply
-				li
-					button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid})")
-						span.icon-reply-all
-				li
-					button.btn.btn-default
-						span.icon-arrow-right
+			ul.nav.navbar-nav.navbar-right
+				li.spacer(ng-repeat="notification in notificationsImportant")
+					span(class="{{notification.cssClass}}")
+					span(title="{{notification.title}}") {{notification.text}}
+			ul.nav.navbar-nav
+				li(ng-show="selectedTid")
+					button.btn.btn-default(ng-click="deleteThread(selectedTid)")
+						span.icon-trash
+				li(ng-show="selectedTid && labelName != 'Spam'")
+					button.btn.btn-default(ng-click="spamThread(selectedTid)")
+						span.icon-ban
+				li(ng-show="selectedTid")
+					button.btn.btn-default(ng-click="starThread(selectedTid)")
+						span.icon-star(ng-show="selectedTid && threads[selectedTid].isLabel('Starred')")
+						span.icon-star-outline(ng-show="selectedTid && !threads[selectedTid].isLabel('Starred')")
+				li(ng-show="selectedTid && labelName == 'Spam'")
+					button.btn.btn-default(ng-click="restoreFromSpam(selectedTid)")
+						span.icon-ban
+						span.icon-plus
+				li(ng-show="selectedTid && labelName == 'Trash'")
+					button.btn.btn-default(ng-click="restoreFromTrash(selectedTid)")
+						span.icon-trash
+						span.icon-plus
+				li.spacer(ng-repeat="notification in notificationsInfo")
+					p.navbar-text
+						span(class="{{notification.cssClass}}")
+						span(title="{{notification.title}}") {{notification.text}}
 div(ng-if="selectedTid").main-view
-	.pane-status(ng-show="isLoading")
+	.pane-status(ng-show="isLoadingSign || emails.isLoading")
 		img(src="/img/loader.svg")
 	img.logo.only-print(src="/img/Lavaboom-logo-full.svg")
-	.row.no-gutter.mail(ng-repeat="email in emails")
+	.row.no-gutter.mail(ng-repeat="email in emails.list")
 		.col-xs-24
 			header.row.no-gutter
 				.col-xs-21
@@ -44,7 +61,7 @@ div(ng-if="selectedTid").main-view
 					div {{'INBOX.LB_NO_PRIVATE_KEY_FOUND2' | translate}}
 						a(ui-sref="main.settings.security") {{'INBOX.LB_SETTINGS' | translate}}
 						| {{'INBOX.LB_NO_PRIVATE_KEY_FOUND3' | translate}}
-			footer
+			footer(ng-show="email.files.length")
 				.row.no-gutter
 					.col-xs-8(ng-repeat="file in email.files")
 						a.attachment(ui-sref=".popup.download({emailId: email.id, fileId: file.id})")
@@ -52,3 +69,13 @@ div(ng-if="selectedTid").main-view
 							span(ng-bind="file.filename")
 							br
 							span(ng-bind="file.size | filesize")
+			ul.nav.navbar-nav.navbar-right.navbar-right-buttons
+				li(ng-show="selectedTid")
+					button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
+						span.icon-reply
+				li(ng-show="selectedTid")
+					button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid, replyFromEmailId: email.id})")
+						span.icon-reply-all
+				li(ng-show="selectedTid")
+					button.btn.btn-default(ng-click="showPopup('compose', {forwardEmailId: email.id})")
+						span.icon-arrow-right

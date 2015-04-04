@@ -14,6 +14,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	// information about user from API
 	this.settings = {};
 	this.defaultSettings = {
+		isSignatureEnabled: true,
 		isSkipComposeScreenWarning: false,
 		isHotkeyEnabled: true,
 		isSecuredImages: true
@@ -42,7 +43,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	};
 
 	const restoreAuth = () => {
-		token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
+		token = sessionStorage['lava-token'] ? sessionStorage['lava-token'] : localStorage['lava-token'];
 
 		if (token)
 			LavaboomAPI.setAuthToken(token);
@@ -50,7 +51,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 	const persistAuth = (isRemember = true) => {
 		let storage = isRemember ? localStorage : sessionStorage;
-		storage.lavaboomToken = token;
+		storage['lava-token'] = token;
 	};
 
 	this.calculateHash = (password) => utils.hexify(openpgp.crypto.hash.sha256(password));
@@ -138,9 +139,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	this.signIn = (username, password, isRemember, isPrivateComputer) => {
 		setupUserBasicInformation(username.split('@')[0].trim());
 
-		crypto.initialize({
-			isRememberPasswords: isRemember
-		});
+		crypto.initialize();
 
 		return co(function * (){
 			try {
@@ -180,7 +179,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 				if (self.settings.isLavaboomSynced)
 					cryptoKeys.importKeys(self.settings.keyring);
 
-				crypto.options.isPrivateComputer = isPrivateComputer;
+				crypto.initialize({isPrivateComputer: isPrivateComputer});
 				crypto.authenticateByEmail(self.email, password);
 
 				$rootScope.$broadcast('user-authenticated');
@@ -192,8 +191,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	};
 
 	this.removeTokens = () => {
-		delete localStorage.lavaboomToken;
-		delete sessionStorage.lavaboomToken;
+		delete localStorage['lava-token'];
+		delete sessionStorage['lava-token'];
 	};
 
 	this.logout = () => co(function *(){

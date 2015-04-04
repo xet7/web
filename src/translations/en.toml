@@ -24,6 +24,18 @@
 	TODAY = "Today"
     YESTERDAY = "Yesterday"
 
+[NOTIFICATIONS]
+	WEB_CRYPTO_IS_NOT_AVAILABLE_TITLE="Please update your browser."
+	WEB_CRYPTO_IS_NOT_AVAILABLE_TEXT="Looks like this browser will not run Lavaboom, please log in again with an up-to-date version of Firefox, Safari or Google Chrome."
+	WEB_CRYPTO_LIMITED_TITLE="Please update your browser."
+    WEB_CRYPTO_LIMITED_TEXT="Looks like this browser is too slow for Lavaboom, please upgrade your browser or switch to an up-to-date version of Google Chrome, Firefox or Safari."
+	WEB_WORKERS_IS_NOT_AVAILABLE_TITLE="Please update your browser."
+    WEB_WORKERS_IS_NOT_AVAILABLE_TEXT="Looks like this browser is too slow for Lavaboom, please upgrade your browser or switch to an up-to-date version of Google Chrome, Firefox or Safari"
+    SERVED_BY_TITLE = "Welcome back"
+    SERVED_BY_TEXT = "You server today is %SERVED_BY%, happy mailing."
+    SERVED_BY_UNKNOWN_TITLE = "Served by Unknown server"
+    SERVED_BY_UNKNOWN_TEXT = "We do not know which server served you Lavaboom. Please contact hello@lavaboom.com."
+
 [INBOX]
 	NO_PREVIEW_AVAILABLE = "No preview available"
 	LOADING = "Loading..."
@@ -48,7 +60,17 @@
 	LB_SORTED_BY_MODIFICATION_DATE_DESC = "Sorted by modification date -"
 	LB_SORTED_BY_MODIFICATION_DATE_ASC = "Sorted by modification date +"
 	PLC_SEARCH = "Search Emails"
+	REPLY_HEADER = "On {{date | date}}, {{name}} {{address}} wrote"
 	LB_NO_IMAGE = "External images blocked"
+
+	FORWARD_HEADER = "---------- Forwarded message ----------"
+	FORWARD_FROM = "From"
+	FORWARD_DATE = "Date"
+	FORWARD_TO = "To"
+	FORWARD_SUBJECT = "Subject"
+	FORWARD_CC = "Cc"
+	FORWARD_BCC = "Bcc"
+
 
 [INBOX.DOWNLOAD]
 	TITLE = "Downloading your attachment"
@@ -172,8 +194,8 @@
 	LB_GENERATING = "Generating your keys..."
 	LB_UPLOADING = "Uploading Public Key..."
 	LB_READY = "Your keys are ready!"
-	LB_REACHED = "Our hamsters are running extra hard, just be a little longer to wait..."
-	LB_ERROR = "Cannot generate keys, make sure you are using an up-to-date browser like Firefox, Google Chrome or Safari and try again."
+	LB_REACHED = "Our hamsters are running extra hard, just a little longer to wait..."
+	LB_ERROR = "Cannot generate keys, make sure you are using an up-to-date version of Firefox, Google Chrome or Safari and try again."
 	LB_DO_NOT_CLOSE = "Please do not close this window."
 
 [LOGIN.BACKUP_KEY]
@@ -188,11 +210,11 @@
 	LB_PRIVATE_PC = "This is private computer"
 
 [LOGIN.IMPORT_KEY]
-	TITLE = "Please Upload Key"
+	TITLE = "Please Import Key to browser"
 	LB_INFO1 = "We couldn't find your private key in the browser cache."
 	LB_INFO2 = "This happens when you are using Lavaboom for the first time with this browser or if your browser cache has been cleared."
-	LB_INFO3 = "Just upload the key you saved to your hard drive when you signed up with us and you're good to go."
-	BTN_UPLOAD_KEY = "Upload your key"
+	LB_INFO3 = "Import the key you saved to your hard drive when you signed up with us and you're good to go."
+	BTN_UPLOAD_KEY = "Import your key"
 
 [LOGIN.SIGNUP]
 	HEADER = "Welcome to Lavaboom"

@@ -5,25 +5,25 @@ div#left-panel.ng-cloak
 				img(src="img/Lavaboom-logo-full.svg")
 		ul.list-unstyled
 			li.compose
-				a(ng-click="showPopup('compose')")
+				a(ng-click="showPopup('compose')", tooltip-placement="right", tooltip="{{'MAIN.NAV.LB_COMPOSE' | translate}}")
 					span.icon-compose
-					span.action {{'MAIN.NAV.LB_COMPOSE' | translate}}
+					span#compose-action.action {{'MAIN.NAV.LB_COMPOSE' | translate}}
 			li(ng-class="{ active: $state.includes('main.inbox.label', {labelName: label.name}) }", ng-repeat="label in labels track by label.id")
-				a(ui-sref="main.inbox.label({labelName: label.name, threadId: getThreadForLabel(label.name)})")
+				a(ui-sref="main.inbox.label({labelName: label.name, threadId: getThreadForLabel(label.name)})", tooltip="{{label.name}}", tooltip-placement="right")
 					span(ng-class="label.iconClass")
 					span.action(ng-bind="label.name")
 					span.badge(ng-bind="label.threadsUnread | unread")
 			li.separator
 			li(ui-sref-active="active")
-				a(ui-sref="main.contacts")
-					span.icon-head
+				a(ui-sref="main.contacts", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_CONTACTS' | translate}}")
+					span.icon-contacts
 					span.action {{'MAIN.NAV.LB_CONTACTS' | translate}}
 			li(ng-class="{ active: $state.includes('main.settings') }")
-				a(ui-sref="main.settings.general")
+				a(ui-sref="main.settings.general", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_SETTINGS' | translate}}")
 					span.icon-cog
 					span.action {{'MAIN.NAV.LB_SETTINGS' | translate}}
 			li.logout
-				a(href="#", ng-click="logout()")
+				small {{'MAIN.NAV.LB_COPYRIGHT' | translate}}
+				button(ng-click="logout()", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_LOGOUT' | translate}}")
 					span.icon-power
 					strong.action {{'MAIN.NAV.LB_LOGOUT' | translate}} ({{name}})
-				small {{'MAIN.NAV.LB_COPYRIGHT' | translate}}

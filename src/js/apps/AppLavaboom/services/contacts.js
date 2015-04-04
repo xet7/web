@@ -29,7 +29,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, utils, 
 	this.list = () => co(function *() {
 		const contacts = (yield LavaboomAPI.contacts.list()).body.contacts;
 
-		let list = contacts ? yield co.map(contacts, Contact.fromEnvelope) : [];
+		let list = contacts ? yield contacts.map(Contact.fromEnvelope) : [];
 		return list.reduce((map, c) => {
 			map.set(c.id, c);
 			return map;
@@ -50,8 +50,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, utils, 
 
 		contact.id = r.body.contact.id;
 		self.people.set(contact.id, contact);
-
-		// todo: finish hidden contacts deletion
+		
 		const emails = utils.uniq([...contact.privateEmails.map(e => e.email), ...contact.businessEmails.map(e => e.email)]);
 		for(let e of emails) {
 			const c = self.getContactByEmail(e);
@@ -112,6 +111,12 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, utils, 
 	this.getContactById = (id) => self.people.get(id);
 
 	this.getContactByEmail = (email) => [...self.people.values()].find(c => c.isMatchEmail(email));
+
+	$rootScope.$on('logout', () => {
+		console.log('invalidate contacts cache');
+		self.people = new Map();
+		self.myself = null;
+	});
 
 	$rootScope.$on('user-authenticated', () => {
 		self.myself = new Contact({

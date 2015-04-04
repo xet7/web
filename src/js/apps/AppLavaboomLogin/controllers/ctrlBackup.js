@@ -9,7 +9,7 @@ module.exports = /*@ngInject*/($scope, $state, $window, user, signUp, crypto, cr
 	const navigateMainApplication = () => {
 		user.update({state: 'ok'});
 
-		crypto.options.isPrivateComputer = $scope.form.isPrivateComputer;
+		crypto.initialize({isPrivateComputer: $scope.form.isPrivateComputer});
 		crypto.authenticateByEmail(user.email, signUp.password);
 
 		loader.resetProgress();

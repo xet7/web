@@ -50,7 +50,7 @@ div#compose-wrapper
 				.cell.label
 					label.text-primary {{'MAIN.COMPOSE.LB_SUBJECT' | translate}}:
 				.cell.fields
-					input#subject.form-control.text-primary.col-xs-24(type="text", name="subject", auto-complete="off", ng-model="form.subject")
+					input#subject.form-control.text-primary.col-xs-24(type="text", name="subject", autocomplete='off', ng-model="form.subject")
 
 		article#compose-body
 			text-angular(ng-model="form.body", name="body", ta-file-drop="onFileDrop", ta-toolbar="toolbar", ta-min-text="1")

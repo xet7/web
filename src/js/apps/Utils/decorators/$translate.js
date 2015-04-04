@@ -1,15 +1,14 @@
 module.exports = /*@ngInject*/($delegate, $q, $rootScope) => {
-	const instant = $delegate.instant;
-	$delegate.instant = (name, prefix = '') => {
+	$delegate.instantWithPrefix = (name, prefix = '') => {
 		if (angular.isArray(name))
 			return name.reduce((a, c) => {
 				const name = prefix && !c.includes('.') ? prefix + '.' + c : c;
 
-				a[name.split('.').slice(-1)[0]] = instant(name);
+				a[name.split('.').slice(-1)[0]] = $delegate.instant(name);
 				return a;
 			}, {});
 
-		return instant(name);
+		return $delegate.instant(name);
 	};
 
 	$delegate.bind = (translations, names, prefix = '') => {
@@ -17,7 +16,7 @@ module.exports = /*@ngInject*/($delegate, $q, $rootScope) => {
 
 		$rootScope.$bind('$translateChangeSuccess', () => {
 			try {
-				const translation = $delegate.instant(names, prefix);
+				const translation = $delegate.instantWithPrefix(names, prefix);
 				angular.extend(translations, translation);
 
 				deferred.resolve(translations);
@@ -34,7 +33,7 @@ module.exports = /*@ngInject*/($delegate, $q, $rootScope) => {
 
 		$rootScope.$bind('$translateChangeSuccess', () => {
 			try {
-				const translation = $delegate.instant(Object.keys(translations), prefix);
+				const translation = $delegate.instantWithPrefix(Object.keys(translations), prefix);
 				angular.extend(translations, map ? map(translation) : translation);
 
 				if (postProcess)

@@ -39,6 +39,9 @@
 @link-color: @lava;
 @text-muted: @lava-gray-light;
 
+//borders
+@lava-border-color: 		@lava-gray-lighter;
+@border-site-wide: 			1pt solid @lava-border-color;
 @border-radius-base:        2px;
 @border-radius-large:       3px;
 @border-radius-small:       1px;
@@ -47,6 +50,8 @@
 @grid-columns:              24;
 @grid-gutter-width:         20px;
 
+
+@base-rem: 10px;
 
 //== Typography
 //
@@ -78,12 +83,15 @@
 }
 
 //left panel variables
-@left-panel-padding: .545em 2em;
+@left-panel-padding: 0 3.3rem;
 @left-panel-padding-sm: .585em 1.85em;
 
 //dimensions
 @left-panel-width: 210px;
 @left-panel-width-sm: 79px;
+
+//list-groups
+@list-group-bg: transparent;
 
 @mail-list-width: 36%;
 @mail-list-width-sm: 38.7%;
@@ -105,8 +113,7 @@
 @actions-search-width: 50%;
 @actions-buttons-width: 100% - @actions-search-width - @mail-list-block-buttons-width;
 
-//borders
-@border-site-wide: 1pt solid @lava-gray-lighter;
+
 
 //animations!!!
 @lava-ease-out-in: cubic-bezier(0.500, -0.215, 0.380, 1.245);

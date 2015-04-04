@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/(co, consts, LavaboomAPI, $scope) => {
-	const token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
+	const token = sessionStorage['lava-token'] ? sessionStorage['lava-token'] : localStorage['lava-token'];
 	LavaboomAPI.setAuthToken(token);
 
 	$scope.initializeApplication = (opts) => co(function *(){

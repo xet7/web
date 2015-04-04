@@ -1,8 +1,17 @@
 module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts, co, LavaboomAPI, user, crypto, contacts, Email, Thread, Label) {
 	const self = this;
 
+	const newLineRegex = /(\r\n|\n)/g;
+
+	let sortQuery = '-date_created';
+
 	this.selectedTidByLabelName = {};
-	this.sortQuery = '-date_created';
+
+	this.getSortQuery = () => sortQuery;
+
+	this.setSortQuery = (query) => {
+		sortQuery = query;
+	};
 
 	this.getThreadById = (threadId) => co(function *() {
 		const thread = (yield LavaboomAPI.threads.get(threadId)).body.thread;
@@ -10,17 +19,31 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 		return thread ? yield Thread.fromEnvelope(thread) : null;
 	});
 
+	this.requestRestoreFromSpam = (thread) => co(function *() {
+		const labels = yield self.getLabels();
+
+		if (thread.isLabel('Spam'))
+			self.requestRemoveLabel(thread, 'Spam');
+	});
+
+	this.requestRestoreFromTrash = (thread) => co(function *() {
+		const labels = yield self.getLabels();
+
+		if (thread.isLabel('Trash'))
+			self.requestRemoveLabel(thread, 'Trash');
+	});
+
 	this.requestDelete = (thread) => co(function *() {
 		const labels = yield self.getLabels();
 
 		const trashLabelId = labels.byName.Trash.id;
 		const spamLabelId = labels.byName.Spam.id;
-		const draftsLabelId = labels.byName.Drafts.id;
+		const draftsLabelId = labels.byName.Drafts ? labels.byName.Drafts.id : null;
 
 		const lbs = thread.labels;
-		return lbs.includes(trashLabelId) || lbs.includes(spamLabelId) || lbs.includes(draftsLabelId)
+		return lbs.includes(trashLabelId) || lbs.includes(spamLabelId) || (draftsLabelId && lbs.includes(draftsLabelId))
 			? yield self.requestDeleteForcefully(thread)
-			: yield self.requestSetLabel(thread, 'Trash');
+			: yield self.requestAddLabel(thread, 'Trash');
 	});
 
 	this.requestDeleteForcefully = (thread) => co(function *() {
@@ -135,12 +158,18 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 	this.requestList = (labelName, offset, limit) => co(function *() {
 		const labels = yield self.getLabels();
-		const label = labels.byName[labelName];
+		const requestLabels = [labels.byName[labelName].id];
+
+		const excludeSpam = '-' + labels.byName.Spam.id;
+		const excludeTrash = '-' + labels.byName.Trash.id;
+		if (labelName != 'Spam')
+			requestLabels.push(excludeSpam);
+		if (labelName != 'Trash')
+			requestLabels.push(excludeTrash);
 
 		const threads = (yield LavaboomAPI.threads.list({
-			label: label.id,
-			attachments_count: true,
-			sort: self.sortQuery,
+			label: requestLabels.join(','),
+			sort: sortQuery,
 			offset: offset,
 			limit: limit
 		})).body.threads;
@@ -159,10 +188,16 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	});
 
 	let sendEnvelope = null;
+	let isSecured = false;
 
 	this.send = (opts, manifest, keys) => co(function * () {
+		isSecured = Email.isSecuredKeys(keys);
 		sendEnvelope = yield Email.toEnvelope(opts, manifest, keys);
 	});
+
+	this.getMumbledFormattedBody = () => {
+		return sendEnvelope && sendEnvelope.body ? sendEnvelope.body.replace(newLineRegex, '<br />') : '';
+	};
 
 	this.confirmSend = () =>  co(function * () {
 		const res = yield LavaboomAPI.emails.create(sendEnvelope);

@@ -13,9 +13,6 @@ form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-subm
 		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.password.$error", ng-messages-include="partials/validationMessages.html")
 
 	.checkbox
-		input#check1(type='checkbox', name="check1", ng-model="form.isRemember")
-		label(for='check1') {{'LOGIN.AUTH.LB_KEEP_ME_LOGGED_IN' | translate}}
-	.checkbox
 		input#check2(type='checkbox', name="check2", ng-model="form.isPrivateComputer")
 		label(for='check2') {{'LOGIN.AUTH.LB_PRIVATE_PC' | translate}}
 
