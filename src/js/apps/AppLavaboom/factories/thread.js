@@ -1,6 +1,7 @@
-module.exports = /*@ngInject*/($injector, co, utils, crypto, Manifest) => {
+module.exports = /*@ngInject*/($injector, co, utils, crypto, Email, Manifest) => {
 	function Thread(opt, manifest, labels) {
 		const self = this;
+		let inbox = $injector.get('Email');
 
 		this.id = opt.id;
 		this.created = opt.date_created;
@@ -12,6 +13,9 @@ module.exports = /*@ngInject*/($injector, co, utils, crypto, Manifest) => {
 
 		this.subject = manifest && manifest.subject ? manifest.subject : opt.name;
 		this.attachmentsCount = manifest && manifest.files ? manifest.files.length : 0;
+
+		this.isReplied = opt.emails.length > 1;
+		this.isForwarded = Email.getSubjectWithoutRe(self.subject) != self.subject;
 
 		this.isLabel = (labelName) => self.labels.some(lid => labels.byId[lid] && labels.byId[lid].name == labelName);
 		this.addLabel = (labelName) => utils.uniq(self.labels.concat(labels.byName[labelName].id));
