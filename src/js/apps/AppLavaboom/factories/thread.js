@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($injector, co, utils, crypto, Email, Manifest) => {
+module.exports = /*@ngInject*/($injector, co, utils, crypto, user, Email, Manifest) => {
 	function Thread(opt, manifest, labels) {
 		const self = this;
 		let inbox = $injector.get('Email');
@@ -6,7 +6,10 @@ module.exports = /*@ngInject*/($injector, co, utils, crypto, Email, Manifest) =>
 		this.id = opt.id;
 		this.created = opt.date_created;
 		this.modified = opt.date_modified;
-		this.members = opt.members;
+		this.members = opt.members
+			.map(address => address == user.email ? '' : Manifest.formatAddress(address).contactPrettyName)
+			.filter(m => !!m);
+
 		this.labels = opt.labels;
 		this.isRead = opt.is_read;
 		this.secure = opt.secure;
