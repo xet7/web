@@ -4,7 +4,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		LB_PRIVATE : '',
 		LB_BUSINESS : '',
 		LB_HIDDEN : '',
-		'MAIN.CONTACTS.LB_EMAIL_NOT_FOUND' : ''
+		LB_EMAIL_NOT_FOUND : 'MAIN.CONTACTS'
 	};
 
 	$translate.bindAsObject(translations, 'MAIN.COMPOSE');
@@ -34,7 +34,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 
 				tooltip = '';
 			} catch (err) {
-				tooltip = translations['MAIN.CONTACTS.LB_EMAIL_NOT_FOUND'];
+				tooltip = translations.LB_EMAIL_NOT_FOUND;
 				self.key = null;
 				throw err;
 			} finally {

@@ -13,7 +13,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeo
     });
 
 	const translations = {
-		'GLOBAL.LB_NOT_IMPLEMENTED': '',
+		LB_NOT_IMPLEMENTED: 'GLOBAL',
 		LB_SORT_BY_DISPLAY_NAME : '',
 		LB_SORT_BY_FIRST_NAME : '',
 		LB_SORT_BY_LAST_NAME : ''
@@ -41,7 +41,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeo
 	});
 
 	$translate.bindAsObject(translations, 'MAIN.SETTINGS.GENERAL', null, () => {
-		$scope.notImplemented = [{name: translations['GLOBAL.LB_NOT_IMPLEMENTED']}];
+		console.log('MAIN.SETTINGS.GENERAL', translations);
+		$scope.notImplemented = [{name: translations.LB_NOT_IMPLEMENTED}];
 		$scope.sortBy = [
 			{name: translations.LB_SORT_BY_DISPLAY_NAME},
 			{name: translations.LB_SORT_BY_FIRST_NAME},

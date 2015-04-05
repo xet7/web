@@ -56,7 +56,7 @@
 			li.list-group-item
 				.dropdown-control
 					label {{'MAIN.SETTINGS.GENERAL.LB_COMPOSED_MAILS' | translate}}
-					ui-select(ng-model='items.selected', search-enabled='false')
+					ui-select(ng-model='settings.mailComposedAction', search-enabled='false')
 						ui-select-match
 							| {{$select.selected.name}}
 							span(ng-class='item.icon')
@@ -66,14 +66,14 @@
 			li.list-group-item
 				.dropdown-control
 					label {{'MAIN.SETTINGS.GENERAL.LB_MARKED_AS_SPAM' | translate}}
-					ui-select(ng-model='items.selected', search-enabled='false')
+					ui-select(ng-model='settings.mailSpamAction', search-enabled='false')
 						ui-select-match {{$select.selected.name}}
 						ui-select-choices(repeat='item in notImplemented')
 							span(ng-click='item.selected=item', ng-bind='item.name')
 			li.list-group-item
 				.dropdown-control
 					label {{'MAIN.SETTINGS.GENERAL.LB_DELETED_EMAILS' | translate}}
-					ui-select(ng-model='items.selected', search-enabled='false')
+					ui-select(ng-model='settings.mailDeletedAction', search-enabled='false')
 						ui-select-match {{$select.selected.name}}
 						ui-select-choices(repeat='item in notImplemented')
 							span(ng-click='item.selected=item', ng-bind='item.name')
@@ -83,7 +83,7 @@
 					ui-select(ng-model='settings.images', search-enabled='false')
 						ui-select-match {{$select.selected.description}}
 						ui-select-choices(repeat='item in imageSettings')
-							span(ng-click='settings.images=item.name', title="{{item.title}}") {{item.description}}
+							span(ng-click='settings.images=item.name', ng-bind="item.description", title="{{item.title}}")
 		h4 {{'MAIN.SETTINGS.GENERAL.TITLE_KEYBOARD_SHORTCUTS' | translate}}
 		ul.list-group
 			li.list-group-item

@@ -1,40 +1,29 @@
 module.exports = /*@ngInject*/($delegate, $q, $rootScope) => {
 	$delegate.instantWithPrefix = (name, prefix = '') => {
-		if (angular.isArray(name))
-			return name.reduce((a, c) => {
-				const name = prefix && !c.includes('.') ? prefix + '.' + c : c;
+		if (angular.isObject(name)) {
+			const translationTable = name;
 
-				a[name.split('.').slice(-1)[0]] = $delegate.instant(name);
+			return Object.keys(translationTable).reduce((a, translationKey) => {
+				const resolvedTranslationKey = prefix && !translationTable[translationKey]
+					? prefix + '.' + translationKey
+					: translationTable[translationKey] + '.' + translationKey;
+
+				a[translationKey] = $delegate.instant(resolvedTranslationKey);
 				return a;
 			}, {});
+		}
 
 		return $delegate.instant(name);
-	};
-
-	$delegate.bind = (translations, names, prefix = '') => {
-		let deferred = $q.defer();
-
-		$rootScope.$bind('$translateChangeSuccess', () => {
-			try {
-				const translation = $delegate.instantWithPrefix(names, prefix);
-				angular.extend(translations, translation);
-
-				deferred.resolve(translations);
-			} catch (err) {
-				deferred.reject(err);
-			}
-		});
-
-		return deferred.promise;
 	};
 
 	$delegate.bindAsObject = (translations, prefix = '', map = null, postProcess = null) => {
 		let deferred = $q.defer();
 
+		const originalTranslations = angular.copy(translations);
 		$rootScope.$bind('$translateChangeSuccess', () => {
 			try {
-				const translation = $delegate.instantWithPrefix(Object.keys(translations), prefix);
-				angular.extend(translations, map ? map(translation) : translation);
+				const currentTranslations = $delegate.instantWithPrefix(originalTranslations, prefix);
+				angular.extend(translations, map ? map(currentTranslations) : currentTranslations);
 
 				if (postProcess)
 					postProcess();
