@@ -85,7 +85,7 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 					if (imagesSetting == 'none') {
 						e.replaceWith(noImageTemplate);
 					} else if (imagesSetting == 'proxy') {
-						e.attr('src', `${consts.IMAGES_PROXY_URI}/${src}`);
+						e.attr('src', `${consts.IMAGES_PROXY_URI}/i/${src.replace(/http[s]*:\/\//i, '')}`);
 					} else if (imagesSetting == 'directHttps') {
 						if (!src.startsWith('https://'))
 							e.replaceWith(noImageTemplate);
