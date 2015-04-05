@@ -78,18 +78,29 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 		angular.forEach(emailBodyHtml.find('img'), e => {
 			e = angular.element(e);
 			let src = e.attr('src');
+			if (!src)
+				return;
 
-			if (src) {
-				src = src.trim();
-				if (!src.startsWith('data:')) {
-					if (imagesSetting == 'none') {
-						e.replaceWith(noImageTemplate);
-					} else if (imagesSetting == 'proxy') {
-						e.attr('src', `${consts.IMAGES_PROXY_URI}/i/${src.replace(/http[s]*:\/\//i, '')}`);
-					} else if (imagesSetting == 'directHttps') {
-						if (!src.startsWith('https://'))
-							e.replaceWith(noImageTemplate);
+			src = src.trim();
+			if (!src.startsWith('data:')) {
+				if (imagesSetting == 'none') {
+					e.replaceWith(noImageTemplate);
+				} else if (imagesSetting == 'proxy') {
+					const proxifiedImageUri = `${consts.IMAGES_PROXY_URI}/i/${src.replace(/http[s]*:\/\//i, '')}`;
+					e.attr('src', proxifiedImageUri);
+					const parent = angular.element(e.parent());
+
+					if (parent.prop('tagName') == 'A') {
+						let href = parent.attr('href');
+						if (href) {
+							href = href.trim();
+							if (href == src)
+								parent.attr('href', proxifiedImageUri);
+						}
 					}
+				} else if (imagesSetting == 'directHttps') {
+					if (!src.startsWith('https://'))
+						e.replaceWith(noImageTemplate);
 				}
 			}
 		});
