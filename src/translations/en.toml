@@ -314,6 +314,8 @@
 	LB_SIGNATURE_ENABLED = "Signature Enabled"
 	TITLE_NEWSLETTER = "Newsletter"
 	LB_SEND_ME_NEWS = "Send me News about Lavaboom"
+	LB_SIGNATURE_LN1 = "Sent with Lavaboom - your secure email provider."
+	LB_SIGNATURE_LN2 = "Get your own address at lavaboom.com"
 
 [MAIN.SETTINGS.PLAN]
 	LB_CURRENT = "This is your current plan"
