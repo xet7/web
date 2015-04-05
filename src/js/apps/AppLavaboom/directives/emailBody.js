@@ -1,6 +1,6 @@
 let fs = require('fs');
 
-module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateCache, co, user) => {
+module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateCache, co, user, consts) => {
 	const emailRegex = /([-A-Z0-9_.]*[A-Z0-9]@[-A-Z0-9_.]*[A-Z0-9])/ig;
 	const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 
@@ -74,15 +74,23 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 		});
 	};
 
-	const transformImages = (emailBodyHtml, noImageTemplate) => {
+	const transformImages = (emailBodyHtml, imagesSetting, noImageTemplate) => {
 		angular.forEach(emailBodyHtml.find('img'), e => {
 			e = angular.element(e);
 			let src = e.attr('src');
 
 			if (src) {
 				src = src.trim();
-				if (!src.startsWith('data:'))
-					e.replaceWith(noImageTemplate);
+				if (!src.startsWith('data:')) {
+					if (imagesSetting == 'none') {
+						e.replaceWith(noImageTemplate);
+					} else if (imagesSetting == 'proxy') {
+						e.attr('src', `${consts.IMAGES_PROXY_URI}/${src}`);
+					} else if (imagesSetting == 'directHttps') {
+						if (!src.startsWith('https://'))
+							e.replaceWith(noImageTemplate);
+					}
+				}
 			}
 		});
 	};
@@ -113,8 +121,7 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 					emailBodyHtml = angular.element(`<div>${sanitizedTransformedEmailBody}</div>`);
 
 					transformLinks(emailBodyHtml, scope.emails);
-					if (user.settings.isSecuredImages)
-						transformImages(emailBodyHtml, noImageTemplate);
+					transformImages(emailBodyHtml, user.settings.images, noImageTemplate);
 
 				} catch (err) {
 					console.error(
