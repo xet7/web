@@ -100,6 +100,8 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 
 				const noImageTemplate = yield $templateCache.fetch(scope.noImageTemplateUrl);
 
+				console.log('email body', `"${scope.emailBody}"`);
+
 				let transformedEmailBody = '';
 				let sanitizedTransformedEmailBody = '';
 				let emailBodyHtml = '';

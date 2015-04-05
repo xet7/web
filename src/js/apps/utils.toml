@@ -25,5 +25,8 @@
 
 		# angular own modules
 		'../../bower_components/lavaboom/dist/lavaboom-angular.js',
-		'../../bower_components/angular-co/dist/co.js'
+		'../../bower_components/angular-co/dist/co.js',
+
+		# wtf
+		'../../bower_components/textAngular/dist/textAngular-sanitize.min.js'
 	]
