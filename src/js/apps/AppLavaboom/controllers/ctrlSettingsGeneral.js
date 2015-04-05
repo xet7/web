@@ -41,8 +41,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeo
 	});
 
 	$translate.bindAsObject(translations, 'MAIN.SETTINGS.GENERAL', null, () => {
-		console.log('MAIN.SETTINGS.GENERAL', translations);
-		$scope.notImplemented = [{name: translations.LB_NOT_IMPLEMENTED}];
+		$scope.notImplemented = [{name: 'none', description: translations.LB_NOT_IMPLEMENTED}];
 		$scope.sortBy = [
 			{name: translations.LB_SORT_BY_DISPLAY_NAME},
 			{name: translations.LB_SORT_BY_FIRST_NAME},
