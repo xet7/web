@@ -24,7 +24,7 @@ div.pane-status(ng-if="selectedTid === null")
 	nav#notifications.navbar.navbar-inverse.notifications(ng-class="{ active: notificationsInfo.length }")
 		div(ng-repeat="notification in notificationsInfo")
 			ul.nav.navbar-nav
-				li.spacer(ng-repeat="notification in notificationsInfo")
+				li
 					p.navbar-text
 						span(title="{{notification.title}}") {{notification.text}}
 			ul.nav.navbar-nav.navbar-right
@@ -49,6 +49,7 @@ div(ng-if="selectedTid").main-view
 		img(src="/img/loader.svg")
 
 	div.logo.only-print
+		img(src="/img/Lavaboom-logo-gray.svg")		
 	.row.no-gutter.mail(ng-repeat="email in emails.list")
 		.col-xs-24
 			header.row.no-gutter
