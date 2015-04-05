@@ -77,13 +77,13 @@
 						ui-select-match {{$select.selected.name}}
 						ui-select-choices(repeat='item in notImplemented')
 							span(ng-click='item.selected=item', ng-bind='item.name')
-			ul.list-group
 			li.list-group-item
-				label {{'MAIN.SETTINGS.GENERAL.LB_SECURED_IMAGES' | translate}}
-				.control
-					label.switch
-						input(type='checkbox', ng-model="settings.isSecuredImages")
-						i
+				.dropdown-control
+					label {{'MAIN.SETTINGS.GENERAL.LB_SECURED_IMAGES' | translate}}
+					ui-select(ng-model='settings.images', search-enabled='false')
+						ui-select-match {{$select.selected.description}}
+						ui-select-choices(repeat='item in imageSettings')
+							span(ng-click='settings.images=item.name', title="{{item.title}}") {{item.description}}
 		h4 {{'MAIN.SETTINGS.GENERAL.TITLE_KEYBOARD_SHORTCUTS' | translate}}
 		ul.list-group
 			li.list-group-item

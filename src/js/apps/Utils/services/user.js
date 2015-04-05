@@ -17,7 +17,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		isSignatureEnabled: true,
 		isSkipComposeScreenWarning: false,
 		isHotkeyEnabled: true,
-		isSecuredImages: true
+		images: 'none' // none, proxy, directHttps, directAll
 	};
 
 	const setupSettings = (settings) => {

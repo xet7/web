@@ -301,8 +301,16 @@
 	LB_SORT_BY_LAST_NAME = "last name"
 	TITLE_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts"
 	LB_KEYBOARD_SHORTCUTS = "Enabled"
-	LB_SECURED_IMAGES = "Don't show external images(security risk)"
+	LB_SECURED_IMAGES = "External images"
 	PLC_SELECT_LANGUAGE = "Select a language"
+	LB_IMAGES_NONE = "none"
+	LB_IMAGES_NONE_TITLE = "Block all external images, the most secure"
+	LB_IMAGES_PROXY = "proxy through lavaboom"
+	LB_IMAGES_PROXY_TITLE = "It makes your browser proxy all images through lavaboom secure proxy thus effectively hiding you behind the Lavaboom"
+	LB_IMAGES_HTTPS = "download only https images directly"
+	LB_IMAGES_HTTPS_TITLE = "It makes your browser directly download only https external images"
+	LB_IMAGES_ALL = "download all images directly"
+	LB_IMAGES_ALL_TITLE = "It makes your browser directly download all external images, for both http and https protocols"
 
 [MAIN.SETTINGS.PROFILE]
 	TITLE_NAME = "Name"

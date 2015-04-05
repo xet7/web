@@ -1,4 +1,5 @@
-module.exports = /*@ngInject*/($scope, $timeout, co, utils, user, crypto, cryptoKeys, LavaboomAPI, fileReader, inbox, saver) => {
+module.exports = /*@ngInject*/($scope, $timeout, $translate,
+							   co, utils, user, crypto, cryptoKeys, LavaboomAPI, fileReader, inbox, saver) => {
 	$scope.email = user.email;
 	$scope.settings = {};
 
@@ -11,6 +12,7 @@ module.exports = /*@ngInject*/($scope, $timeout, co, utils, user, crypto, crypto
 	$scope.$bind('user-settings', () => {
 		$scope.settings = user.settings;
 	});
+
 
 	$scope.$bind('keyring-updated', () => {
 		$scope.keys = crypto.getAvailablePrivateKeys().map(key => {

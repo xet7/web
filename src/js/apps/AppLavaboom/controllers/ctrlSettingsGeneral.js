@@ -19,6 +19,27 @@ module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeo
 		LB_SORT_BY_LAST_NAME : ''
 	};
 
+	const translationImages = {
+		LB_IMAGES_NONE: '',
+		LB_IMAGES_NONE_TITLE: '',
+		LB_IMAGES_PROXY: '',
+		LB_IMAGES_PROXY_TITLE: '',
+		LB_IMAGES_HTTPS: '',
+		LB_IMAGES_HTTPS_TITLE: '',
+		LB_IMAGES_ALL: '',
+		LB_IMAGES_ALL_TITLE: ''
+	};
+
+	$translate.bindAsObject(translationImages, 'MAIN.SETTINGS.GENERAL', null, () => {
+		$scope.imageSettings = [
+			{name: 'none', description: translationImages.LB_IMAGES_NONE, title: translationImages.LB_IMAGES_NONE_TITLE},
+			{name: 'proxy', description: translationImages.LB_IMAGES_PROXY, title: translationImages.LB_IMAGES_PROXY_TITLE},
+			{name: 'directHttps', description: translationImages.LB_IMAGES_HTTPS, title: translationImages.LB_IMAGES_HTTPS_TITLE},
+			{name: 'directAll', description: translationImages.LB_IMAGES_ALL, title: translationImages.LB_IMAGES_ALL_TITLE}
+		];
+		console.log('$scope.imageSettings', $scope.imageSettings);
+	});
+
 	$translate.bindAsObject(translations, 'MAIN.SETTINGS.GENERAL', null, () => {
 		$scope.notImplemented = [{name: translations['GLOBAL.LB_NOT_IMPLEMENTED']}];
 		$scope.sortBy = [
