@@ -140,7 +140,9 @@
 	PLC_INVITE_CODE = "please paste invite code here"
 	LB_NEWS = "Send me updates to my Lavaboom address."
 	LB_TOS = "By signing up I agree that I've read and understood the " 
-    LNK_TOS = "Terms of Service and the Privacy Policy"
+    LNK_TOS = "Terms of Service"
+    AND_THE = " and the "
+    LINK_PRIVACY = "Privacy Policy"
 
 [LOGIN.PLAN]
 	TITLE = "Your Plan"
