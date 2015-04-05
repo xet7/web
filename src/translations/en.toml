@@ -325,10 +325,10 @@
 	LB_TAG = "FREE"
 	LB_ITEMS = "1,000MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
 
-[MAIN.SETTINGS.PLAN.TEST]
-	TITLE = "Lavaboom (Test)"
-	LB_TAG = "SECRET"
-	LB_ITEMS = "1,000MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+#[MAIN.SETTINGS.PLAN.TEST]
+#	TITLE = "Lavaboom (Test)"
+#	LB_TAG = "SECRET"
+#	LB_ITEMS = "1,000MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
 
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
