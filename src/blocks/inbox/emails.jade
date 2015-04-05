@@ -1,13 +1,9 @@
 div.pane-status(ng-if="selectedTid === null")
 	.col-xs-24 {{'INBOX.LB_NOTHING_SELECTED' | translate}}
 
-.filters.row.no-gutter.lava-icon-row
+.filters.row.no-gutter.lava-icon-row(class="notifications-{{notificationsInfo.length}}")
 	nav.navbar.navbar-inverse(role="navigation")
 		div
-			ul.nav.navbar-nav.navbar-right
-				li.spacer(ng-repeat="notification in notificationsImportant")
-					span(class="{{notification.cssClass}}")
-					span(title="{{notification.title}}") {{notification.text}}
 			ul.nav.navbar-nav
 				li(ng-show="selectedTid")
 					button.btn.btn-default(ng-click="deleteThread(selectedTid)")
@@ -21,20 +17,39 @@ div.pane-status(ng-if="selectedTid === null")
 						span.icon-star-outline(ng-show="selectedTid && !threads[selectedTid].isLabel('Starred')")
 				li(ng-show="selectedTid && labelName == 'Spam'")
 					button.btn.btn-default(ng-click="restoreFromSpam(selectedTid)")
-						span.icon-ban
-						span.icon-plus
+						span.icon-put-back
 				li(ng-show="selectedTid && labelName == 'Trash'")
 					button.btn.btn-default(ng-click="restoreFromTrash(selectedTid)")
-						span.icon-trash
-						span.icon-plus
-				li.spacer(ng-repeat="notification in notificationsInfo")
+						span.icon-put-back
+	nav#notifications.navbar.navbar-inverse.notifications(ng-class="{ active: notificationsInfo.length }")
+		div(ng-repeat="notification in notificationsInfo")
+			ul.nav.navbar-nav
+				li
 					p.navbar-text
-						span(class="{{notification.cssClass}}")
 						span(title="{{notification.title}}") {{notification.text}}
+			ul.nav.navbar-nav.navbar-right
+				li
+					button.btn.btn-default
+						span.icon-trash
+						| OK
+
+		div(ng-repeat="notification in notificationsImportant", class="notifications-warning")
+			ul.nav.navbar-nav
+				li
+					p.navbar-text
+						span(title="{{notification.title}}") {{notification.text}}
+			ul.nav.navbar-nav.navbar-right
+				li
+					button.btn.btn-default
+						span.icon-trash
+						| OK
+
 div(ng-if="selectedTid").main-view
 	.pane-status(ng-show="isLoadingSign || emails.isLoading")
 		img(src="/img/loader.svg")
-	img.logo.only-print(src="/img/Lavaboom-logo-full.svg")
+
+	div.logo.only-print
+		img(src="/img/Lavaboom-logo-gray.svg")		
 	.row.no-gutter.mail(ng-repeat="email in emails.list")
 		.col-xs-24
 			header.row.no-gutter

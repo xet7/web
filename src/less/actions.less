@@ -37,7 +37,7 @@
 			color: @lava-gray-light;
 			background: transparent;
 			border: 0;
-			height: @filter-height - 0.1rem;
+			height: @filter-height;
 			&:hover{
 				color: @lava-gray-lighter;
 			}
@@ -186,6 +186,14 @@
 	            .text-uppercase();
 	            .text-muted();
 	        }
+	    }
+
+	    &.notifications-1 + div {
+	    	top: @filter-height * 2;
+	    }
+
+	    &.notifications-2 + div {
+	    	top: @filter-height * 3;
 	    }
 
 	    .open > .dropdown-menu {

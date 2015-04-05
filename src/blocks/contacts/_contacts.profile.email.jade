@@ -8,6 +8,14 @@ li.list-group-item
 			a.btn
 				span.icon-lock(ng-show="currentEmail.isSecured()")
 				span.icon-unlock(ng-show="!currentEmail.isSecured()")
+			span.dropdown(dropdown="")
+				button.btn.btn-default.dropdown-toggle(type="button", dropdown-toggle="")
+					span.icon-chevron-down
+				ul.dropdown-menu(role="menu")
+					li
+						a threadsList
+					li
+						a threadsList
 	li.list-group-item
 		div
 			div.input-group.with-label
