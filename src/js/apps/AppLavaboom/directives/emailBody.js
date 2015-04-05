@@ -47,6 +47,46 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 			{regex: urlRegex, replace: '<a href="$1">$1</a>'}
 		]);
 
+	const transformLinks = (emailBodyHtml, emails) => {
+		let i = 0;
+		angular.forEach(emailBodyHtml.find('a'), e => {
+			e = angular.element(e);
+			let href = e.attr('href');
+
+			if (href) {
+				href = href.trim();
+
+				if (href.startsWith('mailto:')) {
+					const toEmail = href.replace('mailto:', '').trim();
+					emails.push({
+						email: toEmail,
+						isDropdownOpened: false
+					});
+
+					e.attr('href', $state.href('.popup.compose', {to: toEmail}));
+					e.attr('ng-right-click', `switchContextMenu(${i})`);
+
+					e.wrap(`<email-context-menu email="emails[${i}].email" is-open="emails[${i}].isDropdownOpened"></email-context-menu>`);
+					i++;
+				} else
+					e.attr('target', '_blank');
+			}
+		});
+	};
+
+	const transformImages = (emailBodyHtml, noImageTemplate) => {
+		angular.forEach(emailBodyHtml.find('img'), e => {
+			e = angular.element(e);
+			let src = e.attr('src');
+
+			if (src) {
+				src = src.trim();
+				if (!src.startsWith('data:'))
+					e.replaceWith(noImageTemplate);
+			}
+		});
+	};
+
 	return {
 		restrict : 'A',
 		scope: {
@@ -55,56 +95,38 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 		},
 		link  : (scope, el, attrs) => {
 			co(function *(){
-				const noImageTemplate = yield $templateCache.fetch(scope.noImageTemplateUrl);
-
 				scope.emails = [];
-
 				scope.switchContextMenu = index => scope.emails[index].isDropdownOpened = !scope.emails[index].isDropdownOpened;
 
-				const dom = getDOM(scope.emailBody);
-				const emailBody = transformEmailDOM(dom);
+				const noImageTemplate = yield $templateCache.fetch(scope.noImageTemplateUrl);
 
-				const emailBodyHtml = angular.element('<div>' + $sanitize(emailBody) + '</div>');
+				let transformedEmailBody = '';
+				let sanitizedTransformedEmailBody = '';
+				let emailBodyHtml = '';
+				try {
+					const dom = getDOM(scope.emailBody);
+					transformedEmailBody = transformEmailDOM(dom);
 
-				let i = 0;
-				angular.forEach(emailBodyHtml.find('a'), e => {
-					e = angular.element(e);
-					let href = e.attr('href');
+					sanitizedTransformedEmailBody = $sanitize(transformedEmailBody);
+					emailBodyHtml = angular.element(`<div>${sanitizedTransformedEmailBody}</div>`);
 
-					if (href) {
-						href = href.trim();
+					transformLinks(emailBodyHtml, scope.emails);
+					if (user.settings.isSecuredImages)
+						transformImages(emailBodyHtml, noImageTemplate);
 
-						if (href.startsWith('mailto:')) {
-							const toEmail = href.replace('mailto:', '').trim();
-							scope.emails.push({
-								email: toEmail,
-								isDropdownOpened: false
-							});
-
-							e.attr('href', $state.href('.popup.compose', {to: toEmail}));
-							e.attr('ng-right-click', `switchContextMenu(${i})`);
-
-							e.wrap(`<email-context-menu email="emails[${i}].email" is-open="emails[${i}].isDropdownOpened"></email-context-menu>`);
-							i++;
-						} else
-							e.attr('target', '_blank');
-					}
-				});
-
-				if (user.settings.isSecuredImages)
-					angular.forEach(emailBodyHtml.find('img'), e => {
-						e = angular.element(e);
-						let src = e.attr('src');
-
-						if (src) {
-							src = src.trim();
-							if (!src.startsWith('data:'))
-								e.replaceWith(noImageTemplate);
-						}
-					});
+				} catch (err) {
+					console.error(
+						`error during email body processing: "${err.message}", raw email body: `,
+						`"${scope.emailBody}"`,
+						', transformed email body: ',
+						`"${transformedEmailBody}"`,
+						', sanitized transformed email body: ',
+						`"${sanitizedTransformedEmailBody}"`
+					);
+					throw err;
+				}
 
 				const emailBodyCompiled = $compile(emailBodyHtml)(scope);
-
 				el.append(emailBodyCompiled);
 			});
 		}
