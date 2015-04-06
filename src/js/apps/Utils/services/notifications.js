@@ -39,7 +39,12 @@ module.exports = /*@ngInject*/function($rootScope, $translate) {
 		}
 	};
 
-	this.get = () => {
-		return angular.copy(notifications);
+	this.get = (type) => {
+		const notificationsSet = angular.copy(notifications);
+		return Object.keys(notificationsSet).reduce((a, name) => {
+			if (notificationsSet[name].type == type)
+				a[name] = notificationsSet[name];
+			return a;
+		}, {});
 	};
 };

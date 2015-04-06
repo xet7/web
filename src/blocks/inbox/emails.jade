@@ -22,25 +22,25 @@ div.pane-status(ng-if="selectedTid === null")
 					button.btn.btn-default(ng-click="restoreFromTrash(selectedTid)")
 						span.icon-put-back
 	nav#notifications.navbar.navbar-inverse.notifications(ng-class="{ active: notificationsInfo.length }")
-		div(ng-repeat="notification in notificationsInfo")
+		div(ng-repeat="(name, notification) in notificationsInfo")
 			ul.nav.navbar-nav
 				li
 					p.navbar-text
 						span(title="{{notification.title}}") {{notification.text}}
 			ul.nav.navbar-nav.navbar-right
 				li
-					button.btn.btn-default
+					button.btn.btn-default(ng-click="unSetNotification(name)")
 						span.icon-trash
 						| OK
 
-		div(ng-repeat="notification in notificationsImportant", class="notifications-warning")
+		div(ng-repeat="(name, notification) in notificationsWarning", class="notifications-warning")
 			ul.nav.navbar-nav
 				li
 					p.navbar-text
 						span(title="{{notification.title}}") {{notification.text}}
 			ul.nav.navbar-nav.navbar-right
 				li
-					button.btn.btn-default
+					button.btn.btn-default(ng-click="unSetNotification(name)")
 						span.icon-trash
 						| OK
 

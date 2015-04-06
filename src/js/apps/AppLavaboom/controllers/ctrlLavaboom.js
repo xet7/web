@@ -13,15 +13,17 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 
 	const translationPromise = $translate.bindAsObject(translations, 'LOADER');
 
-	$scope.xxx = {date: 1, name: 2, email: 3};
 	$scope.notificationsInfo = [];
-	$scope.notificationsImportant = [];
+	$scope.notificationsWarning = [];
 
 	$rootScope.$bind('notifications', () => {
-		const list = utils.toArray(notifications.get());
-		$scope.notificationsInfo = list.filter(n => n.type == 'info');
-		$scope.notificationsImportant = list.filter(n => n.type != 'info');
+		$scope.notificationsInfo = notifications.get('info');
+		$scope.notificationsWarning = notifications.get('warning');
 	});
+
+	$scope.unSetNotification = (nid) => {
+		notifications.unSet(nid);
+	};
 
 	$scope.ddEventFilter = (name, event) => event.target.id.startsWith('taTextElement');
 
