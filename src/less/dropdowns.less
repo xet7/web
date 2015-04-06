@@ -14,6 +14,7 @@
     .z2();
 
 
+
     p, a, .dropdown-checkbox{
     	line-height: @line-height-base;
     	padding: 1.1rem;
@@ -32,12 +33,15 @@
     	width: 100%;
     	background: @lava-light;
     	min-width: 25rem;
+    	border-radius: 0 0 @dropdown-border-radius; @dropdown-border-radius;
+
     	> *{
     		width: 50%;
     		padding: 0;
     		line-height: 44px;
     		&:not(:first-child){
     			border-left: .1rem solid @lava-gray-lightest;
+    			border-radius: 0 0 0 @border-radius-base;
     		}
     		> span {
     			color: #fff !important;
@@ -55,12 +59,12 @@
     
     &:after, &:before{
         transition: .3s;
-        transition-delay: .2s;
+        transition-delay: .4s;
         transition-property: all;
         content: "";
         position: absolute;
         .z1();
-        
+
     }
     .dropdown-header{
         .text-uppercase();
