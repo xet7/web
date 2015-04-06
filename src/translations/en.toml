@@ -96,6 +96,7 @@
 	LB_PRIVATE_KEY = "Private Key"
     LB_PUBLIC_KEY = "Public Key"
     LB_NOT_IMPLEMENTED = "Not yet implemented"
+    BTN_REMOVE_NOTIFICATION = "OK"
 
 [VALIDATION]
 	LB_REQUIRED = "This field is required"

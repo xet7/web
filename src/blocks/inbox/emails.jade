@@ -31,7 +31,7 @@ div.pane-status(ng-if="selectedTid === null")
 				li
 					button.btn.btn-default(ng-click="unSetNotification(name)")
 						span.icon-trash
-						| OK
+						| {{'GLOBAL.BTN_REMOVE_NOTIFICATION' | translate}}
 
 		div(ng-repeat="(name, notification) in notificationsWarning", class="notifications-warning")
 			ul.nav.navbar-nav
@@ -42,7 +42,7 @@ div.pane-status(ng-if="selectedTid === null")
 				li
 					button.btn.btn-default(ng-click="unSetNotification(name)")
 						span.icon-trash
-						| OK
+						| {{'GLOBAL.BTN_REMOVE_NOTIFICATION' | translate}}
 
 div(ng-if="selectedTid").main-view
 	.pane-status(ng-show="isLoadingSign || emails.isLoading")
