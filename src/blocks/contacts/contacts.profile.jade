@@ -36,13 +36,15 @@
 				h4 {{'MAIN.CONTACTS.TITLE_PRIVATE_EMAIL' | translate}}
 				ul.list-group(ng-repeat="currentEmail in details.privateEmails", ng-controller="CtrlContactProfileEmail", ng-init="emails = 'privateEmails'")
 					include ./_contacts.profile.email.jade
-				button.btn.btn-lg.btn-default.btn-block.btn-icon(type="button", ng-click="addNewPrivateEmail()")
-					span.icon-plus
-					| {{'MAIN.CONTACTS.BTN_ADD_PRIVATE_EMAIL' | translate}}
+				ul.list-group
+					li.list-group-item.pack
+						button.btn.btn-default.btn-block.btn-icon(type="button", ng-click="addNewPrivateEmail()")
+							span.icon-plus-circle.btn-add-icon
+							| {{'MAIN.CONTACTS.BTN_ADD_PRIVATE_EMAIL' | translate}}
 			div
 				h4 {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}
 				ul.list-group(ng-repeat="currentEmail in details.businessEmails", ng-controller="CtrlContactProfileEmail", ng-init="emails = 'businessEmails'")
 					include ./_contacts.profile.email.jade
-				button.btn.btn-lg.btn-default.btn-block.btn-icon(type="button", ng-click="addNewBusinessEmail()")
+				button.btn.btn-default.btn-block.btn-icon(type="button", ng-click="addNewBusinessEmail()")
 					span.icon-plus
 					| {{'MAIN.CONTACTS.BTN_ADD_BUSINESS_EMAIL' | translate}}
