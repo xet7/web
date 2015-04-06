@@ -1,30 +1,33 @@
-li.list-group-item
+li.list-group-item(ng-class="{ collapse-active: !currentEmail.isCollapsed() }")
 	div.input-group
+		button.btn.btn-remove(ng-click="remove()")
+			span.icon-delete
 		input.form-control(type="text", name="email-{{$index}}", ng-model="currentEmail.name", required,
 			placeholder="{{'MAIN.CONTACTS.PLC_EMAIL' | translate}}", tooltip="{{currentEmail.getTooltip()}}", tooltip-trigger="focus", tooltip-placement="right")
 		div.input-group-btn
 			button.btn.tggl(type="button", ng-model="currentEmail.isStar", btn-checkbox="", btn-checkbox-true="1", btn-checkbox-false="0")
-				span.icon-star-outline
-			a.btn
-				span.icon-lock(ng-show="currentEmail.isSecured()")
-				span.icon-unlock(ng-show="!currentEmail.isSecured()")
-			span.dropdown(dropdown="")
+				span.icon-star
+			span.dropdown(dropdown="", ng-show="!currentEmail.isSecured()")
 				button.btn.btn-default.dropdown-toggle(type="button", dropdown-toggle="")
-					span.icon-chevron-down
-				ul.dropdown-menu(role="menu")
+					span.icon-unlock(ng-show="!currentEmail.isSecured()")
+				ul.dropdown-menu.pull-right(role="menu")
 					li
-						a threadsList
-					li
-						a threadsList
-	li.list-group-item
-		div
-			div.input-group.with-label
+						p {{'MAIN.CONTACTS.PUBLIC_KEY_PROMPT1' | translate}}
+						p {{'MAIN.CONTACTS.PUBLIC_KEY_PROMPT2' | translate}}
+					li.yesno.table-list
+						a.btn.btn-lg.cell(type="button")
+							span.icon-public-key-send
+							span {{'MAIN.CONTACTS.PUBLIC_KEY_PROMPT_REQUEST' | translate}}
+						a.btn.btn-lg.cell(type="button")
+							span.icon-close
+							span {{'MAIN.CONTACTS.PUBLIC_KEY_PROMPT_UPLOAD' | translate}}
+			button.btn.btn-default(ng-show="currentEmail.isSecured()", ng-click="currentEmail.switchCollapse()")
+				span.icon-lock
+	li.list-group-item(ng-show="currentEmail.isSecured()", collapse="currentEmail.isCollapsed()")
+		div.child-item
+			.text-control
 				label {{'MAIN.CONTACTS.LB_KEY_ID' | translate}}
 				input.form-control(disabled, type="text", ng-model="currentEmail.key.id")
-				div.input-group-btn
-					button.btn.btn-default(type="button", ng-click="currentEmail.switchCollapse()")
-						span.icon-chevron-down
-		div.child-item(collapse="currentEmail.isCollapsed()")
 			.text-control
 				label {{'MAIN.CONTACTS.LB_LENGTH' | translate}}
 				input.field-icon.form-control(disabled, ng-model="currentEmail.key.length")
