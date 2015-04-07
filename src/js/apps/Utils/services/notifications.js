@@ -15,35 +15,45 @@ module.exports = /*@ngInject*/function($rootScope, $translate) {
 		$rootScope.$broadcast('notifications');
 	};
 
-	this.set = (name, {text, title, type}) => {
+	this.set = (name, {text, title, type, namespace}) => {
 		if (!type)
 			type = 'warning';
+		if (!namespace)
+			namespace = 'root';
+		if (!title)
+			title = '';
 
 		let cssClass = '';
 		if (type == 'warning')
 			cssClass = 'icon-info-circle';
 
-		notifications[name] = {
+		notifications[namespace + '.' + name] = {
 			text,
 			title,
 			type,
+			namespace,
 			cssClass
 		};
 		$rootScope.$broadcast('notifications');
 	};
 
-	this.unSet = (name) => {
+	this.unSet = (name, namespace = 'root') => {
+		name = namespace + '.' + name;
 		if (name in notifications) {
 			delete notifications[name];
 			$rootScope.$broadcast('notifications');
 		}
 	};
 
-	this.get = (type) => {
+	this.get = (type, namespace = 'root') => {
 		const notificationsSet = angular.copy(notifications);
 		return Object.keys(notificationsSet).reduce((a, name) => {
+			if (!name.startsWith(namespace + '.'))
+				return a;
+
 			if (notificationsSet[name].type == type)
 				a[name] = notificationsSet[name];
+
 			return a;
 		}, {});
 	};
