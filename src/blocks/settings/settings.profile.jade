@@ -42,7 +42,7 @@
 							br
 							p.text-center
 								a(href="https://lavaboom.com", target="_blank")
-									strong | {{'MAIN.SETTINGS.PROFILE.LB_SIGNATURE_LN1' | translate}}
+									strong {{'MAIN.SETTINGS.PROFILE.LB_SIGNATURE_LN1' | translate}}
 									br
 									| {{'MAIN.SETTINGS.PROFILE.LB_SIGNATURE_LN2' | translate}}
 					
@@ -54,7 +54,3 @@
 					label.switch
 						input(type='checkbox', ng-model="settings.isSubscribedToNews")
 						i
-		br
-		ul.list-group(ng-show="status")
-			li.list-group-item
-				label(ng-bind="status")

@@ -327,6 +327,8 @@
 	LB_SEND_ME_NEWS = "Send me News about Lavaboom"
 	LB_SIGNATURE_LN1 = "Sent with Lavaboom - your secure email provider."
 	LB_SIGNATURE_LN2 = "Get your own address at lavaboom.com"
+	LB_PROFILE_SAVED = "Profile has been saved"
+    LB_PROFILE_CANNOT_BE_SAVED = "Cannot save profile"
 
 [MAIN.SETTINGS.PLAN]
 	LB_CURRENT = "This is your current plan"
