@@ -1,145 +1,137 @@
-	// padding-top: @filter-height + 2;
-	.filters, .actions{
-		background-color: @lava-gray;
-		
-		position: absolute;
-		right: 0;
-		left: 0;
+// padding-top: @filter-height + 2;
+.filters, .actions{
+	background-color: @lava-gray;
+	
+	position: absolute;
+	right: 0;
+	left: 0;
 
-		.no-gutter();
-		
-		.search-icon {
-			// width: @mail-list-block-buttons-width;
-			height: @filter-height;
-			padding: 0 .5rem 0 1rem;
-			.icon-search{
-				// padding-left: 1.2rem;
-				// float: left;
-				// font-size: 14px;
-				// padding-top: 3px;
-			}
-		}
+	.no-gutter();
+	
+	.search-icon {
+		// width: @mail-list-block-buttons-width;
 		height: @filter-height;
-		> *{
-			display: block;
+		padding: 0 .5rem 0 1rem;
+		.icon-search{
+			// padding-left: 1.2rem;
+			// float: left;
+			// font-size: 14px;
+			// padding-top: 3px;
 		}
+	}
+	height: @filter-height;
+	> *{
+		display: block;
+	}
 
+	color: @lava-gray-light;
+
+	[class^="icon-"],
+	[class*=" icon-"] {
+		font-size: 2rem;
+		line-height: @filter-height - 0.3rem;
+		// color: @lava-gray-light;
+	}
+
+	button, label{
 		color: @lava-gray-light;
-
-		[class^="icon-"],
-		[class*=" icon-"] {
-			font-size: 2rem;
-			line-height: @filter-height - 0.3rem;
-			// color: @lava-gray-light;
+		background: transparent;
+		border: 0;
+		height: @filter-height;
+		&:hover{
+			color: @lava-gray-lighter;
 		}
-
-		button, label{
-			color: @lava-gray-light;
-			background: transparent;
-			border: 0;
-			height: @filter-height;
-			&:hover{
-				color: @lava-gray-lighter;
-			}
-			&:active{
-				outline: 0;
-				box-shadow: 0;
-			}
+		&:active{
+			outline: 0;
+			box-shadow: 0;
 		}
-		input{
-			background-color: transparent;
-			border: 0 none;
-			height: @filter-height;
-			color: @lava-gray-light;
-			border-radius: 0;
-			// position: relative;
+	}
+	input{
+		background-color: transparent;
+		border: 0 none;
+		height: @filter-height;
+		color: @lava-gray-light;
+		border-radius: 0;
+		// position: relative;
+		outline: none;
+		// padding: 0 5px;
+		&:active, &:focus{
+			box-shadow: inset 0 0 .9rem fadeout(@lava-gray-darkest, .5) !important;
 			outline: none;
-			// padding: 0 5px;
-			&:active, &:focus{
-				box-shadow: inset 0 0 .9rem fadeout(@lava-gray-darkest, .5) !important;
-				outline: none;
-				border: 0;
-			}
-			// width: @actions-search-width;
+			border: 0;
+		}
+		// width: @actions-search-width;
+	}
+
+	.form-control[type=text]{
+		&:focus{
+			box-shadow: inset 0 0 .9rem fadeout(@lava-gray-darkest, .5) !important;
 		}
 
-		.form-control[type=text]{
-			&:focus{
-				box-shadow: inset 0 0 .9rem fadeout(@lava-gray-darkest, .5) !important;
-			}
-
-		}
+	}
 
 
-		button{
+	button{
+		background: transparent none;
+		border: 0;
+		outline: 0;
+		
+		&:active, &:hover{
 			background: transparent none;
 			border: 0;
 			outline: 0;
-			
-			&:active, &:hover{
-				background: transparent none;
-				border: 0;
-				outline: 0;
-			}
 		}
+	}
 
-		.btn{
-			
-		}
+	.btn{
+		
+	}
 
 
-		.navbar{
-			border: 0;
-		}
+	.navbar{
+		border: 0;
+	}
 
-		.navbar-text{
-			margin-top: 1.2rem;
-			margin-bottom: 1.2rem;
-		}
+	.navbar-text{
+		margin-top: 1.2rem;
+		margin-bottom: 1.2rem;
+	}
 
-		.btn.btn-default{
+	.btn.btn-default{
+		background: transparent none;
+		border: 0;
+		outline: 0;
+		padding: 0 1.2rem;
+		color: @lava-gray-light;
+		&:active, &:hover, &:focus, &.active, &.open{
 			background: transparent none;
 			border: 0;
 			outline: 0;
-			padding: 0 1.2rem;
-			color: @lava-gray-light;
-			&:active, &:hover, &:focus, &.active, &.open{
-				background: transparent none;
-				border: 0;
-				outline: 0;
-				box-shadow: none;
-				color: @lava-gray-lighter;
-			}
-
-			.transition(.2s);
-			
-			&:active{
-				transform: scale(.9);
-			}
-		}
-
-		.btn-group.open .dropdown-toggle{
-			background: transparent none;
-			border: 0;
-			outline: 0;
-			// padding: 0 inherit;
 			box-shadow: none;
 			color: @lava-gray-lighter;
 		}
 
-		.form-group{
-			margin: 0;
+		.transition(.2s);
+		
+		&:active{
+			transform: scale(.9);
 		}
-
-		li.spacer{
-			padding-left: 2rem;
-		}
-
-	    &.notifications-1 + div {
-	    	top: @filter-height * 2;
-	    }
-
-	    &.notifications-2 + div {
-	    	top: @filter-height * 3;
-	    }
 	}
+
+	.btn-group.open .dropdown-toggle{
+		background: transparent none;
+		border: 0;
+		outline: 0;
+		// padding: 0 inherit;
+		box-shadow: none;
+		color: @lava-gray-lighter;
+	}
+
+	.form-group{
+		margin: 0;
+	}
+
+	li.spacer{
+		padding-left: 2rem;
+	}
+}
