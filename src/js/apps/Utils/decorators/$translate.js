@@ -4,11 +4,19 @@ module.exports = /*@ngInject*/($delegate, $q, $rootScope) => {
 			const translationTable = name;
 
 			return Object.keys(translationTable).reduce((a, translationKey) => {
-				const resolvedTranslationKey = prefix && !translationTable[translationKey]
-					? prefix + '.' + translationKey
-					: translationTable[translationKey] + '.' + translationKey;
+				let isParam = false;
+				if (translationTable[translationKey].startsWith('%')) {
+					translationTable[translationKey] = translationTable[translationKey].substr(1);
+					isParam = true;
+				}
 
-				a[translationKey] = $delegate.instant(resolvedTranslationKey);
+				const resolvedTranslationKey = prefix && !translationTable[translationKey]
+						? prefix + '.' + translationKey
+						: translationTable[translationKey] + '.' + translationKey;
+
+				a[translationKey] = isParam
+					? (argsObject) => $delegate.instant(resolvedTranslationKey, argsObject)
+					: $delegate.instant(resolvedTranslationKey);
 				return a;
 			}, {});
 		}
