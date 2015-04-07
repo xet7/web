@@ -1,0 +1,106 @@
+.dropdown-menu {
+    // display: block;
+    // visibility: hidden;
+    transition: all .2s ease;
+    .opacity(0);
+    transform: translateY(-3px);
+    right: -.2rem !important;
+    color: @dropdown-header-color;
+    border: 0 none;
+    border-radius: @dropdown-border-radius;
+    padding: 0;
+
+    box-shadow:  0 0px 1.6rem .5rem rgba(0, 0, 0, 0.19);
+    .z2();
+
+
+
+    p, a, .dropdown-checkbox{
+    	line-height: @line-height-base;
+    	padding: 1.1rem;
+			[class^="icon-"],
+			[class*=" icon-"] {
+				// font-size: 1em;
+				padding-right: .5rem;
+				// color: @lava-gray-light;
+			}
+    }
+
+    p {
+    	white-space: normal;
+    }
+    .yesno{
+    	width: 100%;
+    	background: @lava-light;
+    	min-width: 25rem;
+    	border-radius: 0 0 @dropdown-border-radius @dropdown-border-radius;
+
+    	> *{
+    		width: 50%;
+    		padding: 0;
+    		line-height: 44px;
+    		&:not(:first-child){
+    			border-left: .1rem solid @lava-gray-lightest;
+    			border-radius: 0 0 0 @border-radius-base;
+    		}
+    		> span {
+    			color: #fff !important;
+    		}
+    	}
+    }
+
+    .checkbox{
+    	margin: 0;
+    	color: @lava-gray-lightest;
+    	> * {
+    		color: @lava-gray-lightest;
+    	}
+    }
+    
+    &:after, &:before{
+        transition: .3s;
+        transition-delay: .4s;
+        transition-property: all;
+        content: "";
+        position: absolute;
+        .z1();
+
+    }
+    .dropdown-header{
+        .text-uppercase();
+        .text-muted();
+    }
+}
+.open > .dropdown-menu {
+    // visibility: visible;
+    .opacity(1);
+    transform: translateY(0px) scale(1);
+    &:before{
+        top: -1rem !important;
+    }
+    &:after{
+        top: -1.2rem !important;
+        border-bottom-color: @dropdown-border;
+    }
+}
+
+.dropdown ul.dropdown-menu:before {
+    
+    border-bottom: 1rem solid @dropdown-bg;
+    border-right: 1rem solid transparent;
+    border-left: 1rem solid transparent;
+    
+    top: -.1rem;
+    right: 1.4rem;
+    z-index: -1;
+}
+.dropdown ul.dropdown-menu:after {
+    
+    // border-bottom: 1.1rem solid @dropdown-border;
+    // border-right: 1.1rem solid transparent;
+    // border-left: 1.1rem solid transparent;
+    
+    // top: -.1rem;
+    // right: 1.5rem;
+    // z-index: -2;
+}

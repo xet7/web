@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeout, translate, user, hotkey, co) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeout, translate, user, hotkey, co, notifications) => {
 	$scope.form = {
 		selectedLanguage: null,
 		contactsSortBy: null
@@ -13,14 +13,37 @@ module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeo
     });
 
 	const translations = {
-		'GLOBAL.LB_NOT_IMPLEMENTED': '',
+		LB_NOT_IMPLEMENTED: 'GLOBAL',
 		LB_SORT_BY_DISPLAY_NAME : '',
 		LB_SORT_BY_FIRST_NAME : '',
-		LB_SORT_BY_LAST_NAME : ''
+		LB_SORT_BY_LAST_NAME : '',
+		LB_PROFILE_SAVED: 'MAIN.SETTINGS.PROFILE',
+		LB_PROFILE_CANNOT_BE_SAVED: 'MAIN.SETTINGS.PROFILE'
 	};
 
+	const translationImages = {
+		LB_IMAGES_NONE: '',
+		LB_IMAGES_NONE_TITLE: '',
+		LB_IMAGES_PROXY: '',
+		LB_IMAGES_PROXY_TITLE: '',
+		LB_IMAGES_HTTPS: '',
+		LB_IMAGES_HTTPS_TITLE: '',
+		LB_IMAGES_ALL: '',
+		LB_IMAGES_ALL_TITLE: ''
+	};
+
+	$translate.bindAsObject(translationImages, 'MAIN.SETTINGS.GENERAL', null, () => {
+		$scope.imageSettings = [
+			{name: 'none', description: translationImages.LB_IMAGES_NONE, title: translationImages.LB_IMAGES_NONE_TITLE},
+			{name: 'proxy', description: translationImages.LB_IMAGES_PROXY, title: translationImages.LB_IMAGES_PROXY_TITLE},
+			{name: 'directHttps', description: translationImages.LB_IMAGES_HTTPS, title: translationImages.LB_IMAGES_HTTPS_TITLE},
+			{name: 'directAll', description: translationImages.LB_IMAGES_ALL, title: translationImages.LB_IMAGES_ALL_TITLE}
+		];
+		console.log('$scope.imageSettings', $scope.imageSettings);
+	});
+
 	$translate.bindAsObject(translations, 'MAIN.SETTINGS.GENERAL', null, () => {
-		$scope.notImplemented = [{name: translations['GLOBAL.LB_NOT_IMPLEMENTED']}];
+		$scope.notImplemented = [{name: 'none', description: translations.LB_NOT_IMPLEMENTED}];
 		$scope.sortBy = [
 			{name: translations.LB_SORT_BY_DISPLAY_NAME},
 			{name: translations.LB_SORT_BY_FIRST_NAME},
@@ -60,15 +83,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeo
 		clear: null,
 		update: null
 	};
-
-    $scope.$watch('status', () => {
-        if ($scope.status) {
-			timeouts.clear = $timeout.schedule(timeouts.clear, () => {
-                $scope.status = '';
-            }, 1000);
-        }
-    });
-
     $scope.$watch('settings', (o, n) => {
         if (o === n)
 			return;
@@ -77,9 +91,18 @@ module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeo
 			timeouts.update = $timeout.schedulePromise(timeouts.update, () => co(function *(){
 				try {
 					yield user.update($scope.settings);
-					$scope.status = 'saved!';
+
+					notifications.set('profile-save-ok', {
+						text: translations.LB_PROFILE_SAVED,
+						type: 'info',
+						timeout: 3000,
+						namespace: 'settings'
+					});
 				} catch (err) {
-					$scope.status = 'ops...';
+					notifications.set('profile-save-fail', {
+						text: translations.LB_PROFILE_CANNOT_BE_SAVED,
+						namespace: 'settings'
+					});
 				}
             }), 1000);
         }

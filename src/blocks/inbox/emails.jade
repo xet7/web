@@ -1,13 +1,9 @@
 div.pane-status(ng-if="selectedTid === null")
 	.col-xs-24 {{'INBOX.LB_NOTHING_SELECTED' | translate}}
 
-.filters.row.no-gutter.lava-icon-row
+.filters.row.no-gutter.lava-icon-row(ng-class="'notifications-' + getNotificationsLength(notificationsInfo, notificationsWarning)")
 	nav.navbar.navbar-inverse(role="navigation")
 		div
-			ul.nav.navbar-nav.navbar-right
-				li.spacer(ng-repeat="notification in notificationsImportant")
-					span(class="{{notification.cssClass}}")
-					span(title="{{notification.title}}") {{notification.text}}
 			ul.nav.navbar-nav
 				li(ng-show="selectedTid")
 					button.btn.btn-default(ng-click="deleteThread(selectedTid)")
@@ -21,31 +17,28 @@ div.pane-status(ng-if="selectedTid === null")
 						span.icon-star-outline(ng-show="selectedTid && !threads[selectedTid].isLabel('Starred')")
 				li(ng-show="selectedTid && labelName == 'Spam'")
 					button.btn.btn-default(ng-click="restoreFromSpam(selectedTid)")
-						span.icon-ban
-						span.icon-plus
+						span.icon-put-back
 				li(ng-show="selectedTid && labelName == 'Trash'")
 					button.btn.btn-default(ng-click="restoreFromTrash(selectedTid)")
-						span.icon-trash
-						span.icon-plus
-				li.spacer(ng-repeat="notification in notificationsInfo")
-					p.navbar-text
-						span(class="{{notification.cssClass}}")
-						span(title="{{notification.title}}") {{notification.text}}
+						span.icon-put-back
+	include ../_notifications.jade
+
 div(ng-if="selectedTid").main-view
 	.pane-status(ng-show="isLoadingSign || emails.isLoading")
 		img(src="/img/loader.svg")
-	img.logo.only-print(src="/img/Lavaboom-logo-full.svg")
+
+	div.logo.only-print
+		img(src="/img/Lavaboom-logo-gray.svg")		
 	.row.no-gutter.mail(ng-repeat="email in emails.list")
 		.col-xs-24
 			header.row.no-gutter
 				.col-xs-21
 					//strong(ng-bind="email.fromName")
 					//br
-					| {{'MAIN.COMPOSE.LB_FROM' | translate}}:
-					strong(ng-bind="email.fromAllPretty")
-					br
-					| {{'MAIN.COMPOSE.LB_TO' | translate}}:
-					strong(ng-bind="email.toPretty")
+					div {{'MAIN.COMPOSE.LB_FROM' | translate}}:
+						strong(ng-bind="email.fromAllPretty")
+					div {{'MAIN.COMPOSE.LB_TO' | translate}}:
+						span.medium(ng-bind="email.toPretty")
 					br
 					| {{'MAIN.COMPOSE.LB_SUBJECT' | translate}}:
 					span(ng-bind="email.subject")
