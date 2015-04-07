@@ -5,7 +5,7 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, consts, crypto, not
 	console.log('CtrlSettingsSecurityKey instantiated with key', $scope.key, 'originates from', cryptoKey);
 
 	const translations = {
-		LB_PRIVATE_KEY_DECRYPTED: ''
+		LB_PRIVATE_KEY_DECRYPTED: '%'
 	};
 	$translate.bindAsObject(translations, 'MAIN.SETTINGS.SECURITY');
 
@@ -21,7 +21,7 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, consts, crypto, not
 
 					if (r) {
 						notifications.set('private-key-decrypted-ok', {
-							text: translations.LB_PRIVATE_KEY_DECRYPTED,
+							text: translations.LB_PRIVATE_KEY_DECRYPTED({email: $scope.email}),
 							type: 'info',
 							timeout: 3000,
 							namespace: 'settings'
