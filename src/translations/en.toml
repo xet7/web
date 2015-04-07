@@ -364,6 +364,12 @@
 	LAVABOOM_SYNC = "Lavaboom Sync"
 	BTN_GENERATE_KEYS = "Generate new key-pair"
 	BTN_DOWNLOAD = "Download this public key"
+	LB_PRIVATE_KEY_DECRYPTED = "Private key has been decrypted"
+	LB_PASSWORD_CANNOT_BE_CHANGED = "Cannot change password - {{error}}"
+	LB_PASSWORD_CHANGED = "Account password and private key passphrase have been updated"
+	LB_LAVABOOM_SYNC_ACTIVATED = "Lavaboom sync has been activated"
+	LB_LAVABOOM_SYNC_DEACTIVATED = "Lavaboom sync has been de-activated"
+	LB_LAVABOOM_SYNC_CANNOT_UPDATE = "Cannot update Lavaboom sync state"
 
 [MAIN.CONTACTS]
 	PLC_SEARCH_CONTACTS = "Search Contacts"
