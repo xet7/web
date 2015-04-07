@@ -113,6 +113,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 
 	this.getPrivateKeyByFingerprint = (fingerprint) => keyring.privateKeys.findByFingerprint(fingerprint);
 
+	this.readKey = (key) => {
+		return openpgp.key.readArmored(key).keys[0];
+	};
+
 	this.importPublicKey = (publicKey) => {
 		console.log('importing public key', publicKey);
 

@@ -18,7 +18,7 @@ li.list-group-item(ng-class="{ 'collapse-active': !currentEmail.isCollapsed() }"
 						a.btn.btn-lg.cell(type="button")
 							span.icon-public-key-send
 							span {{'MAIN.CONTACTS.PUBLIC_KEY_PROMPT_REQUEST' | translate}}
-						a.btn.btn-lg.cell(type="button")
+						a.btn.btn-lg.cell(type="button", open-file="uploadPublicKey(data)")
 							span.icon-close
 							span {{'MAIN.CONTACTS.PUBLIC_KEY_PROMPT_UPLOAD' | translate}}
 			button.btn.btn-default(ng-show="currentEmail.isSecured()", ng-click="currentEmail.switchCollapse()")

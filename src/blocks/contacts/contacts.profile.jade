@@ -1,4 +1,6 @@
-.filters.row.no-gutter.lava-icon-row.ng-cloak
+.filters.row.no-gutter.lava-icon-row
+.filters.row.no-gutter.lava-icon-row(class="notifications-{{Object.keys(notificationsInfo).length + Object.keys(notificationsWarning).length}}")
+	include ../_notifications.jade
 .main-view
 	.row.main-panel
 		section.pane-status(ng-show="!details") {{'MAIN.CONTACTS.LB_NOTHING_FOUND' | translate}}

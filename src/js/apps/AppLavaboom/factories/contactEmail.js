@@ -70,6 +70,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		this.getLabel = () => label;
 		this.getTooltip = () => tooltip;
 		this.isCollapsed = () => isCollapsed;
+		this.unfold = () => isCollapsed = false;
 		this.getTag = () => tag;
 
 		this.collapse = () => isCollapsed = true;

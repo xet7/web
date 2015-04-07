@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, ContactEmail) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, notifications, ContactEmail) => {
 	$scope.contactId = $stateParams.contactId;
 	const email = $stateParams.email;
 
@@ -6,6 +6,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 		LB_NEW_CONTACT: ''
 	};
 	$translate.bindAsObject(translations, 'MAIN.CONTACTS');
+
+	$rootScope.$bind('notifications', () => {
+		$scope.notificationsInfo = notifications.get('info', 'contact.profile');
+		$scope.notificationsWarning = notifications.get('warning', 'contact.profile');
+	});
 
 	console.log('ctrl contact profile', $scope.contactId);
 

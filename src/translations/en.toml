@@ -391,6 +391,8 @@
     PUBLIC_KEY_PROMPT2 = "Would you like to ask for the public key and add it here manually?"
     PUBLIC_KEY_PROMPT_REQUEST = "Request key"
     PUBLIC_KEY_PROMPT_UPLOAD = "Upload key"
+    LB_CANNOT_IMPORT_PUBLIC_KEY = "Cannot import public key"
+    LB_PUBLIC_KEY_IMPORTED = "New public key imported for {{email}}, {{algos}} {{length}}bits"
 
 [HOTKEY]
 	TITLE          		 = "Shortcuts cheatsheet"

@@ -21,8 +21,8 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 		$scope.notificationsWarning = notifications.get('warning');
 	});
 
-	$scope.unSetNotification = (nid) => {
-		notifications.unSet(nid);
+	$scope.unSetNotification = (nid, namespace) => {
+		notifications.unSet(nid, namespace);
 	};
 
 	$scope.ddEventFilter = (name, event) => event.target.id.startsWith('taTextElement');
