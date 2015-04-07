@@ -130,7 +130,7 @@ form.settings{
 	.btn, input, textarea, label{
 		.lava-font();
 		color: @lava-gray;
-		&.btn-danger, &.btn-primary{
+		&.btn-primary{
 			color: #FFF;
 		}
 	}
@@ -191,6 +191,8 @@ form.settings{
 		margin-bottom: 1em;
 	}
 	.list-group{
+		margin-bottom: 1.1rem;
+
 		label{
 			font-weight: @light-font-weight;
 			margin: 0;
@@ -234,7 +236,8 @@ form.settings{
 		.btn-add-icon{
 			line-height: @filter-height;
 			color: @lava;
-			left: @lava-form-padding - @filter-height;
+			left: -4rem;
+			.text-center();
 		}
 		.input-group{
 			margin: -1rem -1.5rem;
@@ -515,6 +518,11 @@ form.settings{
 		.list-group-item.collapse-active{
 			background: @lava-gray-lighter;
 		}
+
+		.list-group-item.collapse:not(.in){
+			padding-top: 0; padding-bottom: 0;
+			height: 0;
+		}
 	}
 	h4{
 		padding-left: 1.1rem;
@@ -522,6 +530,20 @@ form.settings{
 		.lava-font();
 		margin-top: 3.6rem;
 		margin-bottom: 1.4rem;
+	}
+
+	footer{
+		margin-top: 5.5rem;
+	}
+
+	.btn-danger{
+		background: #FFF;
+		color: @lava-red;
+		border: 1px solid @lava-red;
+		.text-center;
+		.icon-trash{
+			color: @lava-red;
+		}
 	}
 }
 
