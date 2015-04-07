@@ -20,12 +20,14 @@ module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, cry
 			if (!primaryKey)
 				throw new Error('not_found');
 
+			$scope.currentEmail.isCustomKey = true;
 			$scope.currentEmail.key = {
 				key: data,
 				algos: primaryKey.algorithm.split('_')[0].toUpperCase(),
 				id: primaryKey.keyid.toHex(),
 				length: primaryKey.getBitSize()
 			};
+
 			$scope.currentEmail.unfold('');
 
 			notifications.set('public-key-import-ok' + $scope.currentEmail.email, {

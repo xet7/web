@@ -58,6 +58,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		this.name = opts.name ? opts.name : '';
 		this.isStar = opts.isStar ? opts.isStar : false;
 		this.key = opts.key;
+		this.isCustomKey = opts.isCustomKey ? opts.isCustomKey : false;
 
 		this.isSecured = () => !!self.key;
 		this.getSecureClass = () => `sec-${self.isSecured() ? 1 : 0}`;
@@ -78,6 +79,9 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		this.switchCollapse = () => isCollapsed = !isCollapsed;
 
 		this.loadKey = (isReload = false) => co(function *(){
+			if (self.isCustomKey)
+				return self.key;
+
 			try {
 				if (!isReload) {
 					console.log('loadKey', isLoadedKey, isLoadingKey, self.key);
