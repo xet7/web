@@ -1,7 +1,7 @@
 div.pane-status(ng-if="selectedTid === null")
 	.col-xs-24 {{'INBOX.LB_NOTHING_SELECTED' | translate}}
 
-.filters.row.no-gutter.lava-icon-row(class="notifications-{{Object.keys(notificationsInfo).length + Object.keys(notificationsWarning).length}}")
+.filters.row.no-gutter.lava-icon-row(ng-class="'notifications-' + getNotificationsLength(notificationsInfo, notificationsWarning)")
 	nav.navbar.navbar-inverse(role="navigation")
 		div
 			ul.nav.navbar-nav

@@ -23,6 +23,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $injector, translate) => 
 		$rootScope.isShown = true;
 	};
 
+	$rootScope.notificationsInfo = $rootScope.notificationsWarning = {};
 	const initializeNotifications = () => {
 		const notifications = $injector.get('notifications');
 
@@ -34,6 +35,9 @@ module.exports = /*@ngInject*/($rootScope, $translate, $injector, translate) => 
 		$rootScope.unSetNotification = (nid, namespace) => {
 			notifications.unSet(nid, namespace);
 		};
+
+		$rootScope.getNotificationsLength = (...notifications) =>
+			notifications.reduce((a, c) => a + (c ? Object.keys(c).length : 0), 0);
 	};
 
 	$rootScope.whenInitialized = (initializer) => {

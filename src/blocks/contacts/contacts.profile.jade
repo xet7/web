@@ -1,5 +1,5 @@
 .filters.row.no-gutter.lava-icon-row
-.filters.row.no-gutter.lava-icon-row(class="notifications-{{Object.keys(notificationsInfo).length + Object.keys(notificationsWarning).length}}")
+.filters.row.no-gutter.lava-icon-row(ng-class="'notifications-' + getNotificationsLength(notificationsInfo, notificationsWarning)")
 	include ../_notifications.jade
 .main-view
 	.row.main-panel
