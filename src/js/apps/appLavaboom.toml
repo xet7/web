@@ -3,10 +3,12 @@
 		# angular.js 3rd-party modules
 		# we ship this as a separate file as dependencies of main application can be heavy
 		# and doing so will improve loading time of smaller login/signup application
+		'../../bower_components/angular-sanitize/angular-sanitize.js',
 		'../../bower_components/angular-bootstrap/ui-bootstrap.js',
 		'../../bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
 		'../../bower_components/angular-ui-select/dist/select.js',
 		'../../bower_components/textAngular/dist/textAngular-rangy.min.js',
+		'../../bower_components/textAngular/dist/textAngular-sanitize.min.js',
         '../../bower_components/textAngular/dist/textAngular.min.js',
         '../../bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
         '../../bower_components/angular-hotkeys/build/hotkeys.js',

@@ -260,9 +260,6 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 			self.invalidateEmailCache();
 			self.invalidateThreadCache();
 		});
-		$rootScope.$on('contacts-changed', () => {
-			self.invalidateThreadCache();
-		});
 		$rootScope.$on('logout', () => {
 			console.log('invalidate inbox caches');
 			self.invalidateEmailCache();

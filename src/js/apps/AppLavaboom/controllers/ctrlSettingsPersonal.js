@@ -1,13 +1,7 @@
-module.exports = /*@ngInject*/($scope, $timeout, $translate, user, co, notifications) => {
+module.exports = /*@ngInject*/($scope, $timeout, user, co) => {
 	$scope.name = user.styledName;
 	$scope.status = '';
 	$scope.settings = {};
-
-	const translations = {
-		LB_PROFILE_SAVED: '',
-		LB_PROFILE_CANNOT_BE_SAVED: ''
-	};
-	$translate.bindAsObject(translations, 'MAIN.SETTINGS.PROFILE');
 
 	$scope.$bind('user-settings', () => {
 		$scope.settings = user.settings;
@@ -34,18 +28,9 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, user, co, notificat
 			timeouts.update = $timeout.schedulePromise(timeouts.update, () => co(function *(){
 				try {
 					yield user.update($scope.settings);
-
-					notifications.set('profile-save-ok', {
-						text: translations.LB_PROFILE_SAVED,
-						type: 'info',
-						timeout: 3000,
-						namespace: 'settings'
-					});
+					$scope.status = 'saved!';
 				} catch (err) {
-					notifications.set('profile-save-fail', {
-						text: translations.LB_PROFILE_CANNOT_BE_SAVED,
-						namespace: 'settings'
-					});
+					$scope.status = 'ops...';
 				}
 			}), 1000);
 		}

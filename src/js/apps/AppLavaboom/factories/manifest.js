@@ -94,9 +94,6 @@ module.exports = /*@ngInject*/(contacts, utils) => {
 		return {
 			address,
 			name,
-			contactPrettyName: fromContact ? fromContact.getFullName() : (
-				name ? `${name} <${address}>` : address
-			),
 			prettyName: address + (name ? ` (${name})` : '')
 		};
 	};

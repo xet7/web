@@ -113,10 +113,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 
 	this.getPrivateKeyByFingerprint = (fingerprint) => keyring.privateKeys.findByFingerprint(fingerprint);
 
-	this.readKey = (key) => {
-		return openpgp.key.readArmored(key).keys[0];
-	};
-
 	this.importPublicKey = (publicKey) => {
 		console.log('importing public key', publicKey);
 
@@ -253,7 +249,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 			prefixName = `${prefixName}_`;
 
 		const dataObj = data.encoding == 'json' ? JSON.stringify(data.data) : data.data;
-		console.log(dataObj);
 		const {pgpData, mergedPublicKeys} = publicKeys && publicKeys.length > 0
 			? yield self.encodeWithKeys(dataObj, publicKeys)
 			: {pgpData: dataObj, mergedPublicKeys: []};

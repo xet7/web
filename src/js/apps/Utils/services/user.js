@@ -17,13 +17,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		isSignatureEnabled: true,
 		isSkipComposeScreenWarning: false,
 		isHotkeyEnabled: true,
-		images: 'none', // none, proxy, directHttps, directAll,
-
-		// not implemented
-		mailComposedAction: 'none',
-		mailSpamAction: 'none',
-		mailDeletedAction: 'none'
-		// not implemented
+		isSecuredImages: true
 	};
 
 	const setupSettings = (settings) => {

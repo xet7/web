@@ -1,5 +1,4 @@
-module.exports = /*@ngInject*/($scope, $timeout, $translate,
-							   co, utils, user, crypto, cryptoKeys, LavaboomAPI, fileReader, inbox, saver, notifications) => {
+module.exports = /*@ngInject*/($scope, $timeout, co, utils, user, crypto, cryptoKeys, LavaboomAPI, fileReader, inbox, saver) => {
 	$scope.email = user.email;
 	$scope.settings = {};
 
@@ -8,15 +7,6 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate,
 		password: '',
 		passwordRepeat: ''
 	};
-
-	const translations = {
-		LB_PASSWORD_CANNOT_BE_CHANGED: '%',
-		LB_PASSWORD_CHANGED: '',
-		LB_LAVABOOM_SYNC_ACTIVATED: '',
-		LB_LAVABOOM_SYNC_DEACTIVATED: '',
-		LB_LAVABOOM_SYNC_CANNOT_UPDATE: ''
-	};
-	$translate.bindAsObject(translations, 'MAIN.SETTINGS.SECURITY');
 
 	$scope.$bind('user-settings', () => {
 		$scope.settings = user.settings;
@@ -40,22 +30,16 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate,
 		$scope.isAnyUndecryptedKeys = $scope.keys.some(k => !k.isDecrypted);
 	});
 
+	$scope.passwordUpdateStatus = '';
+
 	$scope.changePassword = () => co(function *(){
 		try {
 			yield user.updatePassword($scope.form.oldPassword, $scope.form.password);
 			crypto.changePassword(user.email, $scope.form.oldPassword, $scope.form.password);
 
-			notifications.set('password-changed-ok', {
-				text: translations.LB_PASSWORD_CHANGED,
-				type: 'info',
-				timeout: 3000,
-				namespace: 'settings'
-			});
+			$scope.passwordUpdateStatus = 'saved!';
 		} catch (err) {
-			notifications.set('password-changed-fail', {
-				text: translations.LB_PASSWORD_CANNOT_BE_CHANGED({error: err.message}),
-				namespace: 'settings'
-			});
+			$scope.passwordUpdateStatus = err.message;
 		}
 	});
 
@@ -98,20 +82,11 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate,
 
 		if (Object.keys($scope.settings).length > 0) {
 			updateTimeout = $timeout.schedulePromise(updateTimeout, () => co(function *(){
+				// todo: handle errors
 				try {
 					yield user.update($scope.settings);
-
-					notifications.set('ls-ok', {
-						text: $scope.settings.isLavaboomSynced ? translations.LB_LAVABOOM_SYNC_ACTIVATED : translations.LB_LAVABOOM_SYNC_DEACTIVATED,
-						type: 'info',
-						timeout: 3000,
-						namespace: 'settings'
-					});
 				} catch (err) {
-					notifications.set('ls-fail', {
-						text: translations.LB_LAVABOOM_SYNC_CANNOT_UPDATE,
-						namespace: 'settings'
-					});
+
 				}
 			}), 1000);
 		}
