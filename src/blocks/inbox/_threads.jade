@@ -28,9 +28,9 @@
 								span.icon-star(ng-show="thread.isLabel('Starred') && thread.isRead", ng-class="{unread : !thread.isRead}")
 								//- span.icon-star-outline(ng-show="!thread.isLabel('Starred')  && thread.isRead")
 								span.icon-unread(ng-show="!thread.isRead && !thread.isLabel('Starred')")
-							div.icon-holder.reply(ng-show="thread.isReplied")
+							div.icon-holder.reply
 								span.icon-reply
-							div.icon-holder.forward(ng-show="thread.isForwarded")
+							div.icon-holder.forward
 								span.icon-arrow-right
 						.details
 							p.strong.pack.title(ng-bind="thread.members | members", title="{{thread.members | members}}")

@@ -9,6 +9,15 @@ module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate,
 
 	const translationPromise = $translate.bindAsObject(translations, 'LOADER');
 
+	$scope.notificationsInfo = [];
+	$scope.notificationsImportant = [];
+
+	$rootScope.$bind('notifications', () => {
+		const list = utils.toArray(notifications.get());
+		$scope.notificationsInfo = list.filter(n => n.type == 'info');
+		$scope.notificationsImportant = list.filter(n => n.type != 'info');
+	});
+
 	$scope.initializeApplication = (opts) => co(function *(){
 		try {
 			let connectionPromise = LavaboomAPI.connect();

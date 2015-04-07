@@ -32,25 +32,19 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 		})
 
 		.state('secureUsername', {
-			url: '/secure',
+			url: '/secureUsername',
 			templateUrl: 'partials/login/secureUsername.html',
 			controller:'CtrlSecureUsername'
 		})
 
 		.state('reservedUsername', {
-			url: '/reserved',
+			url: '/reservedUsername',
 			templateUrl: 'partials/login/reservedUsername.html',
 			controller:'CtrlReservedUsername'
 		})
 
 		.state('verifyInvite', {
-			url: '/verify',
-			templateUrl: 'partials/login/verifyInvite.html',
-			controller:'CtrlVerify'
-		})
-
-		.state('verifyInviteConfigured', {
-			url: '/verify/{userName}/{inviteCode}',
+			url: '/verifyInvite/{userName}/{inviteCode}',
 			templateUrl: 'partials/login/verifyInvite.html',
 			controller:'CtrlVerify'
 		})
@@ -68,25 +62,25 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 		})
 
 		.state('choosePassword', {
-			url: '/password',
+			url: '/choosePassword',
 			templateUrl: 'partials/login/choosePassword.html',
 			controller:'CtrlPassword'
 		})
 
 		.state('choosePasswordIntro', {
-			url: '/password/intro',
+			url: '/choosePasswordIntro',
 			templateUrl: 'partials/login/choosePasswordIntro.html',
 			controller:'CtrlPassword'
 		})
 
 		.state('generateKeys', {
-			url: '/keys/intro',
+			url: '/generateKeys',
 			templateUrl: 'partials/login/generateKeys.html',
 			controller: 'CtrlGenerateKeys'
 		})
 
 		.state('generatingKeys', {
-			url: '/keys',
+			url: '/generatingKeys',
 			templateUrl: 'partials/login/generatingKeys.html',
 			controller: 'CtrlGeneratingKeys'
 		})
@@ -98,13 +92,13 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 		})
 
 		.state('backupKeys', {
-			url: '/keys/backup',
+			url: '/backupKeys',
 			templateUrl: 'partials/login/backupKey.html',
 			controller: 'CtrlBackup'
 		})
 
 		.state('importKeys', {
-			url: '/keys/import',
+			url: '/importKeys',
 			templateUrl: 'partials/login/importKey.html'
 		});
 };
