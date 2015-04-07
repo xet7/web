@@ -13,7 +13,6 @@ module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, cry
 	$scope.uploadPublicKey = (data) => {
 		try {
 			const key = crypto.readKey(data);
-			console.log(key);
 
 			if (!key)
 				throw new Error('not_found');
