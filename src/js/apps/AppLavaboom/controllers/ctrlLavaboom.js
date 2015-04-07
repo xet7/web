@@ -13,18 +13,6 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 
 	const translationPromise = $translate.bindAsObject(translations, 'LOADER');
 
-	$scope.notificationsInfo = [];
-	$scope.notificationsWarning = [];
-
-	$rootScope.$bind('notifications', () => {
-		$scope.notificationsInfo = notifications.get('info');
-		$scope.notificationsWarning = notifications.get('warning');
-	});
-
-	$scope.unSetNotification = (nid, namespace) => {
-		notifications.unSet(nid, namespace);
-	};
-
 	$scope.ddEventFilter = (name, event) => event.target.id.startsWith('taTextElement');
 
 	$scope.tooltipDelay = () => (window.getComputedStyle(document.getElementById('compose-action')).display==='none') ? true : 1000000;
