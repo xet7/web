@@ -20,7 +20,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	const hiddenContacts = {};
 	const replyThreadId = $stateParams.replyThreadId;
 	const replyEmailId = $stateParams.replyEmailId;
-	const replyFromEmailId = $stateParams.replyFromEmailId;
+	const isReplyAll = $stateParams.isReplyAll;
 	const forwardEmailId = $stateParams.forwardEmailId;
 	const toEmail = $stateParams.to;
 	let manifest = null;
@@ -188,20 +188,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 					address: email.from[0].address,
 					body: email.body.data
 				}]);
-			} else if (replyFromEmailId) {
-				const emails = yield inbox.getEmailsByThreadId(replyThreadId);
-				const replies = emails.reduce((a, email) => {
-					if (a.length > 0 || email.id == replyFromEmailId)
-						a.push({
-							date: email.date,
-							name: email.from[0].name,
-							address: email.from[0].address,
-							body: email.body.data
-						});
-					return a;
-				}, []);
-
-				templateBody = yield composeHelpers.buildRepliedTemplate(body, signature, replies);
 			} else
 				templateBody = yield composeHelpers.buildDirectTemplate(body, signature);
 
@@ -313,12 +299,16 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			if (replyThreadId) {
 				let thread = yield inbox.getThreadById(replyThreadId);
 
-				let to = ContactEmail.transform(thread.members[0]);
-				console.log('reply to', thread.members[0], to);
+				let to = (isReplyAll
+					? (thread.members)
+					: (thread.members[0] ? [thread.members[0]] : [])
+				).map(m => ContactEmail.transform(m));
+
+				console.log('reply to', to);
 				$scope.form = {
 					person: {},
 					selected: {
-						to: to ? [to] : [],
+						to: to,
 						cc: [],
 						bcc: [],
 						from: contacts.myself
