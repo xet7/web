@@ -45,3 +45,8 @@
 									span.icon-lock
 								span(ng-show="thread.secure == 'none'|| thread.secure == 'some'")
 									span.icon-unlock
+			div.item-wrapper						
+				.mail-list-item(ng-show="isLoadingSign && threadsList.length > 0")
+					.mail-list-wrapper
+						div.pane-status
+							img(src="/img/loader.svg")

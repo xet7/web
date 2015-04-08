@@ -41,7 +41,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 	if ($scope.selectedTid) {
 		$scope.emails.list = [];
 		$scope.emails.isLoading = true;
-		console.log(':)');
+
 		co(function *(){
 			try {
 				const threadPromise = inbox.getThreadById($scope.selectedTid);

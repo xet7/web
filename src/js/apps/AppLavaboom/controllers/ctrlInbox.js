@@ -77,9 +77,12 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			return;
 
 		$scope.isLoading = true;
-		setLoadingSignTimeout = $timeout(() => {
+		if ($scope.threadsList.length > 0)
 			$scope.isLoadingSign = true;
-		}, consts.LOADER_SHOW_DELAY);
+		else
+			setLoadingSignTimeout = $timeout(() => {
+				$scope.isLoadingSign = true;
+			}, consts.LOADER_SHOW_DELAY);
 
 		const labelName = $scope.labelName;
 
@@ -131,7 +134,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 				return;
 			}
 
-			const threadsList = yield inbox.requestListDirect($scope.labelName, 0, $scope.limit);
+			const threadsList = yield inbox.requestListDirect($scope.labelName);
 
 			if (labelName != $scope.labelName) {
 				console.log(`inbox-threads data has been rejected (2) label should match to `, $scope.labelName);
@@ -227,6 +230,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	});
 
 	$scope.scroll = () => {
+		console.log('scroll()', $scope.isLoading, $scope.isDisabledScroll);
 		if ($scope.isLoading || $scope.isDisabledScroll)
 			return;
 

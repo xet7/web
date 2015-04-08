@@ -100,11 +100,11 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 	}, true);
 
 	self.requestListDirect = proxy.unbindedMethodCall('requestList', function *(requestList, args) {
-		let [labelName, offset, limit] = args;
+		let [labelName] = args;
 
 		const value = yield requestListProxy(requestList, args);
 
-		return value.list.slice(offset, offset + limit);
+		return value.list;
 	}, true);
 
 	proxy.methodCall('getThreadById', function *(getThreadById, args) {
