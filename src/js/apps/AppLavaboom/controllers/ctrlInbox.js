@@ -4,15 +4,22 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	if ($scope.selectedTid)
 		inbox.selectedTidByLabelName[$scope.labelName] = $scope.selectedTid;
 
-	console.log('CtrlThreadList loaded', $scope.selectedTid);
+	console.log('CtrlInbox loaded', $scope.selectedTid);
 
 	$scope.threads = {};
 	$scope.threadsList = [];
+	$scope.emails = {
+		list: [],
+		isLoading: false
+	};
+
 	$scope.searchText = '';
+
 	$scope.isLoading = false;
 	$scope.isLoadingSign = false;
-	$scope.isDisabled = true;
+	$scope.isDisabledScroll = true;
 	$scope.isInitialLoad = true;
+	$scope.isThreads = false;
 
 	$scope.offset = 0;
 	$scope.limit = 15;
@@ -21,7 +28,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		isSortOpened: false
 	};
 	$scope.sortedLabel = '';
-	$scope.sortQuery = inbox.sortQuery;
+	$scope.sortQuery = inbox.getSortQuery();
 
 	const translations = {
 		LB_SORT_BY_CREATION_DATE_DESC : '',
@@ -63,12 +70,19 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	});
 
 	let watchingFilteredThreadsList = null;
+	let setLoadingSignTimeout = null;
 
 	const requestList = () => {
+		if ($scope.isLoading)
+			return;
+
 		$scope.isLoading = true;
-		let setLoadingSignTimeout = $timeout(() => {
+		if ($scope.threadsList.length > 0)
 			$scope.isLoadingSign = true;
-		}, consts.LOADER_SHOW_DELAY);
+		else
+			setLoadingSignTimeout = $timeout(() => {
+				$scope.isLoadingSign = true;
+			}, consts.LOADER_SHOW_DELAY);
 
 		const labelName = $scope.labelName;
 
@@ -77,24 +91,19 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 				const list = yield inbox.requestList($scope.labelName, $scope.offset, $scope.limit);
 
 				if (labelName == $scope.labelName) {
-					$scope.isDisabled = list.length < 1;
+					$scope.isDisabledScroll = list.length < 1;
 					$scope.offset += list.length;
 				}
 			} catch (err) {
-				$scope.isDisabled = true;
+				$scope.isDisabledScroll = true;
 				throw err;
-			} finally {
-				$scope.isLoading = false;
-				$scope.isLoadingSign = false;
-				$timeout.cancel(setLoadingSignTimeout);
 			}
 		});
 	};
 
 	$scope.sortThreads = (sortQuery) => {
-		console.log('sorting', sortQuery);
-		$scope.sortQuery = inbox.sortQuery = sortQuery;
-		inbox.invalidateThreadCache();
+		$scope.sortQuery = sortQuery;
+		inbox.setSortQuery(sortQuery);
 
 		$scope.offset = 0;
 		$scope.limit = 15;
@@ -108,7 +117,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	};
 
 	$scope.replyThread = (event, tid) => {
-		event.stopPropagation(); // god damn
 		$scope.showPopup('compose', {replyThreadId: tid});
 	};
 
@@ -126,7 +134,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 				return;
 			}
 
-			const threadsList = yield inbox.requestListDirect($scope.labelName, 0, $scope.limit);
+			const threadsList = yield inbox.requestListDirect($scope.labelName);
 
 			if (labelName != $scope.labelName) {
 				console.log(`inbox-threads data has been rejected (2) label should match to `, $scope.labelName);
@@ -137,37 +145,55 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 				? $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid)
 				: -1;
 
+			console.log('inbox-threads selectedIndex 1: ', selectedIndex);
+
 			$scope.threadsList = threadsList;
 
 			if (!$scope.threadsList || $scope.threadsList.length < 1)
 				$state.go('main.inbox.label', {labelName: $scope.labelName, threadId: null});
 			else
-			if (selectedIndex > -1) {
+			if (selectedIndex > -1 && $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid) < 0) {
 				selectedIndex = Math.min(Math.max(selectedIndex, 0), $scope.threadsList.length - 1);
 				$scope.selectThread($scope.threadsList[selectedIndex].id);
 			}
+
+			console.log('inbox-threads selectedIndex 2: ', selectedIndex);
 
 			$scope.threads = $scope.threadsList.reduce((a, t) => {
 				a[t.id] = t;
 				return a;
 			}, {});
 
+			if (setLoadingSignTimeout) {
+				$timeout.cancel(setLoadingSignTimeout);
+				setLoadingSignTimeout = null;
+			}
+
 			$scope.isLoading = false;
 			$scope.isLoadingSign = false;
 			$scope.isInitialLoad = false;
+			$scope.isThreads = true;
 
 			if (!watchingFilteredThreadsList) {
+				let emails = null;
+				let emailsSelectedTid = null;
+
 				watchingFilteredThreadsList = $scope.$watch('filteredThreadsList', (o, n) => {
 					if (o == n)
 						return;
 
 					const r = $scope.filteredThreadsList.find(t => t.id == $scope.selectedTid);
-					if (!r)
-						$rootScope.$broadcast('emails-list-hide');
-					else
-						$rootScope.$broadcast('emails-list-restore');
+					if (!r) {
+						emails = $scope.emails.list;
+						emailsSelectedTid = $scope.selectedTid;
+						$scope.emails.list = [];
+					} else if (emails && $scope.selectedTid == emailsSelectedTid) {
+						$scope.emails.list = emails;
+					}
 				});
 			}
+
+			$rootScope.$broadcast(`inbox-threads-received`, labelName);
 		});
 	});
 
@@ -178,6 +204,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			$scope.selectedTid = toParams.threadId ? toParams.threadId : null;
 
 			if (toParams.labelName != $scope.labelName) {
+				if (setLoadingSignTimeout) {
+					$timeout.cancel(setLoadingSignTimeout);
+					setLoadingSignTimeout = null;
+				}
+
 				$scope.offset = 0;
 				$scope.limit = 15;
 				$scope.threads = {};
@@ -199,25 +230,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	});
 
 	$scope.scroll = () => {
-		if ($scope.isLoading || $scope.isDisabled)
+		console.log('scroll()', $scope.isLoading, $scope.isDisabledScroll);
+		if ($scope.isLoading || $scope.isDisabledScroll)
 			return;
 
 		requestList();
-	};
-
-	$scope.spamThread = (tid) => {
-		console.log('spamThread', tid, $scope.threads[tid]);
-		inbox.requestSetLabel($scope.threads[tid], 'Spam');
-	};
-
-	$scope.deleteThread = (tid) => {
-		console.log('deleteThread', tid, $scope.threads[tid]);
-		inbox.requestDelete($scope.threads[tid]);
-	};
-
-	$scope.starThread = (tid) => {
-		console.log('starThread', tid, $scope.threads[tid]);
-		inbox.requestSwitchLabel($scope.threads[tid], 'Starred');
 	};
 
 	requestList();
@@ -244,7 +261,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			event.preventDefault();
 			moveThreads(1);
 		};
-		
+
 		hotkey.addHotkey({
 			combo: ['h', 'k', 'left', 'up'],
 			description: 'HOTKEY.MOVE_UP',

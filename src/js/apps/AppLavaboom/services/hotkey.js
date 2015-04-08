@@ -61,12 +61,11 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 		console.log('hotkeys.clearHotkeys()');
 	};
 
-	const notWhenPopupOpened = (callback) => {
-		return (event, key) => {
+	const notWhenPopupOpened = (callback) =>
+		(event, key) => {
 			if (!router.isPopupState($state.current.name))
 				return callback(event, key);
 		};
-	};
 
 	self.addGlobalHotkeys = () => {
 		self.addHotkey({

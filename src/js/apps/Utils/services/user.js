@@ -7,15 +7,23 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	$translate.bindAsObject(translations, 'LOADER');
 
 	this.name = '';
+	this.styledName = '';
 	this.email = '';
 	this.nameEmail = '';
 
 	// information about user from API
 	this.settings = {};
 	this.defaultSettings = {
+		isSignatureEnabled: true,
 		isSkipComposeScreenWarning: false,
 		isHotkeyEnabled: true,
-		isSecuredImages: true
+		images: 'none', // none, proxy, directHttps, directAll,
+
+		// not implemented
+		mailComposedAction: 'none',
+		mailSpamAction: 'none',
+		mailDeletedAction: 'none'
+		// not implemented
 	};
 
 	const setupSettings = (settings) => {
@@ -31,10 +39,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	let token = null;
 	let isAuthenticated = false;
 
-	const setupUserBasicInformation = (username) => {
-		username = self.transformUserName(username);
-
+	const setupUserBasicInformation = (username, styledUsername) => {
 		self.name = username;
+		self.styledName = styledUsername;
 		self.email = `${username}@${consts.ROOT_DOMAIN}`;
 		self.nameEmail = `${self.name} <${self.email}>`;
 
@@ -42,7 +49,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	};
 
 	const restoreAuth = () => {
-		token = sessionStorage.lavaboomToken ? sessionStorage.lavaboomToken : localStorage.lavaboomToken;
+		token = sessionStorage['lava-token'] ? sessionStorage['lava-token'] : localStorage['lava-token'];
 
 		if (token)
 			LavaboomAPI.setAuthToken(token);
@@ -50,10 +57,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 	const persistAuth = (isRemember = true) => {
 		let storage = isRemember ? localStorage : sessionStorage;
-		storage.lavaboomToken = token;
+		storage['lava-token'] = token;
 	};
-
-	this.transformUserName = (username) => username.split('.').join('').toLowerCase();
 
 	this.calculateHash = (password) => utils.hexify(openpgp.crypto.hash.sha256(password));
 
@@ -91,7 +96,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		setupSettings(res.body.user.settings);
 		$rootScope.$broadcast('user-settings');
 
-		setupUserBasicInformation(res.body.user.name);
+		setupUserBasicInformation(res.body.user.name, res.body.user.styled_name);
 
 		if (!isAuthenticated) {
 			isAuthenticated = true;
@@ -138,11 +143,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	});
 
 	this.signIn = (username, password, isRemember, isPrivateComputer) => {
-		username = setupUserBasicInformation(username.split('@')[0].trim());
+		setupUserBasicInformation(username.split('@')[0].trim());
 
-		crypto.initialize({
-			isRememberPasswords: isRemember
-		});
+		crypto.initialize();
 
 		return co(function * (){
 			try {
@@ -158,6 +161,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 				LavaboomAPI.setAuthToken(token);
 				persistAuth(isRemember);
 				isAuthenticated = true;
+
+				res = yield LavaboomAPI.accounts.get('me');
+				setupSettings(res.body.user.settings);
+				setupUserBasicInformation(res.body.user.name, res.body.user.styled_name);
 
 				res = yield LavaboomAPI.keys.list(self.name);
 				if (!res.body.keys || res.body.keys.length < 1) {
@@ -175,14 +182,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 				self.key = res.body.key;
 
-				res = yield LavaboomAPI.accounts.get('me');
-				setupSettings(res.body.user.settings);
-				setupUserBasicInformation(res.body.user.name);
-
 				if (self.settings.isLavaboomSynced)
 					cryptoKeys.importKeys(self.settings.keyring);
 
-				crypto.options.isPrivateComputer = isPrivateComputer;
+				crypto.initialize({isPrivateComputer: isPrivateComputer});
 				crypto.authenticateByEmail(self.email, password);
 
 				$rootScope.$broadcast('user-authenticated');
@@ -194,11 +197,11 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	};
 
 	this.removeTokens = () => {
-		delete localStorage.lavaboomToken;
-		delete sessionStorage.lavaboomToken;
+		delete localStorage['lava-token'];
+		delete sessionStorage['lava-token'];
 	};
 
-	this.logout = () => {
+	this.logout = () => co(function *(){
 		$rootScope.$broadcast('logout');
 
 		self.settings = {};
@@ -209,8 +212,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		isAuthenticated = false;
 		token = '';
 
+		yield $state.go('empty');
+
 		loader.resetProgress();
 		loader.showLoader(true);
 		loader.loadLoginApplication({lbDone: translations.LB_BYE});
-	};
+	});
 };

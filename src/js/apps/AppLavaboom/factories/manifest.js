@@ -1,4 +1,6 @@
-module.exports = /*@ngInject*/(contacts) => {
+const mimelib = require('mimelib');
+
+module.exports = /*@ngInject*/(contacts, utils) => {
 	const hash = (data) => openpgp.util.hexstrdump(openpgp.crypto.hash.sha256(data));
 
 	function ManifestPart (manifestPart) {
@@ -11,7 +13,7 @@ module.exports = /*@ngInject*/(contacts) => {
 
 		this.isValid = (body) => body.length == self.size && hash(body) == self.hash;
 
-		// todo: hack, there should be just one content type
+		// todo: hack, there should be just one content type, blocked: https://github.com/lavab/mailer/issues/33
 		const contentType = manifestPart.content_type || manifestPart['content-type'];
 		if (contentType) {
 			this.contentType = (contentType.defaultValue ? contentType.defaultValue : contentType).toLowerCase();
@@ -27,30 +29,19 @@ module.exports = /*@ngInject*/(contacts) => {
 	function Manifest (manifest) {
 		const self = this;
 
-		const formatFrom = (fromAddress) => {
-			const address = fromAddress.address ? fromAddress.address : fromAddress;
-			const fromContact = contacts.getContactByEmail(address);
-			const name = fromAddress.name ? fromAddress.name : (fromContact ? fromContact.getFullName() : '');
-			return {
-				address,
-				name,
-				prettyName: address + (name ? ` (${name})` : '')
-			};
-		};
+		this.from = Manifest.parseAddresses(manifest.headers.from);
+		this.to = Manifest.parseAddresses(manifest.headers.to);
+		this.cc = Manifest.parseAddresses(manifest.headers.cc);
+		this.bcc = Manifest.parseAddresses(manifest.headers.bcc);
 
-		this.from = angular.isArray(manifest.headers.from) ? manifest.headers.from.map(e => formatFrom(e)) : [formatFrom(manifest.headers.from)];
-
-		this.to = manifest.headers.to;
-		this.cc = manifest.headers.cc ? manifest.headers.cc : [];
-		this.bcc = manifest.headers.bcc ? manifest.headers.bcc : [];
 		this.subject = manifest.headers.subject;
 
 		this.getDestinationEmails = () => {
-			const emails = new Set([
+			const emails = utils.uniq([
 				...self.to,
 				...self.cc,
 				...self.bcc
-			]).values();
+			]);
 
 			return [...emails];
 		};
@@ -65,9 +56,7 @@ module.exports = /*@ngInject*/(contacts) => {
 			});
 		};
 
-		this.getPart = (id = 'body') => {
-			return new ManifestPart(manifest.parts.find(p => p.id == id));
-		};
+		this.getPart = (id = 'body') => new ManifestPart(manifest.parts.find(p => p.id == id));
 
 		this.files = manifest.parts.filter(p => p.id != 'body').map(p => new ManifestPart(p));
 
@@ -82,12 +71,35 @@ module.exports = /*@ngInject*/(contacts) => {
 			});
 		};
 
-		this.isValid = () => {
-			return !!manifest.parts.find(p => p.id == 'body');
-		};
+		this.isValid = () => !!manifest.parts.find(p => p.id == 'body');
 
 		this.stringify = () => JSON.stringify(manifest);
 	}
+
+	Manifest.parseAddresses = (src) => {
+		if (!src)
+			return [];
+
+		return (angular.isArray(src) ? src : [src])
+			.map(e => Manifest.formatAddress(e));
+	};
+
+	Manifest.formatAddress = (fromAddress) => {
+		if (!fromAddress.address)
+			fromAddress = mimelib.parseAddresses(fromAddress)[0];
+
+		const address = fromAddress.address ? fromAddress.address : fromAddress;
+		const fromContact = contacts.getContactByEmail(address);
+		const name = fromAddress.name ? fromAddress.name : (fromContact ? fromContact.getFullName() : '');
+		return {
+			address,
+			name,
+			contactPrettyName: fromContact ? fromContact.getFullName() : (
+				name ? `${name} <${address}>` : address
+			),
+			prettyName: address + (name ? ` (${name})` : '')
+		};
+	};
 
 	Manifest.defaultVersion = '1.0.0';
 

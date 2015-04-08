@@ -1,0 +1,24 @@
+nav#notifications.navbar.navbar-inverse.notifications(
+	ng-class="{ active: (Object.keys(notificationsInfo).length + Object.keys(notificationsWarning).length) > 0 }"
+)
+	div(ng-repeat="(name, notification) in notificationsInfo")
+		ul.nav.navbar-nav
+			li
+				p.navbar-text
+					span(title="{{notification.title}}") {{notification.text}}
+		ul.nav.navbar-nav.navbar-right
+			li
+				button.btn.btn-default(ng-click="unSetNotification(name, notification.namespace)")
+					span.icon-trash
+					| {{'GLOBAL.BTN_REMOVE_NOTIFICATION' | translate}}
+
+	div(ng-repeat="(name, notification) in notificationsWarning", class="notifications-warning")
+		ul.nav.navbar-nav
+			li
+				p.navbar-text
+					span(title="{{notification.title}}") {{notification.text}}
+		ul.nav.navbar-nav.navbar-right
+			li
+				button.btn.btn-default(ng-click="unSetNotification(name, notification.namespace)")
+					span.icon-trash
+					| {{'GLOBAL.BTN_REMOVE_NOTIFICATION' | translate}}

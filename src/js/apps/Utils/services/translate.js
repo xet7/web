@@ -9,9 +9,7 @@ module.exports = /*@ngInject*/function($rootScope, $http, $translate, co, consts
 		console.log('i18n index loaded', self.settings);
 	});
 
-	this.getCurrentLangCode = () => {
-		return localStorage.lang ? localStorage.lang : consts.DEFAULT_LANG;
-	};
+	this.getCurrentLangCode = () => localStorage.lang ? localStorage.lang : consts.DEFAULT_LANG;
 
 	this.switchLanguage = (langKey) => {
 		localStorage.lang = langKey;

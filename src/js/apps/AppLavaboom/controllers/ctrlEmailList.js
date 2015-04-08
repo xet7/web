@@ -1,18 +1,46 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParams, co, inbox, consts) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParams, utils, co, inbox, consts) => {
 	console.log('loading emails list', $stateParams.threadId);
 
-	$scope.isLoading = false;
+	const setRead = () => co(function *(){
+		yield utils.sleep(consts.SET_READ_AFTER_TIMEOUT);
+		if ($scope.$$destroyed)
+			return;
+		inbox.setThreadReadStatus($scope.selectedTid);
+	});
 
-	$scope.labelName = $stateParams.labelName;
-	$scope.selectedTid = $stateParams.threadId;
-	$scope.emails = [];
+	$scope.restoreFromSpam = (tid) => {
+		console.log('restoreFromSpam', tid, $scope.threads[tid]);
+		inbox.requestRestoreFromSpam($scope.threads[tid]);
+	};
+
+	$scope.restoreFromTrash = (tid) => {
+		console.log('restoreFromTrash', tid, $scope.threads[tid]);
+		inbox.requestRestoreFromTrash($scope.threads[tid]);
+	};
+
+	$scope.spamThread = (tid) => {
+		console.log('spamThread', tid, $scope.threads[tid]);
+		inbox.requestAddLabel($scope.threads[tid], 'Spam');
+	};
+
+	$scope.deleteThread = (tid) => {
+		console.log('deleteThread', tid, $scope.threads[tid]);
+		inbox.requestDelete($scope.threads[tid]);
+	};
+
+	$scope.starThread = (tid) => {
+		console.log('starThread', tid, $scope.threads[tid]);
+		inbox.requestSwitchLabel($scope.threads[tid], 'Starred');
+	};
+
+	$rootScope.$on('inbox-new', (e, threadId) => {
+		if (threadId == $scope.selectedTid)
+			setRead();
+	});
 
 	if ($scope.selectedTid) {
-		let t = $timeout(() => {
-			$scope.isLoading = true;
-		}, consts.LOADER_SHOW_DELAY);
-
-		$scope.emails = [];
+		$scope.emails.list = [];
+		$scope.emails.isLoading = true;
 
 		co(function *(){
 			try {
@@ -27,46 +55,30 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 					return;
 				}
 
-				$scope.emails = yield emailsPromise;
+				console.log('wait $scope.isThreads', $scope.isThreads);
 
-				const markAsReadTimeout = $timeout(() => {
-						inbox.setThreadReadStatus($scope.selectedTid);
-					}, consts.SET_READ_AFTER_TIMEOUT);
+				yield utils.wait(() => $scope.isThreads);
 
-				$scope.$on('$destroy', () => {
-					if (markAsReadTimeout)
-						$timeout.cancel(markAsReadTimeout);
-				});
+				$scope.emails.list = yield emailsPromise;
+
+				setRead();
 			} finally {
-				$timeout.cancel(t);
-				$scope.isLoading = false;
+				$scope.emails.isLoading = false;
 			}
 		});
 	}
-
-	let emails = null;
 
 	$rootScope.$on('inbox-emails', (e, threadId) => {
 		if (threadId != $scope.selectedTid)
 			return;
 
 		co(function *() {
-			$scope.isLoading = true;
+			$scope.emails.isLoading = true;
 			try {
-				$scope.emails = yield inbox.getEmailsByThreadId(threadId);
+				$scope.emails.list = yield inbox.getEmailsByThreadId(threadId);
 			} finally {
-				$scope.isLoading = false;
+				$scope.emails.isLoading = false;
 			}
 		});
-	});
-
-	$rootScope.$on('emails-list-hide', () => {
-		emails = $scope.emails;
-		$scope.emails = [];
-	});
-
-	$rootScope.$on('emails-list-restore', () => {
-		if (emails)
-			$scope.emails = emails;
 	});
 };

@@ -1,5 +1,5 @@
 // colors
-@lava: #4CBCDD;
+@lava: #3BBADC;
 @lava-dark: darken(@lava, 30%);
 @lava-light: lighten(@lava, 5%);
 @lava-gray: #3A4045;
@@ -21,7 +21,7 @@
 @lava-compose-header-fg: #61676f;
 
 //login colors
-@lava-login-lava: #3BBADC;				//Blue #3BBADC	
+@lava-login-lava: @lava;				//Blue #3BBADC	
 @lava-login-gray-lightest: lighten(#CCCBD0, 45%);
 @lava-login-gray-lighter: #CCCBD0;		//very light grey (input text) #CCCBD0
 @lava-login-gray-light: #9D9FA3;		//light grey (Headline) #9D9FA3
@@ -39,6 +39,9 @@
 @link-color: @lava;
 @text-muted: @lava-gray-light;
 
+//borders
+@lava-border-color: 		@lava-gray-lighter;
+@border-site-wide: 			1pt solid @lava-border-color;
 @border-radius-base:        2px;
 @border-radius-large:       3px;
 @border-radius-small:       1px;
@@ -47,6 +50,8 @@
 @grid-columns:              24;
 @grid-gutter-width:         20px;
 
+
+@base-rem: 10px;
 
 //== Typography
 //
@@ -62,7 +67,8 @@
 
 @compose-font-size: 1.3rem;
 
-@lava-form-line-height: 4.2rem;
+@lava-form-line-height: 4.4rem;
+@lava-form-padding: 1.1rem;
 
 //birds-eye-view
 .z1{
@@ -78,33 +84,37 @@
 }
 
 //left panel variables
-@left-panel-padding: .545em 2em;
+@left-panel-padding: 0 3.3rem;
 @left-panel-padding-sm: .585em 1.85em;
 
 //dimensions
 @left-panel-width: 210px;
 @left-panel-width-sm: 79px;
 
+//list-groups
+@list-group-bg: transparent;
+
 @mail-list-width: 36%;
 @mail-list-width-sm: 38.7%;
 @mail-list-padding-left: 46px;
 @mail-list-padding-right: 85px;
+@mail-list-padding: 1.1rem;
+@mail-list-icon-color: @lava-gray-light;
 
 @mail-thread-width: 100% - @mail-list-width;
 @mail-thread-width-sm: 100% - @mail-list-width-sm;
 @mail-thread-padding: 15px 0 8px 39px;
 
-@filter-height: 3.9rem;
+@filter-height: 4.4rem;
 
-@mail-list-block-buttons-width: 9%;
-@mail-list-block-summary-width: 67%;
+@mail-list-block-buttons-width: 4.4rem;
+@mail-list-block-summary-width: auto;
+@mail-list-meta-width: 8.8rem;
 
 @actions-search-width: 50%;
 @actions-buttons-width: 100% - @actions-search-width - @mail-list-block-buttons-width;
 
-//borders
-@border-site-wide: 1px solid @lava-gray-lighter;
-@border-site-wide: 1px solid @lava-gray-lighter;
+
 
 //animations!!!
 @lava-ease-out-in: cubic-bezier(0.500, -0.215, 0.380, 1.245);
@@ -165,6 +175,12 @@
 //** Deprecated `@dropdown-caret-color` as of v3.1.0
 @dropdown-caret-color:           #000;
 
+@dropdown-border-radius: 		 .5rem;
+
+
+//buttons in @lava-colored areas
+@lava-button-color:				@lava-light;
+@lava-button-padding:			2.2rem;
 
 
 //content css
@@ -228,6 +244,7 @@ body{
 	> * {
 		margin: 0;
 	}
+	margin: 0;
 }
 
 .vertical-align(@pos : 'relative'){
@@ -259,9 +276,21 @@ body{
 
 .lava-font{
 	font-weight: @base-font-weight !important;
+	.medium{
+		font-weight: 400;
+	}
+	strong, .strong{
+		font-weight: 500;
+	}
 	@media (-webkit-min-device-pixel-ratio: 2), 
 		(min-resolution: 192dpi) { 
 		font-weight: @light-font-weight !important;
+		.medium{
+			font-weight: 300;
+		}
+		strong, .strong{
+			font-weight: 400;
+		}
 	}
 }
 

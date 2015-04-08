@@ -1,7 +1,13 @@
-module.exports = /*@ngInject*/($scope, $timeout, user) => {
-	$scope.name = user.name;
+module.exports = /*@ngInject*/($scope, $timeout, $translate, user, co, notifications) => {
+	$scope.name = user.styledName;
 	$scope.status = '';
 	$scope.settings = {};
+
+	const translations = {
+		LB_PROFILE_SAVED: '',
+		LB_PROFILE_CANNOT_BE_SAVED: ''
+	};
+	$translate.bindAsObject(translations, 'MAIN.SETTINGS.PROFILE');
 
 	$scope.$bind('user-settings', () => {
 		$scope.settings = user.settings;
@@ -25,15 +31,23 @@ module.exports = /*@ngInject*/($scope, $timeout, user) => {
 			return;
 
 		if (Object.keys($scope.settings).length > 0) {
-			timeouts.update = $timeout.schedule(timeouts.update, () => {
-				user.update($scope.settings)
-					.then(() => {
-						$scope.status = 'saved!';
-					})
-					.catch(() => {
-						$scope.status = 'ops...';
+			timeouts.update = $timeout.schedulePromise(timeouts.update, () => co(function *(){
+				try {
+					yield user.update($scope.settings);
+
+					notifications.set('profile-save-ok', {
+						text: translations.LB_PROFILE_SAVED,
+						type: 'info',
+						timeout: 3000,
+						namespace: 'settings'
 					});
-			}, 1000);
+				} catch (err) {
+					notifications.set('profile-save-fail', {
+						text: translations.LB_PROFILE_CANNOT_BE_SAVED,
+						namespace: 'settings'
+					});
+				}
+			}), 1000);
 		}
 	}, true);
 };

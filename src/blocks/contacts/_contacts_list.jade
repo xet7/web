@@ -5,9 +5,9 @@
 				ul.nav.navbar-nav.navbar-right
 					li
 						button.btn.btn-default(ng-click="newContact()", ng-autodisable)
-							span.icon-plus
+							span.icon-add-contact
 					li
-						button.btn.btn-default(ng-disabled="!selectedContactId")
+						button.btn.btn-default(ng-disabled="!selectedContactId", ng-click="starContact(selectedContactId)")
 							span.icon-star
 					li
 						button.btn.btn-default(ng-disabled="!selectedContactId", ng-click="deleteContact(selectedContactId)")
@@ -27,5 +27,6 @@
 					a(ng-class="'sec-' + contact.sec", ui-sref="main.contacts.profile({contactId: contact.id})")
 						span(ng-show="contact.isNew", ng-bind="contact.getFullName() | defaultValue:('MAIN.CONTACTS.LB_NEW_CONTACT' | translate)")
 						span(ng-show="!contact.isNew", ng-bind="contact.getFullName() | defaultValue:('MAIN.CONTACTS.LB_CONTACT_NAME' | translate)")
-						span.sec-icon.icon-lock(ng-show="contact.isSecured")
-						span.sec-icon.icon-unlock(ng-show="!contact.isSecured")
+						span.sec-icon.icon-lock(ng-show="contact.isSecured()")
+						span.sec-icon.icon-unlock(ng-show="!contact.isSecured()")
+						span.sec-icon.icon-star(ng-show="contact.isStar")

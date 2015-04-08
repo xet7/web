@@ -1,33 +1,35 @@
-module.exports = /*@ngInject*/($injector, co, utils, crypto, Manifest) => {
+module.exports = /*@ngInject*/($injector, co, utils, crypto, user, Email, Manifest) => {
 	function Thread(opt, manifest, labels) {
 		const self = this;
+		let inbox = $injector.get('Email');
 
 		this.id = opt.id;
-		this.subject = manifest && manifest.subject ? manifest.subject : opt.name;
-
 		this.created = opt.date_created;
 		this.modified = opt.date_modified;
-		this.members = opt.members;
+		this.members = opt.members
+			.map(address => address == user.email ? '' : Manifest.formatAddress(address).contactPrettyName)
+			.filter(m => !!m);
+
 		this.labels = opt.labels;
-		this.attachmentsCount = opt.attachments_count;
-
-		this.isLabel = (labelName) => this.labels.some(lid => labels.byId[lid] && labels.byId[lid].name == labelName);
-		this.addLabel = (labelName) => utils.uniq(self.labels.concat([labels.byName[labelName].id]));
-
-		this.removeLabel = (labelName) => {
-			return self.labels.filter(x => x != labels.byName[labelName].id);
-		};
-
 		this.isRead = opt.is_read;
 		this.secure = opt.secure;
+
+		this.subject = manifest && manifest.subject ? manifest.subject : opt.name;
+		this.attachmentsCount = manifest && manifest.files ? manifest.files.length : 0;
+
+		this.isReplied = opt.emails.length > 1;
+		this.isForwarded = Email.getSubjectWithoutRe(self.subject) != self.subject;
+
+		this.isLabel = (labelName) => self.labels.some(lid => labels.byId[lid] && labels.byId[lid].name == labelName);
+		this.addLabel = (labelName) => utils.uniq(self.labels.concat(labels.byName[labelName].id));
+		this.removeLabel = (labelName) => self.labels.filter(x => x != labels.byName[labelName].id);
 	}
 
 	Thread.fromEnvelope = (envelope) => co(function *() {
 		const inbox = $injector.get('inbox');
+		const labels = yield inbox.getLabels();
 
 		const manifestRaw = yield co.def(crypto.decodeRaw(envelope.manifest), null);
-
-		const labels = yield inbox.getLabels();
 
 		console.log('thread manifest', manifestRaw);
 

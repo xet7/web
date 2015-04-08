@@ -1,5 +1,40 @@
 [LANG]
 	CODE = "en"
+	FULL_CODE = "en_US"
+
+# timeago i18n data, empty means default
+[DATES.TIMEAGO]
+	PREFIX_AGO = "" 
+	PREFIX_FROM_NOW = "" 
+	SUFFIX_AGO = "" 
+	SUFFIX_FROM_NOW = "" 
+	SECONDS = "" 
+	MINUTE = "" 
+	MINUTES = ""
+	HOUR = ""
+	HOURS = "" 
+	DAY = "" 
+	DAYS = "" 
+	MONTH = "" 
+	MONTHS = "" 
+	YEAR = ""
+	YEARS = ""
+
+[DATES]
+	TODAY = "Today"
+    YESTERDAY = "Yesterday"
+
+[NOTIFICATIONS]
+	WEB_CRYPTO_IS_NOT_AVAILABLE_TITLE="Please update your browser."
+	WEB_CRYPTO_IS_NOT_AVAILABLE_TEXT="Looks like this browser will not run Lavaboom, please log in again with an up-to-date version of Firefox, Safari or Google Chrome."
+	WEB_CRYPTO_LIMITED_TITLE="Please update your browser."
+    WEB_CRYPTO_LIMITED_TEXT="Looks like this browser is too slow for Lavaboom, please upgrade your browser or switch to an up-to-date version of Google Chrome, Firefox or Safari."
+	WEB_WORKERS_IS_NOT_AVAILABLE_TITLE="Please update your browser."
+    WEB_WORKERS_IS_NOT_AVAILABLE_TEXT="Looks like this browser is too slow for Lavaboom, please upgrade your browser or switch to an up-to-date version of Google Chrome, Firefox or Safari"
+    SERVED_BY_TITLE = "Welcome back"
+    SERVED_BY_TEXT = "You server today is %SERVED_BY%, happy mailing."
+    SERVED_BY_UNKNOWN_TITLE = "Served by Unknown server"
+    SERVED_BY_UNKNOWN_TEXT = "We do not know which server served you Lavaboom. Please contact hello@lavaboom.com."
 
 [INBOX]
 	NO_PREVIEW_AVAILABLE = "No preview available"
@@ -25,6 +60,17 @@
 	LB_SORTED_BY_MODIFICATION_DATE_DESC = "Sorted by modification date -"
 	LB_SORTED_BY_MODIFICATION_DATE_ASC = "Sorted by modification date +"
 	PLC_SEARCH = "Search Emails"
+	REPLY_HEADER = "On {{date | date}}, {{name}} {{address}} wrote"
+	LB_NO_IMAGE = "External images blocked"
+
+	FORWARD_HEADER = "---------- Forwarded message ----------"
+	FORWARD_FROM = "From"
+	FORWARD_DATE = "Date"
+	FORWARD_TO = "To"
+	FORWARD_SUBJECT = "Subject"
+	FORWARD_CC = "Cc"
+	FORWARD_BCC = "Bcc"
+
 
 [INBOX.DOWNLOAD]
 	TITLE = "Downloading your attachment"
@@ -50,10 +96,7 @@
 	LB_PRIVATE_KEY = "Private Key"
     LB_PUBLIC_KEY = "Public Key"
     LB_NOT_IMPLEMENTED = "Not yet implemented"
-
-[DATES]
-	TODAY = "Today"
-	YESTERDAY = "Yesterday"
+    BTN_REMOVE_NOTIFICATION = "OK"
 
 [VALIDATION]
 	LB_REQUIRED = "This field is required"
@@ -98,7 +141,9 @@
 	PLC_INVITE_CODE = "please paste invite code here"
 	LB_NEWS = "Send me updates to my Lavaboom address."
 	LB_TOS = "By signing up I agree that I've read and understood the " 
-    LNK_TOS = "Terms of Service and the Privacy Policy"
+    LNK_TOS = "Terms of Service"
+    AND_THE = " and the "
+    LINK_PRIVACY = "Privacy Policy"
 
 [LOGIN.PLAN]
 	TITLE = "Your Plan"
@@ -152,8 +197,8 @@
 	LB_GENERATING = "Generating your keys..."
 	LB_UPLOADING = "Uploading Public Key..."
 	LB_READY = "Your keys are ready!"
-	LB_REACHED = "Our hamsters are running extra hard, just be a little longer to wait..."
-	LB_ERROR = "Cannot generate keys, make sure you are using an up-to-date browser like Firefox, Google Chrome or Safari and try again."
+	LB_REACHED = "Our hamsters are running extra hard, just a little longer to wait..."
+	LB_ERROR = "Cannot generate keys, make sure you are using an up-to-date version of Firefox, Google Chrome or Safari and try again."
 	LB_DO_NOT_CLOSE = "Please do not close this window."
 
 [LOGIN.BACKUP_KEY]
@@ -168,11 +213,11 @@
 	LB_PRIVATE_PC = "This is private computer"
 
 [LOGIN.IMPORT_KEY]
-	TITLE = "Please Upload Key"
+	TITLE = "Please Import Key to browser"
 	LB_INFO1 = "We couldn't find your private key in the browser cache."
 	LB_INFO2 = "This happens when you are using Lavaboom for the first time with this browser or if your browser cache has been cleared."
-	LB_INFO3 = "Just upload the key you saved to your hard drive when you signed up with us and you're good to go."
-	BTN_UPLOAD_KEY = "Upload your key"
+	LB_INFO3 = "Import the key you saved to your hard drive when you signed up with us and you're good to go."
+	BTN_UPLOAD_KEY = "Import your key"
 
 [LOGIN.SIGNUP]
 	HEADER = "Welcome to Lavaboom"
@@ -200,7 +245,7 @@
 	LB_CONTACTS = "Contacts"
 	LB_SETTINGS = "Settings"
 	LB_LOGOUT = "Logout"
-	LB_COPYRIGHT = "&#169; Lavaboom 2015"
+	LB_COPYRIGHT = "© Lavaboom 2015"
 
 [MAIN.COMPOSE]
 	LB_TO = "To"
@@ -234,6 +279,9 @@
     LB_ATTACHMENT_STATUS_UPLOADING_ERROR = "cannot upload"
     LB_ATTACHMENT_STATUS_UPLOADED = "uploaded"
     BTN_DELETE = "delete"
+    TOOLTIP_XCC = "Add CC or BCC"
+    TOOLTIP_SEND = "Send"
+    TOOLTIP_DISCARD = "Discard"
 
 [MAIN.SETTINGS.MENU]
 	KEYS = "Keys"
@@ -256,8 +304,16 @@
 	LB_SORT_BY_LAST_NAME = "last name"
 	TITLE_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts"
 	LB_KEYBOARD_SHORTCUTS = "Enabled"
-	LB_SECURED_IMAGES = "Don't show external images(security risk)"
+	LB_SECURED_IMAGES = "External images"
 	PLC_SELECT_LANGUAGE = "Select a language"
+	LB_IMAGES_NONE = "none"
+	LB_IMAGES_NONE_TITLE = "Block all external images, the most secure"
+	LB_IMAGES_PROXY = "proxy through lavaboom"
+	LB_IMAGES_PROXY_TITLE = "It makes your browser proxy all images through lavaboom secure proxy thus effectively hiding you behind the Lavaboom"
+	LB_IMAGES_HTTPS = "download only https images directly"
+	LB_IMAGES_HTTPS_TITLE = "It makes your browser directly download only https external images"
+	LB_IMAGES_ALL = "download all images directly"
+	LB_IMAGES_ALL_TITLE = "It makes your browser directly download all external images, for both http and https protocols"
 
 [MAIN.SETTINGS.PROFILE]
 	TITLE_NAME = "Name"
@@ -269,6 +325,10 @@
 	LB_SIGNATURE_ENABLED = "Signature Enabled"
 	TITLE_NEWSLETTER = "Newsletter"
 	LB_SEND_ME_NEWS = "Send me News about Lavaboom"
+	LB_SIGNATURE_LN1 = "Sent with Lavaboom - your secure email provider."
+	LB_SIGNATURE_LN2 = "Get your own address at lavaboom.com"
+	LB_PROFILE_SAVED = "Profile has been saved"
+    LB_PROFILE_CANNOT_BE_SAVED = "Cannot save profile"
 
 [MAIN.SETTINGS.PLAN]
 	LB_CURRENT = "This is your current plan"
@@ -278,10 +338,10 @@
 	LB_TAG = "FREE"
 	LB_ITEMS = "1,000MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
 
-[MAIN.SETTINGS.PLAN.TEST]
-	TITLE = "Lavaboom (Test)"
-	LB_TAG = "SECRET"
-	LB_ITEMS = "1,000MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+#[MAIN.SETTINGS.PLAN.TEST]
+#	TITLE = "Lavaboom (Test)"
+#	LB_TAG = "SECRET"
+#	LB_ITEMS = "1,000MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
 
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
@@ -303,6 +363,13 @@
 	LB_DECRYPTED = "Decrypted"
 	LAVABOOM_SYNC = "Lavaboom Sync"
 	BTN_GENERATE_KEYS = "Generate new key-pair"
+	BTN_DOWNLOAD = "Download this public key"
+	LB_PRIVATE_KEY_DECRYPTED = "Private key for {{email}} has been decrypted"
+	LB_PASSWORD_CANNOT_BE_CHANGED = "Cannot change password - {{error}}"
+	LB_PASSWORD_CHANGED = "Account password and private key passphrase have been updated"
+	LB_LAVABOOM_SYNC_ACTIVATED = "Lavaboom sync has been activated"
+	LB_LAVABOOM_SYNC_DEACTIVATED = "Lavaboom sync has been de-activated"
+	LB_LAVABOOM_SYNC_CANNOT_UPDATE = "Cannot update Lavaboom sync state"
 
 [MAIN.CONTACTS]
 	PLC_SEARCH_CONTACTS = "Search Contacts"
@@ -327,6 +394,17 @@
     LB_NO_PRIVATE_KEY_FOUND2 = "Please go to "
     LB_SETTINGS = "settings"
     LB_NO_PRIVATE_KEY_FOUND3 = " and check your key"
+    LB_REMOVE = "Remove this email"
+    PUBLIC_KEY_PROMPT1 = "We don't have the public key for this email address, so you can't encrypted emails going there."
+    PUBLIC_KEY_PROMPT2 = "Would you like to ask for the public key and add it here manually?"
+    PUBLIC_KEY_PROMPT_REQUEST = "Request key"
+    PUBLIC_KEY_PROMPT_UPLOAD = "Upload key"
+    LB_CANNOT_IMPORT_PUBLIC_KEY = "Cannot import public key"
+    LB_PUBLIC_KEY_IMPORTED = "New public key imported for {{email}}, {{algos}} {{length}}bits"
+    LB_CONTACT_CANNOT_BE_SAVED = "Contact cannot be saved"
+    LB_CONTACT_SAVED  = "Contact saved"
+    LB_CONTACT_DELETED  = "Contact deleted"
+    LB_CONTACT_CANNOT_BE_DELETED  = "Contact cannot be deleted"
 
 [HOTKEY]
 	TITLE          		 = "Shortcuts cheatsheet"

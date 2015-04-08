@@ -95,7 +95,10 @@ input[type=checkbox]:checked + label:before {
 // buttons
 .btn{
 	background-image: none !important;
-	bodrer: 0;
+	border: 0;
+	&:hover{
+		.opacity(.9);
+	}
 	&:active{
 		transform: traslateZ (.8rem);
 	}
@@ -103,7 +106,14 @@ input[type=checkbox]:checked + label:before {
 .btn-primary{
 	background: @lava;
 	border-color: transparent;
+	&:hover{
+		background:@lava-light;
+	}
+	&[disabled]{
+		background-color: @lava-gray-light;
+	}
 }
+
 
 input:focus{
 	box-shadow: none;
@@ -120,13 +130,16 @@ form.settings{
 	.btn, input, textarea, label{
 		.lava-font();
 		color: @lava-gray;
-		&.btn-danger, &.btn-primary{
+		&.btn-primary{
 			color: #FFF;
 		}
 	}
 
 	.btn-icon{
+		.pos-rel();
 		.text-left();
+		line-height: @filter-height;
+		padding-top: 0; padding-bottom: 0;
 		[class^="icon-"], [class*=" icon-"]{
 			padding-right: .5em;
 		}		
@@ -178,6 +191,8 @@ form.settings{
 		margin-bottom: 1em;
 	}
 	.list-group{
+		margin-bottom: 1.1rem;
+
 		label{
 			font-weight: @light-font-weight;
 			margin: 0;
@@ -207,8 +222,26 @@ form.settings{
 			}
 		}
 
+		.btn-add-icon, .btn-remove{
+			.pos-abs();
+			left: -@filter-height;
+			display: block;
+			width: @filter-height;
+		}
+
+		.btn-remove > span{
+			color: @lava-red;
+		}
+
+		.btn-add-icon{
+			line-height: @filter-height;
+			color: @lava;
+			left: -4rem;
+			.text-center();
+		}
 		.input-group{
 			margin: -1rem -1.5rem;
+			height: 4.4rem;
 			&.with-label{
 				.pos-rel();
 				padding-left: 40%;
@@ -237,6 +270,17 @@ form.settings{
 					color: @lava;
 				}
 			}
+			input, button, span.dropdown{
+				// font-size: @font-size-base;
+				line-height: @filter-height;
+				height: @filter-height;
+				padding-top: 0;
+				padding-bottom: 0;
+			}
+			span.dropdown{
+				padding-bottom: 2rem;
+			}
+			
 		}
 
 		.text-control{
@@ -249,12 +293,13 @@ form.settings{
 				.pos-abs();
 				.z1();
 				line-height: @lava-form-line-height;
-				left: 1.3rem;
+				left: @lava-form-padding;
 				pointer-events: none;
 			}
 			input{
 				width: 100%;
-				padding-left: 50%;
+				padding: 0 @lava-form-padding 0 50%;
+				line-height: @lava-form-line-height;
 				background:    transparent none;
 				box-shadow: none;
 				outline: 0 none;
@@ -413,7 +458,7 @@ form.settings{
 				padding-left: .8rem;
 			}
 			.ui-select-choices-row-inner{
-				padding-left: 50%;
+				//padding-left: 50%; it breaks the styling making long text overflow
 				min-height: @lava-form-line-height;
 				line-height: @lava-form-line-height;
 			}
@@ -466,13 +511,39 @@ form.settings{
 				border-top: 0;
 			}
 		}
+		.list-group-item.pack{
+			padding: 0;
+		}
+
+		.list-group-item.collapse-active{
+			background: @lava-gray-lighter;
+		}
+
+		.list-group-item.collapse:not(.in){
+			padding-top: 0; padding-bottom: 0;
+			height: 0;
+		}
 	}
 	h4{
-		padding-left: 1.6rem;
+		padding-left: 1.1rem;
 		color: @lava-text;
 		.lava-font();
 		margin-top: 3.6rem;
-		margin-bottom: 1rem;
+		margin-bottom: 1.4rem;
+	}
+
+	footer{
+		margin-top: 5.5rem;
+	}
+
+	.btn-danger{
+		background: #FFF;
+		color: @lava-red;
+		border: 1px solid @lava-red;
+		.text-center;
+		.icon-trash{
+			color: @lava-red;
+		}
 	}
 }
 

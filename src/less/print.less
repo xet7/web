@@ -1,0 +1,58 @@
+.only-print{
+	display: none;
+}
+@media print {
+   #leftPanel, #mail-list, .filters, .mail .navbar-right-buttons{
+   	display: none !important;
+   }
+   #mail-thread, #content, .main-view{
+   	padding: 0 !important; margin: 0 !important;
+   	position: static !important;
+   	width: 100%;
+      height: auto !important;
+      overflow-x: hidden !important;
+   }
+
+   a[href]:after {
+      word-wrap: break-word;
+   }
+
+   strong, .strong, b{
+      font-weight: 400 !important;
+   }
+
+   .filters{
+
+   }
+
+   .logo{
+   	padding-right: 80%;
+   	display: block;
+   	height: 3.2rem;
+      // background-image: url(../img/Lavaboom-logo-gray.svg) !important;
+      // background-repeat: no-repeat !important;
+      // background-size: cover;
+      margin-bottom: 1rem;
+      img{
+         .img-responsive();
+      }
+   }
+
+   .details-pane{
+      height: auto;
+      position: static;
+   }
+
+   .mail{
+   	border-color: transparent !important; box-shadow: none !important;
+   	border-bottom: 1px solid @border-site-wide;
+   	padding: 0 !important; margin: 0 !important;
+   	&:hover{
+   		border: 1px solid transparent !important;
+         box-shadow: none !important;
+         .navbar-right-buttons{
+            display: none;
+         }
+   	}
+   }
+}

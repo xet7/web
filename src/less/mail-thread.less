@@ -3,8 +3,22 @@
 }
 
 .mail{
+	.navbar-right-buttons {
+		position: absolute;
+		right:0;
+		bottom: 0;
+		opacity:0;
+		transition:opacity 0.2s linear;
+	}
+	&:hover {
+		.navbar-right-buttons {
+			opacity: 1;
+		}
+	}
+
 	border: @border-site-wide;
 	border-left-width: 0; border-right-width: 0;
+	border-bottom: @border-site-wide;
 	padding: @mail-thread-padding !important;
 	background: #FFF;
 	border: 1px solid transparent;
@@ -18,9 +32,9 @@
 		border: 1px solid @lava !important;
 		border-bottom-color: @lava;
 	}
-	// &:not(:last-child){
-		border-bottom: @border-site-wide;
-	// }
+
+	
+
 	header{
 		padding-bottom: 18px;
 		margin-bottom: 17px !important;
@@ -46,12 +60,11 @@
 	.mail-content{
 		padding-bottom: 11px;
 		margin-bottom: 15px !important;
-		border-bottom: @border-site-wide;
-		
 		.email-formatting();
 	}
 
 	footer{
+		border-top: @border-site-wide;
 		margin-bottom: 0px !important;
 	}
 	
@@ -80,7 +93,7 @@
   top: -14px;
   content: '';
   // border: solid 2px #920035;
-  background: @lava-yellow;
+  background: @lava-gray-lighter;
 }
 .attachment::after {
   content: 'file';

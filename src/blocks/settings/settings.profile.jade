@@ -12,23 +12,20 @@
 			li.list-group-item
 				.text-control
 					label {{'MAIN.SETTINGS.PROFILE.LB_USERNAME' | translate}}
-					input.field-icon.form-control(disabled='', ng-model="name")
-					span.icon-lock
+					input.form-control(disabled='', ng-model="name")
+					span
 			li.list-group-item
 				.text-control
 					label {{'MAIN.SETTINGS.PROFILE.LB_FIRST_NAME' | translate}}
-					input.field-icon.form-control(ng-model="settings.firstName")
-					span.icon-edit
+					input.form-control(ng-model="settings.firstName")
 			li.list-group-item
 				.text-control
 					label {{'MAIN.SETTINGS.PROFILE.LB_LAST_NAME' | translate}}
-					input.field-icon.icon-edit.form-control(ng-model="settings.lastName")
-					span.icon-edit
+					input.form-control(ng-model="settings.lastName")
 			li.list-group-item
 				.text-control
 					label {{'MAIN.SETTINGS.PROFILE.LB_DISPLAY_NAME' | translate}}
-					input.field-icon.icon-edit.form-control(ng-model="settings.displayName")
-					span.icon-edit
+					input.form-control(ng-model="settings.displayName")
 		h4 {{'MAIN.SETTINGS.PROFILE.TITLE_SIGNATURE' | translate}}
 		ul.list-group
 			li.list-group-item
@@ -37,11 +34,18 @@
 					label.switch
 						input(type='checkbox', ng-model="settings.isSignatureEnabled")
 						i
-			li.list-group-item
+			li.list-group-item(collapse="!settings.isSignatureEnabled")
 				.text-control
 					.signature
-						div(text-angular="", ng-model="settings.signatureHtml")
-					span.icon-edit
+						div(text-angular="", ta-toolbar="[]", ng-model="settings.signatureHtml")
+							br
+							br
+							p.text-center
+								a(href="https://lavaboom.com", target="_blank")
+									strong {{'MAIN.SETTINGS.PROFILE.LB_SIGNATURE_LN1' | translate}}
+									br
+									| {{'MAIN.SETTINGS.PROFILE.LB_SIGNATURE_LN2' | translate}}
+					
 		h4 {{'MAIN.SETTINGS.PROFILE.TITLE_NEWSLETTER' | translate}}
 		ul.list-group
 			li.list-group-item
@@ -50,7 +54,3 @@
 					label.switch
 						input(type='checkbox', ng-model="settings.isSubscribedToNews")
 						i
-		br
-		ul.list-group(ng-show="status")
-			li.list-group-item
-				label(ng-bind="status")

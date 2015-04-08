@@ -1,3 +1,14 @@
+#login-app-container .navbar-left {
+	color: green;
+}
+#login-app-container .navbar-right {
+	color: red;
+}
+
+a:hover{
+	text-decoration: none;
+}
+
 .list-pane{
 	width: @mail-list-width;
 	position: absolute;
@@ -13,8 +24,12 @@
 	.list-group{
 		.list-group-item{
 			padding: 0;
+			&:not(:first-child){
+				margin-top: -1px;
+			}
 			> a{
-				padding: 10px 15px;
+				line-height: 8.9rem;
+				padding: 0 2.2rem;
 			}
 		}
 	}
@@ -41,18 +56,20 @@
 		.z2();
 	}
 	.main-settings-view, .main-view{
-		.pos-rel();
+		.pos-abs();
+		 .fill-abs();
+
 		.z1();
-		height: 100%;
+		
 		// padding: 10px;
-		margin-top: @filter-height;
+		top: @filter-height;
 		overflow: auto;
 		> .settings-panel, > .main-panel{
 			.no-gutter();
 			// position: relative;
 			height: 100%;
 			overflow: auto;
-			padding-bottom: @filter-height + 25px;
+			padding-bottom: @filter-height + 2.2rem;
 		}
 	}
 }
@@ -77,27 +94,47 @@
 }
 .list-group-wrapper{
 	margin-top: @filter-height;
+	// border-bottom: @border-site-wide;
+	.list-group{
+		// border-bottom: @border-site-wide;
+		// padding-bottom: .1rem;
+	}
 	.list-group-item {
-		&:first-child{
-			border-top: 0;
+		&:first-child, &.active{
+			box-shadow: none;
 		}
-		border-left: 0; border-right: 0;
+		&:last-child{
+			// box-shadow: inset 0 1px 0 0 @lava-border-color inset 0 1px 0 0 @lava-border-color;
+			// border-bottom: @border-site-wide;
+			box-shadow: inset 0 1px 0 0 @lava-border-color,
+						inset 0 -1px 0 0 @lava-border-color;
+			&.active{
+				box-shadow: none;
+			}
+		}
+		border: 0;
+		box-shadow: inset 0 1px 0 0 @lava-border-color;
 		border-radius: 0;
+		margin: 0;
 		> a{
 			display: block;
 			color: @lava-text;
 			text-decoration: none !important;
 			> i.icon{
 				display: inline-block;
-				font-size: 2em;
-				padding: .5em 0;
-				width: 2em;
+				font-size: 2.8rem;
+				line-height: 4.8rem;
+				vertical-align: middle;
 				text-align: center;
+				position: relative;
+				top: -.2rem;
+				padding-right: 1.5rem;
 			}
 		}
 		&:hover{
-			background-color: @lava-gray-lightest;
+			// background-color: @lava-gray-lightest;
 			transition: .3s all;
+			// background-color: @lava-gray-lightest;
 			a{
 				color: @lava-gray-dark;
 				.sec-icon{
@@ -106,9 +143,14 @@
 			}
 
 		}
+
 		&.active {
 			background-color: @lava;
 			border-color: @lava;
+			box-shadow: none;
+			+ li {
+
+			}
 			a{
 				color: #FFF;
 				.sec-icon{
@@ -119,8 +161,9 @@
 		&.separator{
 			background-color: @lava-gray-lighter;
 			color: @lava-gray;
-			padding: .3em 15px;
+			padding: 0 1.5rem;
 			text-transform: uppercase;
+			line-height: 2.2rem;
 		}
 	}
 	&.list-group-icons > li > a > span{
@@ -231,4 +274,16 @@ p.hyphenate{
 
 .lava-modal-content{
 	padding-top: @filter-height + 25px;
+}
+
+.no-image{
+	background: @lava-gray-light;
+	border: @border-site-wide;
+	padding: 3rem 2rem;
+}
+
+.modal-dialog{
+	@media (min-width: @screen-sm-min) { 
+		margin: 5% auto;
+	}
 }

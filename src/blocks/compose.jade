@@ -8,20 +8,20 @@ div#compose-wrapper
 						li(ng-show="isError")
 							span {{'MAIN.COMPOSE.LB_ERROR' | translate}}
 						li
-							button.btn.btn-default(ng-click="isXCC = !isXCC", ng-disabled="isWarning")
+							button.btn.btn-default(ng-click="isXCC = !isXCC", ng-disabled="isWarning", tooltip="{{'MAIN.COMPOSE.TOOLTIP_XCC' | translate}}", tooltip-append-to-body="true")
 								span.icon-tick
 						li.btn-group.dropdown(dropdown="", is-open="isWarning")
-							button.btn.btn-default(ng-disabled="isWarning || !isValid()", type="submit", ng-click="send()")
+							button.btn.btn-default(ng-disabled="isWarning || !isValid()", type="submit", ng-click="send()", tooltip="{{'MAIN.COMPOSE.TOOLTIP_SEND' | translate}}", tooltip-append-to-body="true")
 								span.icon-sent
 							ul.dropdown-menu(role="menu")
 								li
 									p {{'MAIN.COMPOSE.LB_WARNING' | translate}}
 									p {{'MAIN.COMPOSE.LB_WARNING_2' | translate}}
 								li.yesno.table-list
-									a.btn.btn-lg.cell(type="button", ng-click="confirm()")
+									a.btn.cell(type="button", ng-click="confirm()")
 										span.icon-sent
 										span {{'MAIN.COMPOSE.BTN_CONFIRM' | translate}}
-									a.btn.btn-lg.cell(type="button", ng-click="reject()")
+									a.btn.cell(type="button", ng-click="reject()")
 										span.icon-close
 										span {{'MAIN.COMPOSE.BTN_REJECT' | translate}}
 								li.dropdown-checkbox.text-center
@@ -29,7 +29,7 @@ div#compose-wrapper
 										input#check1(type='checkbox', name="isSkipWarning", ng-model="isSkipWarning")
 										label(for='isSkipWarning', ng-click="$event.stopPropagation(); toggleIsSkipWarning($event)") {{'MAIN.COMPOSE.LB_ASK_ME_AGAIN' | translate}}
 						li
-							button.btn.btn-default(ng-click="hidePopup()")
+							button.btn.btn-default(ng-click="hidePopup()", tooltip="{{'MAIN.COMPOSE.TOOLTIP_DISCARD' | translate}}", tooltip-append-to-body="true")
 								span.icon-close
 		header#compose-header
 			.table-list
@@ -50,10 +50,10 @@ div#compose-wrapper
 				.cell.label
 					label.text-primary {{'MAIN.COMPOSE.LB_SUBJECT' | translate}}:
 				.cell.fields
-					input#subject.form-control.text-primary.col-xs-24(type="text", name="subject", auto-complete="off", ng-model="form.subject")
+					input#subject.form-control.text-primary.col-xs-24(type="text", name="subject", autocomplete='off', ng-model="form.subject")
 
 		article#compose-body
-			text-angular(ng-model="form.body", name="body", ta-file-drop="onFileDrop", ta-toolbar="toolbar", ta-min-text="1")
+			text-angular(ng-model="form.body", name="body", email-builder="", ta-file-drop="onFileDrop", ta-toolbar="toolbar", ta-min-text="1")
 		footer
 			#attachments.row
 				div.col-xs-6(ng-repeat="attachment in attachments")

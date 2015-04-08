@@ -2,6 +2,7 @@ module.exports = {
 	API_URI: process.env.API_URI,
 	ROOT_DOMAIN: process.env.TLD,
 	ROOT_DOMAIN_LIST: ['lavaboom.com', 'lavaboom.io', 'lavaboom.co'],
+	IMAGES_PROXY_URI: 'https://rr.lavaboom.io',
 	DEFAULT_LANG: 'en',
 	DEFAULT_KEY_LENGTH: 4096,
 	ESTIMATED_KEY_GENERATION_TIME_SECONDS: 24,
@@ -13,6 +14,7 @@ module.exports = {
 	AUTO_SAVE_TIMEOUT: 1000,
 	LOADER_SHOW_DELAY: 150,
 	FAST_ACTIONS_TIMEOUT: 250,
+	MUMBLE_SHOW_DELAY: 1000,
 	CRYPTO_CACHE_MAX_ENTRY_SIZE: 1024 * 512,
 	CRYPTO_CACHE_TTL: 60 * 60 * 1000,
 	INBOX_LABELS_CACHE_TTL: 60 * 1000,
@@ -22,5 +24,6 @@ module.exports = {
 	KEYS_BACKUP_README: 'https://lavaboom.com/placeholder/help/backup-file',
 	POPUP_AUTO_HIDE_DELAY: 500,
 	ORDERED_LABELS: ['Inbox', 'Drafts', 'Sent', 'Starred', 'Spam', 'Trash'],
-	PLAN_LIST: ['BASIC', 'TEST']
+	PLAN_LIST: ['BASIC'/*, 'TEST'*/],
+	CRYPTO_DEFAULT_THREAD_POOL_SIZE: 4
 };
