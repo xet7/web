@@ -38,11 +38,13 @@
 				.text-control
 					.signature
 						div(text-angular="", ta-toolbar="[]", ng-model="settings.signatureHtml")
+							br
+							br
 							p.text-center
-								a(href="http://lavaboom.com", target="_blank")
-									strong Sent with Lavaboom - your secure email provider.
+								a(href="https://lavaboom.com", target="_blank")
+									strong {{'MAIN.SETTINGS.PROFILE.LB_SIGNATURE_LN1' | translate}}
 									br
-									| Get your own address at to lavaboom.com
+									| {{'MAIN.SETTINGS.PROFILE.LB_SIGNATURE_LN2' | translate}}
 					
 		h4 {{'MAIN.SETTINGS.PROFILE.TITLE_NEWSLETTER' | translate}}
 		ul.list-group
@@ -52,7 +54,3 @@
 					label.switch
 						input(type='checkbox', ng-model="settings.isSubscribedToNews")
 						i
-		br
-		ul.list-group(ng-show="status")
-			li.list-group-item
-				label(ng-bind="status")

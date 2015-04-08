@@ -1,0 +1,29 @@
+#notifications.notifications.navbar-inverse{
+	background: @lava;
+	color: #FFF;
+	padding: 0 1.5rem;
+	.btn{
+		background: @lava-button-color;
+		padding-left: @lava-button-padding;
+		padding-right: @lava-button-padding;
+		.span{
+			display: inline-block;
+			padding-right: 1rem;
+		}
+	}
+	.navbar-text, .btn-default{
+		color: #FFF !important;
+	}
+}
+
+.notifications-0 .notifications{
+	display: none;
+}
+
+.notifications-1 + div {
+	top: @filter-height * 2 !important;
+}
+
+.notifications-2 + div {
+	top: @filter-height * 3 !important;
+}

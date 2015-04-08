@@ -4,7 +4,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		LB_PRIVATE : '',
 		LB_BUSINESS : '',
 		LB_HIDDEN : '',
-		'MAIN.CONTACTS.LB_EMAIL_NOT_FOUND' : ''
+		LB_EMAIL_NOT_FOUND : 'MAIN.CONTACTS'
 	};
 
 	$translate.bindAsObject(translations, 'MAIN.COMPOSE');
@@ -34,7 +34,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 
 				tooltip = '';
 			} catch (err) {
-				tooltip = translations['MAIN.CONTACTS.LB_EMAIL_NOT_FOUND'];
+				tooltip = translations.LB_EMAIL_NOT_FOUND;
 				self.key = null;
 				throw err;
 			} finally {
@@ -58,6 +58,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		this.name = opts.name ? opts.name : '';
 		this.isStar = opts.isStar ? opts.isStar : false;
 		this.key = opts.key;
+		this.isCustomKey = opts.isCustomKey ? opts.isCustomKey : false;
 
 		this.isSecured = () => !!self.key;
 		this.getSecureClass = () => `sec-${self.isSecured() ? 1 : 0}`;
@@ -70,6 +71,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		this.getLabel = () => label;
 		this.getTooltip = () => tooltip;
 		this.isCollapsed = () => isCollapsed;
+		this.unfold = () => $timeout(() => isCollapsed = false);
 		this.getTag = () => tag;
 
 		this.collapse = () => isCollapsed = true;
@@ -77,6 +79,9 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		this.switchCollapse = () => isCollapsed = !isCollapsed;
 
 		this.loadKey = (isReload = false) => co(function *(){
+			if (self.isCustomKey)
+				return self.key;
+
 			try {
 				if (!isReload) {
 					console.log('loadKey', isLoadedKey, isLoadingKey, self.key);
