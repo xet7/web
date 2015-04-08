@@ -1,6 +1,5 @@
 include settings/_settings_list.jade
-.details-pane(ng-controller="CtrlSettings")
+.details-pane
 	.filters.row.no-gutter.lava-icon-row
-	.filters.row.no-gutter.lava-icon-row(ng-class="'notifications-' + getNotificationsLength(notificationsInfo, notificationsWarning)")
-		include _notifications.jade
+		
 	.main-settings-view.main-panel(ui-view='')

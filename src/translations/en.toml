@@ -96,7 +96,6 @@
 	LB_PRIVATE_KEY = "Private Key"
     LB_PUBLIC_KEY = "Public Key"
     LB_NOT_IMPLEMENTED = "Not yet implemented"
-    BTN_REMOVE_NOTIFICATION = "OK"
 
 [VALIDATION]
 	LB_REQUIRED = "This field is required"
@@ -141,9 +140,7 @@
 	PLC_INVITE_CODE = "please paste invite code here"
 	LB_NEWS = "Send me updates to my Lavaboom address."
 	LB_TOS = "By signing up I agree that I've read and understood the " 
-    LNK_TOS = "Terms of Service"
-    AND_THE = " and the "
-    LINK_PRIVACY = "Privacy Policy"
+    LNK_TOS = "Terms of Service and the Privacy Policy"
 
 [LOGIN.PLAN]
 	TITLE = "Your Plan"
@@ -304,16 +301,8 @@
 	LB_SORT_BY_LAST_NAME = "last name"
 	TITLE_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts"
 	LB_KEYBOARD_SHORTCUTS = "Enabled"
-	LB_SECURED_IMAGES = "External images"
+	LB_SECURED_IMAGES = "Don't show external images(security risk)"
 	PLC_SELECT_LANGUAGE = "Select a language"
-	LB_IMAGES_NONE = "none"
-	LB_IMAGES_NONE_TITLE = "Block all external images, the most secure"
-	LB_IMAGES_PROXY = "proxy through lavaboom"
-	LB_IMAGES_PROXY_TITLE = "It makes your browser proxy all images through lavaboom secure proxy thus effectively hiding you behind the Lavaboom"
-	LB_IMAGES_HTTPS = "download only https images directly"
-	LB_IMAGES_HTTPS_TITLE = "It makes your browser directly download only https external images"
-	LB_IMAGES_ALL = "download all images directly"
-	LB_IMAGES_ALL_TITLE = "It makes your browser directly download all external images, for both http and https protocols"
 
 [MAIN.SETTINGS.PROFILE]
 	TITLE_NAME = "Name"
@@ -325,10 +314,6 @@
 	LB_SIGNATURE_ENABLED = "Signature Enabled"
 	TITLE_NEWSLETTER = "Newsletter"
 	LB_SEND_ME_NEWS = "Send me News about Lavaboom"
-	LB_SIGNATURE_LN1 = "Sent with Lavaboom - your secure email provider."
-	LB_SIGNATURE_LN2 = "Get your own address at lavaboom.com"
-	LB_PROFILE_SAVED = "Profile has been saved"
-    LB_PROFILE_CANNOT_BE_SAVED = "Cannot save profile"
 
 [MAIN.SETTINGS.PLAN]
 	LB_CURRENT = "This is your current plan"
@@ -338,10 +323,10 @@
 	LB_TAG = "FREE"
 	LB_ITEMS = "1,000MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
 
-#[MAIN.SETTINGS.PLAN.TEST]
-#	TITLE = "Lavaboom (Test)"
-#	LB_TAG = "SECRET"
-#	LB_ITEMS = "1,000MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+[MAIN.SETTINGS.PLAN.TEST]
+	TITLE = "Lavaboom (Test)"
+	LB_TAG = "SECRET"
+	LB_ITEMS = "1,000MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
 
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
@@ -364,12 +349,6 @@
 	LAVABOOM_SYNC = "Lavaboom Sync"
 	BTN_GENERATE_KEYS = "Generate new key-pair"
 	BTN_DOWNLOAD = "Download this public key"
-	LB_PRIVATE_KEY_DECRYPTED = "Private key for {{email}} has been decrypted"
-	LB_PASSWORD_CANNOT_BE_CHANGED = "Cannot change password - {{error}}"
-	LB_PASSWORD_CHANGED = "Account password and private key passphrase have been updated"
-	LB_LAVABOOM_SYNC_ACTIVATED = "Lavaboom sync has been activated"
-	LB_LAVABOOM_SYNC_DEACTIVATED = "Lavaboom sync has been de-activated"
-	LB_LAVABOOM_SYNC_CANNOT_UPDATE = "Cannot update Lavaboom sync state"
 
 [MAIN.CONTACTS]
 	PLC_SEARCH_CONTACTS = "Search Contacts"
@@ -395,16 +374,6 @@
     LB_SETTINGS = "settings"
     LB_NO_PRIVATE_KEY_FOUND3 = " and check your key"
     LB_REMOVE = "Remove this email"
-    PUBLIC_KEY_PROMPT1 = "We don't have the public key for this email address, so you can't encrypted emails going there."
-    PUBLIC_KEY_PROMPT2 = "Would you like to ask for the public key and add it here manually?"
-    PUBLIC_KEY_PROMPT_REQUEST = "Request key"
-    PUBLIC_KEY_PROMPT_UPLOAD = "Upload key"
-    LB_CANNOT_IMPORT_PUBLIC_KEY = "Cannot import public key"
-    LB_PUBLIC_KEY_IMPORTED = "New public key imported for {{email}}, {{algos}} {{length}}bits"
-    LB_CONTACT_CANNOT_BE_SAVED = "Contact cannot be saved"
-    LB_CONTACT_SAVED  = "Contact saved"
-    LB_CONTACT_DELETED  = "Contact deleted"
-    LB_CONTACT_CANNOT_BE_DELETED  = "Contact cannot be deleted"
 
 [HOTKEY]
 	TITLE          		 = "Shortcuts cheatsheet"

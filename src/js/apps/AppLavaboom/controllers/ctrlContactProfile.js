@@ -1,20 +1,11 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, notifications, ContactEmail) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, ContactEmail) => {
 	$scope.contactId = $stateParams.contactId;
 	const email = $stateParams.email;
 
 	const translations = {
-		LB_NEW_CONTACT: '',
-		LB_CONTACT_CANNOT_BE_SAVED: '',
-		LB_CONTACT_SAVED: '',
-		LB_CONTACT_DELETED: '',
-		LB_CONTACT_CANNOT_BE_DELETED: ''
+		LB_NEW_CONTACT: ''
 	};
 	$translate.bindAsObject(translations, 'MAIN.CONTACTS');
-
-	$rootScope.$bind('notifications', () => {
-		$scope.notificationsInfo = notifications.get('info', 'contact.profile');
-		$scope.notificationsWarning = notifications.get('warning', 'contact.profile');
-	});
 
 	console.log('ctrl contact profile', $scope.contactId);
 
@@ -47,44 +38,15 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 	};
 
 	$scope.saveThisContact = () => co(function *(){
-		try {
-			if ($scope.details.id != 'new')
-				yield contacts.updateContact($scope.details);
-			else {
-				let cid = yield contacts.createContact($scope.details);
-				$state.go('main.contacts.profile', {contactId: cid});
-			}
-			notifications.set('contact-save-ok', {
-				text: translations.LB_CONTACT_SAVED,
-				type: 'info',
-				timeout: 3000,
-				namespace: 'contact.profile'
-			});
-		} catch (err) {
-			notifications.set('contact-save-fail', {
-				text: translations.LB_CONTACT_CANNOT_BE_SAVED,
-				namespace: 'contact.profile'
-			});
-			throw err;
+		if ($scope.details.id != 'new')
+			yield contacts.updateContact($scope.details);
+		else {
+			let cid = yield contacts.createContact($scope.details);
+			$state.go('main.contacts.profile', {contactId: cid});
 		}
 	});
 
 	$scope.deleteThisContact = () => co(function *(){
-		try {
-			yield contacts.deleteContact($scope.contactId);
-
-			notifications.set('contact-delete-ok', {
-				text: translations.LB_CONTACT_DELETED,
-				type: 'info',
-				timeout: 3000,
-				namespace: 'contact.profile'
-			});
-		} catch (err) {
-			notifications.set('contact-delete-fail', {
-				text: translations.LB_CONTACT_CANNOT_BE_DELETED,
-				namespace: 'contact.profile'
-			});
-			throw err;
-		}
+		return yield contacts.deleteContact($scope.contactId);
 	});
 };

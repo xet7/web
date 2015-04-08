@@ -18,10 +18,10 @@ div#compose-wrapper
 									p {{'MAIN.COMPOSE.LB_WARNING' | translate}}
 									p {{'MAIN.COMPOSE.LB_WARNING_2' | translate}}
 								li.yesno.table-list
-									a.btn.cell(type="button", ng-click="confirm()")
+									a.btn.btn-lg.cell(type="button", ng-click="confirm()")
 										span.icon-sent
 										span {{'MAIN.COMPOSE.BTN_CONFIRM' | translate}}
-									a.btn.cell(type="button", ng-click="reject()")
+									a.btn.btn-lg.cell(type="button", ng-click="reject()")
 										span.icon-close
 										span {{'MAIN.COMPOSE.BTN_REJECT' | translate}}
 								li.dropdown-checkbox.text-center
@@ -53,7 +53,7 @@ div#compose-wrapper
 					input#subject.form-control.text-primary.col-xs-24(type="text", name="subject", autocomplete='off', ng-model="form.subject")
 
 		article#compose-body
-			text-angular(ng-model="form.body", name="body", email-builder="", ta-file-drop="onFileDrop", ta-toolbar="toolbar", ta-min-text="1")
+			text-angular(ng-model="form.body", name="body", ta-file-drop="onFileDrop", ta-toolbar="toolbar", ta-min-text="1")
 		footer
 			#attachments.row
 				div.col-xs-6(ng-repeat="attachment in attachments")

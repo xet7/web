@@ -1,13 +1,8 @@
-module.exports = /*@ngInject*/($scope, $timeout, $translate, consts, crypto, notifications) => {
+module.exports = /*@ngInject*/($scope, $timeout, consts, crypto) => {
 	let decodeTimeout = null;
 	let cryptoKey = crypto.getPrivateKeyByFingerprint($scope.key.fingerprint);
 
 	console.log('CtrlSettingsSecurityKey instantiated with key', $scope.key, 'originates from', cryptoKey);
-
-	const translations = {
-		LB_PRIVATE_KEY_DECRYPTED: '%'
-	};
-	$translate.bindAsObject(translations, 'MAIN.SETTINGS.SECURITY');
 
 	$scope.$watch('key.decryptPassword', (o, n) => {
 		if (o == n)
@@ -16,19 +11,11 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, consts, crypto, not
 		if ($scope.key) {
 			decodeTimeout = $timeout.schedule(decodeTimeout, () => {
 				let r = false;
-				if (cryptoKey && !cryptoKey.primaryKey.isDecrypted) {
+				if (cryptoKey) {
 					r = crypto.authenticate(cryptoKey, $scope.key.decryptPassword);
 
-					if (r) {
-						notifications.set('private-key-decrypted-ok', {
-							text: translations.LB_PRIVATE_KEY_DECRYPTED({email: $scope.email}),
-							type: 'info',
-							timeout: 3000,
-							namespace: 'settings'
-						});
-
+					if (r)
 						$scope.key.isDecrypted = true;
-					}
 				}
 
 				$scope.key.decryptIsSuccess = r;
