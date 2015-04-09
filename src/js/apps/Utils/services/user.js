@@ -11,6 +11,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	this.styledName = '';
 	this.email = '';
 	this.nameEmail = '';
+	this.altEmail = '';
 
 	// information about user from API
 	this.settings = {};
@@ -45,11 +46,12 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	let token = null;
 	let isAuthenticated = false;
 
-	const setupUserBasicInformation = (username, styledUsername) => {
+	const setupUserBasicInformation = (username, styledUsername, altEmail) => {
 		self.name = username;
 		self.styledName = styledUsername;
 		self.email = `${username}@${consts.ROOT_DOMAIN}`;
 		self.nameEmail = `${self.name} <${self.email}>`;
+		self.altEmail = altEmail;
 
 		return username;
 	};
@@ -102,7 +104,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		setupSettings(res.body.user.settings);
 		$rootScope.$broadcast('user-settings');
 
-		setupUserBasicInformation(res.body.user.name, res.body.user.styled_name);
+		setupUserBasicInformation(res.body.user.name, res.body.user.styled_name, res.body.alt_email);
 
 		if (!isAuthenticated) {
 			isAuthenticated = true;
@@ -170,7 +172,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 				res = yield LavaboomAPI.accounts.get('me');
 				setupSettings(res.body.user.settings);
-				setupUserBasicInformation(res.body.user.name, res.body.user.styled_name);
+				setupUserBasicInformation(res.body.user.name, res.body.user.styled_name, res.body.alt_email);
 
 				res = yield LavaboomAPI.keys.list(self.name);
 				if (!res.body.keys || res.body.keys.length < 1) {
