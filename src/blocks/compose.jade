@@ -53,7 +53,7 @@ div#compose-wrapper
 					input#subject.form-control.text-primary.col-xs-24(type="text", name="subject", autocomplete='off', ng-model="form.subject")
 
 		article#compose-body
-			text-angular(ng-model="form.body", name="body", email-builder="", ta-file-drop="onFileDrop", ta-toolbar="toolbar", ta-min-text="1")
+			text-angular(ng-model="form.body", auto-focus="true", name="body", email-builder="", ta-file-drop="onFileDrop", ta-toolbar="toolbar", ta-min-text="1")
 		footer
 			#attachments.row
 				div.col-xs-6(ng-repeat="attachment in attachments")
