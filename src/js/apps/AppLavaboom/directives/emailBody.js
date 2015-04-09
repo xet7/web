@@ -7,7 +7,7 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 		return dom.querySelector('body');
 	};
 
-	const transformDOM = (dom, transforms, level = 0) => {
+	const transformCustomTextNodes = (dom, transforms, level = 0) => {
 		for(let node of dom.childNodes) {
 			if (node.nodeName == '#text') {
 				const data = node.data.trim();
@@ -31,77 +31,90 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 						parent.appendChild(newDataNodes[i]);
 				}
 			}
-			else if (node.nodeName.toLowerCase() != 'a' && node.childNodes)
-				transformDOM(node, transforms, level + 1);
+			else if (node.nodeName != 'A' && node.childNodes)
+				transformCustomTextNodes(node, transforms, level + 1);
 		}
 
 		if (level === 0)
-			return dom.innerHTML;
+			return dom;
 	};
 
-	const transformEmailDOM = (dom) =>
-		transformDOM(dom, [
-			{regex:emailRegex, replace: '<a href="mailto:$1">$1</a>'},
-			{regex: urlRegex, replace: '<a href="$1">$1</a>'}
-		]);
+	const transformTextNodes = (dom) => transformCustomTextNodes(dom, [
+		{regex: emailRegex, replace: '<a href="mailto:$1">$1</a>'},
+		{regex: urlRegex, replace: '<a href="$1">$1</a>'}
+	]);
 
-	const transformLinks = (emailBodyHtml, emails) => {
-		let i = 0;
-		angular.forEach(emailBodyHtml.find('a'), e => {
-			e = angular.element(e);
-			let href = e.attr('href');
+	let linksCounter = 0;
+	const transformEmail = (dom, {imagesSetting, noImageTemplate, emails}, level = 0) => {
+		const getEmailContextMenuDOM = (i) =>
+			getDOM(`<email-context-menu email="emails[${i}].email" is-open="emails[${i}].isDropdownOpened"></email-context-menu>`);
+		const noImageTemplateDOM = getDOM(noImageTemplate);
 
-			if (href) {
-				href = href.trim();
+		if (level === 0) {
+			linksCounter = 0;
+		}
 
-				if (href.startsWith('mailto:')) {
-					const toEmail = href.replace('mailto:', '').trim();
-					emails.push({
-						email: toEmail,
-						isDropdownOpened: false
-					});
+		for(let node of dom.childNodes) {
+			if (node.nodeName == 'IMG') {
+				let src = node.getAttribute('src');
 
-					e.attr('href', $state.href('.popup.compose', {to: toEmail}));
-					e.attr('ng-right-click', `switchContextMenu(${i})`);
+				if (!src)
+					continue;
 
-					e.wrap(`<email-context-menu email="emails[${i}].email" is-open="emails[${i}].isDropdownOpened"></email-context-menu>`);
-					i++;
-				} else
-					e.attr('target', '_blank');
-			}
-		});
-	};
+				src = src.trim();
+				if (src.startsWith('data:'))
+					continue;
 
-	const transformImages = (emailBodyHtml, imagesSetting, noImageTemplate) => {
-		angular.forEach(emailBodyHtml.find('img'), e => {
-			e = angular.element(e);
-			let src = e.attr('src');
-			if (!src)
-				return;
-
-			src = src.trim();
-			if (!src.startsWith('data:')) {
 				if (imagesSetting == 'none') {
-					e.replaceWith(noImageTemplate);
+					node.parentNode.replaceChild(noImageTemplateDOM, node);
 				} else if (imagesSetting == 'proxy') {
 					const proxifiedImageUri = `${consts.IMAGES_PROXY_URI}/i/${src.replace(/http[s]*:\/\//i, '')}`;
-					e.attr('src', proxifiedImageUri);
-					const parent = angular.element(e.parent());
+					node.setAttribute('src', proxifiedImageUri);
 
-					if (parent.prop('tagName') == 'A') {
-						let href = parent.attr('href');
-						if (href) {
-							href = href.trim();
-							if (href == src)
-								parent.attr('href', proxifiedImageUri);
-						}
-					}
+					const parent = node.parentNode;
+					if (parent.nodeName != 'A')
+						continue;
+
+					let href = parent.getAttribute('href');
+					if (!href)
+						continue;
+
+					href = href.trim();
+					if (href == src)
+						parent.setAttribute('href', proxifiedImageUri);
 				} else if (imagesSetting == 'directHttps') {
 					if (!src.startsWith('https://'))
-						e.replaceWith(noImageTemplate);
+						node.parentNode.replaceChild(noImageTemplateDOM, node);
 				}
-			}
-		});
+			} else
+			if (node.nodeName == 'A') {
+				let href = node.getAttribute('href');
+
+				if (href) {
+					href = href.trim();
+
+					if (href.startsWith('mailto:')) {
+						const toEmail = href.replace('mailto:', '').trim();
+						emails.push({
+							email: toEmail,
+							isDropdownOpened: false
+						});
+
+						node.setAttribute('href', $state.href('.popup.compose', {to: toEmail}));
+						node.setAttribute('ng-right-click', `switchContextMenu(${linksCounter})`);
+
+						const emailContextMenuDOM = getEmailContextMenuDOM(linksCounter);
+						node.parentNode.replaceChild(emailContextMenuDOM, node);
+						emailContextMenuDOM.appendChild(node);
+
+						linksCounter++;
+					} else
+						node.setAttribute('target', '_blank');
+				}
+			} else
+			if (node.childNodes)
+				transformEmail(node, {imagesSetting, noImageTemplate, emails}, level + 1);
+		}
 	};
 
 	return {
@@ -119,33 +132,54 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 
 				console.log('email body', `"${scope.emailBody}"`);
 
-				let transformedEmailBody = '';
-				let sanitizedTransformedEmailBody = '';
-				let emailBodyHtml = '';
+				let sanitizedEmailBody = null;
+				let dom = null;
 				try {
-					const dom = getDOM(scope.emailBody);
-					transformedEmailBody = transformEmailDOM(dom);
+					sanitizedEmailBody = $sanitize(`<div>${scope.emailBody}</div>`);
 
-					sanitizedTransformedEmailBody = $sanitize(transformedEmailBody);
-					emailBodyHtml = angular.element(`<div>${sanitizedTransformedEmailBody}</div>`);
+					dom = getDOM(sanitizedEmailBody);
 
-					transformLinks(emailBodyHtml, scope.emails);
-					transformImages(emailBodyHtml, user.settings.images, noImageTemplate);
+					transformTextNodes(dom);
+					console.log('email body after transformTextNodes', `"${dom.innerHTML}"`);
 
+					transformEmail(dom, {
+						imagesSetting: user.settings.images,
+						noImageTemplate: noImageTemplate,
+						emails: scope.emails
+					});
+
+					console.log('email body after transformEmail', `"${dom.innerHTML}"`);
 				} catch (err) {
 					console.error(
-						`error during email body processing: "${err.message}", raw email body: `,
+						`error during email body transforming: "${err.message}", raw email body: `,
 						`"${scope.emailBody}"`,
+						', sanitized email body: ',
+						`"${sanitizedEmailBody}"`,
 						', transformed email body: ',
-						`"${transformedEmailBody}"`,
-						', sanitized transformed email body: ',
-						`"${sanitizedTransformedEmailBody}"`
+						`"${dom.innerHTML}"`
 					);
 					throw err;
 				}
 
-				const emailBodyCompiled = $compile(emailBodyHtml)(scope);
-				el.append(emailBodyCompiled);
+				let emailBodyHtml = '';
+				let emailBodyCompiled = '';
+				try {
+					emailBodyHtml = angular.element(dom.innerHTML);
+					emailBodyCompiled = $compile(emailBodyHtml)(scope);
+
+					console.log('email body after compilation', emailBodyCompiled.html());
+					el.append(emailBodyCompiled);
+				} catch (err) {
+					console.error(
+						`error during email body validation && compilation: "${err.message}", raw email body: `,
+						`"${scope.emailBody}"`,
+						', compiled email body: ',
+						`"${emailBodyCompiled.html()}"`,
+						', transformed email body: ',
+						`"${dom.innerHTML}"`
+					);
+					throw err;
+				}
 			});
 		}
 	};
