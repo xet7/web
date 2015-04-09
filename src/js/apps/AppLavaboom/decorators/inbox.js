@@ -70,7 +70,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 		console.log('proxy requestList', labelName, offset, limit);
 
 		let value = threadsCache.get(labelName);
-		if ((!value || (!value.isEnd && offset >= value.list.length)) && limit) {
+		if (!value || (!value.isEnd && offset >= value.list.length)) {
 			let newList = yield requestList(...args);
 			if (!newList)
 				newList = [];
@@ -102,7 +102,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 
 		const value = yield requestListProxy(requestList, args);
 
-		return value ? value.list : [];
+		return value.list;
 	}, true);
 
 	proxy.methodCall('getThreadById', function *(getThreadById, args) {
