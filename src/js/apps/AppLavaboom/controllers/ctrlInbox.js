@@ -134,7 +134,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 				return;
 			}
 
-			const threadsList = yield inbox.requestListDirect($scope.labelName);
+			const threadsList = yield inbox.requestListDirect($scope.labelName, 0, $scope.offset + $scope.limit);
 
 			if (labelName != $scope.labelName) {
 				console.log(`inbox-threads data has been rejected (2) label should match to `, $scope.labelName);
