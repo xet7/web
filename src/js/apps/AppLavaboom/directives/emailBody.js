@@ -58,7 +58,6 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 			const parts = text ? text.split(':') : null;
 			const styleIndex = parts && parts[0] == uniqKey ? parts[1] : null;
 
-			console.log('!', text, parts, styleIndex, styles[styleIndex]);
 			if (styleIndex !== null) {
 				const key = 'i' + styleIndex;
 				node.setAttribute('style', styles[key].style);
