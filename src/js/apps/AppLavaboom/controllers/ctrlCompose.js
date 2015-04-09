@@ -291,9 +291,21 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		co(function *() {
 			let body = '';
 
+			const signature = user.settings.isSignatureEnabled && user.settings.signatureHtml ? user.settings.signatureHtml : '';
 			if (forwardEmailId) {
 				const emails = [yield inbox.getEmailById(forwardEmailId)];
 				body = yield composeHelpers.buildForwardedTemplate(body, '', emails);
+			}
+			else
+			if (replyEmailId) {
+				let email = yield inbox.getEmailById(replyEmailId);
+
+				body = yield composeHelpers.buildRepliedTemplate(body, signature, [{
+					date: email.date,
+					name: email.from[0].name,
+					address: email.from[0].address,
+					body: email.body.data
+				}]);
 			}
 
 			if (replyThreadId && replyEmailId) {
