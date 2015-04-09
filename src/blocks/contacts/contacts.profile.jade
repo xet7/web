@@ -3,10 +3,10 @@
 		div
 			ul.nav.navbar-nav.navbar-right
 				li
-					button.btn.btn-default
+					button.btn.btn-default(type="button", ng-click="deleteThisContact()")
 						span.icon-cancel
 				li
-					button.btn.btn-default(type="submit")
+					button.btn.btn-default(type="button", ng-click="saveThisContact()")
 						span.icon-yes
 	include ../_notifications.jade
 .main-view
@@ -54,7 +54,7 @@
 					include ./_contacts.profile.email.jade
 				ul.list-group
 					li.list-group-item.pack
-						button.btn.btn-default.btn-block.btn-icon(type="button", ng-click="addNewPrivateEmail()")
+						button.btn.btn-default.btn-block.btn-icon(type="button", ng-click="addNewBusinessEmail()")
 							span.icon-plus-circle.btn-add-icon
 							| {{'MAIN.CONTACTS.BTN_ADD_BUSINESS_EMAIL' | translate}}
 
