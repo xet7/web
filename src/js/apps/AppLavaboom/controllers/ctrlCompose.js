@@ -176,25 +176,9 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 		try {
 			let body = $scope.form.body;
-			const signature = user.settings.isSignatureEnabled && user.settings.signatureHtml ? user.settings.signatureHtml : '';
-
-			let templateBody = '';
-			if (replyEmailId) {
-				const email = yield inbox.getEmailById(replyEmailId);
-
-				templateBody = yield composeHelpers.buildRepliedTemplate(body, signature, [{
-					date: email.date,
-					name: email.from[0].name,
-					address: email.from[0].address,
-					body: email.body.data
-				}]);
-			} else
-				templateBody = yield composeHelpers.buildDirectTemplate(body, signature);
-
-			console.log('template body', templateBody);
 
 			let sendStatus = yield inbox.send({
-				body: templateBody,
+				body: body,
 				attachmentIds: $scope.attachments.map(a => a.id),
 				threadId: replyThreadId
 			}, manifest, keys);
@@ -289,7 +273,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		console.log('$scope.people', $scope.people);
 
 		co(function *() {
-			let body = '';
+			let body = '<br/>';
 
 			const signature = user.settings.isSignatureEnabled && user.settings.signatureHtml ? user.settings.signatureHtml : '';
 			if (forwardEmailId) {
@@ -306,15 +290,16 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 					address: email.from[0].address,
 					body: email.body.data
 				}]);
-			}
+			} else
+				body = yield composeHelpers.buildDirectTemplate(body, signature);
 
 			if (replyThreadId && replyEmailId) {
 				let thread = yield inbox.getThreadById(replyThreadId);
 				let email = yield inbox.getEmailById(replyEmailId);
 
-				let to = isReplyAll
-					? thread.members.map(m => ContactEmail.transform(m))
-					: email.from;
+				let to = (isReplyAll
+					? thread.members
+					: email.from.map(e => e.address)).map(m => ContactEmail.transform(m));
 
 				console.log('reply to', to);
 				$scope.form = {
