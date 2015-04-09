@@ -9,6 +9,7 @@ module.exports = /*@ngInject*/($injector, co, utils, crypto, user, Email, Manife
 		this.members = opt.members
 			.map(address => address == user.email ? '' : Manifest.formatAddress(address).contactPrettyName)
 			.filter(m => !!m);
+		this.to = manifest ? manifest.to : [];
 
 		this.labels = opt.labels;
 		this.isRead = opt.is_read;
