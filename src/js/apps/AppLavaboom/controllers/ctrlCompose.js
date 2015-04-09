@@ -228,10 +228,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			yield inbox.confirmSend();
 
 			yield manifest.getDestinationEmails()
-				.filter(email => !contacts.getContactByEmail(email))
+				.filter(email => !contacts.getContactByEmail(email.address))
 				.map(email => {
 					let contact = new Contact({name: '$hidden'});
-					contact.hiddenEmail = hiddenContacts[email];
+					contact.hiddenEmail = hiddenContacts[email.address];
 					return contacts.createContact(contact);
 				});
 
