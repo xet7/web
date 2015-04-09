@@ -156,6 +156,10 @@ form.settings{
 		// transform: translateY(-50%);
 	}
 
+	input:disabled, textarea:disabled{
+		cursor: auto;
+	}
+
 	 .price-tag {
 		height:0; overflow: visible;
 	 
@@ -227,6 +231,7 @@ form.settings{
 			left: -@filter-height;
 			display: block;
 			width: @filter-height;
+			background-color: transparent;
 		}
 
 		.btn-remove > span{
@@ -242,6 +247,11 @@ form.settings{
 		.input-group{
 			margin: -1rem -1.5rem;
 			height: 4.4rem;
+			input{
+				float: none;
+				width: auto;
+			}
+
 			&.with-label{
 				.pos-rel();
 				padding-left: 40%;
@@ -251,7 +261,7 @@ form.settings{
 					.pos-abs();
 					left: 1.3rem; top: 0; bottom: 0;
 					.z2();
-					line-height: 3.1rem;
+					line-height: @filter-height;
 				}
 			}
 			.btn{
@@ -515,6 +525,25 @@ form.settings{
 			padding: 0;
 		}
 
+		.button-holder{
+			margin: -1.0rem -1.5rem;
+			
+			button{
+				color: @lava;
+				width: 50%;
+				line-height: @filter-height - 0.2;
+				background: transparent;
+				paddint-top: 0; padding-bottom: 0;
+				span{
+					color: @lava;
+				}
+				&:hover{
+					background: @lava-gray-lighter;
+				}
+			}
+			// border-radius: 0 0 @dropdown-border-radius @dropdown-border-radius;
+		}
+
 		.list-group-item.collapse-active{
 			background: @lava-gray-lighter;
 		}
@@ -543,6 +572,20 @@ form.settings{
 		.text-center;
 		.icon-trash{
 			color: @lava-red;
+		}
+	}
+
+	ul.child-item{
+		margin: 0;
+		border: 0;
+		padding:0;
+	}
+
+	.pack .child-item{
+		margin-top: -0.1rem;
+		li{
+			border-left:0;
+			border-right: 0;
 		}
 	}
 }
