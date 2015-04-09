@@ -32,7 +32,9 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate,
 				decryptTime: null,
 				fingerprint: key.primaryKey.fingerprint,
 				created: key.primaryKey.created,
-				user: key.users[0].userId.userid
+				user: key.users[0].userId.userid,
+				isCollapsed: true,
+				switchCollapse: function(key) { key.isCollapsed = !key.isCollapsed; }
 			};
 		});
 		console.log('keyring-updated', $scope.keys);
