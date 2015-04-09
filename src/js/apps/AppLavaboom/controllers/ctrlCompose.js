@@ -296,12 +296,13 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				body = yield composeHelpers.buildForwardedTemplate(body, '', emails);
 			}
 
-			if (replyThreadId) {
+			if (replyThreadId && replyEmailId) {
 				let thread = yield inbox.getThreadById(replyThreadId);
+				let email = yield inbox.getEmailById(replyEmailId);
 
 				let to = (isReplyAll
-					? (thread.members)
-					: (thread.members[0] ? [thread.members[0]] : [])
+					? thread.members
+					: email.from
 				).map(m => ContactEmail.transform(m));
 
 				console.log('reply to', to);
