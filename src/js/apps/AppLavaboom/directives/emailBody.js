@@ -1,10 +1,83 @@
-module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateCache, co, user, consts) => {
+module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateCache, co, user, consts, utils) => {
 	const emailRegex = /([-A-Z0-9_.]*[A-Z0-9]@[-A-Z0-9_.]*[A-Z0-9])/ig;
 	const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 
 	const getDOM = (html) => {
 		var dom = new DOMParser().parseFromString(html, 'text/html');
 		return dom.querySelector('body');
+	};
+
+	let uniqKey = null;
+	let styleIndex = 0;
+	let styles = {};
+
+	const backupStyles = (dom, level = 0) => {
+		if (level === 0) {
+			uniqKey = openpgp.util.hexstrdump(openpgp.crypto.random.getRandomBytes(16));
+			styleIndex = 0;
+			styles = {};
+		}
+
+		const processNode = (node) => {
+			let style = node.getAttribute('style');
+			if (!style)
+				return;
+
+			if (style)
+				style = style.trim();
+			if (!style)
+				return;
+
+			const key = 'i' + styleIndex;
+			styles[key] = {
+				style,
+				title: node.getAttribute('title')
+			};
+			node.setAttribute('title', `${uniqKey}:${styleIndex}`);
+			styleIndex++;
+		};
+
+		for(let node of dom.childNodes) {
+			if (node.getAttribute)
+				processNode(node);
+
+			if (node.childNodes)
+				backupStyles(node, level + 1);
+		}
+	};
+
+	let removeNodes = [];
+
+	const restoreStyles = (dom, level = 0) => {
+		if (level === 0) {
+			removeNodes = [];
+		}
+
+		const processNode = (node) => {
+			const text = node.getAttribute('title');
+			const parts = text ? text.split(':') : null;
+			const styleIndex = parts && parts[0] == uniqKey ? parts[1] : null;
+
+			console.log('!', text, parts, styleIndex, styles[styleIndex]);
+			if (styleIndex !== null) {
+				const key = 'i' + styleIndex;
+				node.setAttribute('style', styles[key].style);
+				node.setAttribute('title', styles[key].title);
+			}
+		};
+
+		for(let node of dom.childNodes) {
+			if (node.getAttribute)
+				processNode(node);
+
+			if (node.childNodes)
+				restoreStyles(node, level + 1);
+		}
+
+		if (level === 0) {
+			for(let node of removeNodes)
+				node.parentNode.removeChild(node);
+		}
 	};
 
 	const transformCustomTextNodes = (dom, transforms, level = 0) => {
@@ -54,16 +127,15 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 			linksCounter = 0;
 		}
 
-		for(let node of dom.childNodes) {
+		const processNode = (node) => {
 			if (node.nodeName == 'IMG') {
 				let src = node.getAttribute('src');
 
 				if (!src)
-					continue;
-
+					return;
 				src = src.trim();
-				if (src.startsWith('data:'))
-					continue;
+				if (!src || src.startsWith('data:'))
+					return;
 
 				if (imagesSetting == 'none') {
 					node.parentNode.replaceChild(noImageTemplateDOM, node);
@@ -73,11 +145,11 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 
 					const parent = node.parentNode;
 					if (parent.nodeName != 'A')
-						continue;
+						return;
 
 					let href = parent.getAttribute('href');
 					if (!href)
-						continue;
+						return;
 
 					href = href.trim();
 					if (href == src)
@@ -90,28 +162,35 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 			if (node.nodeName == 'A') {
 				let href = node.getAttribute('href');
 
-				if (href) {
-					href = href.trim();
+				if (!href)
+					return;
+				href = href.trim();
+				if (!href)
+					return;
 
-					if (href.startsWith('mailto:')) {
-						const toEmail = href.replace('mailto:', '').trim();
-						emails.push({
-							email: toEmail,
-							isDropdownOpened: false
-						});
+				if (href.startsWith('mailto:')) {
+					const toEmail = href.replace('mailto:', '').trim();
+					emails.push({
+						email: toEmail,
+						isDropdownOpened: false
+					});
 
-						node.setAttribute('href', $state.href('.popup.compose', {to: toEmail}));
-						node.setAttribute('ng-right-click', `switchContextMenu(${linksCounter})`);
+					node.setAttribute('href', $state.href('.popup.compose', {to: toEmail}));
+					node.setAttribute('ng-right-click', `switchContextMenu(${linksCounter})`);
 
-						const emailContextMenuDOM = getEmailContextMenuDOM(linksCounter);
-						node.parentNode.replaceChild(emailContextMenuDOM, node);
-						emailContextMenuDOM.appendChild(node);
+					const emailContextMenuDOM = getEmailContextMenuDOM(linksCounter);
+					node.parentNode.replaceChild(emailContextMenuDOM, node);
+					emailContextMenuDOM.appendChild(node);
 
-						linksCounter++;
-					} else
-						node.setAttribute('target', '_blank');
-				}
-			} else
+					linksCounter++;
+				} else
+					node.setAttribute('target', '_blank');
+			}
+		};
+
+		for(let node of dom.childNodes) {
+			processNode(node);
+
 			if (node.childNodes)
 				transformEmail(node, {imagesSetting, noImageTemplate, emails}, level + 1);
 		}
@@ -135,9 +214,19 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 				let sanitizedEmailBody = null;
 				let dom = null;
 				try {
-					sanitizedEmailBody = $sanitize(`<div>${scope.emailBody}</div>`);
+					dom = getDOM(`<div>${scope.emailBody}</div>`);
+
+					backupStyles(dom);
+
+					console.log('email body after backupStyles', `"${dom.innerHTML}"`);
+
+					sanitizedEmailBody = $sanitize(dom.innerHTML);
+
+					console.log('email body after $sanitize', `"${sanitizedEmailBody}"`);
 
 					dom = getDOM(sanitizedEmailBody);
+
+					restoreStyles(dom);
 
 					transformTextNodes(dom);
 					console.log('email body after transformTextNodes', `"${dom.innerHTML}"`);
