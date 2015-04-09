@@ -1,4 +1,5 @@
-module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window, $translate, consts, LavaboomAPI, co, crypto, cryptoKeys, loader, utils) {
+module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window, $translate, $templateCache, $interpolate,
+									   consts, LavaboomAPI, co, crypto, cryptoKeys, loader, utils) {
 	const self = this;
 
 	const translations = {
@@ -13,6 +14,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 	// information about user from API
 	this.settings = {};
+
 	this.defaultSettings = {
 		isSignatureEnabled: true,
 		isSkipComposeScreenWarning: false,
@@ -25,6 +27,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		mailDeletedAction: 'none'
 		// not implemented
 	};
+
+	co(function *(){
+		self.defaultSettings.signatureHtml = $interpolate(yield $templateCache.fetch('/partials/inbox/defaultSignature.html'))();
+	});
 
 	const setupSettings = (settings) => {
 		self.settings = angular.extend({},

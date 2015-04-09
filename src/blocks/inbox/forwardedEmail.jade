@@ -3,23 +3,12 @@ section.email
 	footer.signature(ng-bind-html="signature")
 	section.replied-to(ng-repeat="email in forwardEmails")
 		header {{'INBOX.FORWARD_HEADER' | translate}}
-			ul
-				li
-					header {{'INBOX.FORWARD_FROM' | translate}}:
-					| {{email.fromAllPretty}}
-				li
-					header {{'INBOX.FORWARD_DATE' | translate}}:
-					| {{email.date | date}}
-				li
-					header {{'INBOX.FORWARD_SUBJECT' | translate}}:
-					| {{email.subject}}
-				li
-					header {{'INBOX.FORWARD_TO' | translate}}:
-					| {{email.toPretty}}
-				li(ng-if="email.cc && email.cc.length > 0")
-					header {{'INBOX.FORWARD_CC' | translate}}:
-					|{{email.ccPretty}}
-				li(ng-if="email.bcc && email.bcc.length > 0")
-					header {{'INBOX.FORWARD_BCC' | translate}}:
-					| {{ email.bccPretty}}
-		section(ng-bind-html="email.body.data")
+			div {{'INBOX.FORWARD_FROM' | translate}}: {{email.fromAllPretty}}
+			div {{'INBOX.FORWARD_DATE' | translate}}: {{email.date | date}}
+			div {{'INBOX.FORWARD_SUBJECT' | translate}}: {{email.subject}}
+			div {{'INBOX.FORWARD_TO' | translate}}: {{email.toPretty}}
+			div(ng-if="email.cc && email.cc.length > 0")
+				span {{'INBOX.FORWARD_CC' | translate}}: {{email.ccPretty}}
+			div(ng-if="email.bcc && email.bcc.length > 0")
+				span {{'INBOX.FORWARD_BCC' | translate}}: {{ email.bccPretty}}
+			section(ng-bind-html="email.body.data")

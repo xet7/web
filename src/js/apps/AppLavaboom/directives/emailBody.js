@@ -7,78 +7,6 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 		return dom.querySelector('body');
 	};
 
-	let uniqKey = null;
-	let styleIndex = 0;
-	let styles = {};
-
-	const backupStyles = (dom, level = 0) => {
-		if (level === 0) {
-			uniqKey = openpgp.util.hexstrdump(openpgp.crypto.random.getRandomBytes(16));
-			styleIndex = 0;
-			styles = {};
-		}
-
-		const processNode = (node) => {
-			let style = node.getAttribute('style');
-			if (!style)
-				return;
-
-			if (style)
-				style = style.trim();
-			if (!style)
-				return;
-
-			const key = 'i' + styleIndex;
-			styles[key] = {
-				style,
-				title: node.getAttribute('title')
-			};
-			node.setAttribute('title', `${uniqKey}:${styleIndex}`);
-			styleIndex++;
-		};
-
-		for(let node of dom.childNodes) {
-			if (node.getAttribute)
-				processNode(node);
-
-			if (node.childNodes)
-				backupStyles(node, level + 1);
-		}
-	};
-
-	let removeNodes = [];
-
-	const restoreStyles = (dom, level = 0) => {
-		if (level === 0) {
-			removeNodes = [];
-		}
-
-		const processNode = (node) => {
-			const text = node.getAttribute('title');
-			const parts = text ? text.split(':') : null;
-			const styleIndex = parts && parts[0] == uniqKey ? parts[1] : null;
-
-			if (styleIndex !== null) {
-				const key = 'i' + styleIndex;
-				node.setAttribute('style', styles[key].style);
-				node.setAttribute('title', styles[key].title);
-			}
-		};
-
-		for(let node of dom.childNodes) {
-			if (node.getAttribute)
-				processNode(node);
-
-			if (node.childNodes)
-				restoreStyles(node, level + 1);
-		}
-
-		if (level === 0) {
-			for(let node of removeNodes)
-				node.parentNode.removeChild(node);
-		}
-	};
-
 	const transformCustomTextNodes = (dom, transforms, level = 0) => {
 		for(let node of dom.childNodes) {
 			if (node.nodeName == '#text') {
@@ -213,19 +141,11 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 				let sanitizedEmailBody = null;
 				let dom = null;
 				try {
-					dom = getDOM(`<div>${scope.emailBody}</div>`);
-
-					backupStyles(dom);
-
-					console.log('email body after backupStyles', `"${dom.innerHTML}"`);
-
-					sanitizedEmailBody = $sanitize(dom.innerHTML);
+					sanitizedEmailBody = $sanitize(`<div>${scope.emailBody}</div>`);
 
 					console.log('email body after $sanitize', `"${sanitizedEmailBody}"`);
 
 					dom = getDOM(sanitizedEmailBody);
-
-					restoreStyles(dom);
 
 					transformTextNodes(dom);
 					console.log('email body after transformTextNodes', `"${dom.innerHTML}"`);

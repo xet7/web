@@ -53,7 +53,7 @@
 							span(ng-bind='item.name')
 		h4 {{'MAIN.SETTINGS.GENERAL.TITLE_MAIL_BEHAVIOUR' | translate}}
 		ul.list-group
-			li.list-group-item
+			//li.list-group-item
 				.dropdown-control
 					label {{'MAIN.SETTINGS.GENERAL.LB_COMPOSED_MAILS' | translate}}
 					ui-select(ng-model='settings.mailComposedAction', search-enabled='false')
@@ -62,14 +62,14 @@
 						ui-select-choices(repeat='item.name as item in notImplemented')
 							span(ng-bind='item.description')
 							span.dropdown-icon(ng-class='item.icon')
-			li.list-group-item
+			//li.list-group-item
 				.dropdown-control
 					label {{'MAIN.SETTINGS.GENERAL.LB_MARKED_AS_SPAM' | translate}}
 					ui-select(ng-model='settings.mailSpamAction', search-enabled='false')
 						ui-select-match {{$select.selected.description}}
 						ui-select-choices(repeat='item.name as item in notImplemented')
 							span(ng-bind='item.description')
-			li.list-group-item
+			//li.list-group-item
 				.dropdown-control
 					label {{'MAIN.SETTINGS.GENERAL.LB_DELETED_EMAILS' | translate}}
 					ui-select(ng-model='settings.mailDeletedAction', search-enabled='false')
