@@ -49,11 +49,11 @@
 				//- 			.btn.btn-block.btn-primary(ng-click="downloadKey(key)") {{'MAIN.SETTINGS.SECURITY.BTN_DOWNLOAD' | translate}}
 				ul.list-group
 					li.list-group-item
-						div.input-group.with-label
+						div.input-group.with-label.clickable
 							button.btn.btn-remove(ng-click="remove()")
 								span.icon-delete
-							label {{'MAIN.SETTINGS.SECURITY.LB_KEY_ID' | translate}}
-							input.form-control(type="text", ng-value="key.keyId")
+							label(ng-click="key.switchCollapse(key)") {{'MAIN.SETTINGS.SECURITY.LB_KEY_ID' | translate}}: {{key.keyId}} 
+							input.form-control.text-right(type='text', disabled, ng-value="key.created | date", ng-click="key.switchCollapse(key)")
 							div.input-group-btn(ng-click="key.switchCollapse(key)")
 								button.btn.btn-default
 									span.icon-key-pair
@@ -79,10 +79,10 @@
 									.button-holder
 										button.cell.btn.btn-default(type="button", ng-click="downloadKey(key)")
 											span.icon-arrow-down
-											| {{'MAIN.CONTACTS.LB_DOWNLOAD_PUBLIC_KEY' | translate}}
-										button.cell.btn.btn-default(type="button", ng-click="remove()")
+											| {{'MAIN.SETTING.SECURITY.BACKUP_KEY_PAIR' | translate}}
+										button.cell.btn.btn-default(type="button", ng-click="")
 											span.icon-trash
-											| {{'MAIN.CONTACTS.LB_REMOVE' | translate}}
+											| {{'MAIN.SETTING.SECURITY.SEND_PUBLIC_KEY' | translate}}
 
 			div(ng-show="isAnyUndecryptedKeys") {{'MAIN.SETTINGS.SECURITY.LB_PASSPHRASE_NOTE' | translate}}
 			div(ng-show="!keys || keys.length < 1") {{'MAIN.SETTINGS.SECURITY.LB_KEY_NOTE' | translate}}

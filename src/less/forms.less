@@ -249,13 +249,20 @@ form.settings{
 			height: 4.4rem;
 			input{
 				float: none;
-				width: auto;
+				width: 100%;
 			}
 
 			&.with-label{
 				.pos-rel();
 				padding-left: 40%;
 				> input { .z1(); .text-right();}
+				&.clickable{
+					input{
+						  padding-right: 0;
+						  position: relative;
+						  right: -.6rem;
+					}
+				}
 				> label {
 					width: 40%;
 					.pos-abs();
@@ -289,6 +296,10 @@ form.settings{
 			}
 			span.dropdown{
 				padding-bottom: 2rem;
+			}
+
+			.icon-key-pair{
+				color: @lava;
 			}
 			
 		}
@@ -543,6 +554,7 @@ form.settings{
 			}
 			// border-radius: 0 0 @dropdown-border-radius @dropdown-border-radius;
 		}
+
 
 		.list-group-item.collapse-active{
 			background: @lava-gray-lighter;
