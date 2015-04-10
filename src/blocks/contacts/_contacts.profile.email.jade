@@ -23,26 +23,37 @@ li.list-group-item(ng-class="{ 'collapse-active': !currentEmail.isCollapsed() }"
 							span {{'MAIN.CONTACTS.PUBLIC_KEY_PROMPT_UPLOAD' | translate}}
 			button.btn.btn-default(type="button", ng-show="currentEmail.isSecured()", ng-click="currentEmail.switchCollapse()")
 				span.icon-lock
-	li.list-group-item(ng-show="currentEmail.isSecured()", collapse="currentEmail.isCollapsed()")
-		div.child-item
-			.text-control
-				label {{'MAIN.CONTACTS.LB_KEY_ID' | translate}}
-				input.form-control(disabled, type="text", ng-model="currentEmail.key.id")
-			.text-control
-				label {{'MAIN.CONTACTS.LB_LENGTH' | translate}}
-				input.field-icon.form-control(disabled, ng-model="currentEmail.key.length")
-			.text-control
-				label {{'MAIN.CONTACTS.LB_ALGORITHMS' | translate}}
-				input.field-icon.form-control(disabled, ng-model="currentEmail.key.algos")
-			div
-				div.input-group.with-label
-					label {{'MAIN.CONTACTS.LB_DOWNLOAD_PUBLIC_KEY' | translate}}
-					div.input-group-btn
-						button.btn.btn-default(type="button", ng-click="downloadPublicKey()")
-							span.icon-arrow-down
-			div
-				div.input-group.with-label
-					label {{'MAIN.CONTACTS.LB_REMOVE' | translate}}
-					div.input-group-btn
-						button.btn.btn-default(type="button", ng-click="remove()")
-							span.icon-trash
+	li.list-group-item.pack(ng-show="currentEmail.isSecured()", collapse="currentEmail.isCollapsed()")
+		ul.child-item
+			li.list-group-item
+				.text-control
+					label {{'MAIN.CONTACTS.LB_KEY_ID' | translate}}
+					input.form-control(disabled, type="text", ng-model="currentEmail.key.id")
+			li.list-group-item
+				.text-control
+					label {{'MAIN.CONTACTS.LB_LENGTH' | translate}}
+					input.field-icon.form-control(disabled, ng-model="currentEmail.key.length")
+			li.list-group-item
+				.text-control
+					label {{'MAIN.CONTACTS.LB_ALGORITHMS' | translate}}
+					input.field-icon.form-control(disabled, ng-model="currentEmail.key.algos")
+			li.list-group-item
+				.button-holder
+					button.cell.btn.btn-default(type="button", ng-click="downloadPublicKey()")
+						span.icon-arrow-down
+						| {{'MAIN.CONTACTS.LB_DOWNLOAD_PUBLIC_KEY' | translate}}
+					button.cell.btn.btn-default(type="button", ng-click="remove()")
+						span.icon-trash
+						| {{'MAIN.CONTACTS.LB_REMOVE' | translate}}
+			//- div
+			//- 	div.input-group.with-label
+			//- 		label {{'MAIN.CONTACTS.LB_DOWNLOAD_PUBLIC_KEY' | translate}}
+			//- 		div.input-group-btn
+			//- 			button.btn.btn-default(type="button", ng-click="downloadPublicKey()")
+			//- 				span.icon-arrow-down
+			//- div
+			//- 	div.input-group.with-label
+			//- 		label {{'MAIN.CONTACTS.LB_REMOVE' | translate}}
+			//- 		div.input-group-btn
+			//- 			button.btn.btn-default(type="button", ng-click="remove()")
+			//- 				span.icon-trash
