@@ -54,6 +54,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 				let cid = yield contacts.createContact($scope.details);
 				$state.go('main.contacts.profile', {contactId: cid});
 			}
+
 			notifications.set('contact-save-ok', {
 				text: translations.LB_CONTACT_SAVED,
 				type: 'info',

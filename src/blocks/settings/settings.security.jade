@@ -79,10 +79,10 @@
 									.button-holder
 										button.cell.btn.btn-default(type="button", ng-click="downloadKey(key)")
 											span.icon-arrow-down
-											| {{'MAIN.SETTING.SECURITY.BACKUP_KEY_PAIR' | translate}}
+											| {{'MAIN.SETTINGS.SECURITY.BACKUP_KEY_PAIR' | translate}}
 										button.cell.btn.btn-default(type="button", ng-click="")
 											span.icon-trash
-											| {{'MAIN.SETTING.SECURITY.SEND_PUBLIC_KEY' | translate}}
+											| {{'MAIN.SETTINGS.SECURITY.SEND_PUBLIC_KEY' | translate}}
 
 			div(ng-show="isAnyUndecryptedKeys") {{'MAIN.SETTINGS.SECURITY.LB_PASSPHRASE_NOTE' | translate}}
 			div(ng-show="!keys || keys.length < 1") {{'MAIN.SETTINGS.SECURITY.LB_KEY_NOTE' | translate}}
