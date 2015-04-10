@@ -50,7 +50,7 @@
 				ul.list-group
 					li.list-group-item
 						div.input-group.with-label.clickable
-							button.btn.btn-remove(ng-click="remove()")
+							//button.btn.btn-remove(ng-click="remove()")
 								span.icon-delete
 							label(ng-click="key.switchCollapse(key)") {{'MAIN.SETTINGS.SECURITY.LB_KEY_ID' | translate}}: {{key.keyId}} 
 							input.form-control.text-right(type='text', disabled, ng-value="key.created | date", ng-click="key.switchCollapse(key)")
@@ -70,7 +70,7 @@
 								li.list-group-item
 									.text-control
 										label {{'MAIN.CONTACTS.LB_ALGORITHMS' | translate}}
-										input.field-icon.form-control(disabled, ng-model="currentEmail.key.algos")
+										input.field-icon.form-control(disabled, ng-model="key.algos")
 								li.list-group-item
 									.text-control
 										label {{'MAIN.SETTINGS.SECURITY.LB_CREATION_DATE' | translate}}	

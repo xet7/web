@@ -32,6 +32,7 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate,
 				decryptTime: null,
 				fingerprint: key.primaryKey.fingerprint,
 				created: key.primaryKey.created,
+				algos: key.primaryKey.algorithm.split('_')[0].toUpperCase(),
 				user: key.users[0].userId.userid,
 				isCollapsed: true,
 				switchCollapse: function(key) { key.isCollapsed = !key.isCollapsed; }
