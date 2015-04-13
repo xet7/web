@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
+module.exports = /*@ngInject*/function (LavaboomAPI, co, user, consts, $http) {
 	const self = this;
 
 	this.reserve = null;
@@ -31,6 +31,31 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user) {
 			token: token,
 			isNews: isNews
 		};
+
+		if (isNews) {
+			const email = `${username}@${consts.ROOT_DOMAIN}`;
+			co(function *() {
+				const res = yield $http({
+					method: 'POST',
+					url: 'https://technical.lavaboom.com/subscribe',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded'
+					},
+					transformRequest: function (obj) {
+						var str = [];
+						for (var p in obj)
+							str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
+						return str.join('&');
+					},
+					data: {
+						email: email,
+						list: 'YAUEUIgnZs1u6nPTYqjcDw'
+					}
+				});
+
+				console.log('subscribe result', res);
+			});
+		}
 
 		return co(function * (){
 			let res = yield LavaboomAPI.accounts.create.verify({
