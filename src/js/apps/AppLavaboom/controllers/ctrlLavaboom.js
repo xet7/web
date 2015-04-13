@@ -15,7 +15,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 
 	$scope.tooltipDelay = () => (window.getComputedStyle(document.getElementById('compose-action')).display==='none') ? true : 1000000;
 
-	const initializeTimeAgo = () => {
+	const initializeTimeAgo = () => co(function *(){
 		const datesTranslations = {
 			PREFIX_AGO: '',
 			PREFIX_FROM_NOW: '',
@@ -34,9 +34,14 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 			YEARS: ''
 		};
 
-		$translate.bindAsObject(datesTranslations, 'DATES.TIMEAGO', null, () => {
+		yield $translate.bindAsObject(datesTranslations, 'DATES.TIMEAGO', null, () => {
 			const fullLangCode = $translate.instant('LANG.FULL_CODE');
 			const settings = timeAgo.settings.strings[fullLangCode];
+
+			console.log('initializeTimeAgo()', datesTranslations);
+
+			for(let k of Object.keys(datesTranslations))
+				datesTranslations[k] = datesTranslations[k].trim();
 
 			if (datesTranslations.PREFIX_AGO)
 				settings.prefixAgo = datesTranslations.PREFIX_AGO;
@@ -69,7 +74,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 			if (datesTranslations.YEARS)
 				settings.years = datesTranslations.YEARS;
 		});
-	};
+	});
 
 	$scope.initializeApplication = () => co(function *(){
 		try {
@@ -79,6 +84,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 
 			if (!$rootScope.isInitialized) {
 				yield $translate.bindAsObject(translations, 'LOADER');
+				initializeTimeAgo();
 			}
 
 			loader.incProgress(translations.LB_INITIALIZING_OPENPGP, 1);
@@ -90,8 +96,6 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 			yield tests.initialize();
 
 			tests.performCompatibilityChecks();
-
-			initializeTimeAgo();
 
 			loader.incProgress(translations.LB_AUTHENTICATING, 5);
 			yield user.gatherUserInformation();
