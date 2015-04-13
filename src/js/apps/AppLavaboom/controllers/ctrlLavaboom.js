@@ -38,8 +38,6 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 			const fullLangCode = $translate.instant('LANG.FULL_CODE');
 			const settings = timeAgo.settings.strings[fullLangCode];
 
-			console.log('initializeTimeAgo()', datesTranslations);
-
 			for(let k of Object.keys(datesTranslations))
 				datesTranslations[k] = datesTranslations[k].trim();
 
