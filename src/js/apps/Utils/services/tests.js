@@ -47,14 +47,22 @@ module.exports = /*@ngInject*/function($rootScope, $translate, $http, co, notifi
 			notifications.set('powered-by', {
 				title: notifications18n.SERVED_BY_TITLE({servedBy: poweredBy}),
 				text: notifications18n.SERVED_BY_TEXT({servedBy: poweredBy}),
+				namespace: 'status',
 				type: 'info'
 			});
-		} else
+		} else {
 			notifications.set('powered-by', {
 				title: notifications18n.SERVED_BY_UNKNOWN_TITLE,
 				text: notifications18n.SERVED_BY_UNKNOWN_TEXT,
-				type: 'info'
+				namespace: 'status',
+				type: 'warning'
 			});
+			notifications.set('powered-by', {
+				title: notifications18n.SERVED_BY_UNKNOWN_TITLE,
+				text: notifications18n.SERVED_BY_UNKNOWN_TEXT,
+				type: 'warning'
+			});
+		}
 	});
 
 	this.isWebCrypto = () => {
