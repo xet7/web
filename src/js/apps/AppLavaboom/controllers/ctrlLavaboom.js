@@ -11,8 +11,6 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 		LB_SUCCESS : ''
 	};
 
-	const translationPromise = $translate.bindAsObject(translations, 'LOADER');
-
 	$scope.ddEventFilter = (name, event) => event.target.id.startsWith('taTextElement');
 
 	$scope.tooltipDelay = () => (window.getComputedStyle(document.getElementById('compose-action')).display==='none') ? true : 1000000;
@@ -77,22 +75,22 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 		try {
 			let connectionPromise = LavaboomAPI.connect();
 
-			if (!$rootScope.isInitialized)
-				yield translationPromise;
+			yield translate.initialize();
 
-			yield tests.initialize();
-
-			tests.performCompatibilityChecks();
-
-			loader.incProgress(translations.LB_INITIALIZING_I18N, 1);
-
-			let translateInitialization = translate.initialize();
+			if (!$rootScope.isInitialized) {
+				yield $translate.bindAsObject(translations, 'LOADER');
+			}
 
 			loader.incProgress(translations.LB_INITIALIZING_OPENPGP, 1);
 
 			crypto.initialize();
 
-			yield [connectionPromise, translateInitialization];
+			yield connectionPromise;
+
+			yield tests.initialize();
+
+			tests.performCompatibilityChecks();
+
 			initializeTimeAgo();
 
 			loader.incProgress(translations.LB_AUTHENTICATING, 5);

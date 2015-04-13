@@ -6,6 +6,7 @@ module.exports = /*@ngInject*/($delegate, $q, $rootScope) => {
 			return Object.keys(translationTable).reduce((a, translationKey) => {
 				let isParam = false;
 				if (translationTable[translationKey].startsWith('%')) {
+					console.log('function!', translationKey);
 					translationTable[translationKey] = translationTable[translationKey].substr(1);
 					isParam = true;
 				}
@@ -31,7 +32,9 @@ module.exports = /*@ngInject*/($delegate, $q, $rootScope) => {
 		$rootScope.$bind('$translateChangeSuccess', () => {
 			try {
 				const currentTranslations = $delegate.instantWithPrefix(originalTranslations, prefix);
-				angular.extend(translations, map ? map(currentTranslations) : currentTranslations);
+				for(let k of Object.keys(currentTranslations))
+					translations[k] = currentTranslations[k];
+				console.log('bindAsObject', currentTranslations, translations);
 
 				if (postProcess)
 					postProcess();

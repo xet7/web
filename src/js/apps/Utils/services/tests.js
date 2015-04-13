@@ -8,8 +8,8 @@ module.exports = /*@ngInject*/function($rootScope, $translate, $http, co, notifi
 		WEB_WORKERS_IS_NOT_AVAILABLE_TEXT: '',
 		WEB_CRYPTO_LIMITED_TITLE: '',
 		WEB_CRYPTO_LIMITED_TEXT: '',
-		SERVED_BY_TITLE: '',
-		SERVED_BY_TEXT: '',
+		SERVED_BY_TITLE: '%',
+		SERVED_BY_TEXT: '%',
 		SERVED_BY_UNKNOWN_TITLE: '',
 		SERVED_BY_UNKNOWN_TEXT: ''
 	};
@@ -45,8 +45,8 @@ module.exports = /*@ngInject*/function($rootScope, $translate, $http, co, notifi
 
 		if (poweredBy) {
 			notifications.set('powered-by', {
-				title: notifications18n.SERVED_BY_TITLE.replace('%SERVED_BY%', poweredBy),
-				text: notifications18n.SERVED_BY_TEXT.replace('%SERVED_BY%', poweredBy),
+				title: notifications18n.SERVED_BY_TITLE({servedBy: poweredBy}),
+				text: notifications18n.SERVED_BY_TEXT({servedBy: poweredBy}),
 				type: 'info'
 			});
 		} else
