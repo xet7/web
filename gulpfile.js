@@ -441,7 +441,7 @@ var compileSteps = [
 	.concat(scriptBuildSteps);
 
 gulp.task('compile:finished', compileSteps, function() {
-	fs.writeFileSync('manifest.json', JSON.stringify(manifest, null, 4));
+	fs.writeFileSync('paths.json', JSON.stringify(manifest, null, 4));
 
 	gulp.start(['build:jade', 'copy:vendor', 'lr']);
 });
