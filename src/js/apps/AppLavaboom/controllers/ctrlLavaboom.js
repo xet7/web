@@ -11,13 +11,11 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 		LB_SUCCESS : ''
 	};
 
-	const translationPromise = $translate.bindAsObject(translations, 'LOADER');
-
 	$scope.ddEventFilter = (name, event) => event.target.id.startsWith('taTextElement');
 
 	$scope.tooltipDelay = () => (window.getComputedStyle(document.getElementById('compose-action')).display==='none') ? true : 1000000;
 
-	const initializeTimeAgo = () => {
+	const initializeTimeAgo = () => co(function *(){
 		const datesTranslations = {
 			PREFIX_AGO: '',
 			PREFIX_FROM_NOW: '',
@@ -36,9 +34,12 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 			YEARS: ''
 		};
 
-		$translate.bindAsObject(datesTranslations, 'DATES.TIMEAGO', null, () => {
+		yield $translate.bindAsObject(datesTranslations, 'DATES.TIMEAGO', null, () => {
 			const fullLangCode = $translate.instant('LANG.FULL_CODE');
 			const settings = timeAgo.settings.strings[fullLangCode];
+
+			for(let k of Object.keys(datesTranslations))
+				datesTranslations[k] = datesTranslations[k].trim();
 
 			if (datesTranslations.PREFIX_AGO)
 				settings.prefixAgo = datesTranslations.PREFIX_AGO;
@@ -71,29 +72,28 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 			if (datesTranslations.YEARS)
 				settings.years = datesTranslations.YEARS;
 		});
-	};
+	});
 
 	$scope.initializeApplication = () => co(function *(){
 		try {
 			let connectionPromise = LavaboomAPI.connect();
 
-			if (!$rootScope.isInitialized)
-				yield translationPromise;
+			yield translate.initialize();
 
-			yield tests.initialize();
-
-			tests.performCompatibilityChecks();
-
-			loader.incProgress(translations.LB_INITIALIZING_I18N, 1);
-
-			let translateInitialization = translate.initialize();
+			if (!$rootScope.isInitialized) {
+				yield $translate.bindAsObject(translations, 'LOADER');
+				initializeTimeAgo();
+			}
 
 			loader.incProgress(translations.LB_INITIALIZING_OPENPGP, 1);
 
 			crypto.initialize();
 
-			yield [connectionPromise, translateInitialization];
-			initializeTimeAgo();
+			yield connectionPromise;
+
+			yield tests.initialize();
+
+			tests.performCompatibilityChecks();
 
 			loader.incProgress(translations.LB_AUTHENTICATING, 5);
 			yield user.gatherUserInformation();

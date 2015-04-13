@@ -2,7 +2,7 @@ li.list-group-item(ng-class="{ 'collapse-active': !currentEmail.isCollapsed() }"
 	div.input-group
 		button.btn.btn-remove(type="button", ng-click="remove()", ng-show="isEditMode")
 			span.icon-delete
-		input.form-control(type="text", focus="true", name="email-{{$index}}", ng-model="currentEmail.name", required,
+		input.form-control(type="text", ng-disabled="!isEditMode", focus="{{currentEmail.isJustAdded()}}", name="email-{{$index}}", ng-model="currentEmail.name", required,
 			placeholder="{{'MAIN.CONTACTS.PLC_EMAIL' | translate}}", tooltip="{{currentEmail.getTooltip()}}", tooltip-trigger="focus", tooltip-placement="right")
 		div.input-group-btn
 			button.btn.tggl(type="button", ng-model="currentEmail.isStar", btn-checkbox="", btn-checkbox-true="1", btn-checkbox-false="0")

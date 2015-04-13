@@ -23,7 +23,8 @@ div#left-panel.ng-cloak
 					span.icon-cog
 					span.action {{'MAIN.NAV.LB_SETTINGS' | translate}}
 			li.logout
-				small {{'MAIN.NAV.LB_COPYRIGHT' | translate}}
+				small {{manifest.name}} {{manifest.version}}
+				small(title="{{servedBy.title}}") {{servedBy.text}}
 				button(ng-click="logout()", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_LOGOUT' | translate}}")
 					span.icon-power
 					strong.action {{'MAIN.NAV.LB_LOGOUT' | translate}} ({{name}})

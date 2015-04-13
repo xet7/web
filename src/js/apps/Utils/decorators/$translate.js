@@ -31,7 +31,8 @@ module.exports = /*@ngInject*/($delegate, $q, $rootScope) => {
 		$rootScope.$bind('$translateChangeSuccess', () => {
 			try {
 				const currentTranslations = $delegate.instantWithPrefix(originalTranslations, prefix);
-				angular.extend(translations, map ? map(currentTranslations) : currentTranslations);
+				for(let k of Object.keys(currentTranslations))
+					translations[k] = currentTranslations[k];
 
 				if (postProcess)
 					postProcess();

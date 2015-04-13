@@ -5,3 +5,9 @@
 .ui-select-choices-row-inner:empty {
 	display: none !important;
 }
+
+// all hail iOS, height: 0 means nothing for Safari
+// god, why?
+.collapse:not(.in) {
+	display: none !important;
+}

@@ -20,6 +20,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		let isLoadedKey = false;
 		let isCollapsed = true;
 		let tag = opts.tag;
+		let isJustAdded = false;
 
 		let loadKey = () => co(function *(){
 			try {
@@ -70,6 +71,9 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		this.isNew = () => !!opts.isNew;
 		this.getLabel = () => label;
 		this.getTooltip = () => tooltip;
+		this.isJustAdded = () => isJustAdded;
+		this.setIsJustAdded = () => isJustAdded = true;
+		this.unsetIsJustAdded = () => isJustAdded = false;
 
 		this.getTag = () => tag;
 
