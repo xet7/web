@@ -2,6 +2,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 	$scope.contactId = $stateParams.contactId;
 	const email = $stateParams.email;
 
+	$scope.isEditMode = $scope.contactId == 'new';
+
 	const translations = {
 		LB_NEW_CONTACT: '',
 		LB_CONTACT_CANNOT_BE_SAVED: '',
@@ -46,6 +48,18 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 		$scope.details.businessEmails.push(new ContactEmail($scope.details, {}, 'business'));
 	};
 
+	let originalContact = null;
+
+	$scope.openEditMode = () => {
+		originalContact = angular.copy($scope.details);
+		$scope.isEditMode = true;
+	};
+
+	$scope.cancelEditMode = () => {
+		$scope.isEditMode = false;
+		$scope.details.setFromAnotherContact(originalContact);
+	};
+
 	$scope.saveThisContact = () => co(function *(){
 		try {
 			if ($scope.details.id != 'new')
@@ -61,6 +75,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 				timeout: 3000,
 				namespace: 'contact.profile'
 			});
+			$scope.isEditMode = false;
 		} catch (err) {
 			notifications.set('contact-save-fail', {
 				text: translations.LB_CONTACT_CANNOT_BE_SAVED,

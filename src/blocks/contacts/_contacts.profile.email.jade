@@ -1,6 +1,6 @@
 li.list-group-item(ng-class="{ 'collapse-active': !currentEmail.isCollapsed() }")
 	div.input-group
-		button.btn.btn-remove(type="button", ng-click="remove()")
+		button.btn.btn-remove(type="button", ng-click="remove()", ng-show="isEditMode")
 			span.icon-delete
 		input.form-control(type="text", focus="true", name="email-{{$index}}", ng-model="currentEmail.name", required,
 			placeholder="{{'MAIN.CONTACTS.PLC_EMAIL' | translate}}", tooltip="{{currentEmail.getTooltip()}}", tooltip-trigger="focus", tooltip-placement="right")
@@ -42,7 +42,7 @@ li.list-group-item(ng-class="{ 'collapse-active': !currentEmail.isCollapsed() }"
 					button.cell.btn.btn-default(type="button", ng-click="downloadPublicKey()")
 						span.icon-arrow-down
 						| {{'MAIN.CONTACTS.LB_DOWNLOAD_PUBLIC_KEY' | translate}}
-					button.cell.btn.btn-default(type="button", ng-click="remove()")
+					button.cell.btn.btn-default(type="button", ng-click="remove()", ng-show="isEditMode")
 						span.icon-trash
 						| {{'MAIN.CONTACTS.LB_REMOVE' | translate}}
 			//- div

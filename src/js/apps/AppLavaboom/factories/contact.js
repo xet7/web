@@ -29,6 +29,12 @@ module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
 			return self.name;
 		};
 
+		this.setFromAnotherContact = (contact) => {
+			secureFields.forEach(field => {
+				self[field] = contact[field];
+			});
+		};
+
 		this.isHidden = () => !!self.hiddenEmail || self.name == '$hidden';
 
 		this.isSecured = () => {
