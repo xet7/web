@@ -28,8 +28,6 @@ module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, cry
 				length: primaryKey.getBitSize()
 			};
 
-			$scope.currentEmail.unfold('');
-
 			notifications.set('public-key-import-ok' + $scope.currentEmail.email, {
 				type: 'info',
 				text: translations.LB_PUBLIC_KEY_IMPORTED({
