@@ -282,6 +282,7 @@
     TOOLTIP_XCC = "Add CC or BCC"
     TOOLTIP_SEND = "Send"
     TOOLTIP_DISCARD = "Discard"
+    LB_UNNAMED_CONTACT = "Unnamed contact"
 
 [MAIN.SETTINGS.MENU]
 	KEYS = "Keys"
