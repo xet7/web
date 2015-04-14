@@ -36,6 +36,18 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, utils, 
 		}, new Map());
 	});
 
+	const removedReplacedHiddenEmails = (contact) => co(function *(){
+		const emails = utils.uniq([...contact.privateEmails.map(e => e.email), ...contact.businessEmails.map(e => e.email)]);
+		for(let e of emails) {
+			const c = self.getContactByEmail(e);
+			if (c.isHidden()) {
+				yield self.deleteContact(c.id);
+
+				break;
+			}
+		}
+	});
+
 	this.createContact = (contact) => co(function *() {
 		let envelope = yield Contact.toEnvelope(contact);
 		let r = yield LavaboomAPI.contacts.create(envelope);
@@ -51,15 +63,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, utils, 
 		contact.id = r.body.contact.id;
 		self.people.set(contact.id, contact);
 		
-		const emails = utils.uniq([...contact.privateEmails.map(e => e.email), ...contact.businessEmails.map(e => e.email)]);
-		for(let e of emails) {
-			const c = self.getContactByEmail(e);
-			if (c.isHidden()) {
-				yield self.deleteContact(c.id);
-
-				break;
-			}
-		}
+		yield removedReplacedHiddenEmails(contact);
 
 		$rootScope.$broadcast('contacts-changed');
 
@@ -69,6 +73,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, utils, 
 	this.updateContact = (contact) => co(function *() {
 		let envelope = yield Contact.toEnvelope(contact);
 		let r = yield LavaboomAPI.contacts.update(contact.id, envelope);
+
+		yield removedReplacedHiddenEmails(contact);
 
 		$rootScope.$broadcast('contacts-changed');
 
