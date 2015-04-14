@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $timeout, $translate,
+module.exports = /*@ngInject*/($scope, $timeout, $translate, Key,
 							   co, utils, user, crypto, cryptoKeys, LavaboomAPI, fileReader, inbox, saver, notifications) => {
 	$scope.email = user.email;
 	$scope.settings = {};
@@ -23,24 +23,16 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate,
 	});
 
 	$scope.$bind('keyring-updated', () => {
-		$scope.keys = crypto.getAvailablePrivateKeys().map(key => {
-			return {
-				keyId: utils.hexify(key.primaryKey.keyid.bytes),
-				isDecrypted: key && key.primaryKey.isDecrypted,
-				decryptPassword: '',
-				decryptIsSuccess: null,
-				decryptTime: null,
-				fingerprint: key.primaryKey.fingerprint,
-				created: key.primaryKey.created,
-				algos: key.primaryKey.algorithm.split('_')[0].toUpperCase(),
-				user: key.users[0].userId.userid,
-				isCollapsed: true,
-				switchCollapse: function(key) { key.isCollapsed = !key.isCollapsed; }
-			};
-		});
-		console.log('keyring-updated', $scope.keys);
-
+		$scope.keys = crypto.getAvailablePrivateKeys()
+			.map(key => new Key(key))
+			.sort((a, b) => {
+				if (a.user < b.user) return -1;
+				if (a.user > b.user) return 1;
+				return 0;
+			});
 		$scope.isAnyUndecryptedKeys = $scope.keys.some(k => !k.isDecrypted);
+
+		console.log('keyring-updated', $scope.keys);
 	});
 
 	$scope.changePassword = () => co(function *(){
