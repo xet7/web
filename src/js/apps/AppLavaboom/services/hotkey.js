@@ -171,7 +171,7 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 		self.addHotkey({
 			combo: '?',
 			description: 'HOTKEY.CHEATSHEET',
-			callback: notWhenPopupOpened((event, key) => {
+			callback: (event, key) => {
 				if ($state.current.name.includes('.hotkeys')) {
 					event.preventDefault();
 					router.hidePopup();
@@ -180,7 +180,7 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 					event.preventDefault();
 					router.showPopup('hotkeys');
 				}
-			}),
+			},
 			allowIn: ['INPUT']
 		});
 
