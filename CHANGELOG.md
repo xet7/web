@@ -2,13 +2,15 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## 0.2.4 - 2015-04-14
+## 0.2.3 - 2015-04-14
 ### Fixed
 - fixed language switch in settings/general
 - fixed issue with corrupted plan display on settings/plan
+- fixed contacts staring functionality
 - re-added removed pro-users functionality on settings/keys(is key decrypted, manually keys decryption)
 ### Added
 - preserve position and key collapse state for settings/keys on keyring update to prevent unwanted wiggling
+- contacts: remove replaced hidden contacts not only on contact's creation but also on contact's update
 
 ## 0.2.2 - 2015-04-13
 ### Fixed
