@@ -63,7 +63,7 @@
 							| {{'MAIN.CONTACTS.BTN_ADD_BUSINESS_EMAIL' | translate}}
 
 			footer
-				button.btn.btn-lg.btn-default.btn-block.btn-icon.text-center(type="button", ng-click="openEditMode()")
+				button.btn.btn-lg.btn-default.btn-block.btn-icon.text-center(type="button", ng-click="openEditMode()", ng-show="!isEditMode")
 					| {{'MAIN.CONTACTS.BTN_EDIT_CONTACT' | translate}}
 				button.btn.btn-lg.btn-danger.btn-block.btn-icon.text-center(type="button", ng-click="deleteThisContact()")
 					span.icon-trash

@@ -372,6 +372,8 @@
 	LB_LAVABOOM_SYNC_ACTIVATED = "Lavaboom sync has been activated"
 	LB_LAVABOOM_SYNC_DEACTIVATED = "Lavaboom sync has been de-activated"
 	LB_LAVABOOM_SYNC_CANNOT_UPDATE = "Cannot update Lavaboom sync state"
+	TP_KEY_IS_ENCRYPTED = "This key is still encrypted"
+	TP_KEY_IS_DECRYPTED = "This key is decrypted and can be used to access your emails/contacts"
 
 [MAIN.CONTACTS]
 	PLC_SEARCH_CONTACTS = "Search Contacts"

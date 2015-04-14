@@ -5,8 +5,9 @@ li.list-group-item(ng-class="{ 'collapse-active': !currentEmail.isCollapsed() }"
 		input.form-control(type="text", ng-disabled="!isEditMode", focus="{{currentEmail.isJustAdded()}}", name="email-{{$index}}", ng-model="currentEmail.name", required,
 			placeholder="{{'MAIN.CONTACTS.PLC_EMAIL' | translate}}", tooltip="{{currentEmail.getTooltip()}}", tooltip-trigger="focus", tooltip-placement="right")
 		div.input-group-btn
-			button.btn.tggl(type="button", ng-model="currentEmail.isStar", btn-checkbox="", btn-checkbox-true="1", btn-checkbox-false="0")
-				span.icon-star
+			button.btn.tggl(type="button", ng-click="starEmail()")
+				span.icon-star(ng-show="currentEmail.isStar")
+				span.icon-star-outline(ng-show="!currentEmail.isStar")
 			span.dropdown(dropdown="", ng-show="!currentEmail.isSecured()")
 				button.btn.btn-default.dropdown-toggle(type="button", dropdown-toggle="")
 					span.icon-unlock(ng-show="!currentEmail.isSecured()")

@@ -8,6 +8,7 @@ module.exports = /*@ngInject*/($scope, $translate, $interval, consts) => {
 			LB_TAG: '',
 			LB_ITEMS: ''
 		};
+		console.log('translating', $scope.plans[name], 'MAIN.SETTINGS.PLAN.' + name);
 		$translate.bindAsObject($scope.plans[name], 'MAIN.SETTINGS.PLAN.' + name, t => {
 			t.LB_ITEMS = t.LB_ITEMS.split('|');
 			return t;

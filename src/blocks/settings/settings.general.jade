@@ -42,9 +42,9 @@
 					label {{'MAIN.SETTINGS.GENERAL.LB_LANGUAGE' | translate}}
 					ui-select(ng-model='form.selectedLanguage', search-enabled='false')
 						ui-select-match(placeholder="{{'MAIN.SETTINGS.GENERAL.PLC_SELECT_LANGUAGE' | translate}}") {{$select.selected.name}}
-						ui-select-choices(repeat='item.name as item in languages')
+						ui-select-choices(repeat='item in languages')
 							span(ng-bind='item.name')
-			li.list-group-item
+			//li.list-group-item
 				.dropdown-control
 					label {{'MAIN.SETTINGS.GENERAL.LB_FONT_SIZE' | translate}}
 					ui-select(ng-model='items.selected', search-enabled='false')
