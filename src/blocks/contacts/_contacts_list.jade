@@ -8,7 +8,8 @@
 							span.icon-add-contact
 					li
 						button.btn.btn-default(ng-disabled="!selectedContactId", ng-click="starContact(selectedContactId)")
-							span.icon-star
+							span.icon-star-outline(ng-show="!contacts.get(selectedContactId).isStar")
+							span.icon-star(ng-show="contacts.get(selectedContactId).isStar")
 					li
 						button.btn.btn-default(ng-disabled="!selectedContactId", ng-click="deleteContact(selectedContactId)")
 							span.icon-trash

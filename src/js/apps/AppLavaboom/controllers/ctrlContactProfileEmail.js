@@ -10,6 +10,11 @@ module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, cry
 	};
 	$translate.bindAsObject(translations, 'MAIN.CONTACTS');
 
+	$scope.starEmail = () => {
+		if ($scope.isEditMode)
+			$scope.currentEmail.isStar = !$scope.currentEmail.isStar;
+	};
+
 	$scope.uploadPublicKey = (data) => {
 		try {
 			const key = crypto.readKey(data);
