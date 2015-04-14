@@ -29,14 +29,14 @@ please check web/gulp/config.js for available configuration options
   `isProduction` - is production build?(don't change directly, use `gulp develop`, `gulp productiuon`)
   `nodeVersion` - minimum required node version(don't change)
   
-	`isDebugable` - is debugable build?(if it's not gulp will not generate source maps)
-	`isLogs` - is loggable build?(if it's not gulp will not remove all logging statements)
-	`defaultApiUri` - where is the API?
-	`defaultRootDomain` - where are we installed?
-	`livereloadListenAddress` - livereload listen address for development(when running `gulp` default target)
+  `isDebugable` - is debugable build?(if it's not gulp will not generate source maps)
+  `isLogs` - is loggable build?(if it's not gulp will not remove all logging statements)
+  `defaultApiUri` - where is the API?
+  `defaultRootDomain` - where are we installed?
+  `livereloadListenAddress` - livereload listen address for development(when running `gulp` default target)
   `livereloadListenPort` - livereload listen port for development(when running `gulp` default target)
-	`listenAddress` - web server's listen address for development(when running `gulp` default target)
-	`listenPort` - web server's listen port for development(when running `gulp` default target)
+  `listenAddress` - web server's listen address for development(when running `gulp` default target)
+  `listenPort` - web server's listen port for development(when running `gulp` default target)
 
 ## How to report a issue?
 
