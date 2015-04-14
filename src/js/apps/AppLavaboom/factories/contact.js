@@ -1,4 +1,10 @@
-module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
+module.exports = /*@ngInject*/($translate, co, user, crypto, ContactEmail) => {
+	const translations = {
+		LB_UNNAMED_CONTACT: ''
+	};
+
+	$translate.bindAsObject(translations, 'MAIN.COMPOSE');
+
 	function Contact (opt) {
 		const self = this;
 
@@ -13,8 +19,11 @@ module.exports = /*@ngInject*/(co, user, crypto, ContactEmail) => {
 
 		this.isCustomName = () => self.firstName && self.lastName && self.name != `${self.firstName.trim()} ${self.lastName.trim()}`;
 
-		this.getFullName = () => self.isCustomName() ? self.name + ` (${self.firstName.trim()} ${self.lastName.trim()})` :
-			(self.isHidden() ? '' + self.hiddenEmail.email : self.name);
+		this.getFullName = () => {
+			const fullName = self.isCustomName() ? self.name + ` (${self.firstName.trim()} ${self.lastName.trim()})` :
+				(self.isHidden() ? '' + self.hiddenEmail.email : self.name);
+			return fullName ? fullName : translations.LB_UNNAMED_CONTACT;
+		};
 
 		this.isMatchEmail = (email) =>
 			(self.hiddenEmail && self.hiddenEmail.email == email) ||
