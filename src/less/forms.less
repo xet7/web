@@ -197,6 +197,20 @@ form.settings{
 	.list-group{
 		margin-bottom: 1.1rem;
 
+		&.padded{
+			// padding-left: 1.1rem; padding-right: 1.1rem;
+			> .list-group-item.header {
+				border: 0;
+				
+				> div{
+					// margin-left: 1.1rem; margin-right: 1.1rem;
+					// border-bottom: @border-site-wide;
+				}
+			}
+			border: @border-site-wide;
+			border-radius: @border-radius-base;
+		}
+
 		label{
 			font-weight: @light-font-weight;
 			margin: 0;
@@ -329,6 +343,7 @@ form.settings{
 				font-family: @font-family-base;
 				.text-right();
 				border: 0;
+				background-image: none !important;
 				line-height: @lava-form-line-height; height: @lava-form-line-height;
 				&.field-icon{
 					padding-right: 5rem;
@@ -347,6 +362,7 @@ form.settings{
 				}
 			}
 			.form-control{
+				box-shadow: none !important;
 				&:focus, &:active{
 					border-color: @lava !important;
 					outline: 0 !important;
@@ -534,21 +550,47 @@ form.settings{
 				border-top: 0;
 			}
 		}
+		
 		.list-group-item.pack{
 			padding: 0;
 		}
 
+		.list-group-item.pack-settings{
+			margin: 0 1.1rem;
+			border-bottom: 0;
+			padding: 0;
+			border-left: 0; border-right: 0;
+			> .child-item > .list-group-item{
+				border: 0;
+				margin-left: -1.1rem;
+				margin-right: -1.1rem;
+			}
+		}
+		div.form-control{
+			word-wrap: break-word;
+			height: auto;
+			padding-top: 1.2rem;
+			padding-bottom: 1.2rem;
+			.text-right();
+		}
+
 		.button-holder{
 			margin: -1.0rem -1.5rem;
+			border-top: @border-site-wide;
 			
 			button{
 				color: @lava;
 				width: 50%;
 				line-height: @filter-height - 0.2;
 				background: transparent;
-				paddint-top: 0; padding-bottom: 0;
+				padding: 0;
 				span{
 					color: @lava;
+					display: inline-block;
+					width: 4.4rem;
+					font-size: 3.3rem;
+					line-height: 4.4rem;
+					vertical-align: bottom;
 				}
 				&:hover{
 					background: @lava-gray-lighter;
