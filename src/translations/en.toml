@@ -375,6 +375,7 @@
 	LB_LAVABOOM_SYNC_CANNOT_UPDATE = "Cannot update Lavaboom sync state"
 	TP_KEY_IS_ENCRYPTED = "This key is still encrypted"
 	TP_KEY_IS_DECRYPTED = "This key is decrypted and can be used to access your emails/contacts"
+	ADD_NEW_KEY_PAIR = "Add new key pair for "
 
 [MAIN.CONTACTS]
 	PLC_SEARCH_CONTACTS = "Search Contacts"

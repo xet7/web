@@ -15,6 +15,7 @@ module.exports = /*@ngInject*/($injector, $translate, $timeout, crypto, utils, c
 		this.created = key.primaryKey.created;
 		this.algos = key.primaryKey.algorithm.split('_')[0].toUpperCase();
 		this.user = key.users[0].userId.userid;
+		this.user = this.user.split(' ')[1].replace('<','').replace('>','');
 
 		if (!statuses[self.fingerprint])
 			statuses[self.fingerprint] = {

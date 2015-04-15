@@ -22,7 +22,8 @@
 			h4(ng-show="!details.isNew", ng-bind="details.name | defaultValue:('MAIN.CONTACTS.LB_CONTACT_NAME' | translate)")
 			.row
 				.col-md-12.col-xs-24
-					img.thumbnail.img-responsive(src="/img/avatar.svg")
+					div.thumbnail.pack
+						.profile-picture(style="background-image: url(/img/avatar.svg);")
 				.col-md-12.col-xs-24
 					ul.list-group
 						li.list-group-item
