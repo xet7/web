@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($delegate) => {
+module.exports = /*@ngInject*/($delegate, $injector) => {
 	const self = $delegate;
 
 	const getDOM = (html) => {
@@ -79,7 +79,9 @@ module.exports = /*@ngInject*/($delegate) => {
 	};
 
 	return function (html, preserveStyles = true) {
-		if (!preserveStyles)
+		const user = $injector.get('user');
+
+		if (!preserveStyles || user.settings.styles == 'none')
 			return $delegate(html);
 
 		let dom = getDOM(html);

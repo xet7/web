@@ -127,6 +127,7 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 		restrict : 'A',
 		scope: {
 			emailBody: '=',
+			isStyling: '&',
 			noImageTemplateUrl: '@'
 		},
 		link  : (scope, el, attrs) => {
