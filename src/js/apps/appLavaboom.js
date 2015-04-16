@@ -16,7 +16,8 @@ const application = new AngularApplication({
 		'angular-co',
 		'ngAutodisable',
 		'cfp.hotkeys',
-		'yaru22.angular-timeago'
+		'yaru22.angular-timeago',
+		'dialogs.main'
 	],
 	productionOnlyDependencies: [
 		'templates'

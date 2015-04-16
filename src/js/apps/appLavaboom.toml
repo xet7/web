@@ -10,5 +10,7 @@
         '../../bower_components/textAngular/dist/textAngular.min.js',
         '../../bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js',
         '../../bower_components/angular-hotkeys/build/hotkeys.js',
-        '../../bower_components/angular-timeago/src/timeAgo.js'
+        '../../bower_components/angular-timeago/src/timeAgo.js',
+        '../../bower_components/angular-dialog-service/dist/dialogs.min.js',
+        '../../bower_components/angular-dialog-service/dist/dialogs-default-translations.min.js'
 	]
