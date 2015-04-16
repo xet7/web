@@ -6,8 +6,6 @@ module.exports = /*@ngInject*/($delegate, $injector) => {
 		return dom.querySelector('body');
 	};
 
-	const allowedStyle = { };
-
 	const backupStyles = (dom, opts, level = 0) => {
 		const processNode = (node) => {
 			let style = node.getAttribute('style');
@@ -102,26 +100,6 @@ module.exports = /*@ngInject*/($delegate, $injector) => {
 
 		return $delegate(html);
 	}
-
-	sanitizer.isAllowedStyles = (html) => {
-		if (!html)
-			return false;
-		html = html.trim();
-		if (!html)
-			return false;
-
-		return html in allowedStyle;
-	};
-
-	sanitizer.allowStyles = (html) => {
-		if (!html)
-			return;
-		html = html.trim();
-		if (!html)
-			return;
-
-		allowedStyle[html] = true;
-	};
 
 	return sanitizer;
 };
