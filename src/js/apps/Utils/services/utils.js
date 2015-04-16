@@ -23,6 +23,8 @@ module.exports = /*@ngInject*/function(co) {
 		}, new Map()).values()];
 	};
 
+	this.uniqMap = (array, map) => self.uniq(array.map(map));
+
 	this.toArray = (obj) => {
 		return Object.keys(obj).reduce((a, k) => {
 			a.push(obj[k]);
@@ -39,4 +41,6 @@ module.exports = /*@ngInject*/function(co) {
 			yield self.sleep(checkTimeout);
 		}
 	});
+
+	this.getEmailFromAddressString = (address) => address.match(/<([^>]+)>/)[1];
 };

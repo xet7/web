@@ -10,11 +10,17 @@ module.exports = /*@ngInject*/($injector, $translate, $timeout, crypto, utils, c
 	function Key(key) {
 		const self = this;
 
+		const daysToMsec = 24 * 60 * 60 * 1000;
+		const now = () => new Date();
+
 		this.keyId = utils.hexify(key.primaryKey.keyid.bytes);
 		this.fingerprint = key.primaryKey.fingerprint;
-		this.created = key.primaryKey.created;
+		this.created = new Date(Date.parse(key.primaryKey.created));
+		this.expiredAt = new Date(Date.parse(key.primaryKey.created) + consts.KEY_EXPIRY_DAYS * daysToMsec);
 		this.algos = key.primaryKey.algorithm.split('_')[0].toUpperCase();
+		this.length = key.primaryKey.getBitSize();
 		this.user = key.users[0].userId.userid;
+		this.email = utils.getEmailFromAddressString(key.users[0].userId.userid);
 
 		if (!statuses[self.fingerprint])
 			statuses[self.fingerprint] = {
@@ -25,7 +31,10 @@ module.exports = /*@ngInject*/($injector, $translate, $timeout, crypto, utils, c
 		let decodeTimeout = null;
 		let decryptTime = 0;
 
-		this.decryptTime = () => decryptTime;
+		this.isExpired = now() > self.expiredAt;
+		this.isExpiringSoon = !self.isExpired && (now() > self.expiredAt.getTime() - consts.KEY_EXPIRY_DAYS_WARNING * daysToMsec);
+
+		this.getDecryptTime = () => decryptTime;
 		this.isDecrypted = () => key && key.primaryKey.isDecrypted;
 		this.isCollapsed = () => isCollapsed;
 		this.switchCollapse = () => {
