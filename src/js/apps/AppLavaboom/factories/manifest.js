@@ -38,9 +38,9 @@ module.exports = /*@ngInject*/(contacts, utils) => {
 
 		this.getDestinationEmails = () => {
 			const emails = utils.uniq([
-				...self.to,
-				...self.cc,
-				...self.bcc
+				...self.to.map(e => e.address),
+				...self.cc.map(e => e.address),
+				...self.bcc.map(e => e.address)
 			]);
 
 			return [...emails];

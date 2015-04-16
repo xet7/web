@@ -101,9 +101,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 		};
 	});
 
-	this.getAvailableSourceEmails = () => utils.uniq(
-		keyring.privateKeys.keys.map(k => k.users[0].userId.userid.match(/<([^>]+)>/)[1])
-	);
+	this.getAvailableSourceEmails = () => utils.uniqMap(keyring.privateKeys.keys,
+		k => utils.getEmailFromAddressString(k.users[0].userId.userid));
 
 	this.getAvailablePrivateKeys = () => keyring.privateKeys.keys;
 
