@@ -71,6 +71,8 @@
 	FORWARD_CC = "Cc"
 	FORWARD_BCC = "Bcc"
 
+	LB_EMAIL_TO_YOURSELF = "to yourself"
+
 
 [INBOX.DOWNLOAD]
 	TITLE = "Downloading your attachment"

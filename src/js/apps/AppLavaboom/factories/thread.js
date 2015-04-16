@@ -1,4 +1,9 @@
-module.exports = /*@ngInject*/($injector, co, utils, crypto, user, Email, Manifest) => {
+module.exports = /*@ngInject*/($injector, $translate, co, utils, crypto, user, Email, Manifest) => {
+	const translations = {
+		LB_EMAIL_TO_YOURSELF: ''
+	};
+	$translate.bindAsObject(translations, 'INBOX');
+
 	function Thread(opt, manifest, labels) {
 		const self = this;
 		let inbox = $injector.get('Email');
@@ -12,6 +17,9 @@ module.exports = /*@ngInject*/($injector, co, utils, crypto, user, Email, Manife
 				return a.address == user.email ? '' : a.contactPrettyName;
 			})
 			.filter(m => !!m);
+		if (!this.members || this.members.length < 1)
+			this.members = [translations.LB_EMAIL_TO_YOURSELF];
+
 		this.to = manifest ? manifest.to : [];
 
 		this.labels = opt.labels;
