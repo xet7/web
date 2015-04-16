@@ -11,7 +11,7 @@ DIALOGS_NOTIFICATION_MSG = "Unknown application notification."
 DIALOGS_CONFIRMATION = "Confirmation"
 DIALOGS_CONFIRMATION_MSG = "Confirmation required."
 DIALOGS_OK = "OK"
-DIALOGS_YES = "Wub wub!"
+DIALOGS_YES = "Yes"
 DIALOGS_NO = "No"
 
 [LANG]
@@ -395,6 +395,11 @@ DIALOGS_NO = "No"
 	TP_KEY_IS_ENCRYPTED = "This key is still encrypted"
 	TP_KEY_IS_DECRYPTED = "This key is decrypted and can be used to access your emails/contacts"
 	ADD_NEW_KEY_PAIR = "Add new key pair for "
+
+	TITLE_CONFIRM = "Please confirm"
+	LB_CONFIRM_PASSWORD_CHANGE = "Do you really want to change password?"
+	LB_CONFIRM_KEYS_REMOVAL = "Do you really want to remove all decrypted private keys?"
+	LB_CONFIRM_LS_DISABLE = "Do you really want to disable Lavaboom Sync?"
 
 [MAIN.CONTACTS]
 	PLC_SEARCH_CONTACTS = "Search Contacts"
