@@ -7,7 +7,10 @@ module.exports = /*@ngInject*/($injector, co, utils, crypto, user, Email, Manife
 		this.created = opt.date_created;
 		this.modified = opt.date_modified;
 		this.members = opt.members
-			.map(address => address == user.email ? '' : Manifest.formatAddress(address).contactPrettyName)
+			.map(address => {
+				const a = Manifest.formatAddress(address);
+				return a.address == user.email ? '' : a.contactPrettyName;
+			})
 			.filter(m => !!m);
 		this.to = manifest ? manifest.to : [];
 
