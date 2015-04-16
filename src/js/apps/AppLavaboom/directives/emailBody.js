@@ -123,73 +123,79 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 		}
 	};
 
+	const process = (scope, el, attrs) => co(function *(){
+		scope.emails = [];
+		scope.switchContextMenu = index => scope.emails[index].isDropdownOpened = !scope.emails[index].isDropdownOpened;
+
+		const noImageTemplate = yield $templateCache.fetch(scope.noImageTemplateUrl);
+
+		console.log('email body', `"${scope.emailBody}"`);
+
+		let sanitizedEmailBody = null;
+		let dom = null;
+		try {
+			const r = {};
+
+			const wrappedEmailBody = `<div>${scope.emailBody}</div>`;
+
+			sanitizedEmailBody = $sanitize(wrappedEmailBody);
+
+			console.log('email body after $sanitize', `"${sanitizedEmailBody}"`);
+
+			dom = getDOM(sanitizedEmailBody);
+
+			transformTextNodes(dom);
+			console.log('email body after transformTextNodes', `"${dom.innerHTML}"`);
+
+			transformEmail(dom, {
+				imagesSetting: user.settings.images,
+				noImageTemplate: noImageTemplate,
+				emails: scope.emails
+			});
+
+			console.log('email body after transformEmail', `"${dom.innerHTML}"`);
+		} catch (err) {
+			console.error(
+				`error during email body transforming: "${err.message}", raw email body: `,
+				`"${scope.emailBody}"`,
+				', sanitized email body: ',
+				`"${sanitizedEmailBody}"`,
+				', transformed email body: ',
+				`"${dom.innerHTML}"`
+			);
+			throw err;
+		}
+
+		let emailBodyHtml = '';
+		let emailBodyCompiled = '';
+		try {
+			emailBodyHtml = angular.element(dom.innerHTML);
+			emailBodyCompiled = $compile(emailBodyHtml)(scope);
+
+			console.log('email body after compilation', emailBodyCompiled.html());
+			el.empty();
+			el.append(emailBodyCompiled);
+		} catch (err) {
+			console.error(
+				`error during email body validation && compilation: "${err.message}", raw email body: `,
+				`"${scope.emailBody}"`,
+				', compiled email body: ',
+				`"${emailBodyCompiled.html()}"`,
+				', transformed email body: ',
+				`"${dom.innerHTML}"`
+			);
+			throw err;
+		}
+	});
+
 	return {
 		restrict : 'A',
 		scope: {
 			emailBody: '=',
-			isStyling: '&',
 			noImageTemplateUrl: '@'
 		},
 		link  : (scope, el, attrs) => {
-			co(function *(){
-				scope.emails = [];
-				scope.switchContextMenu = index => scope.emails[index].isDropdownOpened = !scope.emails[index].isDropdownOpened;
-
-				const noImageTemplate = yield $templateCache.fetch(scope.noImageTemplateUrl);
-
-				console.log('email body', `"${scope.emailBody}"`);
-
-				let sanitizedEmailBody = null;
-				let dom = null;
-				try {
-					sanitizedEmailBody = $sanitize(`<div>${scope.emailBody}</div>`);
-
-					console.log('email body after $sanitize', `"${sanitizedEmailBody}"`);
-
-					dom = getDOM(sanitizedEmailBody);
-
-					transformTextNodes(dom);
-					console.log('email body after transformTextNodes', `"${dom.innerHTML}"`);
-
-					transformEmail(dom, {
-						imagesSetting: user.settings.images,
-						noImageTemplate: noImageTemplate,
-						emails: scope.emails
-					});
-
-					console.log('email body after transformEmail', `"${dom.innerHTML}"`);
-				} catch (err) {
-					console.error(
-						`error during email body transforming: "${err.message}", raw email body: `,
-						`"${scope.emailBody}"`,
-						', sanitized email body: ',
-						`"${sanitizedEmailBody}"`,
-						', transformed email body: ',
-						`"${dom.innerHTML}"`
-					);
-					throw err;
-				}
-
-				let emailBodyHtml = '';
-				let emailBodyCompiled = '';
-				try {
-					emailBodyHtml = angular.element(dom.innerHTML);
-					emailBodyCompiled = $compile(emailBodyHtml)(scope);
-
-					console.log('email body after compilation', emailBodyCompiled.html());
-					el.append(emailBodyCompiled);
-				} catch (err) {
-					console.error(
-						`error during email body validation && compilation: "${err.message}", raw email body: `,
-						`"${scope.emailBody}"`,
-						', compiled email body: ',
-						`"${emailBodyCompiled.html()}"`,
-						', transformed email body: ',
-						`"${dom.innerHTML}"`
-					);
-					throw err;
-				}
-			});
+			process(scope, el, attrs);
 		}
 	};
 };

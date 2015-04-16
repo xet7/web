@@ -21,7 +21,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		isSkipComposeScreenWarning: false,
 		isHotkeyEnabled: true,
 		images: 'none', // none, proxy, directHttps, directAll,
-		styles: 'none', // none, all, ask
+		styles: 'none', // none, all
 
 		// not implemented
 		mailComposedAction: 'none',

@@ -36,9 +36,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeo
 		LB_STYLES_NONE: '',
 		LB_STYLES_NONE_TITLE: '',
 		LB_STYLES_ALL: '',
-		LB_STYLES_ALL_TITLE: '',
-		LB_STYLES_ASK: '',
-		LB_STYLES_ASK_TITLE: ''	
+		LB_STYLES_ALL_TITLE: ''
 	};
 
 	$translate.bindAsObject(translationImages, 'MAIN.SETTINGS.GENERAL', null, () => {
@@ -53,8 +51,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeo
 	$translate.bindAsObject(translationStyles, 'MAIN.SETTINGS.GENERAL', null, () => {
 		$scope.styleSettings = [
 			{name: 'none', description: translationStyles.LB_STYLES_NONE, title: translationStyles.LB_STYLES_NONE_TITLE},
-			{name: 'all', description: translationStyles.LB_STYLES_ALL, title: translationStyles.LB_STYLES_ALL_TITLE},
-			{name: 'ask', description: translationStyles.LB_STYLES_ASK, title: translationStyles.LB_STYLES_ASK_TITLE},
+			{name: 'all', description: translationStyles.LB_STYLES_ALL, title: translationStyles.LB_STYLES_ALL_TITLE}
 		];
 	});
 

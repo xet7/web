@@ -6,19 +6,9 @@ module.exports = /*@ngInject*/($delegate, $injector) => {
 		return dom.querySelector('body');
 	};
 
-	let uniqKey = null;
-	let styleIndex = 0;
-	let styles = {};
-	let removeNodes = [];
+	const allowedStyle = { };
 
-	const backupStyles = (dom, level = 0) => {
-		if (level === 0) {
-			uniqKey = openpgp.util.hexstrdump(openpgp.crypto.random.getRandomBytes(16));
-			styleIndex = 0;
-			styles = {};
-			removeNodes = [];
-		}
-
+	const backupStyles = (dom, opts, level = 0) => {
 		const processNode = (node) => {
 			let style = node.getAttribute('style');
 			if (!style)
@@ -29,13 +19,13 @@ module.exports = /*@ngInject*/($delegate, $injector) => {
 			if (!style)
 				return;
 
-			const key = 'i' + styleIndex;
-			styles[key] = {
+			const key = 'i' + opts.styleIndex;
+			opts.styles[key] = {
 				style,
 				title: node.getAttribute('title')
 			};
-			node.setAttribute('title', `${uniqKey}:${styleIndex}`);
-			styleIndex++;
+			node.setAttribute('title', `${opts.uniqKey}:${opts.styleIndex}`);
+			opts.styleIndex++;
 		};
 
 		for(let node of dom.childNodes) {
@@ -43,24 +33,20 @@ module.exports = /*@ngInject*/($delegate, $injector) => {
 				processNode(node);
 
 			if (node.childNodes)
-				backupStyles(node, level + 1);
+				backupStyles(node, opts, level + 1);
 		}
 	};
 
-	const restoreStyles = (dom, level = 0) => {
-		if (level === 0) {
-			removeNodes = [];
-		}
-
+	const restoreStyles = (dom, opts, level = 0) => {
 		const processNode = (node) => {
 			const text = node.getAttribute('title');
 			const parts = text ? text.split(':') : null;
-			const styleIndex = parts && parts[0] == uniqKey ? parts[1] : null;
+			const styleIndex = parts && parts[0] == opts.uniqKey ? parts[1] : null;
 
 			if (styleIndex !== null) {
 				const key = 'i' + styleIndex;
-				node.setAttribute('style', styles[key].style);
-				node.setAttribute('title', styles[key].title);
+				node.setAttribute('style', opts.styles[key].style);
+				node.setAttribute('title', opts.styles[key].title);
 			}
 		};
 
@@ -69,30 +55,73 @@ module.exports = /*@ngInject*/($delegate, $injector) => {
 				processNode(node);
 
 			if (node.childNodes)
-				restoreStyles(node, level + 1);
+				restoreStyles(node, opts, level + 1);
 		}
 
 		if (level === 0) {
-			for(let node of removeNodes)
+			for(let node of opts.removeNodes)
 				node.parentNode.removeChild(node);
 		}
 	};
 
-	return function (html, preserveStyles = true) {
-		const user = $injector.get('user');
+	const getHash = (data) => openpgp.util.hexstrdump(openpgp.crypto.hash.sha256(data));
 
-		if (!preserveStyles || user.settings.styles == 'none')
-			return $delegate(html);
-
+	function sanitize(html, isAllowed, result) {
 		let dom = getDOM(html);
 
-		backupStyles(dom);
-		const sanitizedEmailBody = $delegate(dom.innerHTML);
+		const stylesOpts = {
+			uniqKey: openpgp.util.hexstrdump(openpgp.crypto.random.getRandomBytes(16)),
+			styleIndex: 0,
+			styles: {},
+			removeNodes: []
+		};
 
+		backupStyles(dom, stylesOpts);
+
+		const sanitizedEmailBody = $delegate(dom.innerHTML);
 		dom = getDOM(sanitizedEmailBody);
 
-		restoreStyles(dom);
+		if (isAllowed)
+			restoreStyles(dom, stylesOpts);
+
+		if (result)
+			result.hasStyles = stylesOpts.styleIndex > 0;
 
 		return dom.innerHTML;
+	}
+
+	function sanitizer (html, result) {
+		const user = $injector.get('user');
+
+		if (user.settings.styles == 'none')
+			return $delegate(html);
+
+		if (user.settings.styles == 'all') {
+			return sanitize(html, true, result);
+		}
+
+		return $delegate(html);
+	}
+
+	sanitizer.isAllowedStyles = (html) => {
+		if (!html)
+			return false;
+		html = html.trim();
+		if (!html)
+			return false;
+
+		return html in allowedStyle;
 	};
+
+	sanitizer.allowStyles = (html) => {
+		if (!html)
+			return;
+		html = html.trim();
+		if (!html)
+			return;
+
+		allowedStyle[html] = true;
+	};
+
+	return sanitizer;
 };
