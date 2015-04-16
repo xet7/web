@@ -17,7 +17,7 @@
 					.text-control.btn-control
 						button.btn.btn-block.btn-primary(type="button", ng-disabled="updatePass.$invalid", ng-click="changePassword()", ng-autodisable) {{'MAIN.SETTINGS.SECURITY.BTN_CONFIRM' | translate}}
 			div(ng-repeat="key in keys")
-				h4(ng-bind="key.user")
+				h4(ng-bind="key.email")
 				ul.list-group.padded
 					li.list-group-item.header
 						div.input-group.with-label.clickable(ng-click="key.switchCollapse(key)")
@@ -60,7 +60,7 @@
 						button.btn.btn-default.btn-block.btn-icon.lava(type="button")
 							span.icon-plus-circle.btn-add-icon
 							| {{'MAIN.SETTINGS.SECURITY.ADD_NEW_KEY_PAIR' | translate}}
-							span(ng-bind="key.user")
+							span(ng-bind="key.email")
 			div(ng-show="isAnyUndecryptedKeys") {{'MAIN.SETTINGS.SECURITY.LB_PASSPHRASE_NOTE' | translate}}
 			div(ng-show="!keys || keys.length < 1") {{'MAIN.SETTINGS.SECURITY.LB_KEY_NOTE' | translate}}
 			h4 {{'MAIN.SETTINGS.SECURITY.TITLE_KEYS_MANAGEMENT' | translate}}
