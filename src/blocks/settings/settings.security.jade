@@ -17,28 +17,27 @@
 					.text-control.btn-control
 						button.btn.btn-block.btn-primary(type="button", ng-disabled="updatePass.$invalid", ng-click="changePassword()", ng-autodisable) {{'MAIN.SETTINGS.SECURITY.BTN_CONFIRM' | translate}}
 			div(ng-repeat="key in keys")
-				h4 {{'MAIN.SETTINGS.SECURITY.LB_KEY_PAIR_FOR' | translate}}
-					span.invert.serif ˝
-					span(ng-bind="key.user")
-					span.serif ˝
-				ul.list-group
-					li.list-group-item
+				h4(ng-bind="key.user")
+				ul.list-group.padded
+					li.list-group-item.header
 						div.input-group.with-label.clickable(ng-click="key.switchCollapse(key)")
+							button.btn.btn-remove(type="button")
+								span.icon-delete
 							label {{'MAIN.SETTINGS.SECURITY.LB_KEY_ID' | translate}}: {{key.keyId}}
-							input.form-control.text-right(type='text', disabled, ng-value="key.created | date")
+							input.form-control.text-right(type='text', disabled, ng-value="key.created | date", ng-show="key.isCollapsed()")
 							div.input-group-btn
 								button.btn.btn-default(title="{{key.getEncryptionStatusTooltip()}}")
 									span.icon-key-pair(ng-class="{encrypted: !key.isDecrypted()}")
-						li.list-group-item.pack(collapse="key.isCollapsed()")
+						li.list-group-item.pack-settings(collapse="key.isCollapsed()")
 							ul.child-item
 								li.list-group-item
 									.text-control
 										label {{'MAIN.SETTINGS.SECURITY.LB_FINGERPRINT' | translate}}
-										textarea.form-control.disable-styles(rows='2', disabled, ng-bind="key.fingerprint", style="resize: none;")
+										div.form-control.disable-styles(ng-bind="key.fingerprint")
 								li.list-group-item
 									.text-control
 										label {{'MAIN.CONTACTS.LB_ALGORITHMS' | translate}}
-										input.field-icon.form-control(disabled, ng-model="key.algos")
+										input.form-control(disabled, ng-model="key.algos")
 								li.list-group-item
 									.text-control
 										label {{'MAIN.SETTINGS.SECURITY.LB_CREATION_DATE' | translate}}	
@@ -51,12 +50,17 @@
 								li.list-group-item
 									.button-holder
 										button.cell.btn.btn-default(type="button", ng-click="downloadKey(key)")
-											span.icon-arrow-down
+											span.icon-key-pair-download
 											| {{'MAIN.SETTINGS.SECURITY.BACKUP_KEY_PAIR' | translate}}
 										button.cell.btn.btn-default(type="button", ng-click="")
-											span.icon-trash
+											span.icon-public-key-send
 											| {{'MAIN.SETTINGS.SECURITY.SEND_PUBLIC_KEY' | translate}}
-
+				ul.list-group
+					li.list-group-item.pack
+						button.btn.btn-default.btn-block.btn-icon.lava(type="button")
+							span.icon-plus-circle.btn-add-icon
+							| {{'MAIN.SETTINGS.SECURITY.ADD_NEW_KEY_PAIR' | translate}}
+							span(ng-bind="key.user")
 			div(ng-show="isAnyUndecryptedKeys") {{'MAIN.SETTINGS.SECURITY.LB_PASSPHRASE_NOTE' | translate}}
 			div(ng-show="!keys || keys.length < 1") {{'MAIN.SETTINGS.SECURITY.LB_KEY_NOTE' | translate}}
 			h4 {{'MAIN.SETTINGS.SECURITY.TITLE_KEYS_MANAGEMENT' | translate}}
