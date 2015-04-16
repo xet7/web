@@ -11,7 +11,7 @@ module.exports = /*@ngInject*/ ($parse, $timeout) => {
 
 				if (searchValue) {
 					const tagTransform = $parse(attrs.tagging)(scope);
-					
+
 					$timeout(() => {
 						const target = angular.element(event.explicitOriginalTarget || document.activeElement);
 						const isTransferable = (target, lvl = 1) => {

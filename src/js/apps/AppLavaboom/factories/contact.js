@@ -47,18 +47,18 @@ module.exports = /*@ngInject*/($translate, co, user, crypto, ContactEmail) => {
 		this.isHidden = () => !!self.hiddenEmail || self.name == '$hidden';
 
 		this.isSecured = () => {
-			if (self.hiddenEmail && !self.hiddenEmail.isSecured())
-				return false;
+			if (self.hiddenEmail && self.hiddenEmail.isSecured())
+				return true;
 
 			if (self.privateEmails)
-				if (self.privateEmails.some(e => !e.isSecured()))
-					return false;
+				if (self.privateEmails.some(e => e.isSecured()))
+					return true;
 
 			if (self.businessEmails)
-				if (self.businessEmails.some(e => !e.isSecured()))
-					return false;
+				if (self.businessEmails.some(e => e.isSecured()))
+					return true;
 
-			return true;
+			return false;
 		};
 
 		this.getEmail = (email) => {
