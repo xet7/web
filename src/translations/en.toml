@@ -436,6 +436,9 @@ DIALOGS_NO = "No"
     LB_CONTACT_SAVED  = "Contact saved"
     LB_CONTACT_DELETED  = "Contact deleted"
     LB_CONTACT_CANNOT_BE_DELETED  = "Contact cannot be deleted"
+    TITLE_CONFIRM_DELETE = "Confirm deletion"
+    LB_CONFIRM = "Do you really want to delete '{{name}}' contact?"
+
 
 [HOTKEY]
 	TITLE          		 = "Shortcuts cheatsheet"
