@@ -283,6 +283,7 @@
     TOOLTIP_SEND = "Send"
     TOOLTIP_DISCARD = "Discard"
     LB_UNNAMED_CONTACT = "Unnamed contact"
+    LB_NO_SUBJECT = "No subject"
 
 [MAIN.SETTINGS.MENU]
 	KEYS = "Keys"
