@@ -3,7 +3,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 
 	const newLineRegex = /(\r\n|\n)/g;
 
-	let sortQuery = '-date_created';
+	let sortQuery = '-date_modified';
 
 	this.selectedTidByLabelName = {};
 
