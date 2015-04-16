@@ -89,6 +89,8 @@ DIALOGS_NO = "No"
 
 	LB_EMAIL_TO_YOURSELF = "to yourself"
 
+	TITLE_CONFIRM = "Confirm action"
+    LB_EMAIL_HAS_EMBEDDED_STYLING = "This email contains embedded styling, do you want to display it?"
 
 [INBOX.DOWNLOAD]
 	TITLE = "Downloading your attachment"
@@ -325,6 +327,12 @@ DIALOGS_NO = "No"
 	TITLE_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts"
 	LB_KEYBOARD_SHORTCUTS = "Enabled"
 	LB_SECURED_IMAGES = "External images"
+	LB_SECURED_STYLES = "Styling"
+	LB_STYLES_NONE = "block"
+	LB_STYLES_NONE_TITLE = "Block embedded email styles"
+	LB_STYLES_ALL = "allow"
+    LB_STYLES_ALL_TITLE = "Allow embedded email styles"
+
 	PLC_SELECT_LANGUAGE = "Select a language"
 	LB_IMAGES_NONE = "none"
 	LB_IMAGES_NONE_TITLE = "Block all external images, the most secure"
