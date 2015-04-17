@@ -36,9 +36,16 @@ div(ng-if="selectedTid").main-view
 					//strong(ng-bind="email.fromName")
 					//br
 					div {{'MAIN.COMPOSE.LB_FROM' | translate}}:
-						strong(ng-bind="email.fromAllPretty")
+						strong(ng-repeat="from in email.from")
+							email-context-menu(email="from.address", is-open="from.isContextMenuOpened")
+								a(ui-sref=".popup.compose({to: from.address})", ng-right-click="from.isContextMenuOpened = true") {{from.prettyName}}
+								| {{$last ? '' : ', '}}
 					div {{'MAIN.COMPOSE.LB_TO' | translate}}:
-						span.medium(ng-bind="email.toPretty")
+						strong(ng-repeat="to in email.to")
+							email-context-menu(ng-if="to.address != selfEmail", email="to.address", is-open="to.isContextMenuOpened")
+								a(ui-sref=".popup.compose({to: to.address})", ng-right-click="to.isContextMenuOpened = true") {{to.prettyName}}
+								| {{$last ? '' : ', '}}
+							span(ng-if="to.address == selfEmail") {{to.prettyName}} {{$last ? '' : ', '}}
 					br
 					| {{'MAIN.COMPOSE.LB_SUBJECT' | translate}}:
 					span(ng-bind="email.subject")

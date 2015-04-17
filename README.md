@@ -41,10 +41,13 @@ please check web/gulp/config.js for available configuration options
 
 You've found something that looks weird, you suppose this is a bug?
 In order to speed up issue processing, please include the following information:
-- where it took place (.com / .io / .co)
-- when it took place (example: today 14:00 UTC, please avoid using timezone and provide time in UTC)
-- screenshot if possible (for UX related issues)
+- screenshot, if issue is UX related
 - console logs if possible (copy-paste the Console output from Ctrl/Cmd+Alt+I)
+
+If the following information isn't visible on screenshot or if there is no screenshot, please also provide:
+- version number(i.e. 0.2.4)
+- where it took place (.com / .io / .co)
+- when it took place (example: today 14:00 UTC)
 
 ## In order to build the web project(on Linux)
 
