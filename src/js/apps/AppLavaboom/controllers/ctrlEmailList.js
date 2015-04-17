@@ -1,5 +1,8 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParams, utils, co, inbox, consts) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParams, $translate, $sanitize,
+							   user, utils, co, inbox, consts, dialogs) => {
 	console.log('loading emails list', $stateParams.threadId);
+
+	$scope.selfEmail = user.email;
 
 	const setRead = () => co(function *(){
 		yield utils.sleep(consts.SET_READ_AFTER_TIMEOUT);
@@ -7,6 +10,12 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 			return;
 		inbox.setThreadReadStatus($scope.selectedTid);
 	});
+
+	const translations = {
+		TITLE_CONFIRM: '',
+		LB_EMAIL_HAS_EMBEDDED_STYLING: ''
+	};
+	$translate.bindAsObject(translations, 'INBOX');
 
 	$scope.restoreFromSpam = (tid) => {
 		console.log('restoreFromSpam', tid, $scope.threads[tid]);

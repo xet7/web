@@ -1,21 +1,21 @@
 .row.no-gutter.settings-panel.ng-cloak(ng-controller="CtrlSettingsSecurity")
-	form.settings.col-xs-12.col-xs-offset-6(name="updatePass")
+	form.settings.col-xs-12.col-xs-offset-6(name="__formChangePassword", ng-submit="__formChangePassword.$valid && changePassword()", novalidate, ng-autodisable)
 		.form-wrap
 			h4 {{'MAIN.SETTINGS.SECURITY.TITLE_CHANGE_PASSWORD' | translate}}
 			ul.list-group
 				li.list-group-item
 					.text-control
 						label {{'MAIN.SETTINGS.SECURITY.LB_CURRENT_PASSWORD' | translate}}
-						input.form-control(type='password', ng-model="form.oldPassword")
+						input.form-control(type='password', name="oldPassword", ng-model="form.oldPassword", required)
 				li.list-group-item
 					.text-control
 						label {{'MAIN.SETTINGS.SECURITY.LB_NEW_PASSWORD' | translate}}
-						input.form-control(type='password', ng-model="form.password")
+						input.form-control(type='password', name="password", ng-model="form.password", required)
 					.text-control
 						label {{'MAIN.SETTINGS.SECURITY.LB_CONFIRM_PASSWORD' | translate}}
-						input.form-control(type='password', ng-model="form.passwordRepeat", match="form.password")
+						input.form-control(type='password', name="passwordConfirm", ng-model="form.passwordRepeat", required, match="form.password")
 					.text-control.btn-control
-						button.btn.btn-block.btn-primary(type="button", ng-disabled="updatePass.$invalid", ng-click="changePassword()", ng-autodisable) {{'MAIN.SETTINGS.SECURITY.BTN_CONFIRM' | translate}}
+						button.btn.btn-block.btn-primary(type="submit") {{'MAIN.SETTINGS.SECURITY.BTN_CONFIRM' | translate}}
 			div(ng-repeat="key in keys")
 				h4(ng-bind="key.email")
 				ul.list-group.padded

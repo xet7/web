@@ -1,3 +1,19 @@
+# dialogs
+DIALOGS_ERROR = "Error"
+DIALOGS_ERROR_MSG = "An unknown error has occurred."
+DIALOGS_CLOSE = "Close"
+DIALOGS_PLEASE_WAIT = "Please Wait"
+DIALOGS_PLEASE_WAIT_ELIPS = "Please Wait..."
+DIALOGS_PLEASE_WAIT_MSG = "Waiting on operation to complete."
+DIALOGS_PERCENT_COMPLETE = "% Complete"
+DIALOGS_NOTIFICATION = "Notification"
+DIALOGS_NOTIFICATION_MSG = "Unknown application notification."
+DIALOGS_CONFIRMATION = "Confirmation"
+DIALOGS_CONFIRMATION_MSG = "Confirmation required."
+DIALOGS_OK = "OK"
+DIALOGS_YES = "Yes"
+DIALOGS_NO = "No"
+
 [LANG]
 	CODE = "en"
 	FULL_CODE = "en_US"
@@ -73,6 +89,8 @@
 
 	LB_EMAIL_TO_YOURSELF = "to yourself"
 
+	TITLE_CONFIRM = "Confirm action"
+    LB_EMAIL_HAS_EMBEDDED_STYLING = "This email contains embedded styling, do you want to display it?"
 
 [INBOX.DOWNLOAD]
 	TITLE = "Downloading your attachment"
@@ -309,6 +327,12 @@
 	TITLE_KEYBOARD_SHORTCUTS = "Keyboard Shortcuts"
 	LB_KEYBOARD_SHORTCUTS = "Enabled"
 	LB_SECURED_IMAGES = "External images"
+	LB_SECURED_STYLES = "Styling"
+	LB_STYLES_NONE = "block"
+	LB_STYLES_NONE_TITLE = "Block embedded email styles"
+	LB_STYLES_ALL = "allow"
+    LB_STYLES_ALL_TITLE = "Allow embedded email styles"
+
 	PLC_SELECT_LANGUAGE = "Select a language"
 	LB_IMAGES_NONE = "none"
 	LB_IMAGES_NONE_TITLE = "Block all external images, the most secure"
@@ -380,6 +404,11 @@
 	TP_KEY_IS_DECRYPTED = "This key is decrypted and can be used to access your emails/contacts"
 	ADD_NEW_KEY_PAIR = "Add new key pair for "
 
+	TITLE_CONFIRM = "Please confirm"
+	LB_CONFIRM_PASSWORD_CHANGE = "Do you really want to change password?"
+	LB_CONFIRM_KEYS_REMOVAL = "Do you really want to remove all decrypted private keys?"
+	LB_CONFIRM_LS_DISABLE = "Do you really want to disable Lavaboom Sync?"
+
 [MAIN.CONTACTS]
 	PLC_SEARCH_CONTACTS = "Search Contacts"
 	TITLE_PRIVATE_EMAIL = "Private Email"
@@ -415,6 +444,9 @@
     LB_CONTACT_SAVED  = "Contact saved"
     LB_CONTACT_DELETED  = "Contact deleted"
     LB_CONTACT_CANNOT_BE_DELETED  = "Contact cannot be deleted"
+    TITLE_CONFIRM_DELETE = "Confirm deletion"
+    LB_CONFIRM = "Do you really want to delete '{{name}}' contact?"
+
 
 [HOTKEY]
 	TITLE          		 = "Shortcuts cheatsheet"

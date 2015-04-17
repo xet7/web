@@ -1,4 +1,5 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, notifications, ContactEmail) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams,
+							   dialogs, co, contacts, notifications, ContactEmail) => {
 	$scope.contactId = $stateParams.contactId;
 	const email = $stateParams.email;
 
@@ -9,7 +10,9 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 		LB_CONTACT_CANNOT_BE_SAVED: '',
 		LB_CONTACT_SAVED: '',
 		LB_CONTACT_DELETED: '',
-		LB_CONTACT_CANNOT_BE_DELETED: ''
+		LB_CONTACT_CANNOT_BE_DELETED: '',
+		LB_CONFIRM: '%',
+		TITLE_CONFIRM_DELETE:''
 	};
 	$translate.bindAsObject(translations, 'MAIN.CONTACTS');
 
@@ -90,6 +93,13 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 
 	$scope.deleteThisContact = () => co(function *(){
 		try {
+			const confirmed = yield co.def(dialogs.confirm(
+				translations.TITLE_CONFIRM_DELETE,
+				translations.LB_CONFIRM({name: $scope.details.getFullName()})
+			).result, 'cancelled');
+			if (confirmed == 'cancelled')
+				return;
+
 			yield contacts.deleteContact($scope.contactId);
 
 			notifications.set('contact-delete-ok', {

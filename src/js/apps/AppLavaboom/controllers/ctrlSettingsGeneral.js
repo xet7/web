@@ -31,6 +31,13 @@ module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeo
 		LB_IMAGES_ALL: '',
 		LB_IMAGES_ALL_TITLE: ''
 	};
+	
+	const translationStyles = {
+		LB_STYLES_NONE: '',
+		LB_STYLES_NONE_TITLE: '',
+		LB_STYLES_ALL: '',
+		LB_STYLES_ALL_TITLE: ''
+	};
 
 	$translate.bindAsObject(translationImages, 'MAIN.SETTINGS.GENERAL', null, () => {
 		$scope.imageSettings = [
@@ -39,7 +46,13 @@ module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeo
 			{name: 'directHttps', description: translationImages.LB_IMAGES_HTTPS, title: translationImages.LB_IMAGES_HTTPS_TITLE},
 			{name: 'directAll', description: translationImages.LB_IMAGES_ALL, title: translationImages.LB_IMAGES_ALL_TITLE}
 		];
-		console.log('$scope.imageSettings', $scope.imageSettings);
+	});
+
+	$translate.bindAsObject(translationStyles, 'MAIN.SETTINGS.GENERAL', null, () => {
+		$scope.styleSettings = [
+			{name: 'none', description: translationStyles.LB_STYLES_NONE, title: translationStyles.LB_STYLES_NONE_TITLE},
+			{name: 'all', description: translationStyles.LB_STYLES_ALL, title: translationStyles.LB_STYLES_ALL_TITLE}
+		];
 	});
 
 	$translate.bindAsObject(translations, 'MAIN.SETTINGS.GENERAL', null, () => {
