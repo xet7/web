@@ -42,9 +42,12 @@ module.exports = /*@ngInject*/($delegate, $injector) => {
 			const styleIndex = parts && parts[0] == opts.uniqKey ? parts[1] : null;
 
 			if (styleIndex !== null) {
-				const key = 'i' + styleIndex;
-				node.setAttribute('style', opts.styles[key].style);
-				node.setAttribute('title', opts.styles[key].title);
+				const style = opts.styles['i' + styleIndex];
+				node.setAttribute('style', style.style);
+				if (style.title)
+					node.setAttribute('title', style.title);
+				else
+					node.removeAttribute('title');
 			}
 		};
 
