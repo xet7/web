@@ -1,14 +1,17 @@
-module.exports = /*@ngInject*/($templateCache, $compile) => ({
+module.exports = /*@ngInject*/($templateCache, $compile, co, contacts) => ({
 	restrict : 'E',
 	scope: {
 		isOpen: '=',
 		email: '='
 	},
 	link  : (scope, el, attrs) => {
-		$templateCache.fetch('partials/directives/emailContextMenu.html')
-			.then(template => {
-				const compiledTemplate = $compile(template)(scope);
-				el.prepend(compiledTemplate);
-			});
+		co(function *(){
+			const template = yield $templateCache.fetch('partials/directives/emailContextMenu.html');
+			const contact = contacts.getContactByEmail(scope.email);
+			scope.isExistingContact = !!contact;
+
+			const compiledTemplate = $compile(template)(scope);
+			el.prepend(compiledTemplate);
+		});
 	}
 });
