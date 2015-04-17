@@ -36,7 +36,9 @@ div(ng-if="selectedTid").main-view
 					//strong(ng-bind="email.fromName")
 					//br
 					div {{'MAIN.COMPOSE.LB_FROM' | translate}}:
-						strong(ng-bind="email.fromAllPretty")
+						strong(ng-repeat="from in email.from")
+							email-context-menu(email="from.address", is-open="from.isContextMenuOpened")
+								span(ng-right-click="from.isContextMenuOpened = true") {{from.prettyName}} {{$last ? '' : ', '}}
 					div {{'MAIN.COMPOSE.LB_TO' | translate}}:
 						span.medium(ng-bind="email.toPretty")
 					br
