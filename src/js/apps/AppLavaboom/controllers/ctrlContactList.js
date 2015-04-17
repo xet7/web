@@ -1,10 +1,12 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, co, contacts, user, hotkey) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, dialogs, co, contacts, user, hotkey) => {
 	$scope.selectedContactId = null;
 	$scope.searchText = '';
 
 	const translations = {
 		LB_NEW_CONTACT_SHORT: '',
-		LB_EMPTY_CONTACT_SHORT: ''
+		LB_EMPTY_CONTACT_SHORT: '',
+		LB_CONFIRM: '%',
+		TITLE_CONFIRM_DELETE:''
 	};
 
 	$translate.bindAsObject(translations, 'MAIN.CONTACTS');
@@ -109,6 +111,15 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 	});
 
 	$scope.deleteContact = (contactId) => co(function *(){
+		const contact = contacts.getContactById(contactId);
+
+		const confirmed = yield co.def(dialogs.confirm(
+			translations.TITLE_CONFIRM_DELETE,
+			translations.LB_CONFIRM({name: contact.getFullName()})
+		).result, 'cancelled');
+		if (confirmed == 'cancelled')
+			return;
+
 		return yield contacts.deleteContact(contactId);
 	});
 
