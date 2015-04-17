@@ -62,8 +62,6 @@ module.exports = /*@ngInject*/($delegate, $injector) => {
 		}
 	};
 
-	const getHash = (data) => openpgp.util.hexstrdump(openpgp.crypto.hash.sha256(data));
-
 	function sanitize(html, isAllowed, result) {
 		let dom = getDOM(html);
 
@@ -88,15 +86,14 @@ module.exports = /*@ngInject*/($delegate, $injector) => {
 		return dom.innerHTML;
 	}
 
-	function sanitizer (html, result) {
+	function sanitizer (html) {
 		const user = $injector.get('user');
 
 		if (user.settings.styles == 'none')
 			return $delegate(html);
 
-		if (user.settings.styles == 'all') {
-			return sanitize(html, true, result);
-		}
+		if (user.settings.styles == 'all')
+			return sanitize(html, true);
 
 		return $delegate(html);
 	}
