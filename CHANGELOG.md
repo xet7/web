@@ -2,6 +2,20 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.6 - 2015-04-17
+### Fixed
+- issue with BOM in manifest.json
+
+## 0.2.5 - 2015-04-17
+### Fixed
+- fixed minor issue with html sanitizing and style preserving
+### Added
+- proper edit mode for contacts
+- email's from/to fields are now clickable and support context menu(reply/add contact)
+- compose screen autofocus
+- embedded styles setting, defaults: block
+- confirmations support for various actions such as deletion and password change
+
 ## 0.2.4 - 2015-04-14
 ### Fixed
 - various small fixes/improvements in contacts/compose/threads
