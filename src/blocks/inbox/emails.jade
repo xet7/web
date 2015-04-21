@@ -66,11 +66,7 @@ div(ng-if="selectedTid").main-view
 			footer(ng-show="email.files.length")
 				.row.no-gutter
 					.col-xs-8(ng-repeat="file in email.files")
-						a.attachment(ui-sref=".popup.download({emailId: email.id, fileId: file.id})")
-							span.fileCorner
-							span(ng-bind="file.filename")
-							br
-							span(ng-bind="file.size | filesize")
+						include _attachment.jade
 			ul.nav.navbar-nav.navbar-right.navbar-right-buttons
 				li(ng-show="selectedTid")
 					button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
