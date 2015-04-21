@@ -42,13 +42,30 @@
 		color: @lava-compose-header-fg !important;
 		.table-list{
 			border-bottom: 1px solid @lava-gray-lighter;
+			.pos-rel();
+			.cc-buttons{
+				line-height: 2.2rem;
+				margin: 1.1rem;
+				.pos-abs();
+				right: 0;left: auto;
+
+				> * {
+					background: transparent;
+					color: @lava-compose-header-fg;
+					padding: 0 .55rem;
+					.lava-font();
+					&:last-child{
+						margin-right: .65rem;
+					}
+				}
+			}
 			
 			> *{
-				vertical-align: middle;
+				vertical-align: top;
 			}
 			.fields{
 				.pos-rel();
-				padding-right: 40px;
+				padding-right: 9.9rem;
 				span.icon-close{
 					.pos-abs();
 					right: 0;
@@ -115,6 +132,7 @@
 		background-position: -200% -200% !important;
 		.lava-font();
 		padding-left: 0;
+		height: 4.3rem;
 	}
 
 	.ui-select-container{
@@ -124,6 +142,8 @@
 		background-color: transparent;
 		padding: 0;
 		.lava-font();
+		min-height: 2.2rem;
+  		padding: .7rem 0 0.1rem;
 		.btn-default{
 			color: @lava-compose-header-fg;
 			border: 0 none;
@@ -134,6 +154,7 @@
 			font-size: @compose-font-size;
 			padding: .5rem 1rem;
 			// padding-right: 1em;
+			margin-bottom: .4rem;
 			&:hover, &.btn-primary{
 				background-color: @lava-compose-tags-bg;
 				.close.ui-select-match-close{
@@ -158,10 +179,22 @@
 			top: -1px;
 		}
 		.icon-lock.sec-0{
-			color: @lava-warning;
+			color: @lava-insecure;
 			&:before{
 				content: "\71";
 			}
+		}
+
+		input{
+			line-height: 2.8rem;
+			height: 2.8rem;
+		}
+
+		.ui-select-match {
+			> span {
+				display: inline-block;
+			}
+			// padding-bottom: 1.1rem;
 		}
 
 		.close.ui-select-match-close{
@@ -178,20 +211,30 @@
 			text-shadow: none;
 
 			color: @lava-compose-header-fg;
+			.opacity(.75);
+			border-radius: @border-radius-small;
 
 			&:before{
 				position: relative;
 				top: .4rem;
-				left: -.1rem;
-				content: "\73";
-				font-size: @compose-font-size;
+				// left: -.1rem;
+				content: "\e610";
+				font-size: 1.1rem;
+				padding: .4rem;
+				font-family: lavaboom;
+			}
+
+			&:hover{
+				.opacity(.9);
+				&:before{
+					background-color: @compose-cross-hover-color;
+				}
 			}
 
 			/* Better Font Rendering =========== */
 			-webkit-font-smoothing: antialiased;
 			-moz-osx-font-smoothing: grayscale;
-			content: '7';
-			.opacity(7);
+			
 			transition: .2s opacity;
 		}
 	}
@@ -216,6 +259,11 @@
 		border-radius: 0;
 		height: auto;
 		.email-formatting();
+	}
+
+	.ui-select-choices{
+		margin-top: -.5rem;
+		.dropdown-autocomplete();
 	}
 }
 

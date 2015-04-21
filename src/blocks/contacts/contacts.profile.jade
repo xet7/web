@@ -25,10 +25,10 @@
 			//- h4(ng-show="details.isNew", ng-bind="details.name | defaultValue:('MAIN.CONTACTS.LB_NEW_CONTACT' | translate)")
 			h4 &nbsp;
 			.row
-				.col-md-12.col-xs-24
+				.col-md-11.col-xs-24
 					div.thumbnail.pack
 						.profile-picture(style="background-image: url(/img/avatar.svg);")
-				.col-md-12.col-xs-24
+				.col-md-12.col-md-offset-1.col-xs-24.col-xs-offset-0
 					h4.contact-name(ng-show="!isEditMode", ng-bind="details.name")
 					p(ng-show="!isEditMode", ng-bind="details.companyName")
 					ul.list-group(ng-show="isEditMode")
@@ -69,7 +69,7 @@
 							span.icon-plus-circle.btn-add-icon
 							| {{'MAIN.CONTACTS.BTN_ADD_BUSINESS_EMAIL' | translate}}
 
-			footer
+			footer(ng-show="isEditMode")
 				
 				button.btn.btn-lg.btn-danger.btn-block.btn-icon.text-center(type="button", ng-click="deleteThisContact()")
 					span.icon-trash
