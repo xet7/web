@@ -42,9 +42,12 @@ module.exports = /*@ngInject*/($delegate, $injector) => {
 			const styleIndex = parts && parts[0] == opts.uniqKey ? parts[1] : null;
 
 			if (styleIndex !== null) {
-				const key = 'i' + styleIndex;
-				node.setAttribute('style', opts.styles[key].style);
-				node.setAttribute('title', opts.styles[key].title);
+				const style = opts.styles['i' + styleIndex];
+				node.setAttribute('style', style.style);
+				if (style.title)
+					node.setAttribute('title', style.title);
+				else
+					node.removeAttribute('title');
 			}
 		};
 
@@ -61,8 +64,6 @@ module.exports = /*@ngInject*/($delegate, $injector) => {
 				node.parentNode.removeChild(node);
 		}
 	};
-
-	const getHash = (data) => openpgp.util.hexstrdump(openpgp.crypto.hash.sha256(data));
 
 	function sanitize(html, isAllowed, result) {
 		let dom = getDOM(html);
@@ -88,15 +89,14 @@ module.exports = /*@ngInject*/($delegate, $injector) => {
 		return dom.innerHTML;
 	}
 
-	function sanitizer (html, result) {
+	function sanitizer (html) {
 		const user = $injector.get('user');
 
 		if (user.settings.styles == 'none')
 			return $delegate(html);
 
-		if (user.settings.styles == 'all') {
-			return sanitize(html, true, result);
-		}
+		if (user.settings.styles == 'all')
+			return sanitize(html, true);
 
 		return $delegate(html);
 	}

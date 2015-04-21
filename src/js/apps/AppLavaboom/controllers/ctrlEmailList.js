@@ -1,6 +1,8 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParams, $translate, $sanitize,
-							   utils, co, inbox, consts, dialogs) => {
+							   user, utils, co, inbox, consts, dialogs) => {
 	console.log('loading emails list', $stateParams.threadId);
+
+	$scope.selfEmail = user.email;
 
 	const setRead = () => co(function *(){
 		yield utils.sleep(consts.SET_READ_AFTER_TIMEOUT);
