@@ -7,9 +7,9 @@ div#compose-wrapper
 					ul.nav.navbar-nav.navbar-right(ng-show="selectedTid !== null")
 						li(ng-show="isError")
 							span {{'MAIN.COMPOSE.LB_ERROR' | translate}}
-						li
-							button.btn.btn-default(ng-click="isXCC = !isXCC", ng-disabled="isWarning", tooltip="{{'MAIN.COMPOSE.TOOLTIP_XCC' | translate}}", tooltip-append-to-body="true")
-								span.icon-tick
+						//- li
+						//- 	button.btn.btn-default(ng-click="isXCC = !isXCC", ng-disabled="isWarning", tooltip="{{'MAIN.COMPOSE.TOOLTIP_XCC' | translate}}", tooltip-append-to-body="true")
+						//- 		span.icon-tick
 						li.btn-group.dropdown(dropdown="", is-open="isWarning")
 							button.btn.btn-default(ng-disabled="isWarning || !isValid()", type="submit", ng-click="send()", tooltip="{{'MAIN.COMPOSE.TOOLTIP_SEND' | translate}}", tooltip-append-to-body="true")
 								span.icon-sent
@@ -35,10 +35,13 @@ div#compose-wrapper
 			.table-list
 				- defs = {model: "form.selected.to", label: "{{'MAIN.COMPOSE.LB_TO' | translate}}", click: "clearTo()", required: true};
 				include ./compose/_compose.email.jade
-			.table-list(ng-if="isXCC")
+				div.cc-buttons
+					button.btn.btn-default(ng-click="isCC = !isCC", ng-disabled="isWarning") {{'MAIN.COMPOSE.LB_CC' | translate}}
+					button.btn.btn-default(ng-click="isBCC = !isBCC", ng-disabled="isWarning") {{'MAIN.COMPOSE.LB_BCC' | translate}}
+			.table-list(ng-if="isCC")
 				- defs = {model: "form.selected.cc", label: "{{'MAIN.COMPOSE.LB_CC' | translate}}", click: "clearCC()"};
 				include ./compose/_compose.email.jade
-			.table-list(ng-if="isXCC")
+			.table-list(ng-if="isBCC")
 				- defs = {model: "form.selected.bcc", label: "{{'MAIN.COMPOSE.LB_BCC' | translate}}", click: "clearBCC()"};
 				include ./compose/_compose.email.jade
 			.table-list
@@ -46,7 +49,7 @@ div#compose-wrapper
 					label {{'MAIN.COMPOSE.LB_FROM' | translate}}:
 				.cell.fields
 					input.form-control.col-xs-24.from-email(type='text', name="from", ng-model='form.fromEmails[0].email', disabled)
-			.table-list
+			.table-list.medium
 				.cell.label
 					label.text-primary {{'MAIN.COMPOSE.LB_SUBJECT' | translate}}:
 				.cell.fields
