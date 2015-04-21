@@ -3,13 +3,13 @@
 		div
 			ul.nav.navbar-nav.navbar-right
 				li(ng-show="isEditMode")
-					button.btn.btn-default(type="button", ng-click="cancelEditMode()", tooltip="{{'MAIN.COMPOSE.TOOLTIP_SEND' | translate}}")
+					button.btn.btn-default(type="button", ng-click="cancelEditMode()", tooltip="{{'MAIN.CONTACTS.BTN_DISCARD_CHANGES' | translate}}", tooltip-placement="bottom")
 						span.icon-cancel
 				li(ng-show="isEditMode")
-					button.btn.btn-default(type="button", ng-click="saveThisContact()", tooltip="{{'MAIN.COMPOSE.TOOLTIP_SEND' | translate}}")
+					button.btn.btn-default(type="button", ng-click="saveThisContact()", tooltip="{{'MAIN.CONTACTS.BTN_SAVE_CONTACT' | translate}}", tooltip-placement="bottom")
 						span.icon-yes
 				li(ng-show="!isEditMode")
-					button.btn.btn-default(type="button", ng-click="openEditMode()", tooltip="{{'MAIN.COMPOSE.TOOLTIP_SEND' | translate}}")
+					button.btn.btn-default(type="button", ng-click="openEditMode()", tooltip="{{'MAIN.CONTACTS.BTN_EDIT_CONTACT' | translate}}", tooltip-placement="bottom")
 						span.icon-edit
 					//| {{'MAIN.CONTACTS.BTN_EDIT_CONTACT' | translate}}
 	include ../_notifications.jade
