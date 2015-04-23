@@ -22,8 +22,8 @@
 
 			div.item(ng-if="personEmail && !personEmail.isError && personEmail.isTag")
 				span(ng-show="!personEmail.isHidden()") {{personEmail.getDisplayName()}}
-				span.icon-star(ng-show="personEmail.isStar")				
-				span{{personEmail.email}}
+				span.icon-star(ng-show="personEmail.isStar")
+				span {{personEmail.email}}
 				img.inverted.loading(src="/img/loader.svg", ng-show="personEmail.isLoadingKey()")
 				span(class="icon-lock {{personEmail.getSecureClass()}}", ng-show="!personEmail.isLoadingKey()")
 
