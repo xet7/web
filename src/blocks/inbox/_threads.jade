@@ -1,5 +1,5 @@
 #mail-list.list-pane.ng-cloak
-	.filters.row.no-gutter.lava-icon-row
+	.filters.row.no-gutter
 		nav.navbar.navbar-inverse(role="navigation")
 			div
 				//- ul.nav.navbar-nav.navbar-right(ng-show="selectedTid")
@@ -45,7 +45,7 @@
 									span.icon-lock
 								span(ng-show="thread.secure == 'none'|| thread.secure == 'some'")
 									span.icon-unlock
-			div.item-wrapper						
+			div.item-wrapper
 				.mail-list-item(ng-show="isLoadingSign && threadsList.length > 0")
 					.mail-list-wrapper
 						div.pane-status

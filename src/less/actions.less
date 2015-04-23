@@ -38,8 +38,9 @@
 		background: transparent;
 		border: 0;
 		height: @filter-height;
+
 		&:hover{
-			color: @lava-gray-lighter;
+			color: @lava-gray-light;
 		}
 		&:active{
 			outline: 0;
@@ -103,12 +104,13 @@
 		outline: 0;
 		padding: 0 1.2rem;
 		color: @lava-gray-light;
+		transition: .2s color;
 		&:active, &:hover, &:focus, &.active, &.open{
 			background: transparent none;
 			border: 0;
 			outline: 0;
 			box-shadow: none;
-			color: @lava-gray-lighter;
+			color: @lava-gray-lightest;
 		}
 
 		.transition(.2s);
