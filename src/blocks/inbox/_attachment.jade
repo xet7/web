@@ -12,5 +12,9 @@ a.attachment(ui-sref=".popup.download({emailId: email.id, fileId: file.id})")
 			path#lock(d="m40.77688,42.96763l0,-4.76647c0,-4.26474 -3.51213,-7.77688 -7.77687,-7.77688s-7.77688,3.51214 -7.77688,7.77688l0,4.76647l-1.37977,0l0,14.42485l18.18786,0l0,-14.42485l-1.25433,0l-0.00001,0zm-13.79769,-4.76647c0,-3.3867 2.75953,-6.14625 6.14624,-6.14625s6.14624,2.75954 6.14624,6.14625l0,4.76647l-12.29248,0l0,-4.76647z", fill="#00BCDF")
 
 	hgroup
-		span(ng-bind="file.filename")
+		div
+			div.file-name
+				span(ng-bind="file.filename | fileName")
+			div.file-ext
+				span(ng-bind="file.filename | fileExtension")
 		span(ng-bind="file.size | filesize")

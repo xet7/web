@@ -114,6 +114,20 @@ input[type=checkbox]:checked + label:before {
 	}
 }
 
+.btn-group{
+	.btn-default{
+		background-color: @lava-gray-lightest;
+		color: @lava;
+		line-height: @filter-height;
+  		padding: 1.5rem;
+		border-radius: 4.4rem;
+		transition: .3s color;
+		&:hover{
+			color: @lava-gray-dark;
+		}
+	}
+}
+
 
 input:focus{
 	box-shadow: none;

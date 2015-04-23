@@ -109,24 +109,29 @@
     border-radius: @border-radius-base;
     color: @lava-compose-header-fg;
     line-height: 2.2rem;
-    max-height: 300px;
+    max-height: 200px;
 
     .ui-select-choices-group {
-        // padding-top: .4rem;
+        overflow: hidden;
+        height: auto;
     }
     .ui-select-choices-row {
         height: 2.2rem;
         > a {
             color: @lava-compose-header-fg;
+            font-size: 1.3rem;
         }
-        &.active > a{
+        &.active {
             background-color: @lava !important;
-            color: #FFF !important;
-            .muted {
+            > a{
+                background-color: transparent !important;
                 color: #FFF !important;
-            }
-            .icon-lock{
-                color: #FFF !important;
+                .muted {
+                    color: #FFF !important;
+                }
+                .icon-lock{
+                    color: #FFF !important;
+                }
             }
         }
     }
