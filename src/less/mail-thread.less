@@ -1,19 +1,29 @@
 #mail-thread{
-	
+	&:hover {
+		.navbar-right-buttons {
+			opacity: 1;
+		}
+	}
+	.global-mail-actions {
+		.pos-abs();
+		bottom: 1.6rem;
+		.text-center();
+		.z2();
+		
+		.btn-group{
+			box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
+			border-radius: 4.4rem;
+		}
+	}
 }
 
 .mail{
 	.navbar-right-buttons {
 		position: absolute;
-		right:0;
-		bottom: 0;
+		right:1.6rem;
+		bottom: 0.6rem;
 		opacity:0;
 		transition:opacity 0.2s linear;
-	}
-	&:hover {
-		.navbar-right-buttons {
-			opacity: 1;
-		}
 	}
 
 	border: @border-site-wide;
@@ -25,13 +35,14 @@
 	border-bottom: @border-site-wide;
 	font-size: 13px;
 	line-height: 1.3em;
+	color: @mail-thread-fg;
 	&:hover{
 		.pos-rel();
 		.z1();
 		transition: .5s all;
 		box-shadow: 0px 1px 14px 0 rgba(0, 0, 0, 0.19);
-		border: 1px solid @lava !important;
-		border-bottom-color: @lava;
+		// border: 1px solid @lava !important;
+		// border-bottom-color: @lava;
 	}
 
 	
@@ -69,7 +80,10 @@
 	footer{
 		margin-bottom: 0px !important;
 		&:not(.signature){
-			border-top: @border-site-wide;
+			border-top: 1px solid @mail-thread-attachment-border;
+		}
+		&.attachments{
+			padding-right: 16.4rem;
 		}
 	}
 
@@ -84,7 +98,10 @@
 	margin: 1.1rem 1.1rem 0 0;
 	padding: 1.1rem 1.1rem 1.1rem 0;
 	position: relative;
-	color: black;
+	min-height: 11rem;
+	padding-left: 7.7rem;
+	color: @mail-thread-fg;
+	// display: flex;
 	&[filetype=pdf]{
 		&:before{
 			background: @lava-blue;
@@ -92,19 +109,40 @@
 	}
 	&:hover{
 		text-decoration: none;
+		color: @lava-gray-dark;
 	}
 	#attachment-icon{
 		margin-right: 1.1rem;
 		filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
-
+		.pos-abs();
+		left: 0;
 	}
 	> * {
 		display: inline-block;
 		vertical-align: middle;
+		// flex-grow: 1;
 	}
 	hgroup{
-		span {
+		.pos-abs();
+		right: 0;
+		left: 7.7rem;
+		.vertical-align();
+		> div {
+			display: flex;
+		}
+		.file-name span {
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
 			display: block;
+  			width: 100%;
+		}
+		.file-ext{
+			flex: 1;
+			span {
+				.pos-rel();
+				left: -0.2rem;
+			}
 		}
 	}
 }

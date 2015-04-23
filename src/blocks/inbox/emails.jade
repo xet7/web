@@ -23,18 +23,23 @@ div.pane-status(ng-if="selectedTid === null")
 						span.icon-put-back
 	include ../_notifications.jade
 
+.global-mail-actions
+	div.btn-group
+		button.btn.btn-default(ng-show="selectedTid", ng-click="")
+			span.icon-reply
+		button.btn.btn-default(ng-show="selectedTid", ng-click="")
+			span.icon-reply-all
+		button.btn.btn-default(ng-show="selectedTid", ng-click="")
+			span.icon-arrow-right
 div(ng-if="selectedTid").main-view
 	.pane-status(ng-show="isLoadingSign || emails.isLoading")
 		img(src="/img/loader.svg")
-
 	div.logo.only-print
-		img(src="/img/Lavaboom-logo-gray.svg")		
+		img(src="/img/Lavaboom-logo-gray.svg")
 	.row.no-gutter.mail(ng-repeat="email in emails.list")
 		.col-xs-24
 			header.row.no-gutter
 				.col-xs-21
-					//strong(ng-bind="email.fromName")
-					//br
 					div {{'MAIN.COMPOSE.LB_FROM' | translate}}:
 						strong(ng-repeat="from in email.from")
 							email-context-menu(email="from.address", is-open="from.isContextMenuOpened")
@@ -63,17 +68,25 @@ div(ng-if="selectedTid").main-view
 					div {{'INBOX.LB_NO_PRIVATE_KEY_FOUND2' | translate}}
 						a(ui-sref="main.settings.security") {{'INBOX.LB_SETTINGS' | translate}}
 						| {{'INBOX.LB_NO_PRIVATE_KEY_FOUND3' | translate}}
-			footer(ng-show="email.files.length")
+			footer.attachments(ng-show="email.files.length")
 				.row.no-gutter
-					.col-xs-8(ng-repeat="file in email.files")
+					.col-xs-12(ng-repeat="file in email.files")
 						include _attachment.jade
-			ul.nav.navbar-nav.navbar-right.navbar-right-buttons
-				li(ng-show="selectedTid")
-					button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
-						span.icon-reply
-				li(ng-show="selectedTid")
-					button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
-						span.icon-reply-all
-				li(ng-show="selectedTid")
-					button.btn.btn-default(ng-click="showPopup('compose', {forwardEmailId: email.id})")
-						span.icon-arrow-right
+			//- ul.nav.navbar-nav.navbar-right.navbar-right-buttons
+			//- 	li(ng-show="selectedTid")
+			//- 		button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
+			//- 			span.icon-reply
+			//- 	li(ng-show="selectedTid")
+			//- 		button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
+			//- 			span.icon-reply-all
+			//- 	li(ng-show="selectedTid")
+			//- 		button.btn.btn-default(ng-click="showPopup('compose', {forwardEmailId: email.id})")
+			//- 			span.icon-arrow-right
+			div.btn-group.navbar-right-buttons
+				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
+					span.icon-reply
+				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
+					span.icon-reply-all
+				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {forwardEmailId: email.id})")
+					span.icon-arrow-right
+			
