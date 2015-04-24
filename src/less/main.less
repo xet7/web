@@ -288,6 +288,16 @@ p.hyphenate{
 	.opacity(.9);
 }
 
+.btn-unstyled{
+	border: 0;
+	background: transparent none;
+	&:active, &.active{
+		border: 0;
+		background: transparent none;
+		box-shadow: none;
+	}
+}
+
 .no-image{
 	background: @lava-gray-light;
 	border: @border-site-wide;

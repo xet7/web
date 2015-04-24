@@ -32,5 +32,5 @@
 				span.icon-star(ng-show="personEmail.isStar")
 				span.muted(ng-bind-html="personEmail.email | highlight: $select.search")
 				span(class="icon-lock {{personEmail.getSecureClass()}}")
-
-	span.icon-close.pull-right(ng-click="#{defs.click}")
+	button.btn-unstyled.pull-right(ng-click="#{defs.click}")
+		span.icon-close

@@ -14,6 +14,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.isWarning = false;
 	$scope.isError = false;
 	$scope.isXCC = false;
+	$scope.isCC = false;
+	$scope.isBCC = false;
 	$scope.isSkipWarning = user.settings.isSkipComposeScreenWarning;
 	$scope.attachments = [];
 
@@ -340,6 +342,9 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.clearTo = () => $scope.form.selected.to = [];
 	$scope.clearCC = () => $scope.form.selected.cc = [];
 	$scope.clearBCC = () => $scope.form.selected.bcc = [];
+
+	$scope.toggleCC = () => $scope.isCC = !$scope.isCC;
+	$scope.toggleBCC = () => $scope.isBCC = !$scope.isBCC;
 
 	$scope.tagClicked = (select, item, model) => {
 		const index = model.findIndex(c => c.email == item.email);

@@ -36,13 +36,13 @@ div#compose-wrapper
 				- defs = {model: "form.selected.to", label: "{{'MAIN.COMPOSE.LB_TO' | translate}}", click: "clearTo()", required: true};
 				include ./compose/_compose.email.jade
 				div.cc-buttons
-					button.btn.btn-default(ng-click="isCC = !isCC", ng-disabled="isWarning") {{'MAIN.COMPOSE.LB_CC' | translate}}
-					button.btn.btn-default(ng-click="isBCC = !isBCC", ng-disabled="isWarning") {{'MAIN.COMPOSE.LB_BCC' | translate}}
+					button.btn.btn-default(ng-click="isCC = !isCC", ng-disabled="isWarning" ng-class="{isCC : hidden}") {{'MAIN.COMPOSE.LB_CC' | translate}}
+					button.btn.btn-default(ng-click="isBCC = !isBCC", ng-disabled="isWarning" ng-class="{isBCC : hidden}") {{'MAIN.COMPOSE.LB_BCC' | translate}}
 			.table-list(ng-if="isCC")
-				- defs = {model: "form.selected.cc", label: "{{'MAIN.COMPOSE.LB_CC' | translate}}", click: "clearCC()"};
+				- defs = {model: "form.selected.cc", label: "{{'MAIN.COMPOSE.LB_CC' | translate}}", click: "toggleCC()"};
 				include ./compose/_compose.email.jade
 			.table-list(ng-if="isBCC")
-				- defs = {model: "form.selected.bcc", label: "{{'MAIN.COMPOSE.LB_BCC' | translate}}", click: "clearBCC()"};
+				- defs = {model: "form.selected.bcc", label: "{{'MAIN.COMPOSE.LB_BCC' | translate}}", click: "toggleBCC()"};
 				include ./compose/_compose.email.jade
 			.table-list
 				.cell.label
