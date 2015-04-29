@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'lavaboom';
-	src:url('fonts/lavaboom.eot?-8qtit6');
-	src:url('fonts/lavaboom.eot?#iefix-8qtit6') format('embedded-opentype'),
-		url('fonts/lavaboom.woff?-8qtit6') format('woff'),
-		url('fonts/lavaboom.ttf?-8qtit6') format('truetype'),
-		url('fonts/lavaboom.svg?-8qtit6#lavaboom') format('svg');
+	src:url('fonts/lavaboom.eot?-p2alli');
+	src:url('fonts/lavaboom.eot?#iefix-p2alli') format('embedded-opentype'),
+		url('fonts/lavaboom.woff?-p2alli') format('woff'),
+		url('fonts/lavaboom.ttf?-p2alli') format('truetype'),
+		url('fonts/lavaboom.svg?-p2alli#lavaboom') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -43,8 +43,14 @@
 	content: "\e60a";
 }
 
-.icon-put-back:before {
+.icon-put-back .path1:before {
 	content: "\e60b";
+	color: rgb(30, 30, 28);
+}
+.icon-put-back .path2:before {
+	content: "\e619";
+	margin-left: -1em;
+	color: rgb(0, 0, 0);
 }
 
 .icon-public-key-download:before {
@@ -139,6 +145,22 @@
 	content: "\f03c";
 }
 
+.icon-format-list-numbered:before {
+	content: "\e603";
+}
+
+.icon-format-quote:before {
+	content: "\e604";
+}
+
+.icon-format-underline:before {
+	content: "\e605";
+}
+
+.icon-format-photo:before {
+	content: "\e606";
+}
+
 .icon-plus:before {
 	content: "\2b";
 }
@@ -153,10 +175,6 @@
 
 .icon-info-circle:before {
 	content: "\39";
-}
-
-.icon-tick:before {
-	content: "\37";
 }
 
 .icon-compose:before {
@@ -189,10 +207,6 @@
 
 .icon-ban:before {
 	content: "\68";
-}
-
-.icon-empty-trash2:before {
-	content: "\69";
 }
 
 .icon-trash:before {
@@ -235,24 +249,8 @@
 	content: "\73";
 }
 
-.icon-close-small:before {
-	content: "\74";
-}
-
-.icon-edit2:before {
-	content: "\75";
-}
-
 .icon-chevron-down:before {
 	content: "\76";
-}
-
-.icon-chevron-down-small:before {
-	content: "\77";
-}
-
-.icon-put-back2:before {
-	content: "\78";
 }
 
 .icon-arrow-right:before {
@@ -279,10 +277,6 @@
 	content: "\df";
 }
 
-.icon-save2:before {
-	content: "\31";
-}
-
 .icon-read:before {
 	content: "\32";
 }
@@ -301,21 +295,5 @@
 
 .icon-lavaboom:before {
 	content: "\36";
-}
-
-.icon-format-list-numbered:before {
-	content: "\e603";
-}
-
-.icon-format-quote:before {
-	content: "\e604";
-}
-
-.icon-format-underline:before {
-	content: "\e605";
-}
-
-.icon-format-photo:before {
-	content: "\e606";
 }
 
