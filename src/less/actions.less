@@ -11,6 +11,7 @@
 	.search-icon {
 		// width: @mail-list-block-buttons-width;
 		height: @filter-height;
+		.lava-icon-22();
 		padding: 0 .5rem 0 1rem;
 		.icon-search{
 			// padding-left: 1.2rem;
@@ -26,12 +27,12 @@
 
 	color: @lava-gray-light;
 
-	[class^="icon-"],
-	[class*=" icon-"] {
-		font-size: 2rem;
-		line-height: @filter-height - 0.3rem;
-		// color: @lava-gray-light;
-	}
+	// [class^="icon-"],
+	// [class*=" icon-"] {
+	// 	font-size: 2rem;
+	// 	line-height: @filter-height - 0.3rem;
+	// 	// color: @lava-gray-light;
+	// }
 
 	button, label{
 		color: @lava-gray-light;
@@ -102,7 +103,7 @@
 		background: transparent none;
 		border: 0;
 		outline: 0;
-		padding: 0 1.2rem;
+		.lava-icon-22();
 		color: @lava-gray-light;
 		transition: .2s color;
 		&:active, &:hover, &:focus, &.active, &.open{
