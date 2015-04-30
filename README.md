@@ -15,10 +15,13 @@ Should be globally installed
 
 ## Installation
 
-git clone https://github.com/lavab/web.git
-cd web
-npm install
-gulp
+    git clone https://github.com/lavab/web.git
+    cd web 
+    npm install
+    gulp
+
+_or_ in one command:
+    git clone https://github.com/lavab/web.git && cd web && npm install && gulp
 
 Before running gulp, please make sure npm finished without errors
 
@@ -57,15 +60,15 @@ If the following information isn't visible on screenshot or if there is no scree
 
 3. clone git repo
 
-4. npm install && gulp
+4. `npm install && gulp`
 it should download npm development dependencies, build the project for development and start the web server on 0.0.0.0:5000 (by default)
 
 ## About gulp
 
 Gulp supports watching && live reload of your browser on project's files change.
 
-gulp develop && gulp serve - compile project one time for develop and run web server
-gulp production && gulp serve - compile project one time for production and run web server
+`gulp develop && gulp serve` - compile project one time for develop and run web server
+`gulp production && gulp serve` - compile project one time for production and run web server
 
 ## Known issues
 
