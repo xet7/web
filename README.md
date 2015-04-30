@@ -15,27 +15,30 @@ Should be globally installed
 
 ## Installation
 
-git clone https://github.com/lavab/web.git
-cd web
-npm install
-gulp
+    git clone https://github.com/lavab/web.git
+    cd web 
+    npm install
+    gulp
 
-Before running gulp, please make sure npm finished without errors
+_or_ in one command:
+    `git clone https://github.com/lavab/web.git && cd web && npm install && gulp`
+
+Before running `gulp`, please make sure `npm` finished without errors
 
 ## Passing configuration
 
-please check web/gulp/config.js for available configuration options
+please check `web/gulp/config.js` for available configuration options
 
-    `isProduction` - is production build?(don't change directly, use `gulp develop`, `gulp productiuon`)
-    `nodeVersion` - minimum required node version(don't change)
-    `isDebugable` - is debugable build?(if it's not gulp will not generate source maps)
-    `isLogs` - is loggable build?(if it's not gulp will not remove all logging statements)
-    `defaultApiUri` - where is the API?
-    `defaultRootDomain` - where are we installed?
-    `livereloadListenAddress` - livereload listen address for development(when running `gulp` default target)
-    `livereloadListenPort` - livereload listen port for development(when running `gulp` default target)
-    `listenAddress` - web server's listen address for development(when running `gulp` default target)
-    `listenPort` - web server's listen port for development(when running `gulp` default target)
+`isProduction` - is production build?(don't change directly, use `gulp develop`, `gulp productiuon`)
+`nodeVersion` - minimum required node version(don't change)
+`isDebugable` - is debugable build?(if it's not gulp will not generate source maps)
+`isLogs` - is loggable build?(if it's not gulp will not remove all logging statements)
+`defaultApiUri` - where is the API?
+`defaultRootDomain` - where are we installed?
+`livereloadListenAddress` - livereload listen address for development(when running `gulp` default target)
+`livereloadListenPort` - livereload listen port for development(when running `gulp` default target)
+`listenAddress` - web server's listen address for development(when running `gulp` default target)
+`listenPort` - web server's listen port for development(when running `gulp` default target)
 
 ## How to report a issue?
 
@@ -57,15 +60,15 @@ If the following information isn't visible on screenshot or if there is no scree
 
 3. clone git repo
 
-4. npm install && gulp
+4. `npm install && gulp`
 it should download npm development dependencies, build the project for development and start the web server on 0.0.0.0:5000 (by default)
 
 ## About gulp
 
 Gulp supports watching && live reload of your browser on project's files change.
 
-gulp develop && gulp serve - compile project one time for develop and run web server
-gulp production && gulp serve - compile project one time for production and run web server
+`gulp develop && gulp serve` - compile project one time for develop and run web server
+`gulp production && gulp serve` - compile project one time for production and run web server
 
 ## Known issues
 
@@ -81,5 +84,5 @@ This most likely will cause build failure. Currently you will have to terminate 
 
 ## License
 
-This project is licensed under the MIT license. Check `license` for more
+This project is licensed under the MIT license. Check __license__ for more
 information.
