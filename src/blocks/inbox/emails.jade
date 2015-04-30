@@ -23,13 +23,13 @@ div.pane-status(ng-if="selectedTid === null")
 						span.icon-put-back
 	include ../_notifications.jade
 
-.global-mail-actions
+.global-mail-actions(ng-hide="isLoadingSign || emails.isLoading")
 	div.btn-group
-		button.btn.btn-default(ng-show="selectedTid", ng-click="")
+		button.btn.btn-default(ng-show="selectedTid", ng-click="alert('to be implemented')")
 			span.icon-reply
-		button.btn.btn-default(ng-show="selectedTid", ng-click="")
+		button.btn.btn-default(ng-show="selectedTid", ng-click="alert('to be implemented')")
 			span.icon-reply-all
-		button.btn.btn-default(ng-show="selectedTid", ng-click="")
+		button.btn.btn-default(ng-show="selectedTid", ng-click="alert('to be implemented')")
 			span.icon-arrow-right
 div(ng-if="selectedTid").main-view
 	.pane-status(ng-show="isLoadingSign || emails.isLoading")
@@ -89,4 +89,6 @@ div(ng-if="selectedTid").main-view
 					span.icon-reply-all
 				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {forwardEmailId: email.id})")
 					span.icon-arrow-right
+				button.btn.btn-default(ng-show="selectedTid", ng-click="alert('to be implemented')")
+					span.icon-trash
 			

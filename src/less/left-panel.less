@@ -80,6 +80,7 @@
 						padding: 1.1rem 0;
 						display: inline-block;
 						vertical-align: middle;
+						max-width: 30rem;
 				}
 
 				.badge {
@@ -165,29 +166,31 @@
 		}
 
 		#navigation ul li {
-			> a{
+			> a, button{
 				padding: @left-panel-padding-sm;
-				.text-center();
+				// .text-center();
 				span{
-					padding-right: 0 !important;
+					// padding-right: 0 !important;
 				}
 			}
 			&.logout{
 				button{
-					.text-center();
-					padding: 0;
+					// .text-center();
+					// padding: 0;
 					span { 
-						padding: 0;
+						// padding: 0;
 					}
 				}
 			}
 		}
 		
 		.action, small {
-			max-width: 0;
+			max-width: 0 !important;
 			overflow: hidden;
 			display: none;
 			.opacity(0);
+			transition: .2s all;
+			white-space: nowrap;
 		}
 
 		.badge{
