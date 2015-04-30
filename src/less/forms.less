@@ -67,7 +67,7 @@ input[type=checkbox] {
 
 input[type=checkbox]:checked + label:before {
 	font-family: 'lavaboom';
-    content: "7";  
+    content: "\e618";  
     line-height: 22px;
     font-size: 17px;
     text-align: center;
@@ -168,7 +168,6 @@ form.settings{
 
 	[class^="icon-"]:not(.field-icon), [class*=" icon-"]:not(.field-icon){
 		color: @lava-gray-light;
-		font-size: 1.3em;
 	}
 
 	.form-wrap{
@@ -309,6 +308,7 @@ form.settings{
 			.btn{
 				background: transparent;
 				border-color: transparent !important;
+				font-size: 2.2rem;
 				&:active,&:focus, &.active{
 					background: transparent;
 					box-shadow: none;
@@ -326,11 +326,15 @@ form.settings{
 				// font-size: @font-size-base;
 				line-height: @filter-height;
 				height: @filter-height;
+
 				padding-top: 0;
 				padding-bottom: 0;
 			}
-			span.dropdown{
+			span.dropdown {
 				padding-bottom: 2rem;
+				button{
+					.lava-icon-22();
+				}
 			}
 
 			.icon-key-pair{
@@ -504,7 +508,7 @@ form.settings{
 						.pos-rel();
 						&:after{
 							.lava-icon();
-							content: "\37";
+							content: "\e618";
 							color: @lava;
 							.pos-abs();
 							right: 1.8rem;
