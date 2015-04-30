@@ -98,6 +98,15 @@ a:hover{
 	.list-group{
 		// border-bottom: @border-site-wide;
 		// padding-bottom: .1rem;
+		&.big-text{
+			span {
+				font-size: 22px;
+			}
+			i.icon{
+				position: relative;
+				top: -.4rem;
+			}
+		}
 	}
 	.list-group-item {
 		&:first-child, &.active{
@@ -125,13 +134,10 @@ a:hover{
 			text-decoration: none !important;
 			> i.icon{
 				display: inline-block;
-				font-size: 2.8rem;
-				line-height: 4.8rem;
+				
 				vertical-align: middle;
 				text-align: center;
-				position: relative;
-				top: -.2rem;
-				padding-right: 1.5rem;
+				.lava-icon-44();
 			}
 		}
 		&:hover{
