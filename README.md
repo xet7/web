@@ -21,7 +21,7 @@ Should be globally installed
     gulp
 
 _or_ in one command:
-    git clone https://github.com/lavab/web.git && cd web && npm install && gulp
+    `git clone https://github.com/lavab/web.git && cd web && npm install && gulp`
 
 Before running gulp, please make sure npm finished without errors
 
