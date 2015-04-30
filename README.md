@@ -53,7 +53,7 @@ If the following information isn't visible on screenshot or if there is no scree
 
 1. make sure node.js(>=0.10.35) is installed, you can use nvm for this
 
-2. from root install gulp globally, npm -g install gulp
+2. from root install gulp globally, `npm -g install gulp`
 
 3. clone git repo
 
