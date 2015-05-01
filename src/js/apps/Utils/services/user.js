@@ -131,6 +131,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		return res.body;
 	});
 
+	this.startOnboarding = () => {
+		return LavaboomAPI.accounts.startOnboarding('me');
+	};
+
 	this.update = (settings) => {
 		angular.extend(self.settings, settings);
 		return LavaboomAPI.accounts.update('me', {

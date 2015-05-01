@@ -86,6 +86,8 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user, consts, $http) {
 				});
 
 			yield user.update(settings);
+
+			yield user.startOnboarding();
 		});
 	};
 };
