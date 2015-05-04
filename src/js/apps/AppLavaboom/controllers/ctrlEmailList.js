@@ -4,13 +4,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 
 	$scope.selfEmail = user.email;
 
-	const setRead = () => co(function *(){
-		yield utils.sleep(consts.SET_READ_AFTER_TIMEOUT);
-		if ($scope.$$destroyed)
-			return;
-		inbox.setThreadReadStatus($scope.selectedTid);
-	});
-
 	const translations = {
 		TITLE_CONFIRM: '',
 		LB_EMAIL_HAS_EMBEDDED_STYLING: ''
@@ -44,7 +37,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 
 	$rootScope.$on('inbox-new', (e, threadId) => {
 		if (threadId == $scope.selectedTid)
-			setRead();
+			inbox.setThreadReadStatus($scope.selectedTid);
 	});
 
 	if ($scope.selectedTid) {
@@ -70,7 +63,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 
 				$scope.emails.list = yield emailsPromise;
 
-				setRead();
+				inbox.setThreadReadStatus($scope.selectedTid);
 			} finally {
 				$scope.emails.isLoading = false;
 			}
