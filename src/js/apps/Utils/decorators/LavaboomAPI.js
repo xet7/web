@@ -4,12 +4,12 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co) => {
 	$delegate.formatError = (callName, error) => {
 		callName = callName.toUpperCase();
 
-		const translate = (name) => co(function *(){
+		const translate = (name) => function *(){
 			let r = yield $translate(name);
 			if (r == name)
 				throw new Error(`Translation '${name}' not found!`);
 			return r;
-		});
+		};
 
 		return co(function *(){
 			try {
