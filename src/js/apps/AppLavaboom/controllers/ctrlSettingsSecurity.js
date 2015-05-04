@@ -19,7 +19,10 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, Key,
 		TITLE_CONFIRM: '',
 		LB_CONFIRM_PASSWORD_CHANGE: '',
 		LB_CONFIRM_KEYS_REMOVAL: '',
-		LB_CONFIRM_LS_DISABLE: ''
+		LB_CONFIRM_LS_DISABLE: '',
+		LB_CANNOT_IMPORT: '',
+		LB_CANNOT_IMPORT_WRONG_FORMAT: '',
+		LB_CANNOT_IMPORT_CORRUPTED: ''
 	};
 	$translate.bindAsObject(translations, 'MAIN.SETTINGS.SECURITY');
 
@@ -83,12 +86,24 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, Key,
 	};
 
 	$scope.exportKeys = () => {
+		console.log('exporting keys');
 		let keysBackup = cryptoKeys.exportKeys();
+		console.log('keys backup:', keysBackup);
 		saver.saveAs(keysBackup, cryptoKeys.getExportFilename(keysBackup, user.name));
 	};
 
 	$scope.importKeys = (data) => {
-		cryptoKeys.importKeys(data);
+		try {
+			cryptoKeys.importKeys(data);
+		} catch (err) {
+			console.log('LB_CANNOT_IMPORT_' + err.message);
+			const translatedErrorMessage = translations['LB_CANNOT_IMPORT_' + err.message];
+
+			notifications.set('import-keys-fail', {
+				text: translatedErrorMessage ? translatedErrorMessage : translations.LB_CANNOT_IMPORT,
+				namespace: 'settings'
+			});
+		}
 		inbox.invalidateEmailCache();
 	};
 
