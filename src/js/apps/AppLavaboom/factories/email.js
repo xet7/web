@@ -53,7 +53,7 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 
 		let isSecured = Email.isSecuredKeys(keys);
 
-		const subjectHash = openpgp.util.hexstrdump(openpgp.crypto.hash.sha256(Email.getSubjectWithoutRe(manifest.subject)));
+		const subjectHash = crypto.hash(Email.getSubjectWithoutRe(manifest.subject));
 
 		if (isSecured) {
 			keys[user.email] = user.key.key;

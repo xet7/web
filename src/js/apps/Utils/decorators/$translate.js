@@ -1,18 +1,32 @@
-module.exports = /*@ngInject*/($delegate, $q, $rootScope) => {
+module.exports = /*@ngInject*/($delegate, $q, $rootScope, utils) => {
+	const translationTablesCache = {};
+
 	$delegate.instantWithPrefix = (name, prefix = '') => {
 		if (angular.isObject(name)) {
-			const translationTable = name;
+			let translationTable = name;
+			let originalTranslationTable = translationTable;
 
-			return Object.keys(translationTable).reduce((a, translationKey) => {
+			if (!translationTable.__UID) {
+				translationTable.__UID = utils.getRandomString(16);
+				translationTablesCache[translationTable.__UID] = angular.copy(translationTable);
+			} else
+				originalTranslationTable = translationTablesCache[translationTable.__UID];
+
+			return Object.keys(originalTranslationTable).reduce((a, translationKey) => {
+				if (translationKey.startsWith('__'))
+					return a;
+
+				let value = '';
 				let isParam = false;
-				if (translationTable[translationKey].startsWith('%')) {
-					translationTable[translationKey] = translationTable[translationKey].substr(1);
-					isParam = true;
-				}
 
-				const resolvedTranslationKey = prefix && !translationTable[translationKey]
+				if (originalTranslationTable[translationKey].startsWith('%')) {
+					value = originalTranslationTable[translationKey].substr(1);
+					isParam = true;
+				} else value = originalTranslationTable[translationKey];
+
+				const resolvedTranslationKey = prefix && !value
 						? prefix + '.' + translationKey
-						: translationTable[translationKey] + '.' + translationKey;
+						: value + '.' + translationKey;
 
 				a[translationKey] = isParam
 					? (argsObject) => $delegate.instant(resolvedTranslationKey, argsObject)
@@ -27,10 +41,9 @@ module.exports = /*@ngInject*/($delegate, $q, $rootScope) => {
 	$delegate.bindAsObject = (translations, prefix = '', map = null, postProcess = null) => {
 		let deferred = $q.defer();
 
-		const originalTranslations = angular.copy(translations);
 		$rootScope.$bind('$translateChangeSuccess', () => {
 			try {
-				const currentTranslations = $delegate.instantWithPrefix(originalTranslations, prefix);
+				const currentTranslations = $delegate.instantWithPrefix(translations, prefix);
 				const mappedTranslations = map ? map(currentTranslations) : currentTranslations;
 				for(let k of Object.keys(mappedTranslations))
 					translations[k] = mappedTranslations[k];

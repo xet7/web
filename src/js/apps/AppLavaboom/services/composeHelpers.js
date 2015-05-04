@@ -2,7 +2,7 @@ module.exports = /*@ngInject*/function ($rootScope, $templateCache, $compile, co
 	const self = this;
 
 	const compile = (template, args) => co(function *(){
-		const marker = openpgp.util.hexstrdump(openpgp.crypto.random.getRandomBytes(16));
+		const marker = utils.getRandomString(16);
 		const templateFunction = $compile(template + '<span ng-bind-html="marker"></span>');
 
 		const isolatedScope = $rootScope.$new(true);

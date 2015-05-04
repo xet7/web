@@ -33,4 +33,13 @@ module.exports = /*@ngInject*/function ($rootScope, $q) {
 
 		return deferred.promise;
 	};
+
+	this.readAsArrayBuffer = (file, opts = {}) => {
+		let deferred = $q.defer();
+
+		let reader = getReader(deferred, opts);
+		reader.readAsArrayBuffer(file);
+
+		return deferred.promise;
+	};
 };

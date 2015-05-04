@@ -69,7 +69,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		storage['lava-token'] = token;
 	};
 
-	this.calculateHash = (password) => utils.hexify(openpgp.crypto.hash.sha256(password));
+	this.calculateHash = crypto.hash;
 
 	this.isAuthenticated = () => token && isAuthenticated;
 
@@ -130,6 +130,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 		return res.body;
 	});
+
+	this.startOnboarding = () => {
+		return LavaboomAPI.accounts.startOnboarding('me');
+	};
 
 	this.update = (settings) => {
 		angular.extend(self.settings, settings);
