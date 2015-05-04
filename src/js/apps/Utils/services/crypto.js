@@ -240,6 +240,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 		return true;
 	};
 
+	this.hash = (data) => openpgp.util.hexstrdump(openpgp.crypto.hash.sha256(data));
+
 	this.encodeEnvelopeWithKeys = (data, publicKeys, dataFieldName = 'data', prefixName = '') => co(function *(){
 		if (!data.encoding)
 			data.encoding = 'raw';

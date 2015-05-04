@@ -69,7 +69,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		storage['lava-token'] = token;
 	};
 
-	this.calculateHash = (password) => utils.hexify(openpgp.crypto.hash.sha256(password));
+	this.calculateHash = crypto.hash;
 
 	this.isAuthenticated = () => token && isAuthenticated;
 

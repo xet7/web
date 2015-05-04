@@ -1,8 +1,6 @@
 const mimelib = require('mimelib');
 
-module.exports = /*@ngInject*/(contacts, utils) => {
-	const hash = (data) => openpgp.util.hexstrdump(openpgp.crypto.hash.sha256(data));
-
+module.exports = /*@ngInject*/(contacts, utils, crypto) => {
 	function ManifestPart (manifestPart) {
 		const self = this;
 
@@ -11,7 +9,7 @@ module.exports = /*@ngInject*/(contacts, utils) => {
 		this.filename = manifestPart.filename;
 		this.hash = manifestPart.hash;
 
-		this.isValid = (body) => body.length == self.size && hash(body) == self.hash;
+		this.isValid = (body) => body.length == self.size && crypto.hash(body) == self.hash;
 
 		// todo: hack, there should be just one content type, blocked: https://github.com/lavab/mailer/issues/33
 		const contentType = manifestPart.content_type || manifestPart['content-type'];
@@ -51,7 +49,7 @@ module.exports = /*@ngInject*/(contacts, utils) => {
 		this.setBody = (data, contentType) => {
 			manifest.parts.push({
 				id: 'body',
-				hash: hash(data),
+				hash: crypto.hash(data),
 				content_type: contentType
 			});
 		};
@@ -63,7 +61,7 @@ module.exports = /*@ngInject*/(contacts, utils) => {
 		this.addAttachment = (id, data, fileName, contentType) => {
 			manifest.parts.push({
 				id: id,
-				hash: hash(data),
+				hash: crypto.hash(data),
 				filename: fileName,
 				content_type: contentType ? contentType : 'application/octet-stream',
 				charset: 'utf-8',

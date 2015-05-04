@@ -36,7 +36,7 @@
     "angular-translate": "~2.6.1",
     "angular-translate-loader-static-files": "~2.6.1",
     "angular-timeago": "~0.1.9",
-    "openpgp-js": "https://github.com/lavab/openpgpjs/archive/0.10.1/multi-threading.tar.gz",
+    "openpgp-js": "https://github.com/lavab/openpgpjs/archive/v0.10.1.2.tar.gz",
     "angular-dialog-service": "~5.2.6"
   },
   "resolutions": {

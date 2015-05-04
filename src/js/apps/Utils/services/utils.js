@@ -13,6 +13,10 @@ module.exports = /*@ngInject*/function(co) {
 		}
 	};
 
+	this.str2Uint8Array = (str) => openpgp.util.str2Uint8Array(str);
+
+	this.Uint8Array2str = (array) => openpgp.util.Uint8Array2str(array);
+
 	this.getRandomString = (size) => openpgp.util.hexstrdump(openpgp.crypto.random.getRandomBytes(size));
 
 	this.uniq = (array, key = null) => {
