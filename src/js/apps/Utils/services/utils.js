@@ -13,6 +13,8 @@ module.exports = /*@ngInject*/function(co) {
 		}
 	};
 
+	this.getRandomString = (size) => openpgp.util.hexstrdump(openpgp.crypto.random.getRandomBytes(size));
+
 	this.uniq = (array, key = null) => {
 		if (!key)
 			key = c => c;
