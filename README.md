@@ -1,4 +1,4 @@
-# Lavaboom WEB
+# Lavaboom WEB [![Build Status](https://travis-ci.org/lavab/web.svg)](https://travis-ci.org/lavab/web)
 
 <img src="https://mail.lavaboom.com/img/Lavaboom-logo.svg" align="right" width="200px" />
 
