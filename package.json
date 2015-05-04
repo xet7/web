@@ -86,5 +86,8 @@
   },
   "dependencies": {
     "lodash": "^3.5.0"
+  },
+  "scripts": {
+    "test": "gulp tests"
   }
 }
