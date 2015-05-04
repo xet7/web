@@ -83,7 +83,9 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, Key,
 	};
 
 	$scope.exportKeys = () => {
+		console.log('exporting keys');
 		let keysBackup = cryptoKeys.exportKeys();
+		console.log('keys backup:', keysBackup);
 		saver.saveAs(keysBackup, cryptoKeys.getExportFilename(keysBackup, user.name));
 	};
 
