@@ -1,5 +1,11 @@
-((assets) => {
+((assets, globs) => {
 	const Promise = require('./helpers/promise-polyfill');
+
+	let reporter = null;
+	if (globs.IS_PRODUCTION == 'true') {
+		reporter = require('./helpers/reporter');
+		reporter.install(sessionStorage);
+	}
 
 	const
 		SRC_APP_LAVABOOM_MAIN_VENDOR = '/js/appLavaboom-vendor.js',
@@ -318,8 +324,10 @@
 		this.showLoader = (isImmediate = false) => {
 			showContainer(LOADER, null, isImmediate);
 		};
+
+		this.getReporter = () => reporter;
 	}
 
 	window.loader = new Loader();
 	window.loader.initialize();
-})(window.assets);
+})(window.assets, window.globs);

@@ -20,6 +20,7 @@
 		"Symbol": true,
 		"loader": true,
 		"checker": true,
+        "printStackTrace": true,
 
 		"assets": true,
 		"primaryApplicationName": true,

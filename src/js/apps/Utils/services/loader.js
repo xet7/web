@@ -1,6 +1,8 @@
 module.exports = /*@ngInject*/function() {
 	let loader = window.loader;
 
+	this.getReporter = () => loader.getReporter();
+
 	this.loadMainApplication = (opts) => {
 		loader.loadMainApplication(opts);
 	};

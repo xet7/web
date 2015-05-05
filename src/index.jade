@@ -63,6 +63,7 @@ html(lang="en")
 				#content(ui-view="main-view", autoscroll="false")
 				#modal(ui-view="modal-view", autoscroll="false")
 
+		script!= 'window.globs = ' + JSON.stringify(globs) + ';'
 		if globs.IS_PRODUCTION
 			script!= 'window.assets = ' + JSON.stringify(assets) + ';'
 		script!= fs.readFileSync('./dist' + resolveAsset('/js/loader.js'), 'utf8')

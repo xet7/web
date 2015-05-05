@@ -31,8 +31,5 @@
 		'../../bower_components/textAngular/dist/textAngular-sanitize.min.js',
 
 		# file saver
-		'../../bower_components/file-saver/FileSaver.js',
-
-		# wooo, stacktrace!
-        '../../bower_components/stacktrace-js/dist/stacktrace.js'
+		'../../bower_components/file-saver/FileSaver.js'
 	]

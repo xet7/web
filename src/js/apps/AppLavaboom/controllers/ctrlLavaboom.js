@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
-							   notifications, tests, utils,
+							   notifications, tests, utils, consts,
 							   LavaboomAPI, co, translate, crypto, user, inbox, contacts, hotkey, loader, timeAgo) => {
 	const translations = {
 		LB_INITIALIZING_I18N : '',
@@ -76,6 +76,19 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 
 	$scope.initializeApplication = () => co(function *(){
 		try {
+			setInterval(() => {
+				const reporter = loader.getReporter();
+
+				const report = {
+					commitID: consts.COMMIT_ID,
+					version: consts.MANIFEST.version,
+					entries: reporter.exportEntries()
+				};
+
+				console.warn(report);
+				reporter.clearEntries();
+			}, 5000);
+
 			let connectionPromise = LavaboomAPI.connect();
 
 			yield translate.initialize();
