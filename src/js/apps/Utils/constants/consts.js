@@ -1,6 +1,7 @@
 module.exports = {
 	API_URI: process.env.API_URI,
 	ROOT_DOMAIN: process.env.TLD,
+	COMMIT_ID: process.env.COMMIT_ID,
 	ROOT_DOMAIN_LIST: ['lavaboom.com', 'lavaboom.io', 'lavaboom.co'],
 	IMAGES_PROXY_URI: 'https://rr.lavaboom.io',
 	DEFAULT_LANG: 'en',

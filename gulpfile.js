@@ -73,6 +73,12 @@ require('toml-require').install();
 
 var manifest = {};
 
+var git = require('git-rev');
+
+git.long(function (v) {
+	process.env.COMMIT_ID = v;
+});
+
 /**
  * Reused pipelines
  */
@@ -493,15 +499,15 @@ gulp.task('default', [
 ], function() {
 	// we can start compile only after we do have bower dependencies
 	gulp.start('compile');
-	
+
 	// watch for source changes and rebuild the whole project with _exceptions_
 	gulp.watch([paths.input, '!' + paths.styles.inputAll, '!' + paths.markup.input, '!' + paths.partials.input, '!' + paths.translations.input]).on('change', function(file) {
 		isPartialLivereloadBuild = false;
 		scheduleLiveReloadBuildTaskStart('compile');
 	});
-	
+
 	// _exceptions_
-	
+
 	// partial live-reload for style changes
 	gulp.watch(paths.styles.inputAll).on('change', function(file) {
 		scheduleLiveReloadBuildTaskStart('build:styles');
