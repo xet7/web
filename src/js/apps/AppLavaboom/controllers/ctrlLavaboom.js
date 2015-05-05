@@ -85,7 +85,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 					entries: reporter.exportEntries()
 				};
 
-				console.warn(report);
+				console.warn(JSON.stringify(report));
 				reporter.clearEntries();
 			}, 5000);
 
