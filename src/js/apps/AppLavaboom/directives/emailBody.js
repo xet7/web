@@ -26,9 +26,9 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 					for (let i = 0; i < newDataDOM.childNodes.length; i++)
 						newDataNodes.push(newDataDOM.childNodes[i]);
 
-					parent.removeChild(node);
 					for (let i = 0; i < newDataNodes.length; i++)
-						parent.appendChild(newDataNodes[i]);
+						parent.insertBefore(newDataNodes[i], node);
+					parent.removeChild(node);
 				}
 			}
 			else if (node.nodeName != 'A' && node.childNodes)

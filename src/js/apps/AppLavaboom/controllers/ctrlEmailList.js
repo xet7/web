@@ -1,14 +1,26 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParams, $translate, $sanitize,
-							   user, utils, co, inbox, consts, dialogs) => {
-	console.log('loading emails list', $stateParams.threadId);
+							   user, utils, co, inbox) => {
 
 	$scope.selfEmail = user.email;
+	$scope.labelName = $stateParams.labelName;
+	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
+	inbox.selectedTidByLabelName[$scope.labelName] = $scope.selectedTid;
 
-	const setRead = () => co(function *(){
-		yield utils.sleep(consts.SET_READ_AFTER_TIMEOUT);
-		if ($scope.$$destroyed)
-			return;
-		inbox.setThreadReadStatus($scope.selectedTid);
+	$scope.isThreads = false;
+	$scope.isLoading = false;
+
+	{
+		let list = inbox.requestListCached($scope.labelName);
+		console.log('requestListCached', list);
+		$scope.threads = list ? utils.toMap(list) : {};
+		$scope.isThreads = Object.keys($scope.threads).length > 0;
+	}
+
+	console.log('CtrlEmailList is loading', $scope.labelName, $scope.selectedTid);
+
+	$scope.$on(`inbox-threads-ready`, (e, labelName, threads) => {
+		$scope.threads = utils.toMap(threads);
+		$scope.isThreads = true;
 	});
 
 	const translations = {
@@ -42,14 +54,16 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 		inbox.requestSwitchLabel($scope.threads[tid], 'Starred');
 	};
 
-	$rootScope.$on('inbox-new', (e, threadId) => {
+	$scope.$on('inbox-new', (e, threadId) => {
 		if (threadId == $scope.selectedTid)
-			setRead();
+			inbox.setThreadReadStatus($scope.selectedTid);
 	});
 
 	if ($scope.selectedTid) {
-		$scope.emails.list = [];
-		$scope.emails.isLoading = true;
+		$scope.emails = [];
+		$scope.isLoading = true;
+
+		console.log('emails has selected tid', $scope.selectedTid);
 
 		co(function *(){
 			try {
@@ -64,30 +78,42 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 					return;
 				}
 
-				console.log('wait $scope.isThreads', $scope.isThreads);
-
 				yield utils.wait(() => $scope.isThreads);
 
-				$scope.emails.list = yield emailsPromise;
+				$scope.emails = yield emailsPromise;
 
-				setRead();
+				inbox.setThreadReadStatus($scope.selectedTid);
 			} finally {
-				$scope.emails.isLoading = false;
+				$scope.isLoading = false;
 			}
 		});
 	}
 
-	$rootScope.$on('inbox-emails', (e, threadId) => {
+	$scope.$on('inbox-emails', (e, threadId) => {
 		if (threadId != $scope.selectedTid)
 			return;
 
 		co(function *() {
-			$scope.emails.isLoading = true;
+			$scope.isLoading = true;
 			try {
-				$scope.emails.list = yield inbox.getEmailsByThreadId(threadId);
+				$scope.emails = yield inbox.getEmailsByThreadId(threadId);
 			} finally {
-				$scope.emails.isLoading = false;
+				$scope.isLoading = false;
 			}
 		});
+	});
+
+	let emailsBeforeSearch = [];
+
+	$scope.$on('inbox-emails-clear', () => {
+		emailsBeforeSearch = $scope.emails;
+		$scope.emails = [];
+	});
+
+	$scope.$on('inbox-emails-restore', () => {
+		if (emailsBeforeSearch && emailsBeforeSearch.length > 0) {
+			$scope.emails = emailsBeforeSearch;
+			emailsBeforeSearch = [];
+		}
 	});
 };

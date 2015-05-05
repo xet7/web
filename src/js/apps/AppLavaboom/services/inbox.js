@@ -139,7 +139,11 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 			email: email,
 			name: attachmentId + '.pgp'
 		});
-		return (yield crypto.decodeEnvelope(res.body.files[0], '', 'raw')).data;
+		let r = (yield crypto.decodeEnvelope(res.body.files[0], '', 'raw')).data;
+
+		console.log('downloadAttachment', r);
+
+		return r;
 	});
 
 	this.uploadAttachment = (envelope) => co(function *(){

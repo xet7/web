@@ -1,10 +1,7 @@
-module.exports = /*@ngInject*/function() {
+module.exports = /*@ngInject*/function(utils) {
 	this.saveAs = (data, name) => {
-		let hiddenElement = document.createElement('a');
+		var blob = new Blob([utils.str2Uint8Array(data)], {type: 'octet/stream'});
 
-		hiddenElement.href = 'data:attachment/text,' + encodeURI(data);
-		hiddenElement.target = '_blank';
-		hiddenElement.download = name;
-		hiddenElement.click();
+		saveAs(blob, name);
 	};
 };

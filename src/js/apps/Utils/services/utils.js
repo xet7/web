@@ -13,6 +13,12 @@ module.exports = /*@ngInject*/function(co) {
 		}
 	};
 
+	this.str2Uint8Array = (str) => openpgp.util.str2Uint8Array(str);
+
+	this.Uint8Array2str = (array) => openpgp.util.Uint8Array2str(array);
+
+	this.getRandomString = (size) => openpgp.util.hexstrdump(openpgp.crypto.random.getRandomBytes(size));
+
 	this.uniq = (array, key = null) => {
 		if (!key)
 			key = c => c;
@@ -30,6 +36,18 @@ module.exports = /*@ngInject*/function(co) {
 			a.push(obj[k]);
 			return a;
 		}, []);
+	};
+
+	this.toMap = (array, key, map) => {
+		if (!key)
+			key = (e) => e.id;
+		if (!map)
+			map = (e) => e;
+
+		return array.reduce((a, t) => {
+			a[key(t)] = map(t);
+			return a;
+		}, {});
 	};
 
 	this.sleep = (time) => co(function *(){

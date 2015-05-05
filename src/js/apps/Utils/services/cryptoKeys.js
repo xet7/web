@@ -4,12 +4,24 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 		try {
 			importObj = JSON.parse(jsonBackup);
 		} catch (error) {
-			throw new Error('Invalid keys backup format, json expected!');
+			let keyring = openpgp.key.readArmored(jsonBackup);
+
+			if (keyring.err && keyring.err.length > 0)
+				throw new Error('WRONG_FORMAT');
+
+			for(let key of keyring.keys) {
+				if (!crypto.getPrivateKeyByFingerprint(key.primaryKey.fingerprint))
+					crypto.importPrivateKey(key);
+				else
+					console.log('skip private key import - already existing', key.primaryKey.fingerprint);
+			}
+
+			return;
 		}
 
 		let bodyHash = utils.hexify(openpgp.crypto.hash.sha512(JSON.stringify(importObj.body)));
 		if (bodyHash != importObj.bodyHash)
-			throw new Error('Backup keys are corrupted!');
+			throw new Error('CORRUPTED');
 
 		Object.keys(importObj.body.key_pairs).forEach(email => {
 			importObj.body.key_pairs[email].prv.forEach(privateKeyArmored => {

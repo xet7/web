@@ -1,3 +1,2 @@
-div(ng-controller="CtrlInbox")
-	include inbox/_threads.jade
-	#mail-thread.details-pane.ng-cloak(ui-view="emails")
+#mail-list.list-pane.ng-cloak(ui-view="threads")
+#mail-thread.details-pane.ng-cloak(ui-view="emails")

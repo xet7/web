@@ -3,7 +3,7 @@ module.exports = /*@ngInject*/(co, user, crypto, utils, fileReader, Email) => {
 		const self = this;
 
 		angular.extend(this, {
-			id: utils.hexify(openpgp.crypto.random.getRandomBytes(16)),
+			id: utils.getRandomString(16),
 			type: file.type,
 			name: file.name,
 			dateModified: new Date(file.lastModifiedDate),
@@ -11,8 +11,10 @@ module.exports = /*@ngInject*/(co, user, crypto, utils, fileReader, Email) => {
 			size: 0
 		});
 
+		this.getBodyAsBinaryString = () => utils.Uint8Array2str(self.body);
+
 		this.read = () => co(function* (){
-			self.body = yield fileReader.readAsText(file);
+			self.body = new Uint8Array(yield fileReader.readAsArrayBuffer(file));
 			self.size = self.body ? self.body.length : 0;
 		});
 	}

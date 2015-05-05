@@ -1,45 +1,40 @@
-module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co) => {
+module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, utils) => {
 	let propsList = ['info', 'accounts', 'files', 'contacts', 'emails', 'labels', 'keys', 'threads', 'tokens'];
 
-	$delegate.formatError = (callName, error) => {
+	const formatError = (callName, error) => {
 		callName = callName.toUpperCase();
 
-		const translate = (name) => co(function *(){
-			let r = yield $translate(name);
-			if (r == name)
+		const translate = (name) => {
+			let r = $translate.instant(name);
+			if (r == name || !r)
 				throw new Error(`Translation '${name}' not found!`);
 			return r;
-		});
+		};
 
-		return co(function *(){
+		try {
+			if (error.body && error.body.message == 'Unexpected end of input')
+				return translate(`LAVABOOM.API.ERROR.DOWN`);
+
+			return translate(`LAVABOOM.API.ERROR.${callName}.${error.status}`);
+		} catch (err) {
+			const def = utils.def(() => translate(`LAVABOOM.API.ERROR.${callName}.DEFAULT`), '');
+
 			try {
-				if (error.body && error.body.message == 'Unexpected end of input')
-					return yield translate(`LAVABOOM.API.ERROR.DOWN`);
-
-				return yield translate(`LAVABOOM.API.ERROR.${callName}.${error.status}`);
+				let genericReason = translate(`LAVABOOM.API.ERROR.${error.status}`);
+				return def ? `${def} (${genericReason})` : genericReason;
 			} catch (err) {
-				let def = '';
-				try {
-					def = yield translate(`LAVABOOM.API.ERROR.${callName}.DEFAULT`);
-				} catch (e) {}
+				if (error.body && error.body.message)
+					return error.body.message;
 
+				// huh? wtf!
 				try {
-					let genericReason = yield translate(`LAVABOOM.API.ERROR.${error.status}`);
-					return def ? `${def} (${genericReason})` : genericReason;
+					return translate(`LAVABOOM.API.ERROR.UNKNOWN`);
 				} catch (err) {
-					if (error.body && error.body.message)
-						return error.body.message;
-
-					// huh? wtf!
-					try {
-						return yield translate(`LAVABOOM.API.ERROR.UNKNOWN`);
-					} catch (err) {
-						// srsly? wtf!
-						return 'unknown error';
-					}
+					// srsly? wtf!
+					return 'unknown error';
 				}
 			}
-		});
+		}
 	};
 
 	let patchApiMethod = (obj, k, callName) => {
@@ -55,7 +50,7 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co) => {
 
 					return res;
 				} catch (err) {
-					let formattedError = yield $delegate.formatError(callName, err);
+					let formattedError = formatError(callName, err);
 					$rootScope.currentErrorMessage = formattedError;
 
 					console.error(`${callName} error: `, err);

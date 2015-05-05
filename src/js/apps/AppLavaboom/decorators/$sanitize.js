@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($delegate, $injector) => {
+module.exports = /*@ngInject*/($delegate, $injector, utils) => {
 	const self = $delegate;
 
 	const getDOM = (html) => {
@@ -69,7 +69,7 @@ module.exports = /*@ngInject*/($delegate, $injector) => {
 		let dom = getDOM(html);
 
 		const stylesOpts = {
-			uniqKey: openpgp.util.hexstrdump(openpgp.crypto.random.getRandomBytes(16)),
+			uniqKey: utils.getRandomString(16),
 			styleIndex: 0,
 			styles: {},
 			removeNodes: []
