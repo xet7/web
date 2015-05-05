@@ -40,7 +40,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			const r = $scope.filteredThreadsList.find(t => t.id == $scope.selectedTid);
 			if (!r) {
 				emailsSelectedTid = $scope.selectedTid;
-				console.log('broadcasted inbox-emails-clear');
+				$rootScope.$broadcast('inbox-emails-clear');
 			} else if ($scope.selectedTid == emailsSelectedTid) {
 				$rootScope.$broadcast('inbox-emails-restore');
 			}
