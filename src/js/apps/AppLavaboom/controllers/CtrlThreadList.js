@@ -146,18 +146,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			$scope.selectedTid = toParams.threadId ? toParams.threadId : null;
 	});
 
-	$scope.$on(`inbox-threads`, (e, labelName) => {
+	$scope.$on(`inbox-threads`, (e, labelName) => co(function *(){
 		console.log('inbox-threads', labelName);
 
-		if (labelName != $scope.labelName) {
-			console.log(`(threads ctrl) inbox-threads data has been rejected, label should match to `, $scope.labelName);
-			return;
-		}
-
 		try {
-			const threadsList = inbox.requestListDirect($scope.labelName);
-			if (threadsList.length < 1)
-				return;
+			const threadsList = yield inbox.requestListDirect($scope.labelName, 0, $scope.offset + $scope.limit);
 
 			let selectedIndex = $scope.threadsList && $scope.selectedTid !== null
 				? $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid)
@@ -177,17 +170,17 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			console.log('inbox-threads selectedIndex 2: ', selectedIndex);
 
 			$scope.threads = utils.toMap($scope.threadsList);
-
+		} finally {
 			if (setLoadingSignTimeout) {
 				$timeout.cancel(setLoadingSignTimeout);
 				setLoadingSignTimeout = null;
 			}
-		} finally {
+
 			$scope.isLoading = false;
 			$scope.isLoadingSign = false;
 			$scope.isThreads = true;
 		}
-	});
+	}));
 
 	$scope.scroll = () => {
 		console.log('scroll()', $scope.isLoading, $scope.isDisabledScroll);

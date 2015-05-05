@@ -7,31 +7,21 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 	inbox.selectedTidByLabelName[$scope.labelName] = $scope.selectedTid;
 
 	$scope.isThreads = false;
-	$scope.threads = {};
-	$scope.emails = [];
 	$scope.isLoading = false;
+
+	{
+		let list = inbox.requestListCached($scope.labelName);
+		console.log('requestListCached', list);
+		$scope.threads = list ? utils.toMap(list) : {};
+		$scope.isThreads = Object.keys($scope.threads).length > 0;
+	}
 
 	console.log('CtrlEmailList is loading', $scope.labelName, $scope.selectedTid);
 
-	const getThreads = () => {
-		const threadsList = inbox.requestListDirect($scope.labelName);
-		if (threadsList.length < 1)
-			return;
-
-		$scope.threads = utils.toMap(threadsList);
+	$scope.$on(`inbox-threads-ready`, (e, labelName, threads) => {
+		$scope.threads = utils.toMap(threads);
 		$scope.isThreads = true;
-	};
-
-	$scope.$on(`inbox-threads`, (e, labelName) => {
-		if (labelName != $scope.labelName) {
-			console.log(`(emails ctrl) inbox-threads data has been rejected, label should match to `, $scope.labelName);
-			return;
-		}
-
-		getThreads();
 	});
-
-	getThreads();
 
 	const translations = {
 		TITLE_CONFIRM: '',
