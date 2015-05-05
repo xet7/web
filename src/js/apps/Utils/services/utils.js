@@ -38,6 +38,18 @@ module.exports = /*@ngInject*/function(co) {
 		}, []);
 	};
 
+	this.toMap = (array, key, map) => {
+		if (!key)
+			key = (e) => e.id;
+		if (!map)
+			map = (e) => e;
+
+		return array.reduce((a, t) => {
+			a[key(t)] = map(t);
+			return a;
+		}, {});
+	};
+
 	this.sleep = (time) => co(function *(){
 		yield sleep(time);
 	});

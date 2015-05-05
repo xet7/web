@@ -98,12 +98,20 @@ module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, ut
 	}, true);
 
 	self.requestListDirect = proxy.unbindedMethodCall('requestList', function *(requestList, args) {
-		let [labelName] = args;
+		let [labelName, offset, limit] = args;
 
 		const value = yield requestListProxy(requestList, args);
 
+		$rootScope.$broadcast(`inbox-threads-ready`, labelName, value.list);
+
 		return value.list;
 	}, true);
+
+	self.requestListCached = (labelName) => {
+		const value = threadsCache.get(labelName);
+
+		return value ? value.list : [];
+	};
 
 	proxy.methodCall('getThreadById', function *(getThreadById, args) {
 		const [threadId, isCachedOnly] = args;

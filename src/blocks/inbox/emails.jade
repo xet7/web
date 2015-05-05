@@ -1,6 +1,3 @@
-div.pane-status(ng-if="selectedTid === null")
-	.col-xs-24 {{'INBOX.LB_NOTHING_SELECTED' | translate}}
-
 .filters.row.no-gutter.lava-icon-row(ng-class="'notifications-' + getNotificationsLength(notificationsInfo, notificationsWarning)")
 	nav.navbar.navbar-inverse(role="navigation")
 		div
@@ -23,13 +20,16 @@ div.pane-status(ng-if="selectedTid === null")
 						span.icon-put-back
 	include ../_notifications.jade
 
+div.pane-status(ng-if="selectedTid === null")
+	.col-xs-24 {{'INBOX.LB_NOTHING_SELECTED' | translate}}
+
 div(ng-if="selectedTid").main-view
-	.pane-status(ng-show="isLoadingSign || emails.isLoading")
+	.pane-status(ng-show="isLoading")
 		img(src="/img/loader.svg")
 
 	div.logo.only-print
 		img(src="/img/Lavaboom-logo-gray.svg")		
-	.row.no-gutter.mail(ng-repeat="email in emails.list")
+	.row.no-gutter.mail(ng-repeat="email in emails")
 		.col-xs-24
 			header.row.no-gutter
 				.col-xs-21
