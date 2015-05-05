@@ -1,4 +1,6 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, $stateParams, $translate, co, user, inbox, consts, hotkey) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, $stateParams, $translate,
+							   co, utils, user, inbox, consts, hotkey) => {
+
 	$scope.labelName = $stateParams.labelName;
 	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
 	if ($scope.selectedTid)
@@ -18,7 +20,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	$scope.isLoading = false;
 	$scope.isLoadingSign = false;
 	$scope.isDisabledScroll = true;
-	$scope.isInitialLoad = true;
 	$scope.isThreads = false;
 
 	$scope.offset = 0;
@@ -122,79 +123,69 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 
 	$scope.searchFilter = (thread) => {
 		let searchText = $scope.searchText.toLowerCase();
-		return thread.subject.toLowerCase().includes(searchText) || thread.members.some(m => m.toLowerCase().includes(searchText));
+		return thread.subject.toLowerCase().includes(searchText)
+			|| thread.members.some(m => m.toLowerCase().includes(searchText));
 	};
 
 	$rootScope.$on(`inbox-threads`, (e, labelName) => {
-		co (function *(){
-			console.log('inbox-threads', labelName);
+		console.log('inbox-threads', labelName);
 
-			if (labelName != $scope.labelName) {
-				console.log(`inbox-threads data has been rejected (1) label should match to `, $scope.labelName);
-				return;
-			}
+		if (labelName != $scope.labelName) {
+			console.log(`inbox-threads data has been rejected, label should match to `, $scope.labelName);
+			return;
+		}
 
-			const threadsList = yield inbox.requestListDirect($scope.labelName, 0, $scope.offset + $scope.limit);
+		const threadsList = inbox.requestListDirect($scope.labelName);
+		if (threadsList.length < 1)
+			return;
 
-			if (labelName != $scope.labelName) {
-				console.log(`inbox-threads data has been rejected (2) label should match to `, $scope.labelName);
-				return;
-			}
+		let selectedIndex = $scope.threadsList && $scope.selectedTid !== null
+			? $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid)
+			: -1;
 
-			let selectedIndex = $scope.threadsList && $scope.selectedTid !== null
-				? $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid)
-				: -1;
+		console.log('inbox-threads selectedIndex 1: ', selectedIndex);
 
-			console.log('inbox-threads selectedIndex 1: ', selectedIndex);
+		$scope.threadsList = threadsList;
 
-			$scope.threadsList = threadsList;
+		if (!$scope.threadsList || $scope.threadsList.length < 1)
+			$state.go('main.inbox.label', {labelName: $scope.labelName, threadId: null});
+		else
+		if (selectedIndex > -1 && $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid) < 0) {
+			selectedIndex = Math.min(Math.max(selectedIndex, 0), $scope.threadsList.length - 1);
+			$scope.selectThread($scope.threadsList[selectedIndex].id);
+		}
 
-			if (!$scope.threadsList || $scope.threadsList.length < 1)
-				$state.go('main.inbox.label', {labelName: $scope.labelName, threadId: null});
-			else
-			if (selectedIndex > -1 && $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid) < 0) {
-				selectedIndex = Math.min(Math.max(selectedIndex, 0), $scope.threadsList.length - 1);
-				$scope.selectThread($scope.threadsList[selectedIndex].id);
-			}
+		console.log('inbox-threads selectedIndex 2: ', selectedIndex);
 
-			console.log('inbox-threads selectedIndex 2: ', selectedIndex);
+		$scope.threads = utils.toMap($scope.threadsList);
 
-			$scope.threads = $scope.threadsList.reduce((a, t) => {
-				a[t.id] = t;
-				return a;
-			}, {});
+		if (setLoadingSignTimeout) {
+			$timeout.cancel(setLoadingSignTimeout);
+			setLoadingSignTimeout = null;
+		}
 
-			if (setLoadingSignTimeout) {
-				$timeout.cancel(setLoadingSignTimeout);
-				setLoadingSignTimeout = null;
-			}
+		$scope.isLoading = false;
+		$scope.isLoadingSign = false;
+		$scope.isThreads = true;
 
-			$scope.isLoading = false;
-			$scope.isLoadingSign = false;
-			$scope.isInitialLoad = false;
-			$scope.isThreads = true;
+		if (!watchingFilteredThreadsList) {
+			let emails = null;
+			let emailsSelectedTid = null;
 
-			if (!watchingFilteredThreadsList) {
-				let emails = null;
-				let emailsSelectedTid = null;
+			watchingFilteredThreadsList = $scope.$watch('filteredThreadsList', (o, n) => {
+				if (o == n)
+					return;
 
-				watchingFilteredThreadsList = $scope.$watch('filteredThreadsList', (o, n) => {
-					if (o == n)
-						return;
-
-					const r = $scope.filteredThreadsList.find(t => t.id == $scope.selectedTid);
-					if (!r) {
-						emails = $scope.emails.list;
-						emailsSelectedTid = $scope.selectedTid;
-						$scope.emails.list = [];
-					} else if (emails && $scope.selectedTid == emailsSelectedTid) {
-						$scope.emails.list = emails;
-					}
-				});
-			}
-
-			$rootScope.$broadcast(`inbox-threads-received`, labelName);
-		});
+				const r = $scope.filteredThreadsList.find(t => t.id == $scope.selectedTid);
+				if (!r) {
+					emails = $scope.emails.list;
+					emailsSelectedTid = $scope.selectedTid;
+					$scope.emails.list = [];
+				} else if (emails && $scope.selectedTid == emailsSelectedTid) {
+					$scope.emails.list = emails;
+				}
+			});
+		}
 	});
 
 	$rootScope.$on('$stateChangeStart', (e, toState, toParams) => {
