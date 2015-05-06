@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.7 - 2015-04-17
+### Fixed lots of issues
+- issue with showing errors during signup/login
+- multiple issues with thread/emails
+- other small bugs
+
 ## 0.2.6 - 2015-04-17
 ### Fixed
 - issue with BOM in manifest.json
