@@ -6,11 +6,11 @@ const
 	Entry = require('./reporter/entry');
 
 const flushTimeout = 1000;
+const cursor = Cursor.Load();
 
 let chunkSavers = {};
 let cursorSaver = null;
-
-const cursor = Cursor.Load();
+let __console = {};
 
 const storeEntry = (entry) => {
 	try {
@@ -28,6 +28,7 @@ const storeEntry = (entry) => {
 							delete chunkSavers[index];
 						}
 					}, flushTimeout);
+				
 				if (!cursorSaver)
 					cursorSaver = setTimeout(() => {
 						try {
@@ -37,16 +38,17 @@ const storeEntry = (entry) => {
 						}
 					}, flushTimeout);
 			} catch (err) {
-				// *** happened, nothing can be done - ignore
+				__console.error('error during reporter.storeEntry', err);
 			}
 		});
 	} catch (err) {
-		// *** happened, nothing can be done - ignore
+		__console.error('error during reporter.storeEntry', err);
 	}
 };
 
-const proxy = (obj, name) => {
-	obj[name] = (...args) => {
+const proxy = (name) => {
+	__console[name] = console[name];
+	console[name] = (...args) => {
 		storeEntry(new Entry(
 			name,
 			args[0],
@@ -123,13 +125,13 @@ module.exports.exportEntries = () => new PPromise((resolve, reject) => {
 
 module.exports.clearEntries = (clearCursor = null) => {
 	if (!clearCursor) {
-		console.warn('clearEntries called without a cursor - delete everything');
+		__console.trace('clearEntries called without a cursor - delete everything');
 		cursor.clear();
 		Chunk.ClearCache();
 		return;
 	}
 
-	console.warn('clearEntries clear chunks from ', clearCursor.skipChunkIndex, 'till', clearCursor.lastChunkIndex);
+	__console.trace('clearEntries clear chunks from ', clearCursor.skipChunkIndex, 'till', clearCursor.lastChunkIndex);
 
 	for(let i = clearCursor.skipChunkIndex; i <= clearCursor.lastChunkIndex; i++) {
 		if (chunkSavers[i]) {
@@ -147,6 +149,6 @@ module.exports.clearEntries = (clearCursor = null) => {
 	if (cursor.skipChunkIndex > cursor.lastChunkIndex)
 		cursor.lastChunkIndex = cursor.skipChunkIndex;
 
-	console.warn('clearEntries skipChunkIndex is now ', cursor.skipChunkIndex);
+	__console.trace('clearEntries skipChunkIndex is now ', cursor.skipChunkIndex);
 	cursor.store();
 };
