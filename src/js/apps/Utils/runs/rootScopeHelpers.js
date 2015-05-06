@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-module.exports = /*@ngInject*/($rootScope, $translate, $injector, translate) => {
+module.exports = /*@ngInject*/($rootScope, $translate, $injector, translate, consts) => {
 	$rootScope.$bind = (bindName, bindHandler) => {
 		let r = $rootScope.$on(bindName, bindHandler);
 
@@ -26,7 +26,9 @@ module.exports = /*@ngInject*/($rootScope, $translate, $injector, translate) => 
 	};
 
 	$rootScope.notificationsInfo = $rootScope.notificationsWarning = {};
-	$rootScope.manifest = JSON.parse(fs.readFileSync(__dirname + '/../../../../../manifest.json', 'utf8'));
+	$rootScope.manifest = JSON.parse(consts.stripBOM(
+		fs.readFileSync(__dirname + '/../../../../../manifest.json', 'utf8')
+	));
 	$rootScope.servedBy = {
 		text: '',
 		title: ''

@@ -32,5 +32,8 @@ module.exports = {
 	PLAN_LIST: ['BASIC'/*, 'TEST'*/],
 	CRYPTO_DEFAULT_THREAD_POOL_SIZE: 4,
 	KEY_EXPIRY_DAYS: 365,
-	KEY_EXPIRY_DAYS_WARNING: 10
+	KEY_EXPIRY_DAYS_WARNING: 10,
+
+	// what, why? because reasons ^^
+	stripBOM: (str) => str.replace(/^\ufeff/g, '')
 };
