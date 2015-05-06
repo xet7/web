@@ -269,7 +269,7 @@ var browserifyBundle = function(filename) {
 				if (config.isProduction) {
 					browserifyPipeline = browserifyPipeline
 						.transform(ownCodebaseTransform(browserifyNgAnnotate))
-						.transform(uglifyify);
+						.transform({global: true}, uglifyify);
 				}
 
 				jsMapBasename = path.basename(file.path).replace('.js', '.js.map');
