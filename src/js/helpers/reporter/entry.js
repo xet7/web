@@ -3,7 +3,7 @@ const assetKeys = Object.keys(window.assets);
 function Entry (name, message, objects, stacktrace) {
 	const self = this;
 
-	function processStackTraceLine(str) {
+	function compressStackTraceLine(str) {
 		let x = str.substr(str.indexOf('@') + 1)
 			.replace(window.location.toString(), '')
 			.replace(window.location.protocol + '//' + window.location.host, '')
@@ -30,7 +30,7 @@ function Entry (name, message, objects, stacktrace) {
 	var now = new Date();
 
 	self.date = now.getTime();
-	self.stacktrace = stacktrace.map(processStackTraceLine).join(';');
+	self.stacktrace = stacktrace.map(compressStackTraceLine).join(';');
 
 	self.type = name;
 	self.message = message;

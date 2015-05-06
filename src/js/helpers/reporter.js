@@ -37,11 +37,11 @@ const storeEntry = (entry) => {
 						}
 					}, flushTimeout);
 			} catch (err) {
-
+				// *** happened, nothing can be done - ignore
 			}
 		});
 	} catch (err) {
-
+		// *** happened, nothing can be done - ignore
 	}
 };
 
