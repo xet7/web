@@ -33,6 +33,7 @@ var domain = require('domain');
 
 // Browserify the mighty one
 var browserify = require('browserify'),
+	workerify = require('workerify'),
 	babelify = require('babelify'),
 	browserifyNgAnnotate = require('browserify-ngannotate'),
 	bulkify = require('bulkify'),
@@ -254,7 +255,8 @@ var browserifyBundle = function(filename) {
 					basedir: __dirname,
 					debug: config.isDebugable
 				})
-					.transform(ownCodebaseTransform(babelify), {externalHelpers: true})
+					.transform(babelify, {externalHelpers: true})
+					.transform(workerify)
 					.transform(ownCodebaseTransform(bulkify))
 					.transform(ownCodebaseTransform(envify))
 					.transform(ownCodebaseTransform(brfs));
