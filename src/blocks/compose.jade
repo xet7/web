@@ -1,9 +1,16 @@
 - var defs = {};
 div#compose-wrapper
-	form#compose(name="__form", ng-class="{ warning: isWarning }")
+	form#compose(name="__form", ng-class="{ warning: isWarning, show-formatting : isToolbarShown }")
 		.filters.row.no-gutter.lava-icon-row.z1
 			nav.navbar.navbar-inverse(role="navigation")
 				div
+					ul.nav.navbar-nav(ng-show="selectedTid !== null")
+						li
+							button.btn.btn-default(ng-click="", tooltip="{{'MAIN.COMPOSE.TOOLTIP_ATTACH' | translate}}", tooltip-append-to-body="true")
+								span.icon-paper-clip
+						li
+							button.btn.btn-default(ng-click="toggleToolbar()", tooltip="{{'MAIN.COMPOSE.TOOLTIP_FORMATTING_OPTIONS' | translate}}", tooltip-append-to-body="true")
+								span A
 					ul.nav.navbar-nav.navbar-right(ng-show="selectedTid !== null")
 						li(ng-show="isError")
 							span {{'MAIN.COMPOSE.LB_ERROR' | translate}}
