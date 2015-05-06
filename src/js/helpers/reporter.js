@@ -86,12 +86,15 @@ module.exports.uninstall = () => {
 };
 
 module.exports.reportError = (error) => {
-	storeEntry(new Entry(
-		'exception',
-		error.message,
-		[],
-		printStackTrace({e : error})
-	));
+	if (isInstalled)
+		storeEntry(new Entry(
+			'exception',
+			error.message,
+			[],
+			printStackTrace({e : error})
+		));
+	else
+		module.exports.console('error', error);
 };
 
 module.exports.exportEntries = () => new PPromise((resolve, reject) => {

@@ -1,5 +1,7 @@
 module.exports = /*@ngInject*/(loader) => {
+	const reporter = loader.getReporter();
+
 	return function(exception) {
-		loader.getReporter().reportError(exception);
+		reporter.reportError(exception);
 	};
 };
