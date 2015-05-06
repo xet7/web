@@ -66,6 +66,14 @@ module.exports.reportError = (error) => {
 module.exports.exportEntries = () => {
 	let entries = [];
 
+	const exportCursor = {
+		lastChunkIndex: cursor.lastChunkIndex,
+		lastChunkLength: cursor.lastChunkLength,
+		length: cursor.length
+	};
+	cursor.next();
+	cursor.store(storage);
+
 	for(let i = 0; i <= cursor.lastChunkIndex; i++) {
 		for (let e of Chunk.Load(storage, i).entries) {
 			entries.push(e);
@@ -74,15 +82,32 @@ module.exports.exportEntries = () => {
 
 	return {
 		entries: entries,
-		cursor: {
-			lastChunkIndex: cursor.lastChunkIndex,
-			lastChunkLength: cursor.lastChunkLength,
-			length: cursor.length
-		}
+		cursor: exportCursor
 	};
 };
 
-module.exports.clearEntries = (cursor) => {
+module.exports.clearEntries = (clearCursor) => {
+	for(let i of Object.keys(chunkSavers))
+		clearTimeout(chunkSavers[i]);
+	if (cursorSaver)
+		clearTimeout(cursorSaver);
+	chunkSavers = {};
+	cursorSaver = null;
+
+	for(let i = 0; i < clearCursor.lastChunkIndex; i++)
+		Chunk.Delete(storage, i);
+
+	cursor.lastChunkIndex -= clearCursor.lastChunkIndex;
+
+	if (clearCursor.lastChunkLength < cursor.lastChunkLength) {
+		let lastChunk = Chunk.Load(storage, clearCursor.lastChunkIndex);
+		lastChunk.entries = lastChunk.entries.slice(clearCursor.lastChunkLength);
+	}
+	else
+	{
+
+	}
+
 	cursor.clear(storage);
 	Chunk.ClearCache();
 };
