@@ -6,6 +6,7 @@ const
 	Entry = require('./reporter/entry');
 
 const flushTimeout = 1000;
+const proxifiedMethods = ['log', 'error', 'trace', 'debug', 'warn'];
 const cursor = Cursor.Load();
 
 let chunkSavers = {};
@@ -28,7 +29,7 @@ const storeEntry = (entry) => {
 							delete chunkSavers[index];
 						}
 					}, flushTimeout);
-				
+
 				if (!cursorSaver)
 					cursorSaver = setTimeout(() => {
 						try {
@@ -46,7 +47,7 @@ const storeEntry = (entry) => {
 	}
 };
 
-const proxy = (name) => {
+function proxy (name) {
 	__console[name] = console[name];
 	console[name] = (...args) => {
 		storeEntry(new Entry(
@@ -56,13 +57,22 @@ const proxy = (name) => {
 			printStackTrace().slice(1)
 		));
 	};
-};
+}
+
+function restore (name) {
+	console[name] = __console[name];
+}
 
 module.exports.install = (_storage) => {
 	Cursor.storage = Chunk.storage = _storage;
 
-	for(let name of ['log'])
-		proxy(console, name);
+	for(let name of proxifiedMethods)
+		proxy(name);
+};
+
+module.exports.uninstall = () => {
+	for(let name of proxifiedMethods)
+		restore(name);
 };
 
 module.exports.reportError = (error) => {
