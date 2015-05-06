@@ -13,7 +13,8 @@ module.exports = {
 			'./src/js/apps/utils.js',
 			'./src/js/apps/appLavaboom.js',
 			'./src/js/apps/appLavaboomLogin.js',
-			'./src/js/loader.js'
+			'./src/js/loader.js',
+			'./src/js/lzWorker.js'
 		],
 		inputDeps: 'src/js/apps/*.toml',
 		inputAppsFolder: 'src/js/apps/',

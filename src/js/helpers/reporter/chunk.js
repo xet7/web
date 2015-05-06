@@ -5,7 +5,7 @@ const
 let chunksCache = {};
 let loadPromises = {};
 
-var worker = new Worker('./worker.js');
+var worker = new Worker(window.globs.IS_PRODUCTION == 'true' ? window.assets['/js/lzWorker.js'] : '/js/lzWorker.js');
 
 function Chunk (entries, index) {
 	this.entries = entries;

@@ -1,8 +1,8 @@
 const
-	lzString = require('../../../bower_components/lz-string/libs/lz-string.js');
+	lzString = require('../bower_components/lz-string/libs/lz-string.js');
 
 self.onmessage = function(e) {
-	var
+	let
 		action = e.data[0],
 		start = new Date().getTime(),
 		index, data;
