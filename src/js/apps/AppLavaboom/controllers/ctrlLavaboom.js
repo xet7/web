@@ -88,7 +88,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 					entries: exportedSet.entries
 				};
 
-				console.warn('export entries: ', JSON.stringify(report, null, 2));
+				reporter.console('log', 'export entries: ', JSON.stringify(report, null, 2));
 				reporter.clearEntries(exportedSet.cursor);
 			}), 5000);
 

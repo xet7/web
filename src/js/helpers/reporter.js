@@ -66,6 +66,10 @@ function restore (name) {
 
 module.exports.isInstalled = () => isInstalled;
 
+module.exports.console = (name, ...args) => {
+	__console[name](...args);
+};
+
 module.exports.install = (_storage) => {
 	Cursor.storage = Chunk.storage = _storage;
 
