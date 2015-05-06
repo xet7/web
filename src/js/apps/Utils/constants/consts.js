@@ -21,8 +21,13 @@ module.exports = {
 	MUMBLE_SHOW_DELAY: 1000,
 	CRYPTO_CACHE_MAX_ENTRY_SIZE: 1024 * 512,
 	CRYPTO_CACHE_TTL: 60 * 60 * 1000,
-	INBOX_LABELS_CACHE_TTL: 60 * 1000,
-	INBOX_THREADS_CACHE_TTL: 60 * 1000,
+
+	// we set this to one year as there is no reason to expire those entries from-memory only cache
+	// inbox.js algos relies on constant in-memory presence of once loaded threads
+	// we can manually invalidate the whole cache of threads when we need to do so(sorting of threads for example, whole because we store in chunks of 15)
+	INBOX_THREADS_CACHE_TTL: 60 * 60 * 24 * 365 * 1000,
+	INBOX_LABELS_CACHE_TTL: 60 * 60 * 24 * 365 * 1000,
+
 	INBOX_EMAILS_CACHE_TTL: 60 * 10 * 1000,
 	SET_READ_AFTER_TIMEOUT: 3000,
 	KEYS_BACKUP_README: 'https://lavaboom.com/placeholder/help/backup-file',

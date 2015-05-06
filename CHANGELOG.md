@@ -2,6 +2,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.8 - 2015-05-06
+### Fixed
+- issue with threads caching that caused threads to temporary disappear until page refresh
+- threads and labels cache expire time set to high value as we never need this auto-expire behavior
+
+## 0.2.7 - 2015-05-06
+### Fixed lots of issues
+- issue with showing errors during signup/login
+- multiple issues with thread/emails
+- other small bugs
+
 ## 0.2.6 - 2015-04-17
 ### Fixed
 - issue with BOM in manifest.json
