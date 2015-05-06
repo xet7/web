@@ -40,11 +40,11 @@ function storeEntry (entry) {
 						}
 					}, flushTimeout);
 			} catch (err) {
-				module.exports.console('error', 'error during reporter.storeEntry', err);
+				__console.error('error during reporter.storeEntry', err);
 			}
 		});
 	} catch (err) {
-		module.exports.console('error', 'error during reporter.storeEntry', err);
+		__console.error('error during reporter.storeEntry', err);
 	}
 }
 
@@ -94,7 +94,7 @@ module.exports.reportError = (error) => {
 			printStackTrace({e : error})
 		));
 	else
-		module.exports.console('error', error);
+		__console.error(error);
 };
 
 module.exports.exportEntries = () => new PPromise((resolve, reject) => {
