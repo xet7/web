@@ -1,47 +1,52 @@
+div.pane-status(ng-if="selectedTid === null")
+	.col-xs-24 {{'INBOX.LB_NOTHING_SELECTED' | translate}}
+
 .filters.row.no-gutter.lava-icon-row(ng-class="'notifications-' + getNotificationsLength(notificationsInfo, notificationsWarning)")
 	nav.navbar.navbar-inverse(role="navigation")
 		div
 			ul.nav.navbar-nav
 				li(ng-show="selectedTid")
-					button.btn.btn-default(ng-click="deleteThread(selectedTid)")
+					button.btn.btn-default(ng-click="deleteThread(selectedTid)", tooltip="{{'INBOX.MOVE_TO_TRASH' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-trash
 				li(ng-show="selectedTid && labelName != 'Spam'")
-					button.btn.btn-default(ng-click="spamThread(selectedTid)")
+					button.btn.btn-default(ng-click="spamThread(selectedTid)", tooltip="{{'INBOX.MARK_AS_SPAM' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-ban
 				li(ng-show="selectedTid")
-					button.btn.btn-default(ng-click="starThread(selectedTid)")
+					button.btn.btn-default(ng-click="starThread(selectedTid)", tooltip="{{'INBOX.STAR_THIS_CONVERSATION' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-star(ng-show="selectedTid && threads[selectedTid].isLabel('Starred')")
 						span.icon-star-outline(ng-show="selectedTid && !threads[selectedTid].isLabel('Starred')")
 				li(ng-show="selectedTid && labelName == 'Spam'")
-					button.btn.btn-default(ng-click="restoreFromSpam(selectedTid)")
+					button.btn.btn-default(ng-click="restoreFromSpam(selectedTid)", tooltip="{{'INBOX.NOT_SPAM' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-put-back
 				li(ng-show="selectedTid && labelName == 'Trash'")
-					button.btn.btn-default(ng-click="restoreFromTrash(selectedTid)")
+					button.btn.btn-default(ng-click="restoreFromTrash(selectedTid)", tooltip="{{'INBOX.PUT_BACK' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-put-back
 	include ../_notifications.jade
 
-div.pane-status(ng-if="selectedTid === null")
-	.col-xs-24 {{'INBOX.LB_NOTHING_SELECTED' | translate}}
-
+.global-mail-actions(ng-hide="isLoadingSign || emails.isLoading")
+	div.btn-group
+		button.btn.btn-default(ng-show="selectedTid", ng-click="alert('to be implemented')")
+			span.icon-reply
+		button.btn.btn-default(ng-show="selectedTid", ng-click="alert('to be implemented')")
+			span.icon-reply-all
+		button.btn.btn-default(ng-show="selectedTid", ng-click="alert('to be implemented')")
+			span.icon-arrow-right
 div(ng-if="selectedTid").main-view
-	.pane-status(ng-show="isLoading")
+	.pane-status(ng-show="isLoadingSign || emails.isLoading")
 		img(src="/img/loader.svg")
-
 	div.logo.only-print
-		img(src="/img/Lavaboom-logo-gray.svg")		
-	.row.no-gutter.mail(ng-repeat="email in emails")
+		img(src="/img/Lavaboom-logo-gray.svg")
+	.row.no-gutter.mail(ng-repeat="email in emails.list")
 		.col-xs-24
 			header.row.no-gutter
 				.col-xs-21
-					//strong(ng-bind="email.fromName")
-					//br
 					div {{'MAIN.COMPOSE.LB_FROM' | translate}}:
 						strong(ng-repeat="from in email.from")
 							email-context-menu(email="from.address", is-open="from.isContextMenuOpened")
 								a(ui-sref=".popup.compose({to: from.address})", ng-right-click="from.isContextMenuOpened = true") {{from.prettyName}}
 								| {{$last ? '' : ', '}}
 					div {{'MAIN.COMPOSE.LB_TO' | translate}}:
-						strong(ng-repeat="to in email.to")
+						span.medium(ng-repeat="to in email.to")
 							email-context-menu(ng-if="to.address != selfEmail", email="to.address", is-open="to.isContextMenuOpened")
 								a(ui-sref=".popup.compose({to: to.address})", ng-right-click="to.isContextMenuOpened = true") {{to.prettyName}}
 								| {{$last ? '' : ', '}}
@@ -63,21 +68,27 @@ div(ng-if="selectedTid").main-view
 					div {{'INBOX.LB_NO_PRIVATE_KEY_FOUND2' | translate}}
 						a(ui-sref="main.settings.security") {{'INBOX.LB_SETTINGS' | translate}}
 						| {{'INBOX.LB_NO_PRIVATE_KEY_FOUND3' | translate}}
-			footer(ng-show="email.files.length")
+			footer.attachments(ng-show="email.files.length")
 				.row.no-gutter
-					.col-xs-8(ng-repeat="file in email.files")
-						a.attachment(ui-sref=".popup.download({emailId: email.id, fileId: file.id})")
-							span.fileCorner
-							span(ng-bind="file.filename")
-							br
-							span(ng-bind="file.size | filesize")
-			ul.nav.navbar-nav.navbar-right.navbar-right-buttons
-				li(ng-show="selectedTid")
-					button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
-						span.icon-reply
-				li(ng-show="selectedTid")
-					button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
-						span.icon-reply-all
-				li(ng-show="selectedTid")
-					button.btn.btn-default(ng-click="showPopup('compose', {forwardEmailId: email.id})")
-						span.icon-arrow-right
+					.col-xs-12(ng-repeat="file in email.files")
+						include _attachment.jade
+			//- ul.nav.navbar-nav.navbar-right.navbar-right-buttons
+			//- 	li(ng-show="selectedTid")
+			//- 		button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
+			//- 			span.icon-reply
+			//- 	li(ng-show="selectedTid")
+			//- 		button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
+			//- 			span.icon-reply-all
+			//- 	li(ng-show="selectedTid")
+			//- 		button.btn.btn-default(ng-click="showPopup('compose', {forwardEmailId: email.id})")
+			//- 			span.icon-arrow-right
+			div.btn-group.navbar-right-buttons
+				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
+					span.icon-reply
+				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
+					span.icon-reply-all
+				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {forwardEmailId: email.id})")
+					span.icon-arrow-right
+				button.btn.btn-default(ng-show="selectedTid", ng-click="alert('to be implemented')")
+					span.icon-trash
+			
