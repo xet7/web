@@ -1,41 +1,45 @@
-const printStackTrace = require('../../bower_components/stacktrace-js/dist/stacktrace.js');
-const flushTimeout = 1000;
-
 const
+	printStackTrace = require('../../bower_components/stacktrace-js/dist/stacktrace.js'),
+	PPromise = require('./promise-polyfill'),
 	Chunk = require('./reporter/chunk'),
 	Cursor = require('./reporter/cursor'),
 	Entry = require('./reporter/entry');
 
-let storage = null;
+const flushTimeout = 1000;
+
 let chunkSavers = {};
 let cursorSaver = null;
 
-const cursor = Cursor.Load(storage);
+const cursor = Cursor.Load();
 
 const storeEntry = (entry) => {
 	try {
 		const index = cursor.getChunkIndex();
-		let chunk = Chunk.Load(storage, index);
+		Chunk.Load(index).then(chunk => {
+			try {
+				chunk.entries.push(entry);
+				cursor.next();
 
-		chunk.entries.push(entry);
-		cursor.next();
+				if (!chunkSavers[index])
+					chunkSavers[index] = setTimeout(() => {
+						try {
+							chunk.store();
+						} finally {
+							delete chunkSavers[index];
+						}
+					}, flushTimeout);
+				if (!cursorSaver)
+					cursorSaver = setTimeout(() => {
+						try {
+							cursor.store();
+						} finally {
+							cursorSaver = null;
+						}
+					}, flushTimeout);
+			} catch (err) {
 
-		if (!chunkSavers[index])
-			chunkSavers[index] = setTimeout(() => {
-				try {
-					chunk.store(storage);
-				} finally {
-					delete chunkSavers[index];
-				}
-			}, flushTimeout);
-		if (!cursorSaver)
-			cursorSaver = setTimeout(() => {
-				try {
-					cursor.store(storage);
-				} finally {
-					cursorSaver = null;
-				}
-			}, flushTimeout);
+			}
+		});
 	} catch (err) {
 
 	}
@@ -43,12 +47,17 @@ const storeEntry = (entry) => {
 
 const proxy = (obj, name) => {
 	obj[name] = (...args) => {
-		storeEntry(new Entry(name, args[0], args.slice(1)));
+		storeEntry(new Entry(
+			name,
+			args[0],
+			args.slice(1),
+			printStackTrace().slice(1)
+		));
 	};
 };
 
 module.exports.install = (_storage) => {
-	storage = _storage;
+	Cursor.storage = Chunk.storage = _storage;
 
 	for(let name of ['log'])
 		proxy(console, name);
@@ -63,51 +72,81 @@ module.exports.reportError = (error) => {
 	));
 };
 
-module.exports.exportEntries = () => {
+module.exports.exportEntries = () => new PPromise((resolve, reject) => {
 	let entries = [];
+	let exportCursor = null;
 
-	const exportCursor = {
-		lastChunkIndex: cursor.lastChunkIndex,
-		lastChunkLength: cursor.lastChunkLength,
-		length: cursor.length
-	};
-	cursor.next();
-	cursor.store(storage);
+	if (cursor.lastChunkLength > 0) {
+		exportCursor = {
+			skipChunkIndex: cursor.skipChunkIndex,
+			lastChunkIndex: cursor.lastChunkIndex,
+			lastChunkLength: cursor.lastChunkLength,
+			length: cursor.length
+		};
 
-	for(let i = 0; i <= cursor.lastChunkIndex; i++) {
-		for (let e of Chunk.Load(storage, i).entries) {
-			entries.push(e);
+		cursor.nextChunk();
+		cursor.store();
+	} else
+		exportCursor = {
+			skipChunkIndex: cursor.skipChunkIndex,
+			lastChunkIndex: Math.max(0, cursor.lastChunkIndex - 1),
+			lastChunkLength: cursor.lastChunkLength,
+			length: cursor.length
+		};
+
+	let promises = [];
+	for(let i = exportCursor.skipChunkIndex; i <= exportCursor.lastChunkIndex; i++) {
+		let chunkStorePromise = new PPromise((resolve, reject) => {
+			Chunk.Load(i)
+				.then(chunk => {
+					for (let e of chunk.entries) {
+						entries.push(e);
+					}
+					resolve();
+				})
+				.catch(e => {
+					reject(e);
+				});
+		});
+
+		promises.push(chunkStorePromise);
+	}
+
+	PPromise.all(promises)
+		.then(() => resolve({
+			assets: Entry.assets,
+			entries: entries,
+			cursor: exportCursor
+		}))
+		.catch(e => reject(e));
+});
+
+module.exports.clearEntries = (clearCursor = null) => {
+	if (!clearCursor) {
+		console.warn('clearEntries called without a cursor - delete everything');
+		cursor.clear();
+		Chunk.ClearCache();
+		return;
+	}
+
+	console.warn('clearEntries clear chunks from ', clearCursor.skipChunkIndex, 'till', clearCursor.lastChunkIndex);
+
+	for(let i = clearCursor.skipChunkIndex; i <= clearCursor.lastChunkIndex; i++) {
+		if (chunkSavers[i]) {
+			clearTimeout(chunkSavers[i]);
+			delete chunkSavers[i];
 		}
+		Chunk.Delete(i);
 	}
 
-	return {
-		entries: entries,
-		cursor: exportCursor
-	};
-};
-
-module.exports.clearEntries = (clearCursor) => {
-	for(let i of Object.keys(chunkSavers))
-		clearTimeout(chunkSavers[i]);
-	if (cursorSaver)
+	if (cursorSaver) {
 		clearTimeout(cursorSaver);
-	chunkSavers = {};
-	cursorSaver = null;
-
-	for(let i = 0; i < clearCursor.lastChunkIndex; i++)
-		Chunk.Delete(storage, i);
-
-	cursor.lastChunkIndex -= clearCursor.lastChunkIndex;
-
-	if (clearCursor.lastChunkLength < cursor.lastChunkLength) {
-		let lastChunk = Chunk.Load(storage, clearCursor.lastChunkIndex);
-		lastChunk.entries = lastChunk.entries.slice(clearCursor.lastChunkLength);
+		cursorSaver = null;
 	}
-	else
-	{
+	cursor.skipChunkIndex = clearCursor.lastChunkIndex + 1;
+	if (cursor.skipChunkIndex > cursor.lastChunkIndex)
+		cursor.lastChunkIndex = cursor.skipChunkIndex;
 
-	}
-
-	cursor.clear(storage);
-	Chunk.ClearCache();
+	console.warn('clearEntries skipChunkIndex is now ', cursor.skipChunkIndex);
+	cursor.store();
 };

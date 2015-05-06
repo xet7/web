@@ -1,34 +1,86 @@
+const
+	PPromise = require('../promise-polyfill');
+
 let chunksCache = {};
+let loadPromises = {};
+
+var worker = new Worker('./worker.js');
 
 function Chunk (entries, index) {
 	this.entries = entries;
 
-	this.store = (storage) => {
-		const chunk = JSON.stringify(this);
-		storage['lavab-logs-chunk-' + index] = chunk;
+	this.store = () => {
+		worker.postMessage(['compress', index, JSON.stringify(this)]);
 	};
 }
 
-Chunk.Delete = (storage, index) => {
-	delete storage['lavab-logs-chunk-' + index];
+const getName = index => 'lavab-logs-chunk-' + index;
+
+Chunk.storage = sessionStorage;
+
+Chunk.Delete = (index) => {
+	delete Chunk.storage[getName(index)];
 };
 
-Chunk.Load = (storage, index) => {
+Chunk.Load = (index) => new PPromise((resolve, reject) => {
 	if (chunksCache[index])
-		return chunksCache[index];
+		return resolve(chunksCache[index]);
 
 	let chunk = null;
 	try {
-		const chunkData = JSON.parse(storage['lavab-logs-chunk-' + index]);
-		chunk = new Chunk(chunkData.entries, index);
+		let data = Chunk.storage[getName(index)];
+		if (!data) {
+			chunk = new Chunk([], index);
+			chunksCache[index] = chunk;
+			return resolve(chunk);
+		}
+
+		loadPromises[index] = {
+			resolve,
+			reject
+		};
+		worker.postMessage(['decompress', index, data]);
 	} catch (err) {
 		chunk = new Chunk([], index);
+		chunksCache[index] = chunk;
+		return resolve(chunk);
 	}
-
-	chunksCache[index] = chunk;
-	return chunk;
-};
+});
 
 Chunk.ClearCache = () => chunksCache = {};
+
+worker.onmessage = function(e) {
+	const action = e.data[0];
+
+	switch (action) {
+		case 'decompressed':
+		{
+			let index = e.data[1];
+			let decompressed = e.data[2];
+			let originalLength = e.data[3];
+			let tookMs = e.data[4];
+
+			let chunkData = JSON.parse(decompressed);
+
+			loadPromises[index].resolve(new Chunk(chunkData.entries, index));
+
+			console.warn('loaded ', decompressed.length, 'bytes, for chunk ', index, 'from', originalLength, 'bytes, took', tookMs);
+		}
+			break;
+
+		case 'compressed':
+		{
+			let index = e.data[1];
+			let compressed = e.data[2];
+			let originalLength = e.data[3];
+			let tookMs = e.data[4];
+
+			Chunk.storage['lavab-logs-chunk-' + index] = compressed;
+
+			console.warn('stored ', originalLength, 'bytes, for chunk ', index, 'compressed to', compressed.length, 'bytes, took', tookMs);
+		}
+			break;
+	}
+};
 
 module.exports = Chunk;

@@ -76,18 +76,21 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 
 	$scope.initializeApplication = () => co(function *(){
 		try {
-			setInterval(() => {
-				const reporter = loader.getReporter();
+			const reporter = loader.getReporter();
+
+			setInterval(() => co(function *(){
+				const exportedSet = yield reporter.exportEntries();
 
 				const report = {
 					commitID: consts.COMMIT_ID,
 					version: consts.MANIFEST.version,
-					entries: reporter.exportEntries()
+					assets: exportedSet.assets,
+					entries: exportedSet.entries
 				};
 
-				console.warn(JSON.stringify(report));
-				reporter.clearEntries();
-			}, 5000);
+				console.warn('export entries: ', report);
+				reporter.clearEntries(exportedSet.cursor);
+			}), 5000);
 
 			let connectionPromise = LavaboomAPI.connect();
 

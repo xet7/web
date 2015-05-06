@@ -21,6 +21,7 @@
 		"loader": true,
 		"checker": true,
         "printStackTrace": true,
+        "self": true,
 
 		"assets": true,
 		"primaryApplicationName": true,
