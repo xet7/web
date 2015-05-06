@@ -23,7 +23,7 @@ div.pane-status(ng-if="selectedTid === null")
 						span.icon-put-back
 	include ../_notifications.jade
 
-.global-mail-actions(ng-hide="isLoadingSign || emails.isLoading")
+.global-mail-actions(ng-hide="isLoading")
 	div.btn-group
 		button.btn.btn-default(ng-show="selectedTid", ng-click="alert('to be implemented')")
 			span.icon-reply
@@ -32,11 +32,11 @@ div.pane-status(ng-if="selectedTid === null")
 		button.btn.btn-default(ng-show="selectedTid", ng-click="alert('to be implemented')")
 			span.icon-arrow-right
 div(ng-if="selectedTid").main-view
-	.pane-status(ng-show="isLoadingSign || emails.isLoading")
+	.pane-status(ng-show="isLoading")
 		img(src="/img/loader.svg")
 	div.logo.only-print
 		img(src="/img/Lavaboom-logo-gray.svg")
-	.row.no-gutter.mail(ng-repeat="email in emails.list")
+	.row.no-gutter.mail(ng-repeat="email in emails")
 		.col-xs-24
 			header.row.no-gutter
 				.col-xs-21
