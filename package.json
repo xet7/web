@@ -83,8 +83,7 @@
     "uglify": "^0.1.1",
     "uglifyify": "^2.6.0",
     "underscore.string": "^3.0.2",
-    "vinyl-source-stream": "^1.0.0",
-    "workerify": "^0.3.0"
+    "vinyl-source-stream": "^1.0.0"
   },
   "dependencies": {
     "lodash": "^3.5.0"
