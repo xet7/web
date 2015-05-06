@@ -12,8 +12,9 @@ const cursor = Cursor.Load();
 let chunkSavers = {};
 let cursorSaver = null;
 let __console = {};
+let isInstalled = false;
 
-const storeEntry = (entry) => {
+function storeEntry (entry) {
 	try {
 		const index = cursor.getChunkIndex();
 		Chunk.Load(index).then(chunk => {
@@ -45,7 +46,7 @@ const storeEntry = (entry) => {
 	} catch (err) {
 		__console.error('error during reporter.storeEntry', err);
 	}
-};
+}
 
 function proxy (name) {
 	__console[name] = console[name];
@@ -63,16 +64,22 @@ function restore (name) {
 	console[name] = __console[name];
 }
 
+module.exports.isInstalled = () => isInstalled;
+
 module.exports.install = (_storage) => {
 	Cursor.storage = Chunk.storage = _storage;
 
 	for(let name of proxifiedMethods)
 		proxy(name);
+
+	isInstalled = true;
 };
 
 module.exports.uninstall = () => {
 	for(let name of proxifiedMethods)
 		restore(name);
+
+	isInstalled = false;
 };
 
 module.exports.reportError = (error) => {
