@@ -2,7 +2,6 @@
 	dependencies = [
 		# poly-fills
 		'../../../node_modules/babel/browser-polyfill.js',
-		'../../../node_modules/setimmediate/setImmediate.js',
 
 		# babel runtime
 		'../../../node_modules/babel/external-helpers.js',

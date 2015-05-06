@@ -11,7 +11,7 @@ const cursor = Cursor.Load();
 
 let chunkSavers = {};
 let cursorSaver = null;
-let __console = {};
+let __console = console;
 let isInstalled = false;
 
 function storeEntry (entry) {
@@ -40,17 +40,16 @@ function storeEntry (entry) {
 						}
 					}, flushTimeout);
 			} catch (err) {
-				__console.error('error during reporter.storeEntry', err);
+				module.exports.console('error', 'error during reporter.storeEntry', err);
 			}
 		});
 	} catch (err) {
-		__console.error('error during reporter.storeEntry', err);
+		module.exports.console('error', 'error during reporter.storeEntry', err);
 	}
 }
 
 function proxy (name) {
-	__console[name] = console[name];
-	console[name] = (...args) => {
+	window.console[name] = (...args) => {
 		storeEntry(new Entry(
 			name,
 			args[0],
@@ -60,8 +59,8 @@ function proxy (name) {
 	};
 }
 
-function restore (name) {
-	console[name] = __console[name];
+function restore () {
+	window.console = __console;
 }
 
 module.exports.isInstalled = () => isInstalled;
@@ -73,6 +72,7 @@ module.exports.console = (name, ...args) => {
 module.exports.install = (_storage) => {
 	Cursor.storage = Chunk.storage = _storage;
 
+	window.console = {};
 	for(let name of proxifiedMethods)
 		proxy(name);
 
@@ -80,8 +80,7 @@ module.exports.install = (_storage) => {
 };
 
 module.exports.uninstall = () => {
-	for(let name of proxifiedMethods)
-		restore(name);
+	restore();
 
 	isInstalled = false;
 };

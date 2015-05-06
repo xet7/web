@@ -1,3 +1,5 @@
+require('setimmediate');
+
 ((assets, globs) => {
 	const Promise = require('./helpers/promise-polyfill');
 

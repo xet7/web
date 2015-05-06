@@ -1,4 +1,5 @@
 const
+	reporter = require('../reporter'),
 	PPromise = require('../promise-polyfill');
 
 let chunksCache = {};
@@ -64,7 +65,7 @@ worker.onmessage = function(e) {
 
 			loadPromises[index].resolve(new Chunk(chunkData.entries, index));
 
-			console.warn('loaded ', decompressed.length, 'bytes, for chunk ', index, 'from', originalLength, 'bytes, took', tookMs);
+			reporter.console('log', 'loaded ', decompressed.length, 'bytes, for chunk ', index, 'from', originalLength, 'bytes, took', tookMs);
 		}
 			break;
 
@@ -77,7 +78,7 @@ worker.onmessage = function(e) {
 
 			Chunk.storage['lavab-logs-chunk-' + index] = compressed;
 
-			console.warn('stored ', originalLength, 'bytes, for chunk ', index, 'compressed to', compressed.length, 'bytes, took', tookMs);
+			reporter.console('log', 'stored ', originalLength, 'bytes, for chunk ', index, 'compressed to', compressed.length, 'bytes, took', tookMs);
 		}
 			break;
 	}
