@@ -45,13 +45,11 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 
 	$scope.addNewPrivateEmail = () => {
 		let e = new ContactEmail($scope.details, {}, 'private');
-		e.setIsJustAdded();
 		$scope.details.privateEmails.push(e);
 	};
 
 	$scope.addNewBusinessEmail = () => {
 		let e = new ContactEmail($scope.details, {}, 'business');
-		e.setIsJustAdded();
 		$scope.details.businessEmails.push(e);
 	};
 
@@ -75,11 +73,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 				let cid = yield contacts.createContact($scope.details);
 				$state.go('main.contacts.profile', {contactId: cid});
 			}
-
-			for(let e of $scope.details.privateEmails)
-				e.unsetIsJustAdded();
-			for(let e of $scope.details.businessEmails)
-				e.unsetIsJustAdded();
 
 			$scope.isEditMode = false;
 		} catch (err) {

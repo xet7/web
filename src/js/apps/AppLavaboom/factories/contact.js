@@ -101,7 +101,17 @@ module.exports = /*@ngInject*/($translate, co, user, crypto, ContactEmail) => {
 
 	Contact.toEnvelope = (contact) => co(function *() {
 		const data = secureFields.reduce((a, field) => {
-			a[field] = contact[field] && contact[field].compress ? contact[field].compress() : contact[field];
+			switch (field) {
+				case 'privateEmails':
+				case 'businessEmails':
+					a[field] = contact[field] ? contact[field].map(e => e.compress()) : [];
+					break;
+				case 'hiddenEmail':
+					a[field] = contact[field] ? contact[field].compress() : null;
+					break;
+				default:
+					a[field] = contact[field];
+			}
 			return a;
 		}, {});
 

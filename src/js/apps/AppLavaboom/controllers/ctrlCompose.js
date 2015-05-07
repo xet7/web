@@ -250,14 +250,16 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		let people = [...contacts.people.values()];
 		let map = new Map();
 
-		const insertEmails = (checkEmail) => {
+		const addHiddenEmails = (checkEmail) => {
 			people.reduce((a, c) => {
 				if (c.hiddenEmail && c.hiddenEmail.email && checkEmail(c.hiddenEmail))
 					a.set(c.hiddenEmail.email, c.hiddenEmail);
 
 				return a;
 			}, map);
+		};
 
+		const addEmails = (checkEmail) => {
 			people.reduce((a, c) => {
 				c.privateEmails.forEach(e => {
 					if (e.email && checkEmail(e))
@@ -272,8 +274,13 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			}, map);
 		};
 
-		insertEmails(e => e.isStar);
-		insertEmails(e => !e.isStar);
+		addEmails(e => e.isSecured() && e.isStar);
+		addEmails(e => e.isSecured() && !e.isStar);
+		addEmails(e => !e.isSecured() && e.isStar);
+		addEmails(e => !e.isSecured() && !e.isStar);
+
+		addHiddenEmails(e => e.isSecured());
+		addHiddenEmails(e => !e.isSecured());
 
 		if (toEmailContact)
 			map.set(toEmailContact.email, toEmailContact);

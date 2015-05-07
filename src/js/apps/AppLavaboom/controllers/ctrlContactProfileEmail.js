@@ -29,7 +29,6 @@ module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, cry
 			if (!primaryKey)
 				throw new Error('not_found');
 
-			$scope.currentEmail.isCustomKey = true;
 			$scope.currentEmail.key = new Key(key);
 
 			notifications.set('public-key-import-ok' + $scope.currentEmail.email, {
@@ -60,7 +59,10 @@ module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, cry
 		$scope.details[$scope.emails] = $scope.details[$scope.emails].filter(e => e.$$hashKey != $scope.currentEmail.$$hashKey);
 	};
 
-	$scope.$watch('currentEmail.name', () => {
+	$scope.$watch('currentEmail.name', (o, n) => {
+		if (o == n)
+			return;
+
 		let email = $scope.currentEmail;
 		if (!email || !email.name)
 			return;
