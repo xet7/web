@@ -1,6 +1,14 @@
-module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateCache, co, user, consts, utils) => {
+module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize, $templateCache, co, user, consts, utils, crypto) => {
 	const emailRegex = /([-A-Z0-9_.]*[A-Z0-9]@[-A-Z0-9_.]*[A-Z0-9])/ig;
 	const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+	const pgpRegex = /(-----BEGIN PGP MESSAGE-----[^-]+-----END PGP MESSAGE-----)/ig;
+
+	const translations = {
+		TITLE_OPENPGP_BLOCK_DECRYPT_ERROR_NO_KEY_FOUND: '',
+		TITLE_OPENPGP_BLOCK_DECRYPT_ERROR: ''
+	};
+
+	$translate.bindAsObject(translations, 'INBOX');
 
 	const getDOM = (html) => {
 		var dom = new DOMParser().parseFromString(html, 'text/html');
@@ -20,7 +28,7 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 				for (let t of transforms)
 					newData = newData.replace(t.regex, t.replace);
 
-				if (newData != node.data) {
+				if (newData && newData != node.data) {
 					const newDataDOM = getDOM(newData);
 					let newDataNodes = [];
 					for (let i = 0; i < newDataDOM.childNodes.length; i++)
@@ -39,10 +47,55 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 			return dom;
 	};
 
-	const transformTextNodes = (dom) => transformCustomTextNodes(dom, [
-		{regex: emailRegex, replace: '<a href="mailto:$1">$1</a>'},
-		{regex: urlRegex, replace: '<a href="$1">$1</a>'}
-	]);
+	const transformTextNodes = (dom, level = 0) => co(function *(){
+		if (level >= 3)
+			return;
+
+		let pgpMessages = {};
+
+		const pgpRemember = (str, pgpMessage) => {
+			pgpMessages[pgpMessage] = co(function *(){
+				try {
+					let message = yield crypto.decodeRaw(pgpMessage);
+
+					let wrappedMessage = `<div>${message}</div>`;
+					let sanitizedMessage = $sanitize(wrappedMessage);
+
+					let dom = getDOM(sanitizedMessage);
+
+					yield transformTextNodes(dom, level + 1);
+
+					return dom.innerHTML;
+				} catch (error) {
+					if (error.message == 'no_private_key')
+						return `<pre title='${translations.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR_NO_KEY_FOUND}'>${pgpMessage}</pre>`;
+					return `<pre title='${translations.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR}'>${pgpMessage}</pre>`;
+				}
+			});
+			return '';
+		};
+
+		const pgpReplace = (str, pgpMessage) => {
+			if (pgpMessages[pgpMessage])
+				return pgpMessages[pgpMessage];
+			return pgpMessage;
+		};
+
+		transformCustomTextNodes(dom, [
+			{regex: pgpRegex, replace: pgpRemember}
+		]);
+
+		pgpMessages = yield pgpMessages;
+
+		transformCustomTextNodes(dom, [
+			{regex: pgpRegex, replace: pgpReplace}
+		]);
+
+		transformCustomTextNodes(dom, [
+			{regex: emailRegex, replace: '<a href="mailto:$1">$1</a>'},
+			{regex: urlRegex, replace: '<a href="$1">$1</a>'}
+		]);
+	});
 
 	let linksCounter = 0;
 	const transformEmail = (dom, {imagesSetting, noImageTemplate, emails}, level = 0) => {
@@ -144,7 +197,7 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 
 			dom = getDOM(sanitizedEmailBody);
 
-			transformTextNodes(dom);
+			yield transformTextNodes(dom);
 			console.log('email body after transformTextNodes', `"${dom.innerHTML}"`);
 
 			transformEmail(dom, {
