@@ -46,6 +46,21 @@ module.exports = /*@ngInject*/($translate, co, user, crypto, ContactEmail) => {
 
 		this.isHidden = () => !!self.hiddenEmail || self.name == '$hidden';
 
+		this.isStar = () => {
+			if (self.hiddenEmail && self.hiddenEmail.isStar)
+				return true;
+
+			if (self.privateEmails)
+				if (self.privateEmails.some(e => e.isStar))
+					return true;
+
+			if (self.businessEmails)
+				if (self.businessEmails.some(e => e.isStar))
+					return true;
+
+			return false;
+		};
+
 		this.isSecured = () => {
 			if (self.hiddenEmail && self.hiddenEmail.isSecured())
 				return true;
@@ -82,7 +97,7 @@ module.exports = /*@ngInject*/($translate, co, user, crypto, ContactEmail) => {
 		this.getSecureClass = () => `sec-${self.isSecured() ? 1 : 0}`;
 	}
 
-	const secureFields = ['name', 'firstName', 'lastName', 'companyName', 'privateEmails', 'businessEmails', 'hiddenEmail', 'isStar'];
+	const secureFields = ['name', 'firstName', 'lastName', 'companyName', 'privateEmails', 'businessEmails', 'hiddenEmail'];
 
 	Contact.toEnvelope = (contact) => co(function *() {
 		const data = secureFields.reduce((a, field) => {
