@@ -24,7 +24,7 @@
 							//- button.btn.btn-remove(type="button")
 							//- 	span.icon-delete
 							label {{'MAIN.SETTINGS.SECURITY.LB_KEY_ID' | translate}}: {{key.keyId}}
-							input.form-control.text-right(type='text', disabled, ng-value="key.created | date", ng-show="key.isCollapsed()")
+							input.form-control.text-right(type='text', disabled, ng-value="key.getTitle()", ng-show="key.isCollapsed()")
 							div.input-group-btn
 								button.btn.btn-default(title="{{key.getEncryptionStatusTooltip()}}")
 									span.icon-key-pair(ng-class="{encrypted: !key.isDecrypted()}")
@@ -40,8 +40,16 @@
 										input.form-control(disabled, ng-model="key.algos")
 								li.list-group-item
 									.text-control
+										label {{'MAIN.CONTACTS.LB_LENGTH' | translate}}
+										input.form-control(disabled, ng-model="key.length")
+								li.list-group-item
+									.text-control
 										label {{'MAIN.SETTINGS.SECURITY.LB_CREATION_DATE' | translate}}	
 										input.form-control(type='text', disabled, ng-value="key.created | date")
+								li.list-group-item
+									.text-control
+										label {{'MAIN.SETTINGS.SECURITY.LB_EXPIRATION_DATE' | translate}}
+										input.form-control(type='text', disabled, ng-value="key.expiredAt | date")
 								li.list-group-item
 									.text-control
 										label(ng-show="key.isDecrypted()") {{'MAIN.SETTINGS.SECURITY.LB_DECRYPTED' | translate}}
@@ -49,7 +57,7 @@
 										input.form-control(type='password', ng-disabled="key.isDecrypted()", ng-model="key.decryptPassword", ng-controller="CtrlSettingsSecurityKey")
 								li.list-group-item
 									.button-holder
-										button.cell.btn.btn-default(type="button", ng-click="downloadKey(key)")
+										button.cell.btn.btn-default(type="button", ng-click="exportKey(key.fingerprint)")
 											span.icon-key-pair-download
 											| {{'MAIN.SETTINGS.SECURITY.BACKUP_KEY_PAIR' | translate}}
 										button.cell.btn.btn-default(type="button", ng-click="")

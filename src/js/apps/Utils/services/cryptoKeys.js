@@ -78,6 +78,33 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 		}, null, 4);
 	};
 
+	this.exportKeyByFingerprint = (fingerprint) => {
+		const keyring = crypto.createKeyring(false);
+
+		const privateKey = keyring.privateKeys.findByFingerprint(fingerprint);
+		const publicKey = keyring.publicKeys.findByFingerprint(fingerprint);
+
+		console.log(privateKey, publicKey);
+
+		let body = {
+			key_pairs: {
+				[privateKey.users[0].userId.userid]: {
+					prv: privateKey.armor(),
+					pub: publicKey.armor()
+				}
+			},
+			exported: $filter('date')(Date.now(), 'yyyy-MM-dd HH:mm:ss Z')
+		};
+
+		let bodyHash = utils.hexify(openpgp.crypto.hash.sha512(JSON.stringify(body)));
+
+		return JSON.stringify({
+			readme: consts.KEYS_BACKUP_README,
+			body: body,
+			bodyHash: bodyHash
+		}, null, 4);
+	};
+
 	this.getExportFilename = (backup, userName) => {
 		let hashPostfix = utils.hexify(openpgp.crypto.hash.md5(backup)).substr(0, 8);
 		return `${userName}-${hashPostfix}.json`;
