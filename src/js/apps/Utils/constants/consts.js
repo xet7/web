@@ -2,7 +2,7 @@ module.exports = {
 	API_URI: process.env.API_URI,
 	ROOT_DOMAIN: process.env.TLD,
 	ROOT_DOMAIN_LIST: ['lavaboom.com', 'lavaboom.io', 'lavaboom.co'],
-	IMAGES_PROXY_URI: 'https://rr.lavaboom.io',
+	IMAGES_PROXY_URI: 'https://rr.lavaboom.com',
 	DEFAULT_LANG: 'en',
 	DEFAULT_KEY_LENGTH: 4096,
 	ESTIMATED_KEY_GENERATION_TIME_SECONDS: 24,

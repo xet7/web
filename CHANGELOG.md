@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## UNRELEASED - 2015-05-07
+### Fixed
+- issue with copyright info hiding on top of contacts & settings buttons #543
+- ritrat moved to rr.lavaboom.com
+
 ## 0.2.8 - 2015-05-06
 ### Fixed
 - issue with threads caching that caused threads to temporary disappear until page refresh
