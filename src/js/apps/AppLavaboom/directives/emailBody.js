@@ -177,6 +177,11 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 	};
 
 	const process = (scope, el, attrs) => co(function *(){
+		const loadingTemplateUrl = yield $templateCache.fetch(scope.loadingTemplateUrl);
+
+		el.empty();
+		el.append(loadingTemplateUrl);
+
 		scope.emails = [];
 		scope.switchContextMenu = index => scope.emails[index].isDropdownOpened = !scope.emails[index].isDropdownOpened;
 
@@ -187,8 +192,6 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 		let sanitizedEmailBody = null;
 		let dom = null;
 		try {
-			const r = {};
-
 			const wrappedEmailBody = `<div>${scope.emailBody}</div>`;
 
 			sanitizedEmailBody = $sanitize(wrappedEmailBody);
@@ -245,7 +248,8 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 		restrict : 'A',
 		scope: {
 			emailBody: '=',
-			noImageTemplateUrl: '@'
+			noImageTemplateUrl: '@',
+			loadingTemplateUrl: '@'
 		},
 		link  : (scope, el, attrs) => {
 			process(scope, el, attrs);
