@@ -6,7 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - issue with copyright info hiding on top of contacts & settings buttons #543
 - ritrat moved to rr.lavaboom.com
-
+- fixed issues with public keys storage in contacts(unified)
+- smarter order address book in compose screen, secured addresses go first
 ### Added
 - public keys: display prettified fingerprint both in contacts and settings
 - settings/keys shows some advanched parameters such as strength and expiration date
