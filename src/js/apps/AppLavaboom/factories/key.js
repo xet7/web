@@ -17,6 +17,8 @@ module.exports = /*@ngInject*/($injector, $translate, $timeout, crypto, utils, c
 
 		this.keyId = utils.hexify(key.primaryKey.keyid.bytes);
 		this.fingerprint = key.primaryKey.fingerprint;
+		this.fingerprintPretty = key.primaryKey.fingerprint.match(/.{1,4}/g).join(' ');
+
 		this.created = new Date(Date.parse(key.primaryKey.created));
 		this.expiredAt = new Date(Date.parse(key.primaryKey.created) + consts.KEY_EXPIRY_DAYS * daysToMsec);
 		this.algos = key.primaryKey.algorithm.split('_')[0].toUpperCase();
