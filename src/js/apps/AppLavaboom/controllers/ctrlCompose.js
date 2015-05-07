@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
-							   utils, consts, co, router, composeHelpers, textAngularHelpers,
+							   utils, consts, co, router, composeHelpers, textAngularHelpers, crypto,
 							   user, contacts, inbox, Manifest, Contact, hotkey, ContactEmail, Email, Attachment) => {
 	$scope.toolbar = [
 		['h1', 'h2', 'h3'],
@@ -25,6 +25,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	const isReplyAll = $stateParams.isReplyAll;
 	const forwardEmailId = $stateParams.forwardEmailId;
 	const toEmail = $stateParams.to;
+	const publicKey = crypto.getPublicKeyByFingerprint($stateParams.publicKey);
+
 	let manifest = null;
 	let newHiddenContact = null;
 
@@ -334,6 +336,14 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 					body: body
 				};
 			}
+
+			const blob = new Blob([publicKey.armor()], {type: 'text/pgp'});
+			blob.lastModifiedDate = publicKey.primaryKey.created;
+			const attachmentStatus = {
+				attachment: new Attachment(blob)
+			};
+			attachmentStatus.processingPromise = processAttachment(attachmentStatus);
+			$scope.attachments.push(attachmentStatus);
 
 			console.log('$scope.form', $scope.form);
 		});
