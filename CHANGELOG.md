@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## UNRELEASED - 2015-05-07
+## 0.2.9 - 2015-05-07
 ### Fixed
 - issue with copyright info hiding on top of contacts & settings buttons #543
 - ritrat moved to rr.lavaboom.com
@@ -13,6 +13,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - settings/keys shows some advanched parameters such as strength and expiration date
 - request public key
 - send public key
+- support for embedded openpgp envelopes - will be decoded automatically
+- added loading sign for the time while email is being post-processed
 ## Removed
 - contact star/delete icon from the top panel, already covered in the edit mode
 
