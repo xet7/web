@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, consts) => {
+module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, consts, crypto, Key) => {
 	const translations = {
 		LB_NEW : '',
 		LB_PRIVATE : '',
@@ -26,12 +26,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 			try {
 				let key = yield inbox.getKeyForEmail(self.email);
 
-				self.key = {
-					id: key.key_id,
-					length: key.length,
-					algos: key.algorithm,
-					key: key.key
-				};
+				self.key = new Key(crypto.readKey(key.key));
 
 				tooltip = '';
 			} catch (err) {

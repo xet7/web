@@ -64,6 +64,8 @@ module.exports = /*@ngInject*/($injector, $translate, $timeout, crypto, utils, c
 				decryptTime = new Date();
 			}, consts.AUTO_SAVE_TIMEOUT);
 		};
+
+		this.armor = () => key.armor();
 	}
 
 	return Key;

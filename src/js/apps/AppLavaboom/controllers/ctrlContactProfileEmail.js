@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, crypto, saver, notifications) => {
+module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, crypto, saver, notifications, Key) => {
 	$scope.selectedContactId = $stateParams.contactId;
 	$scope.isNotFound = false;
 	$scope.emails = [];
@@ -26,12 +26,7 @@ module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, cry
 				throw new Error('not_found');
 
 			$scope.currentEmail.isCustomKey = true;
-			$scope.currentEmail.key = {
-				key: data,
-				algos: primaryKey.algorithm.split('_')[0].toUpperCase(),
-				id: primaryKey.keyid.toHex(),
-				length: primaryKey.getBitSize()
-			};
+			$scope.currentEmail.key = new Key(key);
 
 			notifications.set('public-key-import-ok' + $scope.currentEmail.email, {
 				type: 'info',
@@ -52,7 +47,7 @@ module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, cry
 	};
 
 	$scope.downloadPublicKey = () => {
-		saver.saveAs($scope.currentEmail.key.key, `${$scope.currentEmail.email}-publicKey.txt`);
+		saver.saveAs($scope.currentEmail.key.armor(), `${$scope.currentEmail.email}-publicKey.txt`);
 	};
 
 	$scope.remove = () => {
