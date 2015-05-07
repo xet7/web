@@ -7,6 +7,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - issue with copyright info hiding on top of contacts & settings buttons #543
 - ritrat moved to rr.lavaboom.com
 
+### Added
+- public keys: display prettified fingerprint both in contacts and settings
+- settings/keys shows some advanched parameters such as strength and expiration date
+- request public key
+- send public key
+## Removed
+- contact star/delete icon from the top panel, already covered in the edit mode
+
 ## 0.2.8 - 2015-05-06
 ### Fixed
 - issue with threads caching that caused threads to temporary disappear until page refresh
