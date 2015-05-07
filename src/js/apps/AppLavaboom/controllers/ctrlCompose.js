@@ -25,7 +25,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	const isReplyAll = $stateParams.isReplyAll;
 	const forwardEmailId = $stateParams.forwardEmailId;
 	const toEmail = $stateParams.to;
-	const publicKey = crypto.getPublicKeyByFingerprint($stateParams.publicKey);
+	const publicKey = $stateParams.publicKey ? crypto.getPublicKeyByFingerprint($stateParams.publicKey) : null;
 
 	let manifest = null;
 	let newHiddenContact = null;
@@ -337,13 +337,15 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				};
 			}
 
-			const blob = new Blob([publicKey.armor()], {type: 'text/pgp'});
-			blob.lastModifiedDate = publicKey.primaryKey.created;
-			const attachmentStatus = {
-				attachment: new Attachment(blob)
-			};
-			attachmentStatus.processingPromise = processAttachment(attachmentStatus);
-			$scope.attachments.push(attachmentStatus);
+			if (publicKey) {
+				const blob = new Blob([publicKey.armor()], {type: 'text/pgp'});
+				blob.lastModifiedDate = publicKey.primaryKey.created;
+				const attachmentStatus = {
+					attachment: new Attachment(blob)
+				};
+				attachmentStatus.processingPromise = processAttachment(attachmentStatus);
+				$scope.attachments.push(attachmentStatus);
+			}
 
 			console.log('$scope.form', $scope.form);
 		});
