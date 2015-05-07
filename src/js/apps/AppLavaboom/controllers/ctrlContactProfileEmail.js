@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, crypto, saver, notifications, Key) => {
+module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, crypto, saver, notifications, router, Key) => {
 	$scope.selectedContactId = $stateParams.contactId;
 	$scope.isNotFound = false;
 	$scope.emails = [];
@@ -13,6 +13,10 @@ module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, cry
 	$scope.starEmail = () => {
 		if ($scope.isEditMode)
 			$scope.currentEmail.isStar = !$scope.currentEmail.isStar;
+	};
+
+	$scope.requestPublicKey = () => {
+		router.showPopup('compose', {to: $scope.currentEmail.email});
 	};
 
 	$scope.uploadPublicKey = (data) => {

@@ -16,7 +16,7 @@ li.list-group-item(ng-class="{ 'collapse-active': !currentEmail.isCollapsed() }"
 						p {{'MAIN.CONTACTS.PUBLIC_KEY_PROMPT1' | translate}}
 						p {{'MAIN.CONTACTS.PUBLIC_KEY_PROMPT2' | translate}}
 					li.yesno.table-list
-						a.btn.cell(type="button")
+						a.btn.cell(type="button", ng-click="requestPublicKey()")
 							span.icon-public-key-send
 							span {{'MAIN.CONTACTS.PUBLIC_KEY_PROMPT_REQUEST' | translate}}
 						a.btn.cell(type="button", open-file="uploadPublicKey(data)")
