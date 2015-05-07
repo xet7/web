@@ -53,7 +53,8 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		this.email = opts.email ? opts.email : '';
 		this.name = opts.name ? opts.name : '';
 		this.isStar = opts.isStar ? opts.isStar : false;
-		this.key = opts.key;
+
+		this.key = opts.key && angular.isString(opts.key) ? new Key(crypto.readKey(opts.key)) : null;
 		this.isCustomKey = opts.isCustomKey ? opts.isCustomKey : false;
 
 		this.isSecured = () => !!self.key;
@@ -135,6 +136,13 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		};
 
 		this.isLoadingKey = () => isLoadingKey;
+
+		this.compress = () => {
+			let r = angular.copy(this);
+			r.key = r.key.armor();
+
+			return r;
+		};
 	}
 
 	ContactEmail.newHiddenEmail = email => new ContactEmail(null, {

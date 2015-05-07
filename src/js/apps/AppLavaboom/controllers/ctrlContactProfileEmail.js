@@ -51,6 +51,7 @@ module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, cry
 	};
 
 	$scope.downloadPublicKey = () => {
+		console.log($scope.currentEmail.key);
 		saver.saveAs($scope.currentEmail.key.armor(), `${$scope.currentEmail.email}-publicKey.txt`);
 	};
 
