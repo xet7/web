@@ -4,9 +4,23 @@
 #compose{
 
 	background-color: @lava-gray;
+	border-top: 1px solid lighten(@lava-gray, 10%);
 	
 	.text-primary{
 		color: @lava-login-lava !important;
+	}
+
+	.filters{
+		.navbar-right{
+			li:last-child button{
+				padding-right: 2.2rem;
+			}
+		}
+		.navbar-nav:not(.navbar-right){
+			li:first-child button{
+				padding-left: 2.2rem;
+			}
+		}
 	}
 	
 	&.warning{
@@ -37,11 +51,14 @@
 		}
 	}
 	header {
-		padding: @filter-height 1.75em 0;
+		padding: @filter-height @filter-height 0;
 		background-color: @lava-compose-header;
 		color: @lava-compose-header-fg !important;
 		.table-list{
 			border-bottom: 1px solid @lava-gray-lighter;
+			&:last-child{
+				border-bottom-width: 0;
+			}
 			.pos-rel();
 			&:first-child .btn-unstyled{
 				display: none;
@@ -65,7 +82,7 @@
 			}
 			.fields{
 				.pos-rel();
-				padding-right: 9.9rem;
+				padding-right: 6.5rem;
 				.btn-unstyled{
 					.pos-abs();
 					right: 0;
@@ -97,6 +114,9 @@
 	.ta-toolbar{
 		text-align: center;
 		background-color: @lava-compose-header;
+		overflow: hidden;
+		max-height: 0;
+		.transition-default();
 		&.btn-toolbar{
 			margin: 0;
 			padding: 0;
@@ -125,6 +145,15 @@
 		}
 	}
 
+	&.has-formatting{
+		header .table-list:last-child{
+			border-bottom-width: 1px;
+		}
+		.ta-toolbar{
+			max-height: 100px;
+			
+		}
+	}
 
 	input{
 		background: transparent;
@@ -252,19 +281,33 @@
 		min-height: 400px;
 	}
 
+	&.has-attachment .ta-scroll-window > .ta-bind{
+		min-height: 300;
+	}
+
 	.ta-editor{
 		box-shadow: none !important;
 		outline: 0 !important;
 		border: 0 !important;
-		padding: 2.4rem 2rem;
+		padding: 2.2rem 4.4rem;
 		border-radius: 0;
 		height: auto;
 		.email-formatting();
+		.transition(height);
 	}
 
 	.ui-select-choices{
 		margin-top: -.5rem;
 		.dropdown-autocomplete();
+	}
+
+	#attachments{
+		background-color: @lava-compose-header;
+		margin: 0;
+		padding: 0 4.4rem;
+		a{
+			color: @lava-compose-header-fg;
+		}
 	}
 }
 

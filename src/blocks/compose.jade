@@ -1,6 +1,6 @@
 - var defs = {};
 div#compose-wrapper
-	form#compose(name="__form", ng-class="{ warning: isWarning, show-formatting : isToolbarShown }")
+	form#compose(name="__form", ng-class="{ warning: isWarning, 'has-formatting' : isToolbarShown, 'has-attachment': attachments.length }")
 		.filters.row.no-gutter.lava-icon-row.z1
 			nav.navbar.navbar-inverse(role="navigation")
 				div
@@ -9,7 +9,7 @@ div#compose-wrapper
 							button.btn.btn-default(ng-click="", tooltip="{{'MAIN.COMPOSE.TOOLTIP_ATTACH' | translate}}", tooltip-append-to-body="true")
 								span.icon-paper-clip
 						li
-							button.btn.btn-default(ng-click="toggleToolbar()", tooltip="{{'MAIN.COMPOSE.TOOLTIP_FORMATTING_OPTIONS' | translate}}", tooltip-append-to-body="true")
+							button.btn.btn-default.lava-font(ng-click="toggleToolbar()", tooltip="{{'MAIN.COMPOSE.TOOLTIP_FORMATTING_OPTIONS' | translate}}", tooltip-append-to-body="true")
 								span A
 					ul.nav.navbar-nav.navbar-right(ng-show="selectedTid !== null")
 						li(ng-show="isError")
@@ -43,8 +43,8 @@ div#compose-wrapper
 				- defs = {model: "form.selected.to", label: "{{'MAIN.COMPOSE.LB_TO' | translate}}", click: "clearTo()", required: true};
 				include ./compose/_compose.email.jade
 				div.cc-buttons
-					button.btn.btn-default(ng-click="isCC = !isCC", ng-disabled="isWarning" ng-class="{isCC : hidden}") {{'MAIN.COMPOSE.LB_CC' | translate}}
-					button.btn.btn-default(ng-click="isBCC = !isBCC", ng-disabled="isWarning" ng-class="{isBCC : hidden}") {{'MAIN.COMPOSE.LB_BCC' | translate}}
+					button.btn.btn-default(ng-click="isCC = !isCC", ng-disabled="isWarning" ng-class="{active : isCC}") {{'MAIN.COMPOSE.LB_CC' | translate}}
+					button.btn.btn-default(ng-click="isBCC = !isBCC", ng-disabled="isWarning" ng-class="{active : isBCC}") {{'MAIN.COMPOSE.LB_BCC' | translate}}
 			.table-list(ng-if="isCC")
 				- defs = {model: "form.selected.cc", label: "{{'MAIN.COMPOSE.LB_CC' | translate}}", click: "toggleCC()"};
 				include ./compose/_compose.email.jade
@@ -68,15 +68,41 @@ div#compose-wrapper
 		footer
 			#attachments.row
 				div.col-xs-6(ng-repeat="attachment in attachments")
+					//- a.attachment
+					//- 	span.fileCorner
+					//- 	span(ng-bind="attachment.attachment.name")
+					//- 	br
+					//- 	span(ng-bind="attachment.attachment.size | filesize")
+					//- 	br
+					//- 	div(ng-bind="attachment.attachment.dateModified | date")
+					//- 	br
+					//- 	span.text-muted {{attachment.status}}
+					//- 	a.btn.btn-block.btn-lg.btn-primary(type="button", ng-click="deleteAttachment(attachment, $index)", ng-autodisable) {{'MAIN.COMPOSE.BTN_DELETE' | translate}}
 					a.attachment(filetype="{{attachment.ext}}")
-						span.fileCorner
-						span(ng-bind="attachment.attachment.name")
-						br
-						span(ng-bind="attachment.attachment.size | filesize")
-						br
-						div(ng-bind="attachment.attachment.dateModified | date")
-						br
-						span.text-muted {{attachment.status}}
-						a.btn.btn-block.btn-lg.btn-primary(type="button", ng-click="deleteAttachment(attachment, $index)", ng-autodisable) {{'MAIN.COMPOSE.BTN_DELETE' | translate}}
+						svg#attachment-icon(width="66", height="88", xmlns="http://www.w3.org/2000/svg", xmlns:svg="http://www.w3.org/2000/svg")
+							g
+								title Layer 1
+								g#main-file-icon(stroke="null")
+									g#svg_3(stroke="null")
+										g#svg_4(stroke="null")
+											g#svg_5(stroke="null")
+												polygon#svg_6(stroke="null", points="66,16 50,0 0,0 0,88 66,88", fill="#F5F5F5")
+											polygon#svg_7(stroke="null", points="50,16 66,16 50,0", fill="#ECECEC")
+								rect#loading-icon(stroke="#000000", stroke-opacity="0", fill-opacity="0", height="33.86705", width="30.11855", y="27.66474", x="17.93347", stroke-linecap="null", stroke-linejoin="null", stroke-dasharray="null", stroke-width="null", fill="#000000")
+								path#lock(d="m40.77688,42.96763l0,-4.76647c0,-4.26474 -3.51213,-7.77688 -7.77687,-7.77688s-7.77688,3.51214 -7.77688,7.77688l0,4.76647l-1.37977,0l0,14.42485l18.18786,0l0,-14.42485l-1.25433,0l-0.00001,0zm-13.79769,-4.76647c0,-3.3867 2.75953,-6.14625 6.14624,-6.14625s6.14624,2.75954 6.14624,6.14625l0,4.76647l-12.29248,0l0,-4.76647z", fill="#00BCDF")
+						//- include _attachment_progress.jade
+
+						hgroup
+							div
+								div.file-name(title = "attachment.attachment.dateModified | date")
+									span(ng-bind="attachment.attachment.name")
+								div.file-ext
+									span(ng-bind="attachment.ext | fileExtension")
+							span
+								span(ng-bind="attachment.attachment.size | filesize")
+								span
+									| ({{attachment.status}})
+							div
+								span(ng-click="deleteAttachment(attachment, $index)", ng-autodisable) {{'MAIN.COMPOSE.BTN_DELETE' | translate}}
 		.mask(ng-show="isWarning", ng-click="reject()")
 
