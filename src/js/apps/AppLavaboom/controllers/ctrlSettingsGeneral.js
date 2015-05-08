@@ -92,16 +92,14 @@ module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeo
         hotkey.toggleHotkeys($scope.settings.isHotkeyEnabled);
     });
 
-	const timeouts = {
-		clear: null,
-		update: null
-	};
+	let updateTimeout = null;
+
     $scope.$watch('settings', (o, n) => {
         if (o === n)
 			return;
 
         if (Object.keys($scope.settings).length > 0) {
-			timeouts.update = $timeout.schedulePromise(timeouts.update, () => co(function *(){
+			[updateTimeout] = $timeout.schedulePromise(updateTimeout, () => co(function *(){
 				try {
 					yield user.update($scope.settings);
 
