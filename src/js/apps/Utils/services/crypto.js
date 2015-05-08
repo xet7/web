@@ -6,7 +6,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 	let isInitialized = false;
 
 	const defaultOptions = {
-		isPrivateComputer: false
+		isPrivateComputer: false,
+		isShortMemory: false
 	};
 
 	const wrapOpenpgpKeyring = (keyring) => {
@@ -161,16 +162,20 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 			isInitialized = true;
 		}
 
-		storage = new CryptoKeysStorage(self.options.isPrivateComputer);
-		keyring = wrapOpenpgpKeyring(new openpgp.Keyring(storage));
-		window.keyring = keyring;
+		[keyring, storage] = self.createKeyring(true);
 
 		$rootScope.$broadcast('keyring-updated');
 	};
 
 	this.createKeyring = (isLoadDecrypted = true) => {
-		const storage = new CryptoKeysStorage(self.options.isPrivateComputer, isLoadDecrypted);
-		return wrapOpenpgpKeyring(new openpgp.Keyring(storage));
+		const storage = new CryptoKeysStorage(
+			self.options.isPrivateComputer,
+			self.options.isShortMemory,
+			self.options.email ? [self.options.email] : [],
+			isLoadDecrypted
+		);
+
+		return [wrapOpenpgpKeyring(new openpgp.Keyring(storage)), storage];
 	};
 
 	this.generateKeys = (nameEmail, password, numBits) => {

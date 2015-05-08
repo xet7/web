@@ -1,6 +1,7 @@
 module.exports = /*@ngInject*/(co, utils) => {
+	const prefix = 'lava-openpgp-';
 
-	function CryptoKeysStorage (isPrivateComputer = false, isLoadDecrypted = true, prefix = 'lava-openpgp-') {
+	function CryptoKeysStorage (isPrivateComputer = false, isShortMemory = false, loadOnlyForEmails = [], isLoadDecrypted = true) {
 		const self = this;
 
 		const publicName = prefix + this.publicKeysItem;
@@ -14,8 +15,12 @@ module.exports = /*@ngInject*/(co, utils) => {
 			if (armoredKeys && armoredKeys.length > 0) {
 				for (let keyArmored of armoredKeys) {
 					const key = openpgp.key.readArmored(keyArmored);
-					if (!key.err)
-						keys.push(key.keys[0]);
+					if (!key.err) {
+						const email = utils.getEmailFromAddressString(key.keys[0].users[0].userId.userid);
+
+						if (loadOnlyForEmails.length < 1 || loadOnlyForEmails.includes(email))
+							keys.push(key.keys[0]);
+					}
 				}
 			}
 			return keys;
@@ -73,10 +78,11 @@ module.exports = /*@ngInject*/(co, utils) => {
 		};
 
 		this.storePrivate = (keys) => {
-			storePrivateKeys(localStorage, privateName, keys.filter(k => !k.primaryKey.isDecrypted));
+			storePrivateKeys(isShortMemory ? sessionStorage : localStorage,
+				privateName, keys.filter(k => !k.primaryKey.isDecrypted));
 
-			const storage = isPrivateComputer ? localStorage : sessionStorage;
-			storePrivateKeys(storage, privateSecureName, keys.filter(k => k.primaryKey.isDecrypted));
+			storePrivateKeys(isPrivateComputer && !isShortMemory ? localStorage : sessionStorage,
+				privateSecureName, keys.filter(k => k.primaryKey.isDecrypted));
 		};
 	}
 
