@@ -189,7 +189,7 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 		const noImageTemplate = yield $templateCache.fetch(scope.noImageTemplateUrl);
 		const snapTemplate = yield $templateCache.fetch(scope.snapTemplateUrl);
 
-		let emailBodyHtml = null;
+		let emailBody = null;
 		try {
 			let wrappedEmailBody = `<div>${scope.emailBody}</div>`;
 			let sanitizedEmailBody = $sanitize(wrappedEmailBody);
@@ -204,17 +204,21 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 				emails: scope.emails
 			});
 
-			emailBodyHtml = dom.innerHTML;
+			let emailBodyHtml = dom.innerHTML;
 
-			throw new Error('dead');
+			let emailBodyEl = angular.element(emailBodyHtml);
+			emailBody = $compile(emailBodyEl)(scope);
 		} catch (err) {
 			console.error(`error during email body transforming: "${err.message}"`);
 
-			emailBodyHtml = snapTemplate;
+			try {
+				let emailBodyEl = angular.element(snapTemplate);
+				emailBody = $compile(emailBodyEl)(scope);
+			} catch (err) {
+				console.error(`error during snap template processing: "${err.message}"`);
+				return;
+			}
 		}
-
-		let emailBodyEl = angular.element(emailBodyHtml);
-		let emailBody = $compile(emailBodyEl)(scope);
 
 		$timeout(() => {
 			scope.emailBody = emailBody.html();
