@@ -313,9 +313,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				let thread = yield inbox.getThreadById(replyThreadId);
 				let email = yield inbox.getEmailById(replyEmailId);
 
-				let to = (isReplyAll
-					? thread.members
-					: email.from.map(e => e.address)).map(m => ContactEmail.transform(m));
+				let to = (isReplyAll ? thread.members : email.from)
+					.map(m => ContactEmail.transform(m.address));
 
 				console.log('reply to', to);
 				$scope.form = {

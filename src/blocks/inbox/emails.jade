@@ -86,10 +86,8 @@ div(ng-if="selectedTid").main-view
 			div.btn-group.navbar-right-buttons
 				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
 					span.icon-reply
-				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
+				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id, isReplyAll: true})")
 					span.icon-reply-all
 				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {forwardEmailId: email.id})")
 					span.icon-arrow-right
-				button.btn.btn-default(ng-show="selectedTid", ng-click="alert('to be implemented')")
-					span.icon-trash
 			
