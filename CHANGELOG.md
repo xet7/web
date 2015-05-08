@@ -2,10 +2,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## UNRELEASED
-
+## 0.2.10 - 2015-05-08
 ### Added
 - last email: reply to, reply to all, forward the whole thread
+- download original email button added
+- proper error handling for email post processing 
+- guidelines to the user what to do if we failed to display his email(download original email)
+- compose screen reworked, added attachment button
 
 ### Fixed
 - fixed reply to all
