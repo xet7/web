@@ -319,6 +319,8 @@ DIALOGS_NO = "No"
     TOOLTIP_DISCARD = "Discard"
     TOOLTIP_ATTACH = "Attach a file"
     TOOLTIP_FORMATTING_OPTIONS = "Formatting options"
+    TOOLTIP_DOWNLOAD = "Download"
+    TOOLTIP_DOWNLOAD_ORIGINAL = "Download Original"
     LB_UNNAMED_CONTACT = "Unnamed contact"
     LB_NO_SUBJECT = "No subject"
 

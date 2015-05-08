@@ -88,8 +88,10 @@ div(ng-if="selectedTid").main-view
 			//- 		button.btn.btn-default(ng-click="showPopup('compose', {forwardEmailId: email.id})")
 			//- 			span.icon-arrow-right
 			div.btn-group.navbar-right-buttons
-				button.btn.btn-default(ng-show="selectedTid", ng-click="downloadEmail(email.body.data, email.id, email.isHtml)") download
-				button.btn.btn-default(ng-show="selectedTid", ng-click="downloadEmail(email.originalBodyData, email.id, email.isHtml)") download original
+				button.btn.btn-default(ng-show="selectedTid", ng-click="downloadEmail(email.body.data, email.id, email.isHtml)", tooltip="{{'MAIN.COMPOSE.TOOLTIP_DOWNLOAD' | translate}}", tooltip-append-to-body="true")
+					span.icon-download
+				button.btn.btn-default(ng-show="selectedTid", ng-click="downloadEmail(email.originalBodyData, email.id, email.isHtml)", tooltip="{{'MAIN.COMPOSE.TOOLTIP_DOWNLOAD_ORIGINAL' | translate}}", tooltip-append-to-body="true")
+					span.icon-download
 				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
 					span.icon-reply
 				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id, isReplyAll: true})")
