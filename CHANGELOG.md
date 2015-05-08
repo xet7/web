@@ -3,9 +3,10 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## UNRELEASED
+
 ### Added
 - last email: reply to, reply to all, forward the whole thread
-- 
+
 ### Fixed
 - fixed reply to all
 
