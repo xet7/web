@@ -24,6 +24,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	const replyEmailId = $stateParams.replyEmailId;
 	const isReplyAll = $stateParams.isReplyAll;
 	const forwardEmailId = $stateParams.forwardEmailId;
+	const forwardThreadId = $stateParams.forwardThreadId;
 	const toEmail = $stateParams.to;
 	const publicKey = $stateParams.publicKey ? crypto.getPublicKeyByFingerprint($stateParams.publicKey) : null;
 
@@ -293,7 +294,12 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 			const signature = user.settings.isSignatureEnabled && user.settings.signatureHtml ? user.settings.signatureHtml : '';
 			if (forwardEmailId) {
-				const emails = [yield inbox.getEmailById(forwardEmailId)];
+				let emails = [yield inbox.getEmailById(forwardEmailId)];
+				body = yield composeHelpers.buildForwardedTemplate(body, '', emails);
+			}
+			else
+			if (forwardThreadId) {
+				let emails = yield inbox.getEmailsByThreadId(forwardThreadId);
 				body = yield composeHelpers.buildForwardedTemplate(body, '', emails);
 			}
 			else

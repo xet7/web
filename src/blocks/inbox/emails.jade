@@ -25,11 +25,11 @@ div.pane-status(ng-if="selectedTid === null")
 
 .global-mail-actions(ng-hide="isLoading")
 	div.btn-group
-		button.btn.btn-default(ng-show="selectedTid", ng-click="alert('to be implemented')")
+		button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: emails[emails.length - 1].id})")
 			span.icon-reply
-		button.btn.btn-default(ng-show="selectedTid", ng-click="alert('to be implemented')")
+		button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: emails[emails.length - 1].id, isReplyAll: true})")
 			span.icon-reply-all
-		button.btn.btn-default(ng-show="selectedTid", ng-click="alert('to be implemented')")
+		button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {forwardThreadId: selectedTid})")
 			span.icon-arrow-right
 div(ng-if="selectedTid").main-view
 	.pane-status(ng-show="isLoading")
