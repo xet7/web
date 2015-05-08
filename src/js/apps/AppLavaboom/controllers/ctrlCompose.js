@@ -6,8 +6,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		['bold', 'italics', 'underline'],
 		['justifyLeft', 'justifyCenter', 'justifyRight'],
 		['ul', 'ol'],
-		['indent', 'outdent', 'quote'],
-		['insertImage', 'submit']
+		['submit']
 	];
 	$scope.taggingTokens = 'SPACE|,|/';
 
@@ -18,6 +17,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.isBCC = false;
 	$scope.isSkipWarning = user.settings.isSkipComposeScreenWarning;
 	$scope.attachments = [];
+
+	$scope.isToolbarShown = false;
 
 	const hiddenContacts = {};
 	const replyThreadId = $stateParams.replyThreadId;
@@ -370,6 +371,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 	$scope.toggleCC = () => $scope.isCC = !$scope.isCC;
 	$scope.toggleBCC = () => $scope.isBCC = !$scope.isBCC;
+
+	$scope.toggleToolbar = () => $scope.isToolbarShown = !$scope.isToolbarShown;
 
 	$scope.tagClicked = (select, item, model) => {
 		const index = model.findIndex(c => c.email == item.email);

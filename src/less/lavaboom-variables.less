@@ -283,18 +283,6 @@ body{
 	position: relative;
 	height: 0em + (@line-height-base * @lines);
 	overflow: hidden;
-
-	// &:after {
-	// 	content: "";
-	// 	text-align: right;
-	// 	position: absolute;
-	// 	bottom: 0;
-	// 	right: 0;
-	// 	width: 70%;
-	// 	height: @line-height-base;
-	// 	background: linear-gradient(to right, rgba(255, 255, 255, 0), white 100%);
-	// 	pointer-events: none;
-	// }
 }
 
 .lava-font{
@@ -322,6 +310,14 @@ body{
 	@media (-webkit-min-device-pixel-ratio: 2), 
 		(min-resolution: 192dpi) {
 		font-weight: 300;
+	}
+}
+
+.lava-font-light{
+	font-weight: 100 !important;
+	@media (-webkit-min-device-pixel-ratio: 2), 
+		(min-resolution: 192dpi) {
+		font-weight: 100 !important;
 	}
 }
 
@@ -466,4 +462,8 @@ body{
 .select2 > .select2-choice.ui-select-match {
   /* Because of the inclusion of Bootstrap */
   height: 29px;
+}
+
+.transition-default(@t : all){
+	transition: .2s @t;
 }

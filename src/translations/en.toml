@@ -317,6 +317,8 @@ DIALOGS_NO = "No"
     TOOLTIP_XCC = "Add CC or BCC"
     TOOLTIP_SEND = "Send"
     TOOLTIP_DISCARD = "Discard"
+    TOOLTIP_ATTACH = "Attach a file"
+    TOOLTIP_FORMATTING_OPTIONS = "Formatting options"
     LB_UNNAMED_CONTACT = "Unnamed contact"
     LB_NO_SUBJECT = "No subject"
 
