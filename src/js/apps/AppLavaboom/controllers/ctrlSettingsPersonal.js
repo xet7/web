@@ -13,25 +13,14 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, user, co, notificat
 		$scope.settings = user.settings;
 	});
 
-	const timeouts = {
-		clear: null,
-		update: null
-	};
-
-	$scope.$watch('status', () => {
-		if ($scope.status) {
-			timeouts.clear = $timeout.schedule(timeouts.clear, () => {
-				$scope.status = '';
-			}, 1000);
-		}
-	});
+	let updateTimeout = null;
 
 	$scope.$watch('settings', (o, n) => {
 		if (o === n)
 			return;
 
 		if (Object.keys($scope.settings).length > 0) {
-			timeouts.update = $timeout.schedulePromise(timeouts.update, () => co(function *(){
+			[updateTimeout] = $timeout.schedulePromise(updateTimeout, () => co(function *(){
 				try {
 					yield user.update($scope.settings);
 
