@@ -198,7 +198,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 				if (self.settings.isLavaboomSynced)
 					cryptoKeys.importKeys(self.settings.keyring);
 
-				crypto.initialize({isPrivateComputer: isPrivateComputer});
+				crypto.initialize({isPrivateComputer: isPrivateComputer, email: self.email});
 				crypto.authenticateByEmail(self.email, password);
 
 				$rootScope.$broadcast('user-authenticated');
