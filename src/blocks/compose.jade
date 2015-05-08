@@ -6,7 +6,7 @@ div#compose-wrapper
 				div
 					ul.nav.navbar-nav(ng-show="selectedTid !== null")
 						li
-							button.btn.btn-default(ng-click="", tooltip="{{'MAIN.COMPOSE.TOOLTIP_ATTACH' | translate}}", tooltip-append-to-body="true")
+							button.btn.btn-default(open-raw-file="addAttachment(file)", tooltip="{{'MAIN.COMPOSE.TOOLTIP_ATTACH' | translate}}", tooltip-append-to-body="true")
 								span.icon-paper-clip
 						li
 							button.btn.btn-default.lava-font(ng-click="toggleToolbar()", tooltip="{{'MAIN.COMPOSE.TOOLTIP_FORMATTING_OPTIONS' | translate}}", tooltip-append-to-body="true")

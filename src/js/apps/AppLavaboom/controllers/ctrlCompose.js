@@ -365,6 +365,14 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		});
 	});
 
+	$scope.addAttachment = (file) => {
+		const attachmentStatus = {
+			attachment: new Attachment(file)
+		};
+		attachmentStatus.processingPromise = processAttachment(attachmentStatus);
+		$scope.attachments.push(attachmentStatus);
+	};
+
 	$scope.clearTo = () => $scope.form.selected.to = [];
 	$scope.clearCC = () => $scope.form.selected.cc = [];
 	$scope.clearBCC = () => $scope.form.selected.bcc = [];
