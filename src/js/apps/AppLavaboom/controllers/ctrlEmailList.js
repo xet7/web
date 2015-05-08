@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParams, $translate, $sanitize,
-							   user, utils, co, inbox) => {
+							   user, utils, co, inbox, saver) => {
 
 	$scope.selfEmail = user.email;
 	$scope.labelName = $stateParams.labelName;
@@ -28,6 +28,13 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 		LB_EMAIL_HAS_EMBEDDED_STYLING: ''
 	};
 	$translate.bindAsObject(translations, 'INBOX');
+
+	$scope.downloadEmail = (email) => {
+		let isHtml = email.manifest.getPart('body').isHtml();
+		let body = email.body.data;
+
+		saver.saveAs(body, email.id + (isHtml ? '.html' : '.txt'));
+	};
 
 	$scope.restoreFromSpam = (tid) => {
 		console.log('restoreFromSpam', tid, $scope.threads[tid]);

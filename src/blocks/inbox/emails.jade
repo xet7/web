@@ -84,6 +84,8 @@ div(ng-if="selectedTid").main-view
 			//- 		button.btn.btn-default(ng-click="showPopup('compose', {forwardEmailId: email.id})")
 			//- 			span.icon-arrow-right
 			div.btn-group.navbar-right-buttons
+				button.btn.btn-default(ng-show="selectedTid", ng-click="downloadEmail(email)")
+					| download
 				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
 					span.icon-reply
 				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id, isReplyAll: true})")

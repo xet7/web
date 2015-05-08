@@ -231,6 +231,8 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 			console.log('email body after compilation', emailBodyCompiled.html());
 			el.empty();
 			el.append(emailBodyCompiled);
+
+			scope.emailBody = emailBodyCompiled.html();
 		} catch (err) {
 			console.error(
 				`error during email body validation && compilation: "${err.message}", raw email body: `,
