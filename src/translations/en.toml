@@ -100,6 +100,13 @@ DIALOGS_NO = "No"
     TITLE_OPENPGP_BLOCK_DECRYPT_ERROR_NO_KEY_FOUND = "Cannot find proper decrypted private key to decrypt this openpgp envelope"
     TITLE_OPENPGP_BLOCK_DECRYPT_ERROR = "Something went wrong during decryption of this openpgp envelope"
 
+    CORRUPTED_EMAIL_TITLE = "Aw, Snap!"
+    CORRUPTED_EMAIL = "Something went wrong while displaying this email. To continue, try to "
+    CORRUPTED_EMAIL_OPEN = "open the original email"
+    CORRUPTED_EMAIL_OR = " or "
+    CORRUPTED_EMAIL_DOWNLOAD = "download it"
+
+
 [INBOX.DOWNLOAD]
 	TITLE = "Downloading your attachment"
 	LB_ACQUIRING = "Acquiring information..."
@@ -310,6 +317,8 @@ DIALOGS_NO = "No"
     TOOLTIP_XCC = "Add CC or BCC"
     TOOLTIP_SEND = "Send"
     TOOLTIP_DISCARD = "Discard"
+    TOOLTIP_ATTACH = "Attach a file"
+    TOOLTIP_FORMATTING_OPTIONS = "Formatting options"
     LB_UNNAMED_CONTACT = "Unnamed contact"
     LB_NO_SUBJECT = "No subject"
 

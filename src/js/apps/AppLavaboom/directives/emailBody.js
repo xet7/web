@@ -179,6 +179,7 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 	const process = (scope, el, attrs) => co(function *(){
 		const loadingTemplateUrl = yield $templateCache.fetch(scope.loadingTemplateUrl);
 
+		scope.originalEmail = scope.emailBody;
 		el.empty();
 		el.append(loadingTemplateUrl);
 
@@ -186,22 +187,16 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 		scope.switchContextMenu = index => scope.emails[index].isDropdownOpened = !scope.emails[index].isDropdownOpened;
 
 		const noImageTemplate = yield $templateCache.fetch(scope.noImageTemplateUrl);
+		const snapTemplate = yield $templateCache.fetch(scope.snapTemplateUrl);
 
-		console.log('email body', `"${scope.emailBody}"`);
-
-		let sanitizedEmailBody = null;
-		let dom = null;
+		let emailBodyHtml = null;
 		try {
-			const wrappedEmailBody = `<div>${scope.emailBody}</div>`;
+			let wrappedEmailBody = `<div>${scope.emailBody}</div>`;
+			let sanitizedEmailBody = $sanitize(wrappedEmailBody);
 
-			sanitizedEmailBody = $sanitize(wrappedEmailBody);
-
-			console.log('email body after $sanitize', `"${sanitizedEmailBody}"`);
-
-			dom = getDOM(sanitizedEmailBody);
+			let dom = getDOM(sanitizedEmailBody);
 
 			yield transformTextNodes(dom);
-			console.log('email body after transformTextNodes', `"${dom.innerHTML}"`);
 
 			transformEmail(dom, {
 				imagesSetting: user.settings.images,
@@ -209,47 +204,38 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 				emails: scope.emails
 			});
 
-			console.log('email body after transformEmail', `"${dom.innerHTML}"`);
+			emailBodyHtml = dom.innerHTML;
+
+			throw new Error('dead');
 		} catch (err) {
-			console.error(
-				`error during email body transforming: "${err.message}", raw email body: `,
-				`"${scope.emailBody}"`,
-				', sanitized email body: ',
-				`"${sanitizedEmailBody}"`,
-				', transformed email body: ',
-				`"${dom.innerHTML}"`
-			);
-			throw err;
+			console.error(`error during email body transforming: "${err.message}"`);
+
+			emailBodyHtml = snapTemplate;
 		}
 
-		let emailBodyHtml = '';
-		let emailBodyCompiled = '';
-		try {
-			emailBodyHtml = angular.element(dom.innerHTML);
-			emailBodyCompiled = $compile(emailBodyHtml)(scope);
+		let emailBodyEl = angular.element(emailBodyHtml);
+		let emailBody = $compile(emailBodyEl)(scope);
 
-			console.log('email body after compilation', emailBodyCompiled.html());
-			el.empty();
-			el.append(emailBodyCompiled);
-		} catch (err) {
-			console.error(
-				`error during email body validation && compilation: "${err.message}", raw email body: `,
-				`"${scope.emailBody}"`,
-				', compiled email body: ',
-				`"${emailBodyCompiled.html()}"`,
-				', transformed email body: ',
-				`"${dom.innerHTML}"`
-			);
-			throw err;
-		}
+		$timeout(() => {
+			scope.emailBody = emailBody.html();
+		}, 100);
+
+		console.log('scope.emailBody updated', scope.emailBody);
+
+		el.empty();
+		el.append(emailBody);
 	});
 
 	return {
 		restrict : 'A',
 		scope: {
 			emailBody: '=',
+			originalEmailName: '=',
 			noImageTemplateUrl: '@',
-			loadingTemplateUrl: '@'
+			loadingTemplateUrl: '@',
+			snapTemplateUrl: '@',
+			openEmail: '=',
+			downloadEmail: '='
 		},
 		link  : (scope, el, attrs) => {
 			process(scope, el, attrs);

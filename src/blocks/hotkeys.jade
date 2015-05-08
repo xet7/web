@@ -1,4 +1,4 @@
-.cfp-hotkeys
+.cfp-hotkeys(ng-class="{ mac : (navigator.userAgent.indexOf('Mac OS X') != -1)}")
 	h4.cfp-hotkeys-title {{ 'HOTKEY.TITLE' | translate }}
 	.key-row(ng-repeat='hotkey in hotkeys')
 		.cfp-hotkeys-keys

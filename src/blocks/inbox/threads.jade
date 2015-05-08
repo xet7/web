@@ -32,7 +32,7 @@
 						div.icon-holder.forward(ng-show="thread.isForwarded")
 							span.icon-arrow-right
 					.details
-						p.strong.pack.title(ng-bind="thread.members | members", title="{{thread.members | members}}")
+						p.strong.pack.title(ng-bind="thread.membersPretty | members")
 						p.medium.subject(ng-bind="thread.subject")
 						//p.summary(ng-bind-html="thread.headerEmail.preview ? thread.headerEmail.preview.data.text : 'INBOX.NO_PREVIEW_AVAILABLE' | translate")
 					.when

@@ -6,8 +6,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		['bold', 'italics', 'underline'],
 		['justifyLeft', 'justifyCenter', 'justifyRight'],
 		['ul', 'ol'],
-		['indent', 'outdent', 'quote'],
-		['insertImage', 'submit']
+		['submit']
 	];
 	$scope.taggingTokens = 'SPACE|,|/';
 
@@ -19,11 +18,14 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 	$scope.isSkipWarning = user.settings.isSkipComposeScreenWarning;
 	$scope.attachments = [];
 
+	$scope.isToolbarShown = false;
+
 	const hiddenContacts = {};
 	const replyThreadId = $stateParams.replyThreadId;
 	const replyEmailId = $stateParams.replyEmailId;
 	const isReplyAll = $stateParams.isReplyAll;
 	const forwardEmailId = $stateParams.forwardEmailId;
+	const forwardThreadId = $stateParams.forwardThreadId;
 	const toEmail = $stateParams.to;
 	const publicKey = $stateParams.publicKey ? crypto.getPublicKeyByFingerprint($stateParams.publicKey) : null;
 
@@ -293,7 +295,12 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 			const signature = user.settings.isSignatureEnabled && user.settings.signatureHtml ? user.settings.signatureHtml : '';
 			if (forwardEmailId) {
-				const emails = [yield inbox.getEmailById(forwardEmailId)];
+				let emails = [yield inbox.getEmailById(forwardEmailId)];
+				body = yield composeHelpers.buildForwardedTemplate(body, '', emails);
+			}
+			else
+			if (forwardThreadId) {
+				let emails = yield inbox.getEmailsByThreadId(forwardThreadId);
 				body = yield composeHelpers.buildForwardedTemplate(body, '', emails);
 			}
 			else
@@ -313,9 +320,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				let thread = yield inbox.getThreadById(replyThreadId);
 				let email = yield inbox.getEmailById(replyEmailId);
 
-				let to = (isReplyAll
-					? thread.members
-					: email.from.map(e => e.address)).map(m => ContactEmail.transform(m));
+				let to = (isReplyAll ? thread.members : email.from)
+					.map(m => ContactEmail.transform(m.address));
 
 				console.log('reply to', to);
 				$scope.form = {
@@ -365,6 +371,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 	$scope.toggleCC = () => $scope.isCC = !$scope.isCC;
 	$scope.toggleBCC = () => $scope.isBCC = !$scope.isBCC;
+
+	$scope.toggleToolbar = () => $scope.isToolbarShown = !$scope.isToolbarShown;
 
 	$scope.tagClicked = (select, item, model) => {
 		const index = model.findIndex(c => c.email == item.email);
