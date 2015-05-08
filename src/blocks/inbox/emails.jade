@@ -59,11 +59,15 @@ div(ng-if="selectedTid").main-view
 				.col-xs-1.secure
 					a.icon-secure
 			.mail-content.row.no-gutter
-				.col-xs-22(ng-if="email.manifest.getPart('body').isHtml()", ng-show="email.body.state == 'ok'",
+				.col-xs-22(ng-if="email.isHtml", ng-show="email.body.state == 'ok'",
+					open-email="openEmail",
+					download-email="downloadEmail",
+					original-email-name="email.id",
 					email-body="email.body.data",
+					snap-template-url="partials/directives/snap.html",
 					no-image-template-url="partials/directives/noImage.html",
 					loading-template-url="partials/directives/loading.html")
-				.col-xs-22(ng-if="!email.manifest.getPart('body').isHtml()", ng-show="email.body.state == 'ok'")
+				.col-xs-22(ng-if="!email.isHtml", ng-show="email.body.state == 'ok'")
 					pre(ng-bind="email.body.data")
 				.col-xs-22(ng-show="email.body.state == 'no_private_key'") {{'INBOX.LB_NO_PRIVATE_KEY_FOUND1' | translate}}
 					div {{'INBOX.LB_NO_PRIVATE_KEY_FOUND2' | translate}}
@@ -84,8 +88,8 @@ div(ng-if="selectedTid").main-view
 			//- 		button.btn.btn-default(ng-click="showPopup('compose', {forwardEmailId: email.id})")
 			//- 			span.icon-arrow-right
 			div.btn-group.navbar-right-buttons
-				button.btn.btn-default(ng-show="selectedTid", ng-click="downloadEmail(email)")
-					| download
+				button.btn.btn-default(ng-show="selectedTid", ng-click="downloadEmail(email.body.data, email.id, email.isHtml)") download
+				button.btn.btn-default(ng-show="selectedTid", ng-click="downloadEmail(email.originalBodyData, email.id, email.isHtml)") download original
 				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
 					span.icon-reply
 				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id, isReplyAll: true})")

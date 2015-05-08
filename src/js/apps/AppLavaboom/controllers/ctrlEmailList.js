@@ -29,11 +29,16 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 	};
 	$translate.bindAsObject(translations, 'INBOX');
 
-	$scope.downloadEmail = (email) => {
-		let isHtml = email.manifest.getPart('body').isHtml();
-		let body = email.body.data;
+	$scope.downloadEmail = (email, name, isHtml) => {
+		let contentType = isHtml ? 'text/html' : 'text/plain';
 
-		saver.saveAs(body, email.id + (isHtml ? '.html' : '.txt'));
+		saver.saveAs(email, name + (isHtml ? '.html' : '.txt'), contentType);
+	};
+
+	$scope.openEmail = (email, isHtml) => {
+		let contentType = isHtml ? 'text/html' : 'text/plain';
+
+		saver.openAs(email, contentType);
 	};
 
 	$scope.restoreFromSpam = (tid) => {
@@ -87,7 +92,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 
 				yield utils.wait(() => $scope.isThreads);
 
-				$scope.emails = yield emailsPromise;
+				$scope.emails = (yield emailsPromise).map(e => {
+					e.originalBodyData = e.body.data;
+					return e;
+				});
 
 				inbox.setThreadReadStatus($scope.selectedTid);
 			} finally {
@@ -103,7 +111,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 		co(function *() {
 			$scope.isLoading = true;
 			try {
-				$scope.emails = yield inbox.getEmailsByThreadId(threadId);
+				$scope.emails = (yield inbox.getEmailsByThreadId(threadId)).map(e => {
+					e.originalBodyData = e.body.data;
+					return e;
+				});
 			} finally {
 				$scope.isLoading = false;
 			}
