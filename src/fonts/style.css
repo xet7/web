@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'lavaboom';
-	src:url('fonts/lavaboom.eot?-p2alli');
-	src:url('fonts/lavaboom.eot?#iefix-p2alli') format('embedded-opentype'),
-		url('fonts/lavaboom.woff?-p2alli') format('woff'),
-		url('fonts/lavaboom.ttf?-p2alli') format('truetype'),
-		url('fonts/lavaboom.svg?-p2alli#lavaboom') format('svg');
+	src:url('fonts/lavaboom.eot?htsau3');
+	src:url('fonts/lavaboom.eot?#iefixhtsau3') format('embedded-opentype'),
+		url('fonts/lavaboom.woff?htsau3') format('woff'),
+		url('fonts/lavaboom.ttf?htsau3') format('truetype'),
+		url('fonts/lavaboom.svg?htsau3#lavaboom') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -21,6 +21,26 @@
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-format-list-bulleted:before {
+	content: "\e602";
+}
+
+.icon-align-justify:before {
+	content: "\e619";
+}
+
+.icon-align-left:before {
+	content: "\e61a";
+}
+
+.icon-align-right:before {
+	content: "\e61b";
+}
+
+.icon-download:before {
+	content: "\e61c";
 }
 
 .icon-add-contact:before {
@@ -43,14 +63,8 @@
 	content: "\e60a";
 }
 
-.icon-put-back .path1:before {
+.icon-put-back:before {
 	content: "\e60b";
-	color: rgb(30, 30, 28);
-}
-.icon-put-back .path2:before {
-	content: "\e619";
-	margin-left: -1em;
-	color: rgb(0, 0, 0);
 }
 
 .icon-public-key-download:before {
@@ -105,10 +119,6 @@
 	content: "\e618";
 }
 
-.icon-format-list-bulleted:before {
-	content: "\e602";
-}
-
 .icon-format-bold:before {
 	content: "\f032";
 }
@@ -119,18 +129,6 @@
 
 .icon-format-align-center:before {
 	content: "\f037";
-}
-
-.icon-format-align-left:before {
-	content: "\f036";
-}
-
-.icon-format-align-right:before {
-	content: "\f038";
-}
-
-.icon-format-align-justify:before {
-	content: "\f039";
 }
 
 .icon-format-list:before {
