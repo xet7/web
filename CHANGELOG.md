@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## UNRELEASED
+### Added
+- last email: reply to, reply to all, forward the whole thread
+### Fixed
+- fixed reply to all
+
 ## 0.2.9 - 2015-05-07
 ### Fixed
 - issue with copyright info hiding on top of contacts & settings buttons #543
