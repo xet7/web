@@ -34,7 +34,7 @@
 					.details
 						p.strong.pack.title(ng-bind="thread.membersPretty | members")
 						p.medium.subject(ng-bind="thread.subject")
-						//p.summary(ng-bind-html="thread.headerEmail.preview ? thread.headerEmail.preview.data.text : 'INBOX.NO_PREVIEW_AVAILABLE' | translate")
+						//- p.summary(ng-bind-html="thread.headerEmail.preview ? thread.headerEmail.preview.data.text : 'INBOX.NO_PREVIEW_AVAILABLE' | translate")
 					.when
 						span.date(ng-bind="thread.created | lavadate", title = "{{thread.created | timeAgo}}")
 						.lava-icon-row
