@@ -1,7 +1,9 @@
-module.exports = /*@ngInject*/($injector, $translate, $timeout, crypto, utils, consts) => {
+module.exports = /*@ngInject*/($injector, $translate, $timeout, crypto, utils, consts, dateFilter) => {
 	const translations = {
 		TP_KEY_IS_ENCRYPTED: '',
-		TP_KEY_IS_DECRYPTED: ''
+		TP_KEY_IS_DECRYPTED: '',
+		LB_EXPIRED: '',
+		LB_EXPIRING_SOON: ''
 	};
 	$translate.bindAsObject(translations, 'MAIN.SETTINGS.SECURITY');
 
@@ -15,6 +17,8 @@ module.exports = /*@ngInject*/($injector, $translate, $timeout, crypto, utils, c
 
 		this.keyId = utils.hexify(key.primaryKey.keyid.bytes);
 		this.fingerprint = key.primaryKey.fingerprint;
+		this.fingerprintPretty = key.primaryKey.fingerprint.match(/.{1,4}/g).join(' ');
+
 		this.created = new Date(Date.parse(key.primaryKey.created));
 		this.expiredAt = new Date(Date.parse(key.primaryKey.created) + consts.KEY_EXPIRY_DAYS * daysToMsec);
 		this.algos = key.primaryKey.algorithm.split('_')[0].toUpperCase();
@@ -30,6 +34,11 @@ module.exports = /*@ngInject*/($injector, $translate, $timeout, crypto, utils, c
 		let isCollapsed = statuses[self.fingerprint].isCollapsed;
 		let decodeTimeout = null;
 		let decryptTime = 0;
+
+		this.getTitle = () =>
+			(self.isExpiringSoon ? `(${translations.LB_EXPIRING_SOON}) ` : '') +
+			(self.isExpired ? `(${translations.LB_EXPIRED}) ` : '') +
+			dateFilter(self.created);
 
 		this.isExpired = now() > self.expiredAt;
 		this.isExpiringSoon = !self.isExpired && (now() > self.expiredAt.getTime() - consts.KEY_EXPIRY_DAYS_WARNING * daysToMsec);
@@ -57,6 +66,8 @@ module.exports = /*@ngInject*/($injector, $translate, $timeout, crypto, utils, c
 				decryptTime = new Date();
 			}, consts.AUTO_SAVE_TIMEOUT);
 		};
+
+		this.armor = () => key.armor();
 	}
 
 	return Key;

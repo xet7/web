@@ -1,19 +1,29 @@
 #mail-thread{
-	
+	&:hover {
+		.navbar-right-buttons {
+			opacity: 1;
+		}
+	}
+	.global-mail-actions {
+		.pos-abs();
+		bottom: 1.6rem;
+		.text-center();
+		.z2();
+		width: 100%;
+		.btn-group{
+			box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
+			border-radius: 4.4rem;
+		}
+	}
 }
 
 .mail{
 	.navbar-right-buttons {
 		position: absolute;
-		right:0;
-		bottom: 0;
+		right:1.6rem;
+		bottom: 0.6rem;
 		opacity:0;
 		transition:opacity 0.2s linear;
-	}
-	&:hover {
-		.navbar-right-buttons {
-			opacity: 1;
-		}
 	}
 
 	border: @border-site-wide;
@@ -22,15 +32,17 @@
 	padding: @mail-thread-padding !important;
 	background: #FFF;
 	border: 1px solid transparent;
+	border-bottom: @border-site-wide;
 	font-size: 13px;
 	line-height: 1.3em;
+	color: @mail-thread-fg;
 	&:hover{
 		.pos-rel();
 		.z1();
 		transition: .5s all;
 		box-shadow: 0px 1px 14px 0 rgba(0, 0, 0, 0.19);
-		border: 1px solid @lava !important;
-		border-bottom-color: @lava;
+		// border: 1px solid @lava !important;
+		// border-bottom-color: @lava;
 	}
 
 	
@@ -63,63 +75,92 @@
 		.email-formatting();
 	}
 
+	
+
 	footer{
-		border-top: @border-site-wide;
 		margin-bottom: 0px !important;
+		&:not(.signature){
+			border-top: 1px solid @mail-thread-attachment-border;
+		}
+		&.attachments{
+			padding-right: 16.4rem;
+		}
+	}
+
+	.signature > p:last-child{
+		margin-bottom: 0;
 	}
 	
 }
 
 .attachment {
-  display: block;
-  margin: 1.5em 0 2.5em 0;
-  position: relative;
-  padding-left: 60px;
-  color: black;
-  &[filetype=pdf]{
-  	&:before{
-  		background: @lava-blue;
-  	}
-  }
-  &:hover{
-  	text-decoration: none;
-  }
-}
-.attachment::before {
-  position: absolute;
-  width: 46px;
-  height: 64px;
-  left: 0;
-  top: -14px;
-  content: '';
-  // border: solid 2px #920035;
-  background: @lava-gray-lighter;
-}
-.attachment::after {
-  content: 'file';
-  content: attr(filetype);
-  left: 0px;
-  width: 46px;
-  padding: 0px 2px;
-  text-align: right;
-  line-height: 1.3;
-  position: absolute;
-  text-align: center;
-  
-  color: #fff;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  top: 55%;
-  // margin-top: -.5em;
-}
-.attachment .fileCorner {
-  width: 0;
-  height: 0;
-  border-style: solid;
-  border-width: 11px 0 0 11px;
-  border-color: white transparent transparent rgba(0, 0, 0, .3);
-  position: absolute;
-  top: -14px;
-  left: 36px;
+	display: block;
+	margin: 1.1rem 1.1rem 0 0;
+	padding: 1.1rem 1.1rem 1.1rem 0;
+	position: relative;
+	min-height: 11rem;
+	padding-left: 7.7rem;
+	color: @mail-thread-fg;
+	// display: flex;
+	&[filetype=pdf]{
+		&:before{
+			background: @lava-blue;
+		}
+	}
+	&:hover{
+		text-decoration: none;
+		color: @lava-gray-dark;
+	}
+	#attachment-icon{
+		margin-right: 1.1rem;
+		filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
+		.pos-abs();
+		left: 0;
+	}
+	> * {
+		display: inline-block;
+		vertical-align: middle;
+		// flex-grow: 1;
+	}
+	hgroup{
+		.pos-abs();
+		right: 0;
+		left: 7.7rem;
+		.vertical-align();
+		> div {
+			display: flex;
+		}
+		.file-name span {
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			overflow: hidden;
+			display: block;
+  			width: 100%;
+		}
+		.file-ext{
+			flex: 1;
+			span {
+				.pos-rel();
+				left: -0.2rem;
+			}
+		}
+	}
+
+	.radial-progress{
+		position: absolute;
+		top: 3.4rem;
+		left: 1.1rem;
+		display: none;
+		transition: .2s all;
+		transform: scale(.1);
+		opacity: 0;
+	}
+	&.decrypting{
+		.radial-progress{
+			display: block;
+			transition: .2s all;
+			transform: scale(1);
+			opacity: 1;
+		}
+	}
 }

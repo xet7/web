@@ -2,8 +2,9 @@ section.email
 	section.body(ng-bind-html="body")
 	footer.signature(ng-bind-html="signature")
 	section.replied-to(ng-repeat="email in forwardEmails")
-		header {{'INBOX.FORWARD_HEADER' | translate}}
-			div {{'INBOX.FORWARD_FROM' | translate}}: {{email.fromAllPretty}}
+		blockquote {{'INBOX.FORWARD_HEADER' | translate}}
+			div {{'INBOX.FORWARD_FROM' | translate}}: 
+				span.medium {{email.fromAllPretty}}
 			div {{'INBOX.FORWARD_DATE' | translate}}: {{email.date | date}}
 			div {{'INBOX.FORWARD_SUBJECT' | translate}}: {{email.subject}}
 			div {{'INBOX.FORWARD_TO' | translate}}: {{email.toPretty}}

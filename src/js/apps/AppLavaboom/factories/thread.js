@@ -6,19 +6,42 @@ module.exports = /*@ngInject*/($injector, $translate, co, utils, crypto, user, E
 
 	function Thread(opt, manifest, labels) {
 		const self = this;
-		let inbox = $injector.get('Email');
 
 		this.id = opt.id;
 		this.created = opt.date_created;
 		this.modified = opt.date_modified;
-		this.members = opt.members
-			.map(address => {
-				const a = Manifest.formatAddress(address);
-				return a.address == user.email ? '' : a.contactPrettyName;
-			})
-			.filter(m => !!m);
-		if (!this.members || this.members.length < 1)
-			this.members = [translations.LB_EMAIL_TO_YOURSELF];
+
+		const prettify = (a) => {
+			let r = a
+				.map(e => e.address == user.email ? '' : e.prettyName)
+				.filter(e => !!e);
+
+			if (r.length < 1)
+				r = [translations.LB_EMAIL_TO_YOURSELF];
+
+			return r;
+		};
+
+		const filterMembers = (members) => {
+			let myself = null;
+			members = members.
+				map(e => {
+					if (e.address == user.email){
+						myself = e;
+						return null;
+					}
+					return e;
+				})
+				.filter(e => !!e);
+
+			if (members.length < 1 && myself)
+				members = [myself];
+
+			return members;
+		};
+
+		this.members = opt.members ? filterMembers(Manifest.parseAddresses(opt.members)) : [];
+		this.membersPretty = prettify(self.members);
 
 		this.to = manifest ? manifest.to : [];
 

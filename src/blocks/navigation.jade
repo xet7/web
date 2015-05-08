@@ -2,7 +2,8 @@ div#left-panel.ng-cloak
 	nav#navigation
 		div#brand
 			a(ui-sref="main.inbox.label({labelName: 'Inbox', threadId: null})")
-				img(src="img/Lavaboom-logo-full.svg")
+				img(src="#{resolveAsset('/img/Lavaboom-logo-no-shadow.svg')}")
+				img(src="#{resolveAsset('/img/Lavaboom-logo-wordmark-min.svg')}")
 		ul.list-unstyled
 			li.compose
 				a(ng-click="showPopup('compose')", tooltip-placement="right", tooltip="{{'MAIN.NAV.LB_COMPOSE' | translate}}")

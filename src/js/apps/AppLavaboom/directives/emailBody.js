@@ -1,6 +1,14 @@
-module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateCache, co, user, consts, utils) => {
+module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize, $templateCache, co, user, consts, utils, crypto) => {
 	const emailRegex = /([-A-Z0-9_.]*[A-Z0-9]@[-A-Z0-9_.]*[A-Z0-9])/ig;
 	const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+	const pgpRegex = /(-----BEGIN PGP MESSAGE-----[^-]+-----END PGP MESSAGE-----)/ig;
+
+	const translations = {
+		TITLE_OPENPGP_BLOCK_DECRYPT_ERROR_NO_KEY_FOUND: '',
+		TITLE_OPENPGP_BLOCK_DECRYPT_ERROR: ''
+	};
+
+	$translate.bindAsObject(translations, 'INBOX');
 
 	const getDOM = (html) => {
 		var dom = new DOMParser().parseFromString(html, 'text/html');
@@ -20,7 +28,7 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 				for (let t of transforms)
 					newData = newData.replace(t.regex, t.replace);
 
-				if (newData != node.data) {
+				if (newData && newData != node.data) {
 					const newDataDOM = getDOM(newData);
 					let newDataNodes = [];
 					for (let i = 0; i < newDataDOM.childNodes.length; i++)
@@ -39,10 +47,55 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 			return dom;
 	};
 
-	const transformTextNodes = (dom) => transformCustomTextNodes(dom, [
-		{regex: emailRegex, replace: '<a href="mailto:$1">$1</a>'},
-		{regex: urlRegex, replace: '<a href="$1">$1</a>'}
-	]);
+	const transformTextNodes = (dom, level = 0) => co(function *(){
+		if (level >= 3)
+			return;
+
+		let pgpMessages = {};
+
+		const pgpRemember = (str, pgpMessage) => {
+			pgpMessages[pgpMessage] = co(function *(){
+				try {
+					let message = yield crypto.decodeRaw(pgpMessage);
+
+					let wrappedMessage = `<div>${message}</div>`;
+					let sanitizedMessage = $sanitize(wrappedMessage);
+
+					let dom = getDOM(sanitizedMessage);
+
+					yield transformTextNodes(dom, level + 1);
+
+					return dom.innerHTML;
+				} catch (error) {
+					if (error.message == 'no_private_key')
+						return `<pre title='${translations.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR_NO_KEY_FOUND}'>${pgpMessage}</pre>`;
+					return `<pre title='${translations.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR}'>${pgpMessage}</pre>`;
+				}
+			});
+			return '';
+		};
+
+		const pgpReplace = (str, pgpMessage) => {
+			if (pgpMessages[pgpMessage])
+				return pgpMessages[pgpMessage];
+			return pgpMessage;
+		};
+
+		transformCustomTextNodes(dom, [
+			{regex: pgpRegex, replace: pgpRemember}
+		]);
+
+		pgpMessages = yield pgpMessages;
+
+		transformCustomTextNodes(dom, [
+			{regex: pgpRegex, replace: pgpReplace}
+		]);
+
+		transformCustomTextNodes(dom, [
+			{regex: emailRegex, replace: '<a href="mailto:$1">$1</a>'},
+			{regex: urlRegex, replace: '<a href="$1">$1</a>'}
+		]);
+	});
 
 	let linksCounter = 0;
 	const transformEmail = (dom, {imagesSetting, noImageTemplate, emails}, level = 0) => {
@@ -124,28 +177,26 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 	};
 
 	const process = (scope, el, attrs) => co(function *(){
+		const loadingTemplateUrl = yield $templateCache.fetch(scope.loadingTemplateUrl);
+
+		scope.originalEmail = scope.emailBody;
+		el.empty();
+		el.append(loadingTemplateUrl);
+
 		scope.emails = [];
 		scope.switchContextMenu = index => scope.emails[index].isDropdownOpened = !scope.emails[index].isDropdownOpened;
 
 		const noImageTemplate = yield $templateCache.fetch(scope.noImageTemplateUrl);
+		const snapTemplate = yield $templateCache.fetch(scope.snapTemplateUrl);
 
-		console.log('email body', `"${scope.emailBody}"`);
-
-		let sanitizedEmailBody = null;
-		let dom = null;
+		let emailBody = null;
 		try {
-			const r = {};
+			let wrappedEmailBody = `<div>${scope.emailBody}</div>`;
+			let sanitizedEmailBody = $sanitize(wrappedEmailBody);
 
-			const wrappedEmailBody = `<div>${scope.emailBody}</div>`;
+			let dom = getDOM(sanitizedEmailBody);
 
-			sanitizedEmailBody = $sanitize(wrappedEmailBody);
-
-			console.log('email body after $sanitize', `"${sanitizedEmailBody}"`);
-
-			dom = getDOM(sanitizedEmailBody);
-
-			transformTextNodes(dom);
-			console.log('email body after transformTextNodes', `"${dom.innerHTML}"`);
+			yield transformTextNodes(dom);
 
 			transformEmail(dom, {
 				imagesSetting: user.settings.images,
@@ -153,46 +204,42 @@ module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateC
 				emails: scope.emails
 			});
 
-			console.log('email body after transformEmail', `"${dom.innerHTML}"`);
+			let emailBodyHtml = dom.innerHTML;
+
+			let emailBodyEl = angular.element(emailBodyHtml);
+			emailBody = $compile(emailBodyEl)(scope);
 		} catch (err) {
-			console.error(
-				`error during email body transforming: "${err.message}", raw email body: `,
-				`"${scope.emailBody}"`,
-				', sanitized email body: ',
-				`"${sanitizedEmailBody}"`,
-				', transformed email body: ',
-				`"${dom.innerHTML}"`
-			);
-			throw err;
+			console.error(`error during email body transforming: "${err.message}"`);
+
+			try {
+				let emailBodyEl = angular.element(snapTemplate);
+				emailBody = $compile(emailBodyEl)(scope);
+			} catch (err) {
+				console.error(`error during snap template processing: "${err.message}"`);
+				return;
+			}
 		}
 
-		let emailBodyHtml = '';
-		let emailBodyCompiled = '';
-		try {
-			emailBodyHtml = angular.element(dom.innerHTML);
-			emailBodyCompiled = $compile(emailBodyHtml)(scope);
+		$timeout(() => {
+			scope.emailBody = emailBody.html();
+		}, 100);
 
-			console.log('email body after compilation', emailBodyCompiled.html());
-			el.empty();
-			el.append(emailBodyCompiled);
-		} catch (err) {
-			console.error(
-				`error during email body validation && compilation: "${err.message}", raw email body: `,
-				`"${scope.emailBody}"`,
-				', compiled email body: ',
-				`"${emailBodyCompiled.html()}"`,
-				', transformed email body: ',
-				`"${dom.innerHTML}"`
-			);
-			throw err;
-		}
+		console.log('scope.emailBody updated', scope.emailBody);
+
+		el.empty();
+		el.append(emailBody);
 	});
 
 	return {
 		restrict : 'A',
 		scope: {
 			emailBody: '=',
-			noImageTemplateUrl: '@'
+			originalEmailName: '=',
+			noImageTemplateUrl: '@',
+			loadingTemplateUrl: '@',
+			snapTemplateUrl: '@',
+			openEmail: '=',
+			downloadEmail: '='
 		},
 		link  : (scope, el, attrs) => {
 			process(scope, el, attrs);

@@ -1,28 +1,34 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
-							   utils, consts, co, router, composeHelpers, textAngularHelpers,
+							   utils, consts, co, router, composeHelpers, textAngularHelpers, crypto,
 							   user, contacts, inbox, Manifest, Contact, hotkey, ContactEmail, Email, Attachment) => {
 	$scope.toolbar = [
 		['h1', 'h2', 'h3'],
 		['bold', 'italics', 'underline'],
 		['justifyLeft', 'justifyCenter', 'justifyRight'],
 		['ul', 'ol'],
-		['indent', 'outdent', 'quote'],
-		['insertImage', 'submit']
+		['submit']
 	];
 	$scope.taggingTokens = 'SPACE|,|/';
 
 	$scope.isWarning = false;
 	$scope.isError = false;
 	$scope.isXCC = false;
+	$scope.isCC = false;
+	$scope.isBCC = false;
 	$scope.isSkipWarning = user.settings.isSkipComposeScreenWarning;
 	$scope.attachments = [];
+
+	$scope.isToolbarShown = false;
 
 	const hiddenContacts = {};
 	const replyThreadId = $stateParams.replyThreadId;
 	const replyEmailId = $stateParams.replyEmailId;
 	const isReplyAll = $stateParams.isReplyAll;
 	const forwardEmailId = $stateParams.forwardEmailId;
+	const forwardThreadId = $stateParams.forwardThreadId;
 	const toEmail = $stateParams.to;
+	const publicKey = $stateParams.publicKey ? crypto.getPublicKeyByFingerprint($stateParams.publicKey) : null;
+
 	let manifest = null;
 	let newHiddenContact = null;
 
@@ -157,9 +163,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			bcc = $scope.form.selected.bcc.map(e => e.email);
 
 		let keys = yield ([...$scope.form.selected.to, ...$scope.form.selected.cc, ...$scope.form.selected.bcc].reduce((a, e) => {
-			a[e.email] = co.transform(co.def(e.loadKey(), null), v => v ? v.key : v);
+			a[e.email] = co.def(e.loadKey(), null);
 			return a;
 		}, {}));
+		console.log(keys);
 
 		const isSecured = Email.isSecuredKeys(keys);
 
@@ -245,14 +252,16 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		let people = [...contacts.people.values()];
 		let map = new Map();
 
-		const insertEmails = (checkEmail) => {
+		const addHiddenEmails = (checkEmail) => {
 			people.reduce((a, c) => {
 				if (c.hiddenEmail && c.hiddenEmail.email && checkEmail(c.hiddenEmail))
 					a.set(c.hiddenEmail.email, c.hiddenEmail);
 
 				return a;
 			}, map);
+		};
 
+		const addEmails = (checkEmail) => {
 			people.reduce((a, c) => {
 				c.privateEmails.forEach(e => {
 					if (e.email && checkEmail(e))
@@ -267,8 +276,13 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			}, map);
 		};
 
-		insertEmails(e => e.isStar);
-		insertEmails(e => !e.isStar);
+		addEmails(e => e.isSecured() && e.isStar);
+		addEmails(e => e.isSecured() && !e.isStar);
+		addEmails(e => !e.isSecured() && e.isStar);
+		addEmails(e => !e.isSecured() && !e.isStar);
+
+		addHiddenEmails(e => e.isSecured());
+		addHiddenEmails(e => !e.isSecured());
 
 		if (toEmailContact)
 			map.set(toEmailContact.email, toEmailContact);
@@ -281,7 +295,12 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 			const signature = user.settings.isSignatureEnabled && user.settings.signatureHtml ? user.settings.signatureHtml : '';
 			if (forwardEmailId) {
-				const emails = [yield inbox.getEmailById(forwardEmailId)];
+				let emails = [yield inbox.getEmailById(forwardEmailId)];
+				body = yield composeHelpers.buildForwardedTemplate(body, '', emails);
+			}
+			else
+			if (forwardThreadId) {
+				let emails = yield inbox.getEmailsByThreadId(forwardThreadId);
 				body = yield composeHelpers.buildForwardedTemplate(body, '', emails);
 			}
 			else
@@ -301,9 +320,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				let thread = yield inbox.getThreadById(replyThreadId);
 				let email = yield inbox.getEmailById(replyEmailId);
 
-				let to = (isReplyAll
-					? thread.members
-					: email.from.map(e => e.address)).map(m => ContactEmail.transform(m));
+				let to = (isReplyAll ? thread.members : email.from)
+					.map(m => ContactEmail.transform(m.address));
 
 				console.log('reply to', to);
 				$scope.form = {
@@ -333,13 +351,36 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				};
 			}
 
+			if (publicKey) {
+				const blob = new Blob([publicKey.armor()], {type: 'text/pgp'});
+				blob.lastModifiedDate = publicKey.primaryKey.created;
+				const attachmentStatus = {
+					attachment: new Attachment(blob)
+				};
+				attachmentStatus.processingPromise = processAttachment(attachmentStatus);
+				$scope.attachments.push(attachmentStatus);
+			}
+
 			console.log('$scope.form', $scope.form);
 		});
 	});
 
+	$scope.addAttachment = (file) => {
+		const attachmentStatus = {
+			attachment: new Attachment(file)
+		};
+		attachmentStatus.processingPromise = processAttachment(attachmentStatus);
+		$scope.attachments.push(attachmentStatus);
+	};
+
 	$scope.clearTo = () => $scope.form.selected.to = [];
 	$scope.clearCC = () => $scope.form.selected.cc = [];
 	$scope.clearBCC = () => $scope.form.selected.bcc = [];
+
+	$scope.toggleCC = () => $scope.isCC = !$scope.isCC;
+	$scope.toggleBCC = () => $scope.isBCC = !$scope.isBCC;
+
+	$scope.toggleToolbar = () => $scope.isToolbarShown = !$scope.isToolbarShown;
 
 	$scope.tagClicked = (select, item, model) => {
 		const index = model.findIndex(c => c.email == item.email);

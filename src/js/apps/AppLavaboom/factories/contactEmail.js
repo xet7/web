@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, consts) => {
+module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, consts, crypto, Key) => {
 	const translations = {
 		LB_NEW : '',
 		LB_PRIVATE : '',
@@ -20,18 +20,12 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		let isLoadedKey = false;
 		let isCollapsed = true;
 		let tag = opts.tag;
-		let isJustAdded = false;
 
 		let loadKey = () => co(function *(){
 			try {
 				let key = yield inbox.getKeyForEmail(self.email);
 
-				self.key = {
-					id: key.key_id,
-					length: key.length,
-					algos: key.algorithm,
-					key: key.key
-				};
+				self.key = new Key(crypto.readKey(key.key));
 
 				tooltip = '';
 			} catch (err) {
@@ -58,8 +52,13 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		this.email = opts.email ? opts.email : '';
 		this.name = opts.name ? opts.name : '';
 		this.isStar = opts.isStar ? opts.isStar : false;
-		this.key = opts.key;
-		this.isCustomKey = opts.isCustomKey ? opts.isCustomKey : false;
+
+		if (opts.key) {
+			if (opts.key.key)
+				this.key = new Key(crypto.readKey(opts.key.key));
+			else
+				this.key = new Key(crypto.readKey(opts.key));
+		} else this.key = null;
 
 		this.isSecured = () => !!self.key;
 		this.getSecureClass = () => `sec-${self.isSecured() ? 1 : 0}`;
@@ -71,9 +70,6 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		this.isNew = () => !!opts.isNew;
 		this.getLabel = () => label;
 		this.getTooltip = () => tooltip;
-		this.isJustAdded = () => isJustAdded;
-		this.setIsJustAdded = () => isJustAdded = true;
-		this.unsetIsJustAdded = () => isJustAdded = false;
 
 		this.getTag = () => tag;
 
@@ -83,13 +79,11 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		this.switchCollapse = () => isCollapsed = !isCollapsed;
 
 		this.loadKey = (isReload = false) => co(function *(){
-			if (self.isCustomKey)
-				return self.key;
+			console.log('loadKey for ', self.email, 'key:', self.key, isLoadedKey, isLoadingKey, isReload, new Error());
 
 			try {
 				if (!isReload) {
-					console.log('loadKey', isLoadedKey, isLoadingKey, self.key);
-					if (isLoadedKey)
+					if (self.key)
 						return self.key;
 
 					if (isLoadingKey) {
@@ -140,6 +134,14 @@ module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, 
 		};
 
 		this.isLoadingKey = () => isLoadingKey;
+
+		this.compress = () => {
+			let r = angular.copy(this);
+
+			r.key = r.key ? r.key.armor() : null;
+
+			return r;
+		};
 	}
 
 	ContactEmail.newHiddenEmail = email => new ContactEmail(null, {

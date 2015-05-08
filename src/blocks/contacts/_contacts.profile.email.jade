@@ -16,7 +16,7 @@ li.list-group-item(ng-class="{ 'collapse-active': !currentEmail.isCollapsed() }"
 						p {{'MAIN.CONTACTS.PUBLIC_KEY_PROMPT1' | translate}}
 						p {{'MAIN.CONTACTS.PUBLIC_KEY_PROMPT2' | translate}}
 					li.yesno.table-list
-						a.btn.cell(type="button")
+						a.btn.cell(type="button", ng-click="requestPublicKey()")
 							span.icon-public-key-send
 							span {{'MAIN.CONTACTS.PUBLIC_KEY_PROMPT_REQUEST' | translate}}
 						a.btn.cell(type="button", open-file="uploadPublicKey(data)")
@@ -28,8 +28,8 @@ li.list-group-item(ng-class="{ 'collapse-active': !currentEmail.isCollapsed() }"
 		ul.child-item
 			li.list-group-item
 				.text-control
-					label {{'MAIN.CONTACTS.LB_KEY_ID' | translate}}
-					input.form-control(disabled, type="text", ng-model="currentEmail.key.id")
+					label {{'MAIN.CONTACTS.LB_KEY_FINGERPRINT' | translate}}
+					div.form-control.disable-styles(ng-bind="currentEmail.key.fingerprintPretty")
 			li.list-group-item
 				.text-control
 					label {{'MAIN.CONTACTS.LB_LENGTH' | translate}}

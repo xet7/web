@@ -1,19 +1,12 @@
 module.exports = /*@ngInject*/($compile, fileReader) => ({
 	restrict : 'A',
 	scope: {
-		openFile: '&',
-		openError: '&'
+		openRawFile: '&',
+		openRawError: '&'
 	},
 	link  : (scope, el, attrs) => {
 		scope.getFile = (file) => {
-			fileReader.readAsText(file)
-				.then(data => {
-					scope.openFile({data: data});
-				})
-				.catch(error => {
-					if (scope.openError)
-						scope.openError(error);
-				});
+			scope.openRawFile({file});
 		};
 
 		const buttonEl = angular.element('<input class="hidden" type="file" file-select get-file="getFile(file)"/>');

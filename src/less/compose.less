@@ -4,9 +4,23 @@
 #compose{
 
 	background-color: @lava-gray;
+	border-top: 1px solid lighten(@lava-gray, 10%);
 	
 	.text-primary{
 		color: @lava-login-lava !important;
+	}
+
+	.filters{
+		.navbar-right{
+			li:last-child button{
+				padding-right: 2.2rem;
+			}
+		}
+		.navbar-nav:not(.navbar-right){
+			li:first-child button{
+				padding-left: 2.2rem;
+			}
+		}
 	}
 	
 	&.warning{
@@ -37,23 +51,43 @@
 		}
 	}
 	header {
-		padding: @filter-height 1.75em 0;
+		padding: @filter-height @filter-height 0;
 		background-color: @lava-compose-header;
 		color: @lava-compose-header-fg !important;
 		.table-list{
 			border-bottom: 1px solid @lava-gray-lighter;
+			&:last-child{
+				border-bottom-width: 0;
+			}
+			.pos-rel();
+			&:first-child .btn-unstyled{
+				display: none;
+			}
+			.cc-buttons{
+				line-height: 2.2rem;
+				margin: 1.1rem 0;
+				.pos-abs();
+				right: 0;left: auto;
+
+				> * {
+					background: transparent;
+					color: @lava-compose-header-fg;
+					padding: 0 .55rem;
+					.lava-font();
+				}
+			}
 			
 			> *{
-				vertical-align: middle;
+				vertical-align: top;
 			}
 			.fields{
 				.pos-rel();
-				padding-right: 40px;
-				span.icon-close{
+				padding-right: 6.5rem;
+				.btn-unstyled{
 					.pos-abs();
 					right: 0;
 					top: 0;
-					line-height: 3em;
+					bottom: 0;
 				}
 				width: 100%;
 			}
@@ -80,21 +114,25 @@
 	.ta-toolbar{
 		text-align: center;
 		background-color: @lava-compose-header;
+		overflow: hidden;
+		max-height: 0;
+		.transition-default();
 		&.btn-toolbar{
 			margin: 0;
-			padding: .4rem 0;
+			padding: 0;
 		}
 		.btn-group{
 			display: inline-block;
 			float: none;
 			
 			i{
-				line-height: inherit;
+				// line-height: inherit;
 			}
 			.btn{
 				border: 0;
 				background: transparent none;
 				color: @lava-compose-header-fg;
+				.lava-icon-22();
 				&:active, &.active{
 					border: 0;
 					background: transparent none;
@@ -107,6 +145,15 @@
 		}
 	}
 
+	&.has-formatting{
+		header .table-list:last-child{
+			border-bottom-width: 1px;
+		}
+		.ta-toolbar{
+			max-height: 100px;
+			
+		}
+	}
 
 	input{
 		background: transparent;
@@ -114,7 +161,8 @@
 		border: 0 !important;
 		background-position: -200% -200% !important;
 		.lava-font();
-		padding-left: 0;
+		padding-left: 1.1rem;
+		height: 4.3rem;
 	}
 
 	.ui-select-container{
@@ -124,6 +172,8 @@
 		background-color: transparent;
 		padding: 0;
 		.lava-font();
+		min-height: 2.2rem;
+  		padding: .7rem 0 0.1rem;
 		.btn-default{
 			color: @lava-compose-header-fg;
 			border: 0 none;
@@ -134,6 +184,7 @@
 			font-size: @compose-font-size;
 			padding: .5rem 1rem;
 			// padding-right: 1em;
+			margin-bottom: .4rem;
 			&:hover, &.btn-primary{
 				background-color: @lava-compose-tags-bg;
 				.close.ui-select-match-close{
@@ -158,10 +209,22 @@
 			top: -1px;
 		}
 		.icon-lock.sec-0{
-			color: @lava-warning;
+			color: @lava-insecure;
 			&:before{
 				content: "\71";
 			}
+		}
+
+		input{
+			line-height: 2.8rem;
+			height: 2.8rem;
+		}
+
+		.ui-select-match {
+			> span {
+				display: inline-block;
+			}
+			// padding-bottom: 1.1rem;
 		}
 
 		.close.ui-select-match-close{
@@ -178,20 +241,30 @@
 			text-shadow: none;
 
 			color: @lava-compose-header-fg;
+			.opacity(.75);
+			border-radius: @border-radius-small;
 
 			&:before{
 				position: relative;
 				top: .4rem;
-				left: -.1rem;
-				content: "\73";
-				font-size: @compose-font-size;
+				// left: -.1rem;
+				content: "\e610";
+				font-size: 1.1rem;
+				padding: .4rem;
+				font-family: lavaboom;
+			}
+
+			&:hover{
+				.opacity(.9);
+				&:before{
+					background-color: @compose-cross-hover-color;
+				}
 			}
 
 			/* Better Font Rendering =========== */
 			-webkit-font-smoothing: antialiased;
 			-moz-osx-font-smoothing: grayscale;
-			content: '7';
-			.opacity(7);
+			
 			transition: .2s opacity;
 		}
 	}
@@ -208,14 +281,33 @@
 		min-height: 400px;
 	}
 
+	&.has-attachment .ta-scroll-window > .ta-bind{
+		min-height: 300;
+	}
+
 	.ta-editor{
 		box-shadow: none !important;
 		outline: 0 !important;
 		border: 0 !important;
-		padding: 2.4rem 2rem;
+		padding: 2.2rem 4.4rem;
 		border-radius: 0;
 		height: auto;
 		.email-formatting();
+		.transition(height);
+	}
+
+	.ui-select-choices{
+		margin-top: -.5rem;
+		.dropdown-autocomplete();
+	}
+
+	#attachments{
+		background-color: @lava-compose-header;
+		margin: 0;
+		padding: 0 4.4rem;
+		a{
+			color: @lava-compose-header-fg;
+		}
 	}
 }
 

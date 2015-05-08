@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, crypto, saver, notifications) => {
+module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, crypto, saver, notifications, router, Key) => {
 	$scope.selectedContactId = $stateParams.contactId;
 	$scope.isNotFound = false;
 	$scope.emails = [];
@@ -15,6 +15,10 @@ module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, cry
 			$scope.currentEmail.isStar = !$scope.currentEmail.isStar;
 	};
 
+	$scope.requestPublicKey = () => {
+		router.showPopup('compose', {to: $scope.currentEmail.email});
+	};
+
 	$scope.uploadPublicKey = (data) => {
 		try {
 			const key = crypto.readKey(data);
@@ -25,13 +29,7 @@ module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, cry
 			if (!primaryKey)
 				throw new Error('not_found');
 
-			$scope.currentEmail.isCustomKey = true;
-			$scope.currentEmail.key = {
-				key: data,
-				algos: primaryKey.algorithm.split('_')[0].toUpperCase(),
-				id: primaryKey.keyid.toHex(),
-				length: primaryKey.getBitSize()
-			};
+			$scope.currentEmail.key = new Key(key);
 
 			notifications.set('public-key-import-ok' + $scope.currentEmail.email, {
 				type: 'info',
@@ -52,7 +50,8 @@ module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, cry
 	};
 
 	$scope.downloadPublicKey = () => {
-		saver.saveAs($scope.currentEmail.key.key, `${$scope.currentEmail.email}-publicKey.txt`);
+		console.log($scope.currentEmail.key);
+		saver.saveAs($scope.currentEmail.key.armor(), `${$scope.currentEmail.email}-publicKey.txt`);
 	};
 
 	$scope.remove = () => {
@@ -60,7 +59,10 @@ module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, cry
 		$scope.details[$scope.emails] = $scope.details[$scope.emails].filter(e => e.$$hashKey != $scope.currentEmail.$$hashKey);
 	};
 
-	$scope.$watch('currentEmail.name', () => {
+	$scope.$watch('currentEmail.name', (o, n) => {
+		if (o == n)
+			return;
+
 		let email = $scope.currentEmail;
 		if (!email || !email.name)
 			return;

@@ -26,11 +26,14 @@ module.exports = {
 
 	INBOX_EMAILS_CACHE_TTL: 60 * 10 * 1000,
 	SET_READ_AFTER_TIMEOUT: 3000,
-	KEYS_BACKUP_README: 'https://lavaboom.com/placeholder/help/backup-file',
+	KEYS_BACKUP_README: 'https://lavaboom.com/faq/keyring-backup',
 	POPUP_AUTO_HIDE_DELAY: 500,
 	ORDERED_LABELS: ['Inbox', 'Drafts', 'Sent', 'Starred', 'Spam', 'Trash'],
 	PLAN_LIST: ['BASIC'/*, 'TEST'*/],
 	CRYPTO_DEFAULT_THREAD_POOL_SIZE: 4,
 	KEY_EXPIRY_DAYS: 365,
-	KEY_EXPIRY_DAYS_WARNING: 10
+	KEY_EXPIRY_DAYS_WARNING: 10,
+
+	// what, why? because reasons ^^
+	stripBOM: (str) => str.replace(/^\ufeff/g, '')
 };

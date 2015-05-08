@@ -2,17 +2,10 @@
 	.filters.row.no-gutter.lava-icon-row
 		nav.navbar.navbar-inverse(role="navigation")
 			div
-				ul.nav.navbar-nav.navbar-right
+				ul.nav.navbar-nav.navbar-right.boogie
 					li
-						button.btn.btn-default(ng-click="newContact()", ng-autodisable)
+						button.btn.btn-default(ng-click="newContact()", ng-autodisable, tooltip = "{{'MAIN.CONTACTS.LB_NEW_CONTACT' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 							span.icon-add-contact
-					li
-						button.btn.btn-default(ng-disabled="!selectedContactId", ng-click="starContact(selectedContactId)")
-							span.icon-star-outline(ng-show="!contacts.get(selectedContactId).isStar")
-							span.icon-star(ng-show="contacts.get(selectedContactId).isStar")
-					li
-						button.btn.btn-default(ng-disabled="!selectedContactId", ng-click="deleteContact(selectedContactId)")
-							span.icon-trash
 				form.navbar-form-alt
 					.form-group
 						.input-group
@@ -30,4 +23,4 @@
 						span(ng-show="!contact.isNew", ng-bind="contact.getFullName() | defaultValue:('MAIN.CONTACTS.LB_CONTACT_NAME' | translate)")
 						span.sec-icon.icon-lock(ng-show="contact.isSecured()")
 						span.sec-icon.icon-unlock(ng-show="!contact.isSecured()")
-						span.sec-icon.icon-star(ng-show="contact.isStar")
+						span.sec-icon.icon-star(ng-show="contact.isStar()")

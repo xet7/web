@@ -67,7 +67,7 @@ input[type=checkbox] {
 
 input[type=checkbox]:checked + label:before {
 	font-family: 'lavaboom';
-    content: "7";  
+    content: "\e618";  
     line-height: 22px;
     font-size: 17px;
     text-align: center;
@@ -114,6 +114,19 @@ input[type=checkbox]:checked + label:before {
 	}
 }
 
+.btn-group{
+	.btn-default{
+		background-color: @lava-gray-lightest;
+		color: @lava;
+		.lava-icon-22();
+		border-radius: 4.4rem;
+		transition: .3s color;
+		&:hover{
+			color: @lava-gray-dark;
+		}
+	}
+}
+
 
 input:focus{
 	box-shadow: none;
@@ -155,7 +168,6 @@ form.settings{
 
 	[class^="icon-"]:not(.field-icon), [class*=" icon-"]:not(.field-icon){
 		color: @lava-gray-light;
-		font-size: 1.3em;
 	}
 
 	.form-wrap{
@@ -282,7 +294,7 @@ form.settings{
 					input{
 						  padding-right: 0;
 						  position: relative;
-						  right: -.6rem;
+						  right: -.2rem;
 					}
 				}
 				> label {
@@ -296,6 +308,7 @@ form.settings{
 			.btn{
 				background: transparent;
 				border-color: transparent !important;
+				font-size: 2.2rem;
 				&:active,&:focus, &.active{
 					background: transparent;
 					box-shadow: none;
@@ -313,15 +326,20 @@ form.settings{
 				// font-size: @font-size-base;
 				line-height: @filter-height;
 				height: @filter-height;
+
 				padding-top: 0;
 				padding-bottom: 0;
 			}
-			span.dropdown{
+			span.dropdown {
 				padding-bottom: 2rem;
+				button{
+					.lava-icon-22();
+				}
 			}
 
 			.icon-key-pair{
 				color: @lava;
+				font-size: 2.2rem;
 			}
 			.icon-key-pair.encrypted{
 				color: @lava-red;
@@ -490,7 +508,7 @@ form.settings{
 						.pos-rel();
 						&:after{
 							.lava-icon();
-							content: "\37";
+							content: "\e618";
 							color: @lava;
 							.pos-abs();
 							right: 1.8rem;

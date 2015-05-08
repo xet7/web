@@ -98,6 +98,15 @@ a:hover{
 	.list-group{
 		// border-bottom: @border-site-wide;
 		// padding-bottom: .1rem;
+		&.big-text{
+			span {
+				font-size: 22px;
+			}
+			i.icon{
+				position: relative;
+				top: -.4rem;
+			}
+		}
 	}
 	.list-group-item {
 		&:first-child, &.active{
@@ -125,13 +134,10 @@ a:hover{
 			text-decoration: none !important;
 			> i.icon{
 				display: inline-block;
-				font-size: 2.8rem;
-				line-height: 4.8rem;
+				
 				vertical-align: middle;
 				text-align: center;
-				position: relative;
-				top: -.2rem;
-				padding-right: 1.5rem;
+				.lava-icon-44();
 			}
 		}
 		&:hover{
@@ -175,10 +181,10 @@ a:hover{
 	}
 
 	.sec-icon{
-		clear: both;
+		//clear: both; leads to bug in contacts list - not possible to display more than 1 icon
 		float: right;
 		display: inline-block;
-		font-size: 1.3em;
+		.lava-icon-22();
 		color: @lava-warning;
 		&.icon-lock{
 			color: @lava;
@@ -280,10 +286,44 @@ p.hyphenate{
 	padding-top: @filter-height + 25px;
 }
 
+.modal-backdrop.fade.in{
+	background-color: rgba(49, 52, 57, 1);
+}
+
+.modal-backdrop.in{
+	.opacity(.9);
+}
+
+.btn-unstyled{
+	border: 0;
+	background: transparent none;
+	&:active, &.active{
+		border: 0;
+		background: transparent none;
+		box-shadow: none;
+	}
+}
+
 .no-image{
 	background: @lava-gray-light;
 	border: @border-site-wide;
 	padding: 3rem 2rem;
+}
+
+.snap {
+	header {
+		img {
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		text-align: center;
+
+		border: 0 !important;
+	}
+
+	margin-bottom: 2em;
 }
 
 .modal-dialog{

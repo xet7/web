@@ -11,7 +11,8 @@
 	.search-icon {
 		// width: @mail-list-block-buttons-width;
 		height: @filter-height;
-		padding: 0 .5rem 0 1rem;
+		.lava-icon-22();
+		padding: 0 .4rem 0 .9rem;
 		.icon-search{
 			// padding-left: 1.2rem;
 			// float: left;
@@ -26,20 +27,14 @@
 
 	color: @lava-gray-light;
 
-	[class^="icon-"],
-	[class*=" icon-"] {
-		font-size: 2rem;
-		line-height: @filter-height - 0.3rem;
-		// color: @lava-gray-light;
-	}
-
 	button, label{
 		color: @lava-gray-light;
 		background: transparent;
 		border: 0;
 		height: @filter-height;
+
 		&:hover{
-			color: @lava-gray-lighter;
+			color: @lava-gray-light;
 		}
 		&:active{
 			outline: 0;
@@ -52,22 +47,13 @@
 		height: @filter-height;
 		color: @lava-gray-light;
 		border-radius: 0;
-		// position: relative;
 		outline: none;
-		// padding: 0 5px;
+		
 		&:active, &:focus{
-			box-shadow: inset 0 0 .9rem fadeout(@lava-gray-darkest, .5) !important;
+			box-shadow: none !important;
 			outline: none;
 			border: 0;
 		}
-		// width: @actions-search-width;
-	}
-
-	.form-control[type=text]{
-		&:focus{
-			box-shadow: inset 0 0 .9rem fadeout(@lava-gray-darkest, .5) !important;
-		}
-
 	}
 
 
@@ -101,14 +87,15 @@
 		background: transparent none;
 		border: 0;
 		outline: 0;
-		padding: 0 1.2rem;
+		.lava-icon-22();
 		color: @lava-gray-light;
+		transition: .2s color;
 		&:active, &:hover, &:focus, &.active, &.open{
 			background: transparent none;
 			border: 0;
 			outline: 0;
 			box-shadow: none;
-			color: @lava-gray-lighter;
+			color: @lava-gray-lightest;
 		}
 
 		.transition(.2s);

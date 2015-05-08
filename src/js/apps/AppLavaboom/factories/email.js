@@ -12,6 +12,7 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 		this.manifest = manifest;
 		this.subject = manifest ? manifest.subject : opt.name;
 		this.files = manifest ? manifest.files : [];
+		this.isHtml = manifest ? manifest.getPart('body').isHtml() : false;
 
 		const prettify = (a) => a.map(e => e.prettyName).join(',');
 

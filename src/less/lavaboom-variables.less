@@ -2,12 +2,17 @@
 @lava: #3BBADC;
 @lava-dark: darken(@lava, 30%);
 @lava-light: lighten(@lava, 5%);
+@lava-lighter: lighten(@lava, 15%);
 @lava-gray: #3A4045;
 @lava-gray-light: #BCBBC0;
 @lava-gray-lighter: #D9D9D9;
 @lava-gray-lightest: lighten(@lava-gray-lighter, 10%);
 @lava-gray-dark: #61666F;
 @lava-gray-darkest: darken(@lava-gray-dark, 20%);
+
+@lava-muted: #C6C6C6;
+@lava-secure: @lava;
+@lava-insecure: @lava-muted;
 @lava-red: #E74F2F;
 @lava-blue: #3388BF;
 @lava-text: #525964;
@@ -66,9 +71,12 @@
 @base-font-weight: 300;
 
 @compose-font-size: 1.3rem;
+@compose-cross-hover-color: #DAD9D9;
 
 @lava-form-line-height: 4.4rem;
 @lava-form-padding: 1.1rem;
+
+
 
 //birds-eye-view
 .z1{
@@ -84,12 +92,12 @@
 }
 
 //left panel variables
-@left-panel-padding: 0 3.3rem;
-@left-panel-padding-sm: .585em 1.85em;
+@left-panel-padding: 0 3.6rem;
+@left-panel-padding-sm: 0 3.6rem;
 
 //dimensions
 @left-panel-width: 210px;
-@left-panel-width-sm: 79px;
+@left-panel-width-sm: 88px;
 
 //list-groups
 @list-group-bg: transparent;
@@ -103,7 +111,10 @@
 
 @mail-thread-width: 100% - @mail-list-width;
 @mail-thread-width-sm: 100% - @mail-list-width-sm;
-@mail-thread-padding: 15px 0 8px 39px;
+@mail-thread-padding: 2.2rem 0 1.1rem 4.4rem;
+@mail-thread-fg: @lava-gray;
+@mail-thread-muted: @lava-gray-lighter;
+@mail-thread-attachment-border: @lava-gray-lightest; 
 
 @filter-height: 4.4rem;
 
@@ -272,18 +283,6 @@ body{
 	position: relative;
 	height: 0em + (@line-height-base * @lines);
 	overflow: hidden;
-
-	// &:after {
-	// 	content: "";
-	// 	text-align: right;
-	// 	position: absolute;
-	// 	bottom: 0;
-	// 	right: 0;
-	// 	width: 70%;
-	// 	height: @line-height-base;
-	// 	background: linear-gradient(to right, rgba(255, 255, 255, 0), white 100%);
-	// 	pointer-events: none;
-	// }
 }
 
 .lava-font{
@@ -303,6 +302,22 @@ body{
 		strong, .strong{
 			font-weight: 400;
 		}
+	}
+}
+
+.lava-font-medium{
+	font-weight: 400;
+	@media (-webkit-min-device-pixel-ratio: 2), 
+		(min-resolution: 192dpi) {
+		font-weight: 300;
+	}
+}
+
+.lava-font-light{
+	font-weight: 100 !important;
+	@media (-webkit-min-device-pixel-ratio: 2), 
+		(min-resolution: 192dpi) {
+		font-weight: 100 !important;
 	}
 }
 
@@ -447,4 +462,8 @@ body{
 .select2 > .select2-choice.ui-select-match {
   /* Because of the inclusion of Bootstrap */
   height: 29px;
+}
+
+.transition-default(@t : all){
+	transition: .2s @t;
 }

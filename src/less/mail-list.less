@@ -1,4 +1,12 @@
 #mail-list{
+
+	#top-search{
+		padding-left: 0;
+	}
+	label.search-icon .icon-search{
+		line-height: 4.4rem;
+		padding: 0 0.53rem 0 .3rem;
+	}
 	
 	.mail-list-group{
 		position: absolute;
@@ -77,11 +85,11 @@
 			}
 
 			.icon-lock{
-				// color: @lava;
+				color: @lava;
 			}
 
 			.icon-unlock{
-				color: @lava-warning;
+				color: @lava-insecure;
 			}
 
 			.mail-list-wrapper{
@@ -162,9 +170,9 @@
 		margin-top: @mail-list-padding;
 		[class^="icon-"],
 		[class*=" icon-"]{
-			line-height: 4.4rem;
 			font-size: 2.2rem;
-			padding: 0 0 0 1.2rem;
+			line-height: 4.4rem;
+			padding: 0 0.53rem 0 .3rem;
 		}
 	}
 

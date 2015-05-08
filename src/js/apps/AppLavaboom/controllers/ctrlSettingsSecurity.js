@@ -1,5 +1,5 @@
-module.exports = /*@ngInject*/($scope, $timeout, $translate, Key,
-							   dialogs,
+module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
+							   Key, dialogs, router,
 							   co, utils, user, crypto, cryptoKeys, LavaboomAPI, fileReader, inbox, saver, notifications) => {
 	$scope.email = user.email;
 	$scope.settings = {};
@@ -85,11 +85,13 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, Key,
 		saver.saveAs(key.armor(), user.name + '.pgp');
 	};
 
-	$scope.exportKeys = () => {
-		console.log('exporting keys');
-		let keysBackup = cryptoKeys.exportKeys();
-		console.log('keys backup:', keysBackup);
+	$scope.exportKey = (key) => {
+		let keysBackup = cryptoKeys.exportKeyByFingerprint(key.fingerprint);
 		saver.saveAs(keysBackup, cryptoKeys.getExportFilename(keysBackup, user.name));
+	};
+
+	$scope.sendKey = (key) => {
+		router.showPopup('compose', {publicKey: key.fingerprint});
 	};
 
 	$scope.importKeys = (data) => {
