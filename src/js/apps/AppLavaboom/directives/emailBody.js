@@ -54,6 +54,7 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 		let pgpMessages = {};
 
 		const pgpRemember = (str, pgpMessage) => {
+			console.log('remember hidden message', pgpMessage);
 			pgpMessages[pgpMessage] = co(function *(){
 				try {
 					let message = yield crypto.decodeRaw(pgpMessage);
@@ -65,6 +66,8 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 
 					yield transformTextNodes(dom, level + 1);
 
+					console.log('decrypted hidden message', dom.innerHTML);
+
 					return dom.innerHTML;
 				} catch (error) {
 					if (error.message == 'no_private_key')
@@ -72,12 +75,14 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 					return `<pre title='${translations.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR}'>${pgpMessage}</pre>`;
 				}
 			});
-			return '';
+			return pgpMessage;
 		};
 
 		const pgpReplace = (str, pgpMessage) => {
-			if (pgpMessages[pgpMessage])
+			if (pgpMessages[pgpMessage]) {
+				console.log('replace hidden message!');
 				return pgpMessages[pgpMessage];
+			} else console.log('cannot replace hidden message!');
 			return pgpMessage;
 		};
 
@@ -87,9 +92,13 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 
 		pgpMessages = yield pgpMessages;
 
+		console.log('replacing possible hidden messages...', dom.innerHTML);
+
 		transformCustomTextNodes(dom, [
 			{regex: pgpRegex, replace: pgpReplace}
 		]);
+
+		console.log('replaced possible hidden messages...', dom.innerHTML);
 
 		transformCustomTextNodes(dom, [
 			{regex: emailRegex, replace: '<a href="mailto:$1">$1</a>'},
@@ -191,7 +200,8 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 
 		let emailBody = null;
 		try {
-			let wrappedEmailBody = `<div>${scope.emailBody}</div>`;
+			let wrapperTag = scope.isHtml ? 'div' : 'pre';
+			let wrappedEmailBody = `<${wrapperTag}>${scope.emailBody}</${wrapperTag}>`;
 			let sanitizedEmailBody = $sanitize(wrappedEmailBody);
 
 			let dom = getDOM(sanitizedEmailBody);
@@ -224,8 +234,6 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 			scope.emailBody = emailBody.html();
 		}, 100);
 
-		console.log('scope.emailBody updated', scope.emailBody);
-
 		el.empty();
 		el.append(emailBody);
 	});
@@ -233,6 +241,7 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 	return {
 		restrict : 'A',
 		scope: {
+			isHtml: '=',
 			emailBody: '=',
 			originalEmailName: '=',
 			noImageTemplateUrl: '@',
