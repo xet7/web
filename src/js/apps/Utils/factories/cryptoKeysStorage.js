@@ -1,7 +1,14 @@
 module.exports = /*@ngInject*/(co, utils) => {
 	const prefix = 'lava-openpgp-';
 
-	function CryptoKeysStorage (isPrivateComputer = false, isShortMemory = false, loadOnlyForEmails = [], isLoadDecrypted = true) {
+	/*
+	 isPrivateComputer: store decrypted private keys in local storage
+	 isShortMemory: store both encrypted and decrypted private keys in session storage only
+	 loadOnlyForEmails: load private and public keys that match only those email
+	 isLoadDecrypted: load decrypted private keys
+	 */
+
+	function CryptoKeysStorage (isPrivateComputer = false, isShortMemory = false, loadOnlyForEmails = [], isLoadDecrypted = false) {
 		const self = this;
 
 		const publicName = prefix + this.publicKeysItem;

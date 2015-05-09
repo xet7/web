@@ -167,7 +167,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 		$rootScope.$broadcast('keyring-updated');
 	};
 
-	this.createKeyring = (isLoadDecrypted = true) => {
+	this.createKeyring = (isLoadDecrypted = false) => {
 		const storage = new CryptoKeysStorage(
 			self.options.isPrivateComputer,
 			self.options.isShortMemory,
