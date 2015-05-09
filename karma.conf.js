@@ -5,19 +5,31 @@ module.exports = function (config) {
 	config.set({
 
 		// base path that will be used to resolve all patterns (eg. files, exclude)
-		basePath: 'src',
+		basePath: '',
 
 
 		// frameworks to use
 		// available frameworks: https://npmjs.org/browse/keyword/karma-adapter
+
+		// (!) we can’t use babel preprocessor (https://github.com/babel/karma-babel-preprocessor) here
+		// because of https://github.com/nikku/karma-browserify#transforms
+		// and use https://github.com/babel/babelify below
 		frameworks: ['browserify', 'jasmine'],
 
 
 		// list of files / patterns to load in the browser
 		files: [
-			'tests/deps.js',
+			'dist/js/utils-vendor.js',
+			'dist/js/appLavaboom-vendor.js',
 
-			'tests/**/*Spec.js'
+			//we should have angular before mock it
+			'node_modules/angular-mocks/angular-mocks.js',
+
+			'dist/js/appLavaboom.js',
+			'dist/js/appLavaboomLogin.js',
+			'dist/js/utils.js',
+
+			'src/tests/**/*Spec.js'
 		],
 
 
@@ -28,13 +40,13 @@ module.exports = function (config) {
 		// preprocess matching files before serving them to the browser
 		// available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
 		preprocessors: {
-			'js/**/*.js': ['browserify'],
-			'tests/**/*.js': ['browserify']
+			'src/tests/**/*Spec.js': ['browserify']
 		},
 
 		browserify: {
 			debug: true,
-			transform: ['babelify']
+			// put here transformation that should be done before browserify
+			transform: ['babelify', 'envify', 'brfs']
 		},
 
 
@@ -68,6 +80,8 @@ module.exports = function (config) {
 
 		// Continuous Integration mode
 		// if true, Karma captures browsers, runs the tests and exits
-		singleRun: true
+		singleRun: true,
+
+		browserNoActivityTimeout: 60000
 	});
 };
