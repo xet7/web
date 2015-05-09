@@ -19,7 +19,6 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 		TITLE_CONFIRM: '',
 		LB_CONFIRM_PASSWORD_CHANGE: '',
 		LB_CONFIRM_KEYS_REMOVAL: '',
-		LB_CONFIRM_LS_DISABLE: '',
 		LB_CANNOT_IMPORT: '',
 		LB_CANNOT_IMPORT_WRONG_FORMAT: '',
 		LB_CANNOT_IMPORT_CORRUPTED: ''
@@ -124,7 +123,11 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 
 		co (function *(){
 			if (!$scope.settings.isLavaboomSynced) {
-				const confirmed = yield co.def(dialogs.confirm(translations.TITLE_CONFIRM, translations.LB_CONFIRM_LS_DISABLE).result, 'cancelled');
+				const confirmed = yield co.def(dialogs.create(
+					'/partials/lsOff.html',
+					'CtrlLsOff'
+				).result, 'cancelled');
+
 				if (confirmed == 'cancelled') {
 					isLavaboomSyncRestored = true;
 					$scope.settings.isLavaboomSynced = true;
@@ -132,13 +135,14 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 				}
 			}
 
-			let keysBackup;
 			if($scope.settings.isLavaboomSynced){
-				keysBackup = cryptoKeys.exportKeys(user.email);
+				let keysBackup = cryptoKeys.exportKeys(user.email);
 				$scope.settings.keyring = keysBackup;
-			}else{
-				keysBackup = $scope.settings.keyring;
+			} else {
 				$scope.settings.keyring = '';
+
+				let keysBackup = cryptoKeys.exportKeys(user.email);
+				saver.saveAs(keysBackup, cryptoKeys.getExportFilename(keysBackup, user.name));
 			}
 
 			if (Object.keys($scope.settings).length > 0) {

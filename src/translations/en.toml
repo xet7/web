@@ -425,6 +425,8 @@ DIALOGS_NO = "No"
 	LB_CONFIRM_PASSWORD_CHANGE = "Do you really want to change password?"
 	LB_CONFIRM_KEYS_REMOVAL = "Do you really want to remove all decrypted private keys?"
 	LB_CONFIRM_LS_DISABLE = "Do you really want to disable Lavaboom Sync?"
+	LB_CONFIRM_LS_DISABLE_YES = "Yes, make backup"
+	LB_CONFIRM_LS_DISABLE_NO = "No"
 
 [MAIN.CONTACTS]
 	PLC_SEARCH_CONTACTS = "Search Contacts"
