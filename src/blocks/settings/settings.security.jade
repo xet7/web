@@ -77,8 +77,8 @@
 					.text-control.btn-control
 						//- .btn.btn-block.btn-warning(ng-click="generateKeys()") {{'MAIN.SETTINGS.SECURITY.BTN_GENERATE_KEYS' | translate}}
 						.btn.btn-block.btn-warning(ng-click="removeDecryptedKeys()", ng-disabled="!keys || keys.length < 1") {{'MAIN.SETTINGS.SECURITY.BTN_REMOVE_DECRYPTED_KEYS' | translate}}
-						//- .btn.btn-block.btn-primary(ng-click="exportKeys()", ng-disabled="!keys || keys.length < 1") {{'MAIN.SETTINGS.SECURITY.BTN_EXPORT_KEYS' | translate}}
-						//- .btn.btn-block.btn-primary(open-file="importKeys(data)") {{'MAIN.SETTINGS.SECURITY.BTN_IMPORT_KEYS' | translate}}
+						.btn.btn-block.btn-primary(ng-click="exportKeys()", ng-disabled="!keys || keys.length < 1") {{'MAIN.SETTINGS.SECURITY.BTN_EXPORT_KEYS' | translate}}
+						.btn.btn-block.btn-primary(open-file="importKeys(data)") {{'MAIN.SETTINGS.SECURITY.BTN_IMPORT_KEYS' | translate}}
 			ul.list-group
 				li.list-group-item
 					label {{'MAIN.SETTINGS.SECURITY.LAVABOOM_SYNC' | translate}}

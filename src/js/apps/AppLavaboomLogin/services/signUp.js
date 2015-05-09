@@ -67,7 +67,7 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user, consts, $http) {
 		});
 	};
 
-	this.setup = (password) => {
+	this.setup = (password, isRemember) => {
 		self.password = password;
 		return co(function * (){
 			yield LavaboomAPI.accounts.create.setup({
@@ -76,7 +76,7 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user, consts, $http) {
 				password: user.calculateHash(password)
 			});
 
-			yield user.signIn(self.tokenSignup.username, password, true);
+			yield user.signIn(self.tokenSignup.username, password, isRemember, isRemember);
 
 			let settings = angular.extend({},
 				self.details,

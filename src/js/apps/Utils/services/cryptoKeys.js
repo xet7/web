@@ -50,11 +50,12 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 			});
 		});
 
+		crypto.storeKeyring();
 		crypto.initialize();
 	};
 
 	this.exportKeys = (email = null) => {
-		const keyring = crypto.createKeyring(false);
+		const [keyring] = crypto.createKeyring(false);
 
 		let keyPairs = (email ? [email] : crypto.getAvailableSourceEmails()).reduce((a, email) => {
 			a[email] = {
@@ -79,7 +80,7 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 	};
 
 	this.exportKeyByFingerprint = (fingerprint) => {
-		const keyring = crypto.createKeyring(false);
+		const [keyring] = crypto.createKeyring(false);
 
 		const privateKey = keyring.privateKeys.findByFingerprint(fingerprint);
 		const publicKey = keyring.publicKeys.findByFingerprint(fingerprint);

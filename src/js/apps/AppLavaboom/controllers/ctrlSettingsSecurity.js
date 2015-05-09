@@ -19,7 +19,6 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 		TITLE_CONFIRM: '',
 		LB_CONFIRM_PASSWORD_CHANGE: '',
 		LB_CONFIRM_KEYS_REMOVAL: '',
-		LB_CONFIRM_LS_DISABLE: '',
 		LB_CANNOT_IMPORT: '',
 		LB_CANNOT_IMPORT_WRONG_FORMAT: '',
 		LB_CANNOT_IMPORT_CORRUPTED: ''
@@ -65,6 +64,11 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 			});
 		}
 	});
+
+	$scope.exportKeys = () => {
+		var keysBackup = cryptoKeys.exportKeys();
+		saver.saveAs(keysBackup, cryptoKeys.getExportFilename(keysBackup, user.name), 'text/json;charset=utf-8');
+	};
 
 	$scope.generateKeys = () => {
 		loader.resetProgress();
@@ -119,7 +123,11 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 
 		co (function *(){
 			if (!$scope.settings.isLavaboomSynced) {
-				const confirmed = yield co.def(dialogs.confirm(translations.TITLE_CONFIRM, translations.LB_CONFIRM_LS_DISABLE).result, 'cancelled');
+				const confirmed = yield co.def(dialogs.create(
+					'/partials/lsOff.html',
+					'CtrlLsOff'
+				).result, 'cancelled');
+
 				if (confirmed == 'cancelled') {
 					isLavaboomSyncRestored = true;
 					$scope.settings.isLavaboomSynced = true;
@@ -130,14 +138,26 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 			if($scope.settings.isLavaboomSynced){
 				let keysBackup = cryptoKeys.exportKeys(user.email);
 				$scope.settings.keyring = keysBackup;
-			}else{
+			} else {
 				$scope.settings.keyring = '';
+
+				let keysBackup = cryptoKeys.exportKeys(user.email);
+				saver.saveAs(keysBackup, cryptoKeys.getExportFilename(keysBackup, user.name));
 			}
 
 			if (Object.keys($scope.settings).length > 0) {
 				updateTimeout = $timeout.schedulePromise(updateTimeout, () => co(function *(){
 					try {
 						yield user.update($scope.settings);
+
+						let keys = crypto.clearPermanentPrivateKeysForEmail(user.email);
+						console.log('clearPermanentPrivateKeysForEmail returned', keys);
+						if ($scope.settings.isLavaboomSynced) {
+							crypto.initialize({isShortMemory: true});
+						} else {
+							crypto.initialize({isShortMemory: false});
+						}
+						crypto.restorePrivateKeys(...keys);
 
 						notifications.set('ls-ok', {
 							text: $scope.settings.isLavaboomSynced ? translations.LB_LAVABOOM_SYNC_ACTIVATED : translations.LB_LAVABOOM_SYNC_DEACTIVATED,
@@ -150,6 +170,7 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 							text: translations.LB_LAVABOOM_SYNC_CANNOT_UPDATE,
 							namespace: 'settings'
 						});
+						throw err;
 					}
 				}), 1000);
 			}

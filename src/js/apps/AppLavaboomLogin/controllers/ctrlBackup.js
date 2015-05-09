@@ -1,16 +1,9 @@
-module.exports = /*@ngInject*/($scope, $state, $window, user, signUp, crypto, cryptoKeys, loader, saver) => {
+module.exports = /*@ngInject*/($scope, $state, $window, co, user, signUp, crypto, cryptoKeys, loader, saver) => {
 	if (!user.isAuthenticated())
 		$state.go('login');
 
-	$scope.form = {
-		isPrivateComputer: false
-	};
-
 	const navigateMainApplication = () => {
 		user.update({state: 'ok'});
-
-		crypto.initialize({isPrivateComputer: $scope.form.isPrivateComputer});
-		crypto.authenticateByEmail(user.email, signUp.password);
 
 		loader.resetProgress();
 		loader.showLoader(true);
@@ -24,7 +17,16 @@ module.exports = /*@ngInject*/($scope, $state, $window, user, signUp, crypto, cr
 		navigateMainApplication();
 	};
 
-	$scope.skip = () => {
+	$scope.sync = () => co(function *(){
+		let keysBackup = cryptoKeys.exportKeys(user.email);
+
+		yield user.update({isLavaboomSynced: true, keyring: keysBackup, state: 'backupKeys'});
+
+		let keys = crypto.clearPermanentPrivateKeysForEmail(user.email);
+		crypto.initialize({isShortMemory: true});
+
+		crypto.restorePrivateKeys(...keys);
+
 		navigateMainApplication();
-	};
+	});
 };
