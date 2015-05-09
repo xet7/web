@@ -50,6 +50,7 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 			});
 		});
 
+		crypto.storeKeyring();
 		crypto.initialize();
 	};
 

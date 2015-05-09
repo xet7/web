@@ -11,6 +11,7 @@ module.exports = /*@ngInject*/($scope, $state, $window, user, signUp, crypto, cr
 
 		crypto.initialize({isPrivateComputer: $scope.form.isPrivateComputer});
 		crypto.authenticateByEmail(user.email, signUp.password);
+		user.persistAuth($scope.form.isPrivateComputer);
 
 		loader.resetProgress();
 		loader.showLoader(true);

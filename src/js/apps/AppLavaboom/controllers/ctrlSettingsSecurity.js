@@ -127,10 +127,12 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 				}
 			}
 
+			let keysBackup;
 			if($scope.settings.isLavaboomSynced){
-				let keysBackup = cryptoKeys.exportKeys(user.email);
+				keysBackup = cryptoKeys.exportKeys(user.email);
 				$scope.settings.keyring = keysBackup;
 			}else{
+				keysBackup = $scope.settings.keyring;
 				$scope.settings.keyring = '';
 			}
 
@@ -138,6 +140,15 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 				updateTimeout = $timeout.schedulePromise(updateTimeout, () => co(function *(){
 					try {
 						yield user.update($scope.settings);
+
+						let keys = crypto.clearPermanentPrivateKeysForEmail(user.email);
+						console.log('clearPermanentPrivateKeysForEmail returned', keys);
+						if ($scope.settings.isLavaboomSynced) {
+							crypto.initialize({isShortMemory: true});
+						} else {
+							crypto.initialize({isShortMemory: false});
+						}
+						crypto.restorePrivateKeys(...keys);
 
 						notifications.set('ls-ok', {
 							text: $scope.settings.isLavaboomSynced ? translations.LB_LAVABOOM_SYNC_ACTIVATED : translations.LB_LAVABOOM_SYNC_DEACTIVATED,
@@ -150,6 +161,7 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 							text: translations.LB_LAVABOOM_SYNC_CANNOT_UPDATE,
 							namespace: 'settings'
 						});
+						throw err;
 					}
 				}), 1000);
 			}

@@ -76,7 +76,7 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user, consts, $http) {
 				password: user.calculateHash(password)
 			});
 
-			yield user.signIn(self.tokenSignup.username, password, true);
+			yield user.signIn(self.tokenSignup.username, password, false, false);
 
 			let settings = angular.extend({},
 				self.details,

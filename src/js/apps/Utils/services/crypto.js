@@ -149,6 +149,19 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 		keyring.store();
 	};
 
+	this.clearPermanentPrivateKeysForEmail = (email) => {
+		return storage.clearPermanentPrivateKeysForEmail(email);
+	};
+
+	this.restorePrivateKeys = (privateKeys, privateSecuredKeys) => {
+		storage.storePrivate(privateKeys);
+		storage.storePrivate(privateSecuredKeys);
+	};
+
+	this.storeKeyring = () => {
+		keyring.store();
+	};
+
 	this.initialize = (opt = {}) => {
 		const storedOptions = utils.def(() => JSON.parse(localStorage['lava-crypto-options']), {});
 		self.options = angular.extend({}, defaultOptions, storedOptions, opt);
