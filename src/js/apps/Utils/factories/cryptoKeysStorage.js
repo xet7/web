@@ -4,6 +4,8 @@ module.exports = /*@ngInject*/(co, utils) => {
 	/*
 	 isPrivateComputer: store decrypted private keys in local storage
 	 isShortMemory: store both encrypted and decrypted private keys in session storage only
+	 normally we want isShortMemory only when Lavaboom Sync is enabled and all our encrypted private keys were synced
+	 
 	 loadOnlyForEmails: load private and public keys that match only those email
 	 isLoadDecrypted: load decrypted private keys
 	 */
