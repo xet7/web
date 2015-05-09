@@ -66,6 +66,11 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 		}
 	});
 
+	$scope.exportKeys = () => {
+		var keysBackup = cryptoKeys.exportKeys();
+		saver.saveAs(keysBackup, cryptoKeys.getExportFilename(keysBackup, user.name), 'text/json;charset=utf-8');
+	};
+
 	$scope.generateKeys = () => {
 		loader.resetProgress();
 		loader.showLoader(true);
