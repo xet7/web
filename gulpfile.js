@@ -415,11 +415,13 @@ gulp.task('clean', function () {
 });
 
 // Run some unit tests to check key logic
-gulp.task('tests', function (done) {
+gulp.task('tests', scriptBuildSteps, function(done) {
 	karma.start({
 		configFile: __dirname + '/karma.conf.js',
 		singleRun: true
 	}, done);
+	//gulp.start(scriptBuildSteps, function (done){
+	//});
 });
 
 // Automatically install all bower dependencies
