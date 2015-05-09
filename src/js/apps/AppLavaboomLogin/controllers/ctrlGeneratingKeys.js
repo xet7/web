@@ -42,14 +42,14 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $interval, $timeout, 
 				console.error(err);
 			}
 
+			crypto.authenticateByEmail(user.email, signUp.password);
+			crypto.storeKeyring();
+
 			$scope.progress = 100;
 			$scope.label = translations.LB_READY;
 
 			$timeout(() => {
-				if (signUp.isPartiallyFlow)
-					$state.go('backupKeys');
-				else
-					$state.go('lavaboomSync');
+				$state.go('backupKeys');
 			}, consts.LAVABOOM_SYNC_REDIRECT_DELAY);
 		} catch (err) {
 			console.log('login app: keys generation error', err);
