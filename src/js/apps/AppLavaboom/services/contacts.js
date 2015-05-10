@@ -96,8 +96,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, co, user, crypto, utils, 
 
 		if (user.isAuthenticated()) {
 			self.myself = new Contact({
-				name: user.name,
-				email: user.email,
+				name: user.styledName,
+				email: user.styledEmail,
 				isSecured: true
 			});
 		} else
