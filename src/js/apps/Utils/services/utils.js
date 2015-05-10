@@ -13,6 +13,11 @@ module.exports = /*@ngInject*/function(co) {
 		}
 	};
 
+	this.getDOM = (html) => {
+		var dom = new DOMParser().parseFromString(html, 'text/html');
+		return dom.querySelector('body');
+	};
+
 	this.str2Uint8Array = (str) => openpgp.util.str2Uint8Array(str);
 
 	this.Uint8Array2str = (array) => openpgp.util.Uint8Array2str(array);

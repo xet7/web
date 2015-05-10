@@ -457,6 +457,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				);
 		};
 
+	$scope.formatPaste = (html) => textAngularHelpers.formatPaste(html);
+
 	hotkey.addHotkey({
         combo: ['ctrl+enter', 'command+enter'],
         description: 'HOTKEY.SEND_EMAIL',

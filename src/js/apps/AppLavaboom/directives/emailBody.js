@@ -10,11 +10,6 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 
 	$translate.bindAsObject(translations, 'INBOX');
 
-	const getDOM = (html) => {
-		var dom = new DOMParser().parseFromString(html, 'text/html');
-		return dom.querySelector('body');
-	};
-
 	const transformCustomTextNodes = (dom, transforms, level = 0) => {
 		for(let node of dom.childNodes) {
 			if (node.nodeName == '#text') {
@@ -29,7 +24,7 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 					newData = newData.replace(t.regex, t.replace);
 
 				if (newData && newData != node.data) {
-					const newDataDOM = getDOM(newData);
+					const newDataDOM = utils.getDOM(newData);
 					let newDataNodes = [];
 					for (let i = 0; i < newDataDOM.childNodes.length; i++)
 						newDataNodes.push(newDataDOM.childNodes[i]);
@@ -62,7 +57,7 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 					let wrappedMessage = `<div>${message}</div>`;
 					let sanitizedMessage = $sanitize(wrappedMessage);
 
-					let dom = getDOM(sanitizedMessage);
+					let dom = utils.getDOM(sanitizedMessage);
 
 					yield transformTextNodes(dom, level + 1);
 
@@ -109,8 +104,8 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 	let linksCounter = 0;
 	const transformEmail = (dom, {imagesSetting, noImageTemplate, emails}, level = 0) => {
 		const getEmailContextMenuDOM = (i) =>
-			getDOM(`<email-context-menu email="emails[${i}].email" is-open="emails[${i}].isDropdownOpened"></email-context-menu>`);
-		const noImageTemplateDOM = getDOM(noImageTemplate);
+			utils.getDOM(`<email-context-menu email="emails[${i}].email" is-open="emails[${i}].isDropdownOpened"></email-context-menu>`);
+		const noImageTemplateDOM = utils.getDOM(noImageTemplate);
 
 		if (level === 0) {
 			linksCounter = 0;
@@ -204,7 +199,7 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 			let wrappedEmailBody = `<${wrapperTag}>${scope.emailBody}</${wrapperTag}>`;
 			let sanitizedEmailBody = $sanitize(wrappedEmailBody);
 
-			let dom = getDOM(sanitizedEmailBody);
+			let dom = utils.getDOM(sanitizedEmailBody);
 
 			yield transformTextNodes(dom);
 
