@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.12 - 2015-05-09
+### Fixed
+- bug in email encryption process
+
 ## 0.2.11 - 2015-05-08
 ### Modified
 - no commented code in html anymore on production

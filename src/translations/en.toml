@@ -317,7 +317,7 @@ DIALOGS_NO = "No"
     LB_NO_SUBJECT = "No subject"
 
 [MAIN.SETTINGS.MENU]
-	KEYS = "Keys"
+	KEYS = "Security"
 	GENERAL = "General"
 	PROFILE = "Profile"
 	SUBSCRIPTION = "Subscription"
