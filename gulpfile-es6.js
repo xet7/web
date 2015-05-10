@@ -382,60 +382,54 @@ gulp.task('compile', gulp.series(
 	'compile:finished'
 ));
 
-// black magic to fix multiple and inconsistent live reloads, the simplest possible way
-let scheduleLiveReloadBuildTaskStart =  (taskName, timeout) => {
-	if (!timeout)
-		timeout = 1000;
+function defineLiveReloadTask(taskName, timeout = 1000) {
+	gulp.task(`live-reload:${taskName}`, gulp.series(
+		(cb) => {
+			if (taskName != 'compile')
+				isPartialLivereloadBuild = true;
 
-	if (taskName != 'compile')
-		isPartialLivereloadBuild = true;
+			console.warn('live reload build scheduled for ' + taskName + ' in ' + timeout + 'ms.');
+			if (scheduledTimeout) {
+				clearTimeout(scheduledTimeout);
+				taskName = 'compile';
+				isPartialLivereloadBuild = false;
+				console.warn('live reload conflict - perform full rebuild');
+			}
 
-	console.warn('live reload build scheduled for ' + taskName + ' in ' + timeout + 'ms.');
-	if (scheduledTimeout) {
-		clearTimeout(scheduledTimeout);
-		taskName = 'compile';
-		isPartialLivereloadBuild = false;
-		console.warn('live reload conflict - perform full rebuild');
-	}
-	scheduledTimeout = setTimeout(() => {
-		scheduledTimeout = null;
-		console.warn('perform live reload build for ' + taskName);
-		gulp.start(taskName);
-	}, timeout);
-};
+			scheduledTimeout = setTimeout(() => {
+				scheduledTimeout = null;
+				console.warn('perform live reload build for ' + taskName);
+				gulp.series(taskName)();
+			}, timeout);
+		}
+	));
+}
+
+for(let taskName of ['compile', 'build:styles', 'build:jade', 'build:partials-jade', 'build:translations'])
+	defineLiveReloadTask(taskName);
 
 gulp.task('default', gulp.series(
 	'bower', 'compile',
 	cb => {
 		// watch for source changes and rebuild the whole project with _exceptions_
 		gulp.watch(
-			[paths.input, '!' + paths.styles.inputAll, '!' + paths.markup.input, '!' + paths.partials.input, '!' + paths.translations.input]
-		).on('change', file => {
-			isPartialLivereloadBuild = false;
-			scheduleLiveReloadBuildTaskStart('compile');
-		});
+			[paths.input, '!' + paths.styles.inputAll, '!' + paths.markup.input, '!' + paths.partials.input, '!' + paths.translations.input],
+			gulp.series('live-reload:compile')
+		);
 
 		// _exceptions_
 
 		// partial live-reload for style changes
-		gulp.watch(paths.styles.inputAll).on('change', file => {
-			scheduleLiveReloadBuildTaskStart('build:styles');
-		});
+		gulp.watch(paths.styles.inputAll, gulp.series('live-reload:build:styles'));
 
 		// partial live-reload for primary jade files
-		gulp.watch(paths.markup.input).on('change', file => {
-			scheduleLiveReloadBuildTaskStart('build:jade');
-		});
+		gulp.watch(paths.markup.input, gulp.series('live-reload:build:jade'));
 
 		// partial live-reload for partials jade files
-		gulp.watch(paths.partials.input).on('change', file => {
-			scheduleLiveReloadBuildTaskStart('build:partials-jade');
-		});
+		gulp.watch(paths.partials.input, gulp.series('live-reload:build:partials-jade'));
 
 		// partial live-reload for translations
-		gulp.watch(paths.translations.input).on('change', file => {
-			scheduleLiveReloadBuildTaskStart('build:translations');
-		});
+		gulp.watch(paths.translations.input, gulp.series('live-reload:build:translations'));
 
 		// start livereload server
 		plg.livereload.listen({
