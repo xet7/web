@@ -1,11 +1,9 @@
 [application]
 	dependencies = [
 		# poly-fills
-		'../../../node_modules/babel/browser-polyfill.js',
+		'../../../node_modules/babel-core/browser-polyfill.js',
+		'../../../node_modules/babel-core/external-helpers.js',
 		'../../../node_modules/setimmediate/setImmediate.js',
-
-		# babel runtime
-		'../../../node_modules/babel/external-helpers.js',
 
 		# libs
 		'../../bower_components/sockjs-client/dist/sockjs.js',
