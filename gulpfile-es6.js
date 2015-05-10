@@ -30,6 +30,7 @@ let isServe = false;
 let isWatching = args.length < 1;
 let manifest = {};
 let scheduledTimeout = null;
+let scheduledCallback = null;
 let isPartialLivereloadBuild = false;
 let isFirstBuild = true;
 
@@ -391,14 +392,20 @@ function defineLiveReloadTask(taskName, timeout = 1000) {
 			console.warn('live reload build scheduled for ' + taskName + ' in ' + timeout + 'ms.');
 			if (scheduledTimeout) {
 				clearTimeout(scheduledTimeout);
+				scheduledCallback(null);
+				scheduledTimeout = null;
+
 				taskName = 'compile';
 				isPartialLivereloadBuild = false;
 				console.warn('live reload conflict - perform full rebuild');
 			}
 
+			scheduledCallback = cb;
 			scheduledTimeout = setTimeout(() => {
 				scheduledTimeout = null;
 				console.warn('perform live reload build for ' + taskName);
+
+				cb(null);
 				gulp.series(taskName)();
 			}, timeout);
 		}
