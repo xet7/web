@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/function($rootScope, $translate, $http, co, notifications) {
+module.exports = /*@ngInject*/function($rootScope, $timeout, $state, $translate, $http, co, notifications, crypto, user) {
 	const self = this;
 
 	const notifications18n = {
@@ -11,7 +11,9 @@ module.exports = /*@ngInject*/function($rootScope, $translate, $http, co, notifi
 		SERVED_BY_TITLE: '%',
 		SERVED_BY_TEXT: '%',
 		SERVED_BY_UNKNOWN_TITLE: '',
-		SERVED_BY_UNKNOWN_TEXT: ''
+		SERVED_BY_UNKNOWN_TEXT: '',
+		NO_KEY_TITLE: '',
+		NO_KEY_TEXT: ''
 	};
 
 	let poweredBy = '';
@@ -63,6 +65,17 @@ module.exports = /*@ngInject*/function($rootScope, $translate, $http, co, notifi
 				type: 'warning'
 			});
 		}
+
+		let list = crypto.getAvailablePrivateKeysForEmail(user.email);
+		if (list.length < 1 || list.every(k => !k.primaryKey.isDecrypted))
+			notifications.set('no-key', {
+				title: notifications18n.NO_KEY_TITLE,
+				text: notifications18n.NO_KEY_TEXT,
+				type: 'warning',
+				onRemove: () => {
+					$state.go('main.settings.security');
+				}
+			});
 	});
 
 	this.isWebCrypto = () => {

@@ -17,6 +17,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - fixed some bugs in gulpfile(slow build, livereload, linting issues)
 - various keys management issues
 
+## 0.2.14 - 2015-05-10
+### Added
+- show styled email address in settings/keys
+- notification if no decrypted private key found
+
 ## 0.2.13 - 2015-05-10
 ### Fixed
 - show styled email address in compose screen from field

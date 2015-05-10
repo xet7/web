@@ -17,7 +17,7 @@ module.exports = /*@ngInject*/function($rootScope, $translate, $timeout) {
 		$rootScope.$broadcast('notifications');
 	};
 
-	this.set = (name, {text, title, type, timeout, namespace}) => {
+	this.set = (name, {text, title, type, timeout, namespace, onRemove}) => {
 		if (!type)
 			type = 'warning';
 		if (!namespace)
@@ -26,6 +26,8 @@ module.exports = /*@ngInject*/function($rootScope, $translate, $timeout) {
 			title = '';
 		if (!timeout)
 			timeout = 0;
+		if (!onRemove)
+			onRemove = null;
 
 		let cssClass = '';
 		if (type == 'warning')
@@ -37,7 +39,8 @@ module.exports = /*@ngInject*/function($rootScope, $translate, $timeout) {
 			type,
 			timeout,
 			namespace,
-			cssClass
+			cssClass,
+			onRemove
 		};
 		notifications[namespace + '.' + name] = notification;
 
@@ -52,6 +55,8 @@ module.exports = /*@ngInject*/function($rootScope, $translate, $timeout) {
 	this.unSet = (name, namespace = 'root') => {
 		name = namespace + '.' + name;
 		if (name in notifications) {
+			if (notifications[name].onRemove)
+				notifications[name].onRemove();
 			delete notifications[name];
 			$rootScope.$broadcast('notifications');
 		}

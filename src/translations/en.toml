@@ -51,6 +51,8 @@ DIALOGS_NO = "No"
     SERVED_BY_TEXT = "Served by {{servedBy}}"
     SERVED_BY_UNKNOWN_TITLE = "Served by Unknown server"
     SERVED_BY_UNKNOWN_TEXT = "We do not know which server served you Lavaboom. Please contact hello@lavaboom.com."
+    NO_KEY_TITLE = "No private key found"
+    NO_KEY_TEXT = "You don't have a decrypted private key, please go to settings/security and import or decrypt one"
 
 [INBOX]
 	NO_PREVIEW_AVAILABLE = "No preview available"
@@ -105,7 +107,6 @@ DIALOGS_NO = "No"
     CORRUPTED_EMAIL_OPEN = "open the original email"
     CORRUPTED_EMAIL_OR = " or "
     CORRUPTED_EMAIL_DOWNLOAD = "download it"
-
 
 [INBOX.DOWNLOAD]
 	TITLE = "Downloading your attachment"
@@ -238,6 +239,7 @@ DIALOGS_NO = "No"
     INFO6 = "Lavaboom Sync works basically backing up your keyring on our servers. Lavaboom Sync can work with or without a sync passphrase (similar to how Chrome works)."
     BTN_ENABLE_LB_SYNC = "Enable Lavaboom Sync"
     BTN_BACKUP_NOW = "Back up my key now"
+	LB_PRIVATE_PC = "This is private computer"
 
 [LOGIN.IMPORT_KEY]
 	TITLE = "Please Import Key to browser"
@@ -255,7 +257,7 @@ DIALOGS_NO = "No"
 	BTN_GO_TO_MY_INBOX = "Go to my Inbox"
 	BTN_NO_ACCOUNT_YET = "No Account Yet? Sign up Here!"
 	LB_KEEP_ME_LOGGED_IN = "Keep me logged in"
-	LB_PRIVATE_PC = "This is private computer"
+	LB_PRIVATE_PC = "This is a private pc"
 
 # Generic error messages for Lavaboom REST API
 [LAVABOOM.API.ERROR]
