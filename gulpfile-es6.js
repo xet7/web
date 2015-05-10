@@ -201,21 +201,23 @@ let browserifyBundle = filename => {
 };
 
 // Lint scripts
-gulp.task('lint:scripts',  () =>
-	gulp.src(paths.scripts.inputAll)
-		.pipe(plumber())
-		.pipe(plg.cached('lint:scripts'))
-		.pipe(plg.tap((file, t) =>
-			console.log('Linting: "' + file.relative + '" ...')
-		))
-		.pipe(plg.jshint())
-		.pipe(plg.jshint.reporter(plg.jshintStylish))
-		.pipe(plg.jshint.reporter('fail'))
-
-	/*.pipe(plg.eslint())
-	 .pipe(plg.eslint.format())
-	 .pipe(plg.eslint.failOnError());*/
-);
+gulp.task('lint:scripts',  gulp.series(
+	() =>
+		gulp.src(paths.scripts.inputAll)
+			.pipe(plumber())
+			.pipe(plg.cached('lint:scripts'))
+			.pipe(plg.tap((file, t) =>
+				console.log('Linting: "' + file.relative + '" ...')
+			))
+			.pipe(plg.jshint())
+			.pipe(plg.jshint.reporter(plg.jshintStylish))
+			.pipe(plg.jshint.reporter({
+				reporter: (result, config, options) => {
+					delete plg.cached.caches['lint:scripts'];
+				}
+			}))
+			.pipe(plg.jshint.reporter('fail'))
+));
 
 
 // Process, lint, and minify less files
@@ -419,8 +421,13 @@ gulp.task('default', gulp.series(
 	'bower', 'compile',
 	cb => {
 		// watch for source changes and rebuild the whole project with _exceptions_
-		gulp.watch(
-			[paths.input, '!' + paths.styles.inputAll, '!' + paths.markup.input, '!' + paths.partials.input, '!' + paths.translations.input],
+		gulp.watch([
+			paths.input,
+			'!' + paths.styles.inputAll,
+			'!' + paths.markup.input,
+			'!' + paths.partials.input,
+			'!' + paths.translations.input,
+			paths.translations.inputEn],
 			gulp.series('live-reload:compile')
 		);
 
