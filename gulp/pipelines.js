@@ -13,17 +13,17 @@ function Pipelines(manifest, isPartialLivereloadBuild, plumber) {
 	const self = this;
 
 	this.revTap = output =>
-			file => {
-		file.revHash = crypto.createHash('sha1').update(file.contents).digest('hex');
+		file => {
+			file.revHash = crypto.createHash('sha1').update(file.contents).digest('hex');
 
-		let key = '/' + output.replace(paths.output, '') + path.basename(file.relative);
-		let value = path.dirname(key) + '/' + path.basename(key, path.extname(key)) + '-' + file.revHash + path.extname(key);
-		manifest[key] = value;
+			let key = '/' + output.replace(paths.output, '') + path.basename(file.relative);
+			let value = path.dirname(key) + '/' + path.basename(key, path.extname(key)) + '-' + file.revHash + path.extname(key);
+			manifest[key] = value;
 
-		file.path = file.path.replace(path.basename(key), path.basename(value));
+			file.path = file.path.replace(path.basename(key), path.basename(value));
 
-		console.log('Perform manifest translation for a static asset', key, '->', value);
-	};
+			console.log('Perform manifest translation for a static asset', key, '->', value);
+		};
 
 	this.livereloadPipeline  = (isForce = false) =>
 		config.isProduction || (!isForce && !isPartialLivereloadBuild())
@@ -33,21 +33,10 @@ function Pipelines(manifest, isPartialLivereloadBuild, plumber) {
 			.pipe(plg.ignore.exclude, '*.map')
 			.pipe(plg.livereload);
 
-	this.prodHtmlPipeline  = (input, output) =>
-		lazypipe()
-			.pipe(plg.sourcemaps.init)
-			.pipe(plg.angularTemplatecache, {
-				root: output.split('/').filter(p => !!p).slice(-1)[0], standalone: true
-			})
-			.pipe(plg.uglify)
-			.pipe(plg.tap, self.revTap(paths.scripts.output))
-			.pipe(plg.sourcemaps.write, '.')
-			.pipe(gulp.dest, paths.scripts.output);
-
-	this.createJadePipeline = (input, output, isTemplateCache) =>
-		gulp.src(input)
+	this.createJadePipeline = (input, output, isTemplateCache) => {
+		let pipeline = gulp.src(input)
 			.pipe(plumber())
-			.pipe(config.isProduction ? plg.ignore.exclude(/.*\.test.*/) :  plg.util.noop())
+			.pipe(config.isProduction ? plg.ignore.exclude(/.*\.test.*/) : plg.util.noop())
 			.pipe(plg.ignore.exclude(/\/_.*/))
 			.pipe(plg.jade({
 				locals: {
@@ -62,8 +51,22 @@ function Pipelines(manifest, isPartialLivereloadBuild, plumber) {
 				}
 			}))
 			.pipe(gulp.dest(output))
-			.pipe(self.livereloadPipeline()())
-			.pipe(config.isProduction && isTemplateCache ? self.prodHtmlPipeline(input, output)() : plg.util.noop());
+			.pipe(self.livereloadPipeline()());
+
+		if (config.isProduction && isTemplateCache) {
+			pipeline = pipeline
+				.pipe(plg.sourcemaps.init())
+				.pipe(plg.angularTemplatecache({
+					root: output.split('/').filter(p => !!p).slice(-1)[0], standalone: true
+				}))
+				.pipe(plg.uglify())
+				.pipe(plg.tap(self.revTap(paths.scripts.output)))
+				.pipe(plg.sourcemaps.write('.'))
+				.pipe(gulp.dest(paths.scripts.output));
+		}
+
+		return pipeline;
+	};
 }
 
 module.exports = Pipelines;
