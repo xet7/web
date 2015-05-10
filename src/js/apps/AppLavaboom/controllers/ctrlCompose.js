@@ -406,9 +406,16 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 		let p = emailTemplate.split('@');
 
-		let [name, email] = p.length > 1
-			? [p[0].trim(), `${p[0].trim()}@${p[1].trim()}`]
-			: [emailTemplate.trim(), `${emailTemplate.trim()}@${consts.ROOT_DOMAIN}`];
+		let name, email;
+
+		if (p.length > 1)
+			[name, email] = [p[0].trim(), `${p[0].trim()}@${p[1].trim()}`];
+		else {
+			if (!user.settings.isUnknownContactsAutoComplete)
+				return null;
+
+			[name, email] = [emailTemplate.trim(), `${emailTemplate.trim()}@${consts.ROOT_DOMAIN}`];
+		}
 
 		if (newHiddenContact) {
 			if (newHiddenContact.email == email)

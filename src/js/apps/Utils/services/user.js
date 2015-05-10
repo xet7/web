@@ -20,6 +20,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		isSignatureEnabled: true,
 		isSkipComposeScreenWarning: false,
 		isHotkeyEnabled: true,
+		isUnknownContactsAutoComplete: false,
 		images: 'none', // none, proxy, directHttps, directAll,
 		styles: 'none', // none, all
 
