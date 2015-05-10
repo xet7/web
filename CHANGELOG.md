@@ -2,6 +2,21 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## UNRELEASED
+### Added
+- plain/text mode for compose screen
+
+### Modified
+- gulpfile refactored into es6, now using gulp 4.x && node 0.12.x as a build system
+- auto-complete of @lavaboom.com turned off by default
+- new improved keys persistance and display model
+- signup: this is private PC moved to password screen
+- signup: merged sync and backup screens
+
+### Fixed
+- fixed some bugs in gulpfile(slow build, livereload, linting issues)
+- various keys management issues
+
 ## 0.2.12 - 2015-05-09
 ### Fixed
 - bug in email encryption process
