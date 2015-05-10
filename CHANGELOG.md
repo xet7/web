@@ -17,6 +17,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - fixed some bugs in gulpfile(slow build, livereload, linting issues)
 - various keys management issues
 
+## 0.2.13 - 2015-05-10
+### Fixed
+- show styled email address in compose screen from field
+- temporary restored import/export buttons
 ## 0.2.12 - 2015-05-09
 ### Fixed
 - bug in email encryption process

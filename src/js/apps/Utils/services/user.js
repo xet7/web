@@ -10,6 +10,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	this.name = '';
 	this.styledName = '';
 	this.email = '';
+	this.styledEmail = '';
 	this.nameEmail = '';
 	this.altEmail = '';
 
@@ -52,6 +53,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		self.name = username;
 		self.styledName = styledUsername;
 		self.email = `${username}@${consts.ROOT_DOMAIN}`;
+		self.styledEmail = `${styledUsername}@${consts.ROOT_DOMAIN}`;
 		self.nameEmail = `${self.name} <${self.email}>`;
 		self.altEmail = altEmail;
 
