@@ -11,7 +11,6 @@ let source = require('vinyl-source-stream');
 let lazypipe = require('lazypipe');
 let domain = require('domain');
 let filterTransform = require('filter-transform');
-require('toml-require').install();
 
 // Browserify the mighty one
 let browserify = require('browserify'),
@@ -365,18 +364,19 @@ gulp.task('lr', gulp.series(gulp.parallel('build:jade', 'copy:vendor'), cb => {
 	cb(null);
 }));
 
+gulp.task('persists:paths', cb => {
+	fs.writeFileSync('paths.json', JSON.stringify(manifest, null, 4));
+	cb(null);
+});
+
 gulp.task('compile:finished', gulp.series(
-	gulp.parallel(compileSteps),
-	cb => {
-		fs.writeFileSync('paths.json', JSON.stringify(manifest, null, 4));
-		cb(null);
-	},
-	'build:jade', 'copy:vendor', 'lr'
+	'persists:paths', 'build:jade', 'copy:vendor', 'lr'
 ));
 
 // Compile files
 gulp.task('compile', gulp.series(
-	gulp.parallel('clean', 'tests', 'lint:scripts'),
+	gulp.parallel('clean', 'lint:scripts'),
+	'tests',
 	gulp.parallel(compileSteps),
 	gulp.parallel(scriptCompileSteps),
 	'compile:finished'
