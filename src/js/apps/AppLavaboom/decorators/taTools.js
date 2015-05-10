@@ -1,4 +1,5 @@
 module.exports = /*@ngInject*/($delegate) => {
+	$delegate.pre.iconclass = 'icon-format-italic';
 	$delegate.bold.iconclass = 'icon-format-bold';
 	$delegate.italics.iconclass = 'icon-format-italic';
 	$delegate.underline.iconclass = 'icon-format-underline';

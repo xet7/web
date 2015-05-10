@@ -2,6 +2,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 							   utils, consts, co, router, composeHelpers, textAngularHelpers, crypto,
 							   user, contacts, inbox, Manifest, Contact, hotkey, ContactEmail, Email, Attachment) => {
 	$scope.toolbar = [
+		['pre'],
 		['h1', 'h2', 'h3'],
 		['bold', 'italics', 'underline'],
 		['justifyLeft', 'justifyCenter', 'justifyRight'],
