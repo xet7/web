@@ -2,6 +2,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 							   utils, consts, co, router, composeHelpers, textAngularHelpers, crypto,
 							   user, contacts, inbox, Manifest, Contact, hotkey, ContactEmail, Email, Attachment) => {
 	$scope.toolbar = [
+		['pre'],
 		['h1', 'h2', 'h3'],
 		['bold', 'italics', 'underline'],
 		['justifyLeft', 'justifyCenter', 'justifyRight'],
@@ -163,10 +164,13 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			bcc = $scope.form.selected.bcc.map(e => e.email);
 
 		let keys = yield ([...$scope.form.selected.to, ...$scope.form.selected.cc, ...$scope.form.selected.bcc].reduce((a, e) => {
-			a[e.email] = co.def(e.loadKey(), null);
+			a[e.email] = co.transform(co.def(e.loadKey(), null), e => e ? e.armor() : null);
 			return a;
 		}, {}));
-		console.log(keys);
+		console.log('compose: loaded keys for encryption', keys);
+		console.log('to', $scope.form.selected.to);
+		console.log('to', $scope.form.selected.cc);
+		console.log('to', $scope.form.selected.bcc);
 
 		const isSecured = Email.isSecuredKeys(keys);
 
@@ -403,9 +407,16 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 		let p = emailTemplate.split('@');
 
-		let [name, email] = p.length > 1
-			? [p[0].trim(), `${p[0].trim()}@${p[1].trim()}`]
-			: [emailTemplate.trim(), `${emailTemplate.trim()}@${consts.ROOT_DOMAIN}`];
+		let name, email;
+
+		if (p.length > 1)
+			[name, email] = [p[0].trim(), `${p[0].trim()}@${p[1].trim()}`];
+		else {
+			if (!user.settings.isUnknownContactsAutoComplete)
+				return null;
+
+			[name, email] = [emailTemplate.trim(), `${emailTemplate.trim()}@${consts.ROOT_DOMAIN}`];
+		}
 
 		if (newHiddenContact) {
 			if (newHiddenContact.email == email)
@@ -445,6 +456,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 					person.email.toLowerCase().includes(text)
 				);
 		};
+
+	$scope.formatPaste = (html) => textAngularHelpers.formatPaste(html);
 
 	hotkey.addHotkey({
         combo: ['ctrl+enter', 'command+enter'],

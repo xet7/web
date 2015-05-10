@@ -64,7 +64,7 @@ div#compose-wrapper
 
 		article#compose-body
 			div.tag-transferable(text-angular="", name="body", ng-model="form.body",
-				email-builder="", ta-file-drop="onFileDrop", ta-toolbar="toolbar", ta-min-text="1", text-angular-focus="")
+				email-builder="", ta-file-drop="onFileDrop", ta-paste="formatPaste($html)", ta-toolbar="toolbar", ta-min-text="1", text-angular-focus="")
 		footer
 			#attachments.row
 				div.col-xs-6(ng-repeat="attachment in attachments")

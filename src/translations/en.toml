@@ -211,6 +211,7 @@ DIALOGS_NO = "No"
 	LB_WARNING1 = "We recommend a long password, including numbers and special characters. Though it should still be easy for you to remember."
 	LB_WARNING2 = "Please note that we will not be able to reset your password if you forget it. Only continue once you have memorised your password."
 	BTN_NEXT = "I have memorised it"
+	LB_PRIVATE_PC = "This is private computer"
 
 [LOGIN.GENERATE_KEYS]
 	TITLE = "Key generation"
@@ -218,15 +219,6 @@ DIALOGS_NO = "No"
 	LB_WARNING2 = "This key is used to encrypt data. Share it with your friends so they can send encrypted messages to you."
 	LB_WARNING3 = "This key is used to decrypt data. Do not share it. Keep it safe and never share it with anyone."
 	BTN_NEXT = "Generate my keys"
-
-[LOGIN.LAVABOOM_SYNC]
-	TITLE = "Lavaboom Sync"
-	LB_WHAT_IS = "What is Lavaboom Sync?"
-	LB_SYNC_INTRO = "If you don't have experience managing encryption keys we recommend enabling Lavaboom Sync. This encrypts and uploads your keypair to our servers, allowing you to send and receive encrypted emails from any device. Your keypair is encrypted by your passphrase and securely stored."
-	LB_SYNC1 = "We want to offer the users the option to activate Lavaboom Sync, basically backing up their key ring on our servers. Lavaboom Sync can work with or without a sync passphrase (similar to how Chrome works)."
-	LB_SYNC2 = "Every Account has a field called settings that is simply a key value store to allow for flexible storage of misc stuff. Your task is, if Lavaboom Sync is activated, to store the user's keyring to Account.settings."
-	LB_ENABLE_LB_SYNC = "Enable Lavaboom Sync"
-	LB_DONT_ENABLE_LB_SYNC = "Continue Without Syncing"
 
 [LOGIN.GENERATING_KEYS]
 	LB_GENERATING = "Generating your keys..."
@@ -243,9 +235,9 @@ DIALOGS_NO = "No"
     INFO3 = "If you clear your cache from Lavaboom your keys will be deleted and you will lose access to your account."
     INFO4 = "To prevent this you should back up your keychain to your hard drive to keep it safe."
     INFO5 = "You can back up your keychain anytime in your Settings, or enable Lavaboom Sync to allow us to manage your keys for you."
+    INFO6 = "Lavaboom Sync works basically backing up your keyring on our servers. Lavaboom Sync can work with or without a sync passphrase (similar to how Chrome works)."
+    BTN_ENABLE_LB_SYNC = "Enable Lavaboom Sync"
     BTN_BACKUP_NOW = "Back up my key now"
-	BTN_BACKUP_LATER = "Do it later"
-	LB_PRIVATE_PC = "This is private computer"
 
 [LOGIN.IMPORT_KEY]
 	TITLE = "Please Import Key to browser"
@@ -325,7 +317,7 @@ DIALOGS_NO = "No"
     LB_NO_SUBJECT = "No subject"
 
 [MAIN.SETTINGS.MENU]
-	KEYS = "Keys"
+	KEYS = "Security"
 	GENERAL = "General"
 	PROFILE = "Profile"
 	SUBSCRIPTION = "Subscription"
@@ -433,6 +425,8 @@ DIALOGS_NO = "No"
 	LB_CONFIRM_PASSWORD_CHANGE = "Do you really want to change password?"
 	LB_CONFIRM_KEYS_REMOVAL = "Do you really want to remove all decrypted private keys?"
 	LB_CONFIRM_LS_DISABLE = "Do you really want to disable Lavaboom Sync?"
+	LB_CONFIRM_LS_DISABLE_YES = "Yes, make backup"
+	LB_CONFIRM_LS_DISABLE_NO = "No"
 
 [MAIN.CONTACTS]
 	PLC_SEARCH_CONTACTS = "Search Contacts"
