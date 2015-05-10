@@ -65,6 +65,7 @@ const pipelines = new Pipelines(manifest, () => isPartialLivereloadBuild, plumbe
  * Gulp Taks
  */
 
+// Build minified version of vendor libraries defined in *.toml(some libs may not have pre-bundled minified versions)
 gulp.task('build:scripts:vendor:min', () =>
 	gulp.src(paths.scripts.inputDeps)
 		.pipe(plumber())
@@ -95,6 +96,7 @@ gulp.task('build:scripts:vendor:min', () =>
 		.pipe(gulp.dest(paths.scripts.output))
 );
 
+// Build vendor libraries into a single vendor file(fancy concatenation)
 gulp.task('build:scripts:vendor:normal', () =>
 	gulp.src(paths.scripts.inputDeps)
 		.pipe(plumber())
@@ -145,8 +147,10 @@ gulp.task('build:scripts:vendor:normal', () =>
 		.pipe(gulp.dest(paths.scripts.output))
 );
 
+// Build vendor libraries composite task
 gulp.task('build:scripts:vendor', gulp.series('build:scripts:vendor:min', 'build:scripts:vendor:normal'));
 
+// Defines generic browserify build task, one task for each item inside paths.scripts.inputApps
 let browserifyBundle = filename => {
 	let basename = path.basename(filename);
 	let jsMapBasename = '';
@@ -367,11 +371,13 @@ gulp.task('lr', gulp.series(gulp.parallel('build:jade', 'copy:vendor'), cb => {
 	cb(null);
 }));
 
+// Write manifest paths into external file(assets translation see revTap)
 gulp.task('persists:paths', cb => {
 	fs.writeFileSync('paths.json', JSON.stringify(manifest, null, 4));
 	cb(null);
 });
 
+// Got run when primary compilation finished
 gulp.task('compile:finished', gulp.series(
 	'persists:paths', 'build:jade', 'copy:vendor', 'lr'
 ));
@@ -416,6 +422,10 @@ function defineLiveReloadTask(taskName, timeout = 1000) {
 
 for(let taskName of ['compile', 'build:styles', 'build:jade', 'build:partials-jade', 'build:translations'])
 	defineLiveReloadTask(taskName);
+
+/*
+	Gulp primary tasks
+ */
 
 gulp.task('default', gulp.series(
 	'bower', 'compile',
@@ -464,3 +474,5 @@ gulp.task('serve', cb => {
 
 	cb(null);
 });
+
+// woa!
