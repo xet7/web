@@ -1,19 +1,6 @@
-let gulp = global.gulp;
-let plg = require('gulp-load-plugins')({
-	pattern: ['gulp-*', 'gulp.*'],
-	replaceString: /\bgulp[\-.]/
-});
-global.plg = plg;
+const gulp = global.gulp;
+const plg = global.plg;
 
-let utils = require('./gulp/utils');
-let config = require('./gulp/config');
-
-if (!process.env.API_URI)
-	process.env.API_URI = config.defaultApiUri;
-if (!process.env.TLD)
-	process.env.TLD = config.defaultRootDomain;
-
-// system
 let crypto = require('crypto');
 let os = require('os');
 let fs = require('fs');
@@ -23,6 +10,8 @@ let toml = require('toml');
 let source = require('vinyl-source-stream');
 let lazypipe = require('lazypipe');
 let domain = require('domain');
+let filterTransform = require('filter-transform');
+require('toml-require').install();
 
 // Browserify the mighty one
 let browserify = require('browserify'),
@@ -35,20 +24,27 @@ let browserify = require('browserify'),
 	brfs = require('brfs'),
 	exorcist = require('exorcist');
 
-// Modules
-let serve = require('./serve');
-
-// Configuration
-let paths = require('./gulp/paths');
-
-let filterTransform = require('filter-transform');
-
 // Global variables
 let args = process.argv.slice(2);
-
 let plumber = null;
 let isServe = false;
 let isWatching = args.length < 1;
+let manifest = {};
+let scheduledTimeout = null;
+let isPartialLivereloadBuild = false;
+let isFirstBuild = true;
+
+// Modules
+let serve = require('./serve');
+let utils = require('./gulp/utils');
+
+// Configuration
+let config = require('./gulp/config');
+let paths = require('./gulp/paths');
+if (!process.env.API_URI)
+	process.env.API_URI = config.defaultApiUri;
+if (!process.env.TLD)
+	process.env.TLD = config.defaultRootDomain;
 process.env.IS_PRODUCTION = '';
 if (!isWatching) {
 	plumber = plg.util.noop;
@@ -62,69 +58,8 @@ if (!isWatching) {
 	isServe = true;
 }
 
-require('toml-require').install();
-
-let manifest = {};
-let scheduledTimeout = null;
-let isPartialLivereloadBuild = false;
-let isFirstBuild = true;
-
-/**
- * Reused pipelines
- */
-
-let revTap = output =>
-	file => {
-		file.revHash = crypto.createHash('sha1').update(file.contents).digest('hex');
-
-		let key = '/' + output.replace(paths.output, '') + path.basename(file.relative);
-		let value = path.dirname(key) + '/' + path.basename(key, path.extname(key)) + '-' + file.revHash + path.extname(key);
-		manifest[key] = value;
-
-		file.path = file.path.replace(path.basename(key), path.basename(value));
-
-		console.log('Perform manifest translation for a static asset', key, '->', value);
-	};
-
-let livereloadPipeline  = (isForce = false) =>
-	config.isProduction || (!isForce && !isPartialLivereloadBuild)
-		? lazypipe()
-			.pipe(plg.util.noop)
-		: lazypipe()
-			.pipe(plg.ignore.exclude, '*.map')
-			.pipe(plg.livereload);
-
-let prodHtmlPipeline  = (input, output) =>
-	lazypipe()
-		.pipe(plg.sourcemaps.init)
-		.pipe(plg.angularTemplatecache, {
-			root: output.split('/').filter(p => !!p).slice(-1)[0], standalone: true
-		})
-		.pipe(plg.uglify)
-		.pipe(plg.tap, revTap(paths.scripts.output))
-		.pipe(plg.sourcemaps.write, '.')
-		.pipe(gulp.dest, paths.scripts.output);
-
-let createJadePipeline = (input, output, isTemplateCache) =>
-	gulp.src(input)
-		.pipe(plumber())
-		.pipe(config.isProduction ? plg.ignore.exclude(/.*\.test.*/) :  plg.util.noop())
-		.pipe(plg.ignore.exclude(/\/_.*/))
-		.pipe(plg.jade({
-			locals: {
-				fs: fs,
-				resolveAsset: (name) => manifest[name] ? manifest[name] : name,
-				assets: manifest,
-				globs: {
-					IS_PRODUCTION: process.env.IS_PRODUCTION,
-					API_URI: process.env.API_URI,
-					TLD: process.env.TLD
-				}
-			}
-		}))
-		.pipe(gulp.dest(output))
-		.pipe(livereloadPipeline()())
-		.pipe(config.isProduction && isTemplateCache ? prodHtmlPipeline(input, output)() : plg.util.noop());
+const Pipelines = require('./gulp/pipelines');
+const pipelines = new Pipelines(manifest, () => isPartialLivereloadBuild, plumber);
 
 /**
  * Gulp Taks
@@ -203,7 +138,7 @@ gulp.task('build:scripts:vendor:normal', () =>
 				.pipe(plumber())
 				.pipe(plg.sourcemaps.init())
 				.pipe(plg.concat(newName))
-				.pipe(config.isProduction ? plg.tap(revTap(paths.scripts.output)) : plg.util.noop())
+				.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())
 				.pipe(plg.sourcemaps.write('.'))
 				.pipe(gulp.dest(paths.scripts.output));
 		}))
@@ -260,7 +195,7 @@ let browserifyBundle = filename => {
 		}))
 		.pipe(plg.streamify(plg.concat(basename)))
 		.pipe(plg.buffer())
-		.pipe(config.isProduction ? plg.tap(revTap(paths.scripts.output)) : plg.util.noop())
+		.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())
 		.pipe(plg.stream())
 		.pipe(gulp.dest(paths.scripts.output));
 };
@@ -289,7 +224,7 @@ gulp.task('build:styles', () => {
 		.pipe(plg.minifyCss, {
 			keepSpecialComments: 0
 		})
-		.pipe(plg.tap, revTap(paths.styles.output));
+		.pipe(plg.tap, pipelines.revTap(paths.styles.output));
 
 	if (config.isDebugable) {
 		prodPipeline = prodPipeline
@@ -315,7 +250,7 @@ gulp.task('build:styles', () => {
 		.pipe(config.isDebugable && !config.isProduction ? plg.sourcemaps.write('.') : plg.util.noop())
 		.pipe(!config.isProduction ? gulp.dest(paths.styles.output) : plg.util.noop())
 		.pipe(config.isProduction ? prodPipeline() : plg.util.noop())
-		.pipe(livereloadPipeline()());
+		.pipe(pipelines.livereloadPipeline()());
 });
 
 // Copy static files into output folder
@@ -358,14 +293,14 @@ gulp.task('build:translations', () =>
 		.pipe(plumber())
 		.pipe(plg.toml({to: JSON.stringify, ext: '.json'}))
 		.pipe(gulp.dest(paths.translations.output))
-		.pipe(livereloadPipeline()())
+		.pipe(pipelines.livereloadPipeline()())
 );
 
 // Build primary markup jade files
-gulp.task('build:jade', () => createJadePipeline(paths.markup.input, paths.markup.output, false));
+gulp.task('build:jade', () => pipelines.createJadePipeline(paths.markup.input, paths.markup.output, false));
 
 // Build partials markup jade files
-gulp.task('build:partials-jade', () => createJadePipeline(paths.partials.input, paths.partials.output, true));
+gulp.task('build:partials-jade', () => pipelines.createJadePipeline(paths.partials.input, paths.partials.output, true));
 
 // Remove pre-existing content from output and test folders
 gulp.task('clean', cb => {
@@ -419,7 +354,7 @@ const scriptCompileSteps = paths.scripts.inputApps.map((appScript, i) => {
 gulp.task('lr', gulp.series(gulp.parallel('build:jade', 'copy:vendor'), cb => {
 	if (!isFirstBuild) {
 		return gulp.src(paths.markup.input)
-			.pipe(livereloadPipeline(true)());
+			.pipe(pipelines.livereloadPipeline(true)());
 	}
 	if (isServe) {
 		serve();
