@@ -246,7 +246,7 @@ DIALOGS_NO = "No"
     INFO5 = "You can back up your keychain anytime in your Settings, or enable Lavaboom Sync to allow us to manage your keys for you."
     BTN_BACKUP_NOW = "Back up my key now"
 	BTN_BACKUP_LATER = "Do it later"
-	LB_PRIVATE_PC = "This is private computer"
+	LB_PRIVATE_PC = "This is a private pc"
 
 [LOGIN.IMPORT_KEY]
 	TITLE = "Please Import Key to browser"
@@ -264,7 +264,7 @@ DIALOGS_NO = "No"
 	BTN_GO_TO_MY_INBOX = "Go to my Inbox"
 	BTN_NO_ACCOUNT_YET = "No Account Yet? Sign up Here!"
 	LB_KEEP_ME_LOGGED_IN = "Keep me logged in"
-	LB_PRIVATE_PC = "This is private computer"
+	LB_PRIVATE_PC = "This is a private pc"
 
 # Generic error messages for Lavaboom REST API
 [LAVABOOM.API.ERROR]
