@@ -67,7 +67,7 @@ module.exports = /*@ngInject*/function($rootScope, $timeout, $state, $translate,
 		}
 
 		let list = crypto.getAvailablePrivateKeysForEmail(user.email);
-		if (list.keys.length < 1 || list.keys.every(k => !k.primaryKey.isDecrypted))
+		if (list.length < 1 || list.every(k => !k.primaryKey.isDecrypted))
 			notifications.set('no-key', {
 				title: notifications18n.NO_KEY_TITLE,
 				text: notifications18n.NO_KEY_TEXT,
