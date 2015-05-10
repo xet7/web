@@ -32,10 +32,14 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 
 	$scope.$bind('keyring-updated', () => {
 		$scope.keys = crypto.getAvailablePrivateKeys()
-			.map(key => new Key(key))
+			.map(key => {
+				let k = new Key(key);
+				k.email = user.styleEmail(k.email);
+				return k;
+			})
 			.sort((a, b) => {
-				if (a.user < b.user) return -1;
-				if (a.user > b.user) return 1;
+				if (a.keyId < b.keyId) return -1;
+				if (a.keyId > b.keyId) return 1;
 				return 0;
 			});
 		$scope.isAnyUndecryptedKeys = $scope.keys.some(k => !k.isDecrypted);

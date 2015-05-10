@@ -48,6 +48,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	let token = null;
 	let isAuthenticated = false;
 
+	this.styleEmail = (email) => email.replace(self.name, self.styledName);
+
 	const setupUserBasicInformation = (username, styledUsername, altEmail) => {
 		self.name = username;
 		self.styledName = styledUsername;
