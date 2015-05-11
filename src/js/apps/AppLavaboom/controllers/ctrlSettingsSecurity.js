@@ -98,9 +98,8 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 		saver.saveAs(keysBackup, cryptoKeys.getExportFilename(keysBackup, user.name), 'text/json;charset=utf-8');
 	};
 
-	$scope.exportKey = (key) => {
-		let keysBackup = cryptoKeys.exportKeyByFingerprint(key.fingerprint);
-		saver.saveAs(keysBackup, cryptoKeys.getExportFilename(keysBackup, user.name));
+	$scope.exportPublicKey = (key) => {
+		saver.saveAs(cryptoKeys.exportPublicKeyByFingerprint(key.fingerprint), key.email + '.pgp');
 	};
 
 	$scope.sendKey = (key) => {

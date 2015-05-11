@@ -57,9 +57,9 @@
 										input.form-control(type='password', ng-disabled="key.isDecrypted()", ng-model="key.decryptPassword", ng-controller="CtrlSettingsSecurityKey")
 								li.list-group-item
 									.button-holder
-										button.cell.btn.btn-default(type="button", ng-click="exportKey(key)")
+										button.cell.btn.btn-default(type="button", ng-click="exportPublicKey(key)")
 											span.icon-key-pair-download
-											| {{'MAIN.SETTINGS.SECURITY.BACKUP_KEY_PAIR' | translate}}
+											| {{'MAIN.SETTINGS.SECURITY.EXPORT_PUBLIC_KEY' | translate}}
 										button.cell.btn.btn-default(type="button", ng-click="sendKey(key)")
 											span.icon-public-key-send
 											| {{'MAIN.SETTINGS.SECURITY.SEND_PUBLIC_KEY' | translate}}

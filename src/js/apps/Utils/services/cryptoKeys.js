@@ -79,7 +79,7 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 		}, null, 4);
 	};
 
-	this.exportKeyByFingerprint = (fingerprint) => {
+	this.exportKeyPairByFingerprint = (fingerprint) => {
 		const [keyring] = crypto.createKeyring(false);
 
 		const privateKey = keyring.privateKeys.findByFingerprint(fingerprint);
@@ -104,6 +104,14 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 			body: body,
 			bodyHash: bodyHash
 		}, null, 4);
+	};
+
+	this.exportPublicKeyByFingerprint = (fingerprint) => {
+		const [keyring] = crypto.createKeyring(false);
+
+		let publicKey = keyring.publicKeys.findByFingerprint(fingerprint);
+
+		return publicKey.armor();
 	};
 
 	this.getExportFilename = (backup, userName) => {
