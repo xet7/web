@@ -2,4 +2,4 @@ language: node_js
 node_js:
   - "iojs"
 before_script:
-  - npm install -g gulp
+  - npm install -g gulp && bower install
