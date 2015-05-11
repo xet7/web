@@ -415,7 +415,7 @@ gulp.task('clean', function () {
 });
 
 // Run some unit tests to check key logic
-gulp.task('tests', scriptBuildSteps, function(done) {
+gulp.task('tests', scriptBuildSteps.concat('copy:vendor'), function(done) {
 	karma.start({
 		configFile: __dirname + '/karma.conf.js',
 		singleRun: true
