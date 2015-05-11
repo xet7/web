@@ -8,7 +8,14 @@ module.exports = /*@ngInject*/function (LavaboomAPI, co, user, consts, $http) {
 	this.password = null;
 	this.isPartiallyFlow = false;
 
+	let lastReservedUsername = localStorage['lava-reserved-username'];
+	if (lastReservedUsername)
+		self.reserve = {
+			originalUsername: lastReservedUsername
+		};
+
 	this.register = (username, altEmail) => {
+		localStorage['lava-reserved-username'] = username;
 		self.reserve = {
 			originalUsername: username,
 			username: username,
