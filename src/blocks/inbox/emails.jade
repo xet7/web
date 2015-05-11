@@ -11,7 +11,7 @@ div.pane-status(ng-if="selectedTid === null")
 				li(ng-show="selectedTid && labelName != 'Spam'")
 					button.btn.btn-default(ng-click="spamThread(selectedTid)", tooltip="{{'INBOX.MARK_AS_SPAM' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-ban
-				li(ng-show="selectedTid")
+				li(ng-show="selectedTid && labelName != 'Spam' && labelName != 'Trash'")
 					button.btn.btn-default(ng-click="starThread(selectedTid)", tooltip="{{'INBOX.STAR_THIS_CONVERSATION' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-star(ng-show="selectedTid && threads[selectedTid].isLabel('Starred')")
 						span.icon-star-outline(ng-show="selectedTid && !threads[selectedTid].isLabel('Starred')")
