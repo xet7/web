@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## UNRELEASED
 ### Added
 - plain/text mode for compose screen
+- settings/general: autocomplete @lavaboom.com
 
 ### Modified
 - gulpfile refactored into es6, now using gulp 4.x && node 0.12.x as a build system
@@ -16,6 +17,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - fixed some bugs in gulpfile(slow build, livereload, linting issues)
 - various keys management issues
+- public key export for setting/security
 
 ## 0.2.14 - 2015-05-10
 ### Added
