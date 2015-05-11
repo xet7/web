@@ -1,9 +1,10 @@
 module.exports = /*@ngInject*/function (utils, taSelection) {
 	const self = this;
+	const newLineRegex = /(\r\n|\r|\n)/g;
 
 	this.ctrlEnterCallback = null;
 
-	const getText = (dom, level = 0) => {
+	function htmlToText (dom, level = 0) {
 		let curText = '';
 
 		for(let node of dom.childNodes) {
@@ -13,25 +14,45 @@ module.exports = /*@ngInject*/function (utils, taSelection) {
 				curText += '\n';
 
 			if (node.childNodes)
-				curText += getText(node, level + 1);
+				curText += htmlToText(node, level + 1);
 		}
 
 		return curText;
-	};
+	}
 
-	this.formatPaste = (html) => {
-		let dom = utils.getDOM(html);
+	function textToHtml (text) {
+		const replace = text => {
+			let r = text
+				.replace(newLineRegex, '<br />');
 
+			return r;
+		};
+
+		let i = 0;
+		let dom = utils.getDOM(`<div>${text}</div>`);
+		let parent = dom.childNodes[0];
+
+		for (let node of parent.childNodes) {
+			if (node.nodeName == '#text') {
+				let newDom = utils.getDOM(replace(node.data));
+				parent.insertBefore(newDom, node);
+				parent.removeChild(node);
+			}
+		}
+
+		return dom.innerHTML;
+	}
+
+	this.formatPaste = (paste) => {
 		let selection = taSelection.getSelection();
 
-		let text = '';
-		if (selection.start.element.nodeName == 'PRE' && selection.end.element.nodeName == 'PRE')
-			text = getText(dom);
-		else
-			text = html;
+		let formatted = '';
+		if (selection.start.element.nodeName == 'PRE' && selection.end.element.nodeName == 'PRE') {
+			let dom = utils.getDOM(paste);
+			formatted = htmlToText(dom);
+		} else
+			formatted = textToHtml(paste);
 
-		console.log('text-angular paste original: ', html, 'formatted to', text);
-
-		return text;
+		return formatted;
 	};
 };
