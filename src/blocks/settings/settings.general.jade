@@ -90,6 +90,12 @@
 						ui-select-match {{$select.selected.description}}
 						ui-select-choices(repeat='item.name as item in styleSettings')
 							span(ng-bind="item.description", title="{{item.title}}")
+			li.list-group-item
+				label {{'MAIN.SETTINGS.GENERAL.LB_EMAIL_AUTO_COMPLETE' | translate}}
+				.control
+					label.switch
+						input(type='checkbox', ng-model="settings.isUnknownContactsAutoComplete")
+						i
 		h4 {{'MAIN.SETTINGS.GENERAL.TITLE_KEYBOARD_SHORTCUTS' | translate}}
 		ul.list-group
 			li.list-group-item

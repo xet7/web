@@ -355,6 +355,7 @@ DIALOGS_NO = "No"
 	LB_IMAGES_HTTPS_TITLE = "It makes your browser directly download only https external images"
 	LB_IMAGES_ALL = "download all images directly"
 	LB_IMAGES_ALL_TITLE = "It makes your browser directly download all external images, for both http and https protocols"
+	LB_EMAIL_AUTO_COMPLETE = "Auto complete emails with @lavaboom.com"
 
 [MAIN.SETTINGS.PROFILE]
 	TITLE_NAME = "Name"
