@@ -3,6 +3,7 @@ const plg = global.plg;
 
 let co = require('co');
 let crypto = require('crypto');
+let karma = require('karma').server;
 let os = require('os');
 let fs = require('fs');
 let del = require('del');
@@ -418,6 +419,10 @@ gulp.task('compile:finished', gulp.series(
 	'persists:paths', 'build:jade', 'copy:vendor', 'serve'
 ));
 
+gulp.task('compile:script', gulp.parallel(
+	scriptCompileSteps.concat(['copy:vendor', 'build:scripts:vendor']))
+);
+
 // Compile files
 gulp.task('compile', gulp.series(
 	gulp.parallel('clean', 'lint:scripts'),
@@ -456,5 +461,14 @@ gulp.task('default', gulp.series(
 gulp.task('develop', gulp.series('bower', 'compile'));
 
 gulp.task('production', gulp.series('bower', 'compile'));
+
+gulp.task('tests', gulp.series(
+	'compile:script',
+	() =>
+		karma.start({
+			configFile: __dirname + '/karma.conf.js',
+			singleRun: true
+		})
+));
 
 // woa!
