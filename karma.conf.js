@@ -22,12 +22,16 @@ module.exports = function (config) {
 			'dist/js/utils-vendor.js',
 			'dist/js/appLavaboom-vendor.js',
 
-			//we should have angular before mock it
-			'node_modules/angular-mocks/angular-mocks.js',
-
 			'dist/js/appLavaboom.js',
 			'dist/js/appLavaboomLogin.js',
 			'dist/js/utils.js',
+			'dist/vendor/openpgp.js',
+
+			//we should have angular before mock it
+			'node_modules/angular-mocks/angular-mocks.js',
+			'node_modules/sinon/lib/sinon.js',
+			'node_modules/jasmine-sinon/lib/jasmine-sinon.js',
+			'node_modules/phantomjs-polyfill/bind-polyfill.js',
 
 			'src/tests/**/*Spec.js'
 		],
