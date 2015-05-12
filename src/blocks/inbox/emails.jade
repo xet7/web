@@ -5,9 +5,12 @@ div.pane-status(ng-if="selectedTid === null")
 	nav.navbar.navbar-inverse(role="navigation")
 		div
 			ul.nav.navbar-nav
-				li(ng-show="selectedTid")
+				li(ng-show="selectedTid && labelName != 'Spam' && labelName != 'Trash'")
 					button.btn.btn-default(ng-click="deleteThread(selectedTid)", tooltip="{{'INBOX.MOVE_TO_TRASH' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-trash
+				li(ng-show="(selectedTid && labelName == 'Trash') || (selectedTid && labelName == 'Spam')")
+					button.btn.btn-default(ng-click="deleteThread(selectedTid)", tooltip="{{'INBOX.MOVE_TO_TRASH' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
+						span.icon-empty-trash
 				li(ng-show="selectedTid && labelName != 'Spam'")
 					button.btn.btn-default(ng-click="spamThread(selectedTid)", tooltip="{{'INBOX.MARK_AS_SPAM' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-ban

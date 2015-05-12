@@ -69,6 +69,7 @@ DIALOGS_NO = "No"
 	LB_NO_PRIVATE_KEY_FOUND3 = " and check your key"
 	MARK_AS_SPAM = "Mark as spam"
 	MOVE_TO_TRASH = "Send to trash"
+	DELETE_PERMANANTLY = "Delete Permanently"
 	PUT_BACK = "Put back"
 	NOT_SPAM = "This is not spam"
 	STAR_THIS_CONVERSATION = "Star this conversation"
@@ -107,6 +108,7 @@ DIALOGS_NO = "No"
     CORRUPTED_EMAIL_OPEN = "open the original email"
     CORRUPTED_EMAIL_OR = " or "
     CORRUPTED_EMAIL_DOWNLOAD = "download it"
+
 
 [INBOX.DOWNLOAD]
 	TITLE = "Downloading your attachment"
