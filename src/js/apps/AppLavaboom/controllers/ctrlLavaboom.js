@@ -93,13 +93,13 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 
 			yield tests.initialize();
 
-			tests.performCompatibilityChecks();
-
 			loader.incProgress(translations.LB_AUTHENTICATING, 5);
 			yield user.gatherUserInformation();
 
 			loader.incProgress(translations.LB_LOADING, 5);
 			yield [inbox.initialize(), contacts.initialize()];
+
+			yield tests.performCompatibilityChecks();
 
 			if ($state.current.name == 'empty')
 				yield $state.go('main.inbox.label', {labelName: 'Inbox', threadId: null}, {reload: true});
