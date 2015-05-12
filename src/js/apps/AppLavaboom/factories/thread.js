@@ -6,11 +6,8 @@ module.exports = /*@ngInject*/($injector, $translate, co, utils, crypto, user, E
 
 	function Thread(opt, manifest, labels) {
 		const self = this;
-
-		this.id = opt.id;
-		this.created = opt.date_created;
-		this.modified = opt.date_modified;
-
+		let isLoaded = false;
+		
 		const prettify = (a) => {
 			let r = a
 				.map(e => e.address == user.email ? '' : e.prettyName)
@@ -39,36 +36,50 @@ module.exports = /*@ngInject*/($injector, $translate, co, utils, crypto, user, E
 
 			return members;
 		};
+		
+		this.setupManifest = (manifest, setIsLoaded = false) => {
+			isLoaded = setIsLoaded;
+			self.id = opt.id;
+			self.created = opt.date_created;
+			self.modified = opt.date_modified;
 
-		this.members = opt.members ? filterMembers(Manifest.parseAddresses(opt.members)) : [];
-		this.membersPretty = prettify(self.members);
+			self.members = opt.members ? filterMembers(Manifest.parseAddresses(opt.members)) : [];
+			self.membersPretty = prettify(self.members);
 
-		this.to = manifest ? manifest.to : [];
+			self.to = manifest ? manifest.to : [];
 
-		this.labels = opt.labels;
-		this.isRead = opt.is_read;
-		this.secure = opt.secure;
+			self.labels = opt.labels;
+			self.isRead = opt.is_read;
+			self.secure = opt.secure;
 
-		this.subject = manifest && manifest.subject ? manifest.subject : opt.name;
-		this.attachmentsCount = manifest && manifest.files ? manifest.files.length : 0;
+			self.subject = manifest && manifest.subject ? manifest.subject : opt.name;
+			self.attachmentsCount = manifest && manifest.files ? manifest.files.length : 0;
 
-		this.isReplied = opt.emails.length > 1;
-		this.isForwarded = Email.getSubjectWithoutRe(self.subject) != self.subject;
-
+			self.isReplied = opt.emails.length > 1;
+			self.isForwarded = Email.getSubjectWithoutRe(self.subject) != self.subject;
+		};
+		
+		this.isLoaded = () => isLoaded;
 		this.isLabel = (labelName) => self.labels.some(lid => labels.byId[lid] && labels.byId[lid].name == labelName);
 		this.addLabel = (labelName) => utils.uniq(self.labels.concat(labels.byName[labelName].id));
 		this.removeLabel = (labelName) => self.labels.filter(x => x != labels.byName[labelName].id);
+
+		self.setupManifest(manifest);
 	}
 
 	Thread.fromEnvelope = (envelope) => co(function *() {
-		const inbox = $injector.get('inbox');
-		const labels = yield inbox.getLabels();
+		let inbox = $injector.get('inbox');
+		let labels = yield inbox.getLabels();
+		
+		let thread = new Thread(envelope, null, labels);
 
-		const manifestRaw = yield co.def(crypto.decodeRaw(envelope.manifest), null);
+		co(function *(){
+			let manifestRaw = yield co.def(crypto.decodeRaw(envelope.manifest), null);
+			console.log('thread manifest', manifestRaw);
+			thread.setupManifest(manifestRaw ? Manifest.createFromJson(manifestRaw) : null, true);
+		});
 
-		console.log('thread manifest', manifestRaw);
-
-		return new Thread(envelope, manifestRaw ? Manifest.createFromJson(manifestRaw) : null, labels);
+		return thread;
 	});
 	
 	return Thread;

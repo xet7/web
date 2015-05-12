@@ -19,7 +19,11 @@
 		img(src="/img/loader.svg")
 	div.pane-status(ng-show="!isLoading && threadsList.length < 1") {{'INBOX.LB_NOTHING_FOUND' | translate}}
 	div(infinite-scroll="scroll()", infinite-scroll-disabled="isLoading || isDisabledScroll", infinite-scroll-parent="true")
-		div.item-wrapper(ng-repeat="thread in threadsList | filter: searchFilter as filteredThreadsList track by thread.id", ng-class="{active: selectedTid == thread.id}", ng-click="selectThread(thread.id)")
+		div.item-wrapper(
+		ng-repeat="thread in threadsList | filter: searchFilter as filteredThreadsList track by thread.id",
+		ng-class="{active: selectedTid == thread.id}",
+		ng-click="selectThread(thread.id)",
+		ng-show="thread.isLoaded()")
 			.mail-list-item
 				.mail-list-wrapper
 					.buttons.text-center
