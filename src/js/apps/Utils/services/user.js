@@ -85,13 +85,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	this.syncKeys = () => co(function *(){
 		let res = yield LavaboomAPI.keys.list(self.name);
 
-		let keysByFingerprint = res.body.keys ? res.body.keys.reduce((a, k) => {
-			a[k.id] = k;
-			return a;
-		}, {}) : {};
+		let keysByFingerprint = res.body.keys ? utils.toMap(res.body.keys) : {};
 
 		let publicKeys = crypto.getAvailablePublicKeysForEmail(self.email);
-
 		let keysCreationPromises = [];
 
 		publicKeys.forEach(key => {
@@ -102,6 +98,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 			} else
 				console.log(`Key with fingerprint '${key.primaryKey.fingerprint}' already imported...`);
 		});
+
+		for(let k of Object.keys(keysByFingerprint))
+			crypto.importPublicKey(keysByFingerprint[k].key);
 
 		yield keysCreationPromises;
 	});
