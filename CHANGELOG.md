@@ -2,10 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## UNRELEASED
+## 0.2.15 - 2015-05-12
 ### Fixed
 - keys notifications behaviour fixed
 - fixed keys export/import issue when exporting just one keypair
+- key expire set to high value: this functionality isn't supposed to be used now
 
 ## 0.2.14 - 2015-05-10
 ### Added
