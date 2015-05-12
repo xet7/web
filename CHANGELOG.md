@@ -15,6 +15,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - signup: merged sync and backup screens
 
 ### Fixed
+- fixed reconnection when connect has been lost
+- fixed notification not working after reconnection
 - fixed some bugs in gulpfile(slow build, livereload, linting issues)
 - various keys management issues
 - public key export for setting/security
