@@ -2,7 +2,7 @@ module.exports = /*@ngInject*/() => {
 	const classes = {
 		'Drafts': 'draft',
 		'Spam': 'ban',
-		'Starred': 'star'
+		'Starred': 'star-outline'
 	};
 
 	function Label (opt) {

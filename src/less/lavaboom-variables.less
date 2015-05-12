@@ -293,15 +293,23 @@ body{
 	strong, .strong{
 		font-weight: 500;
 	}
+	// @media (-webkit-min-device-pixel-ratio: 2), 
+	// 	(min-resolution: 192dpi) { 
+	// 	font-weight: @light-font-weight !important;
+	// 	.medium{
+	// 		font-weight: 300;
+	// 	}
+	// 	strong, .strong{
+	// 		font-weight: 400;
+	// 	}
+	// }
+}
+
+.lava-font-strong{
+	font-weight: 500;
 	@media (-webkit-min-device-pixel-ratio: 2), 
-		(min-resolution: 192dpi) { 
-		font-weight: @light-font-weight !important;
-		.medium{
-			font-weight: 300;
-		}
-		strong, .strong{
-			font-weight: 400;
-		}
+		(min-resolution: 192dpi) {
+		font-weight: 400;
 	}
 }
 
@@ -315,10 +323,10 @@ body{
 
 .lava-font-light{
 	font-weight: 100 !important;
-	@media (-webkit-min-device-pixel-ratio: 2), 
-		(min-resolution: 192dpi) {
-		font-weight: 100 !important;
-	}
+	// @media (-webkit-min-device-pixel-ratio: 2), 
+	// 	(min-resolution: 192dpi) {
+	// 	font-weight: 100 !important;
+	// }
 }
 
 .no-gutter {

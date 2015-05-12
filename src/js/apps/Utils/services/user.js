@@ -21,6 +21,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		isSignatureEnabled: true,
 		isSkipComposeScreenWarning: false,
 		isHotkeyEnabled: true,
+		isUnknownContactsAutoComplete: false,
 		images: 'none', // none, proxy, directHttps, directAll,
 		styles: 'none', // none, all
 
@@ -68,9 +69,13 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 			LavaboomAPI.setAuthToken(token);
 	};
 
-	const persistAuth = (isRemember = true) => {
+	this.persistAuth = (isRemember = true) => {
 		let storage = isRemember ? localStorage : sessionStorage;
 		storage['lava-token'] = token;
+
+		localStorage['sign-in-settings'] = JSON.stringify({
+			isPrivateComputer: isRemember
+		});
 	};
 
 	this.calculateHash = crypto.hash;
@@ -80,13 +85,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	this.syncKeys = () => co(function *(){
 		let res = yield LavaboomAPI.keys.list(self.name);
 
-		let keysByFingerprint = res.body.keys ? res.body.keys.reduce((a, k) => {
-			a[k.id] = k;
-			return a;
-		}, {}) : {};
+		let keysByFingerprint = res.body.keys ? utils.toMap(res.body.keys) : {};
 
 		let publicKeys = crypto.getAvailablePublicKeysForEmail(self.email);
-
 		let keysCreationPromises = [];
 
 		publicKeys.forEach(key => {
@@ -97,6 +98,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 			} else
 				console.log(`Key with fingerprint '${key.primaryKey.fingerprint}' already imported...`);
 		});
+
+		for(let k of Object.keys(keysByFingerprint))
+			crypto.importPublicKey(keysByFingerprint[k].key);
 
 		yield keysCreationPromises;
 	});
@@ -121,8 +125,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		yield self.authenticate();
 
 		yield self.syncKeys();
-		if (self.settings.isLavaboomSynced)
+		if (self.settings.isLavaboomSynced) {
+			crypto.initialize({isShortMemory: self.settings.isLavaboomSynced});
 			cryptoKeys.importKeys(self.settings.keyring);
+		}
 
 		let res = yield LavaboomAPI.keys.get(self.email);
 		self.key = res.body.key;
@@ -176,7 +182,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 				token = res.body.token.id;
 				LavaboomAPI.setAuthToken(token);
-				persistAuth(isRemember);
+				self.persistAuth(isRemember);
 				isAuthenticated = true;
 
 				res = yield LavaboomAPI.accounts.get('me');
@@ -199,10 +205,12 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 				self.key = res.body.key;
 
-				if (self.settings.isLavaboomSynced)
+				if (self.settings.isLavaboomSynced) {
+					crypto.initialize({isShortMemory: self.settings.isLavaboomSynced});
 					cryptoKeys.importKeys(self.settings.keyring);
+				}
 
-				crypto.initialize({isPrivateComputer: isPrivateComputer});
+				crypto.initialize({isPrivateComputer: isPrivateComputer, email: self.email});
 				crypto.authenticateByEmail(self.email, password);
 
 				$rootScope.$broadcast('user-authenticated');

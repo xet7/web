@@ -5,13 +5,16 @@ div.pane-status(ng-if="selectedTid === null")
 	nav.navbar.navbar-inverse(role="navigation")
 		div
 			ul.nav.navbar-nav
-				li(ng-show="selectedTid")
+				li(ng-show="selectedTid && labelName != 'Spam' && labelName != 'Trash'")
 					button.btn.btn-default(ng-click="deleteThread(selectedTid)", tooltip="{{'INBOX.MOVE_TO_TRASH' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-trash
+				li(ng-show="(selectedTid && labelName == 'Trash') || (selectedTid && labelName == 'Spam')")
+					button.btn.btn-default(ng-click="deleteThread(selectedTid)", tooltip="{{'INBOX.MOVE_TO_TRASH' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
+						span.icon-empty-trash
 				li(ng-show="selectedTid && labelName != 'Spam'")
 					button.btn.btn-default(ng-click="spamThread(selectedTid)", tooltip="{{'INBOX.MARK_AS_SPAM' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-ban
-				li(ng-show="selectedTid")
+				li(ng-show="selectedTid && labelName != 'Spam' && labelName != 'Trash'")
 					button.btn.btn-default(ng-click="starThread(selectedTid)", tooltip="{{'INBOX.STAR_THIS_CONVERSATION' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-star(ng-show="selectedTid && threads[selectedTid].isLabel('Starred')")
 						span.icon-star-outline(ng-show="selectedTid && !threads[selectedTid].isLabel('Starred')")
@@ -59,7 +62,8 @@ div(ng-if="selectedTid").main-view
 				.col-xs-1.secure
 					a.icon-secure
 			.mail-content.row.no-gutter
-				.col-xs-22(ng-if="email.isHtml", ng-show="email.body.state == 'ok'",
+				.col-xs-22(ng-show="email.body.state == 'ok'",
+					is-html="email.isHtml",
 					open-email="openEmail",
 					download-email="downloadEmail",
 					original-email-name="email.id",
@@ -67,8 +71,6 @@ div(ng-if="selectedTid").main-view
 					snap-template-url="partials/directives/snap.html",
 					no-image-template-url="partials/directives/noImage.html",
 					loading-template-url="partials/directives/loading.html")
-				.col-xs-22(ng-if="!email.isHtml", ng-show="email.body.state == 'ok'")
-					pre(ng-bind="email.body.data")
 				.col-xs-22(ng-show="email.body.state == 'no_private_key'") {{'INBOX.LB_NO_PRIVATE_KEY_FOUND1' | translate}}
 					div {{'INBOX.LB_NO_PRIVATE_KEY_FOUND2' | translate}}
 						a(ui-sref="main.settings.security") {{'INBOX.LB_SETTINGS' | translate}}

@@ -2,6 +2,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 							   utils, consts, co, router, composeHelpers, textAngularHelpers, crypto,
 							   user, contacts, inbox, Manifest, Contact, hotkey, ContactEmail, Email, Attachment) => {
 	$scope.toolbar = [
+		['pre'],
 		['h1', 'h2', 'h3'],
 		['bold', 'italics', 'underline'],
 		['justifyLeft', 'justifyCenter', 'justifyRight'],
@@ -295,16 +296,19 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 		co(function *() {
 			let body = '<br/>';
+			let subject = '';
 
 			const signature = user.settings.isSignatureEnabled && user.settings.signatureHtml ? user.settings.signatureHtml : '';
 			if (forwardEmailId) {
 				let emails = [yield inbox.getEmailById(forwardEmailId)];
 				body = yield composeHelpers.buildForwardedTemplate(body, '', emails);
+				subject = 'Fwd: ' + Email.getSubjectWithoutRe(emails[0].subject);
 			}
 			else
 			if (forwardThreadId) {
 				let emails = yield inbox.getEmailsByThreadId(forwardThreadId);
 				body = yield composeHelpers.buildForwardedTemplate(body, '', emails);
+				subject = 'Fwd: ' + Email.getSubjectWithoutRe(emails[0].subject);
 			}
 			else
 			if (replyEmailId) {
@@ -349,7 +353,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 						from: contacts.myself
 					},
 					fromEmails: [contacts.myself],
-					subject: '',
+					subject: subject,
 					body: body
 				};
 			}
@@ -406,9 +410,16 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 		let p = emailTemplate.split('@');
 
-		let [name, email] = p.length > 1
-			? [p[0].trim(), `${p[0].trim()}@${p[1].trim()}`]
-			: [emailTemplate.trim(), `${emailTemplate.trim()}@${consts.ROOT_DOMAIN}`];
+		let name, email;
+
+		if (p.length > 1)
+			[name, email] = [p[0].trim(), `${p[0].trim()}@${p[1].trim()}`];
+		else {
+			if (!user.settings.isUnknownContactsAutoComplete)
+				return null;
+
+			[name, email] = [emailTemplate.trim(), `${emailTemplate.trim()}@${consts.ROOT_DOMAIN}`];
+		}
 
 		if (newHiddenContact) {
 			if (newHiddenContact.email == email)
@@ -448,6 +459,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 					person.email.toLowerCase().includes(text)
 				);
 		};
+
+	$scope.formatPaste = (html) => textAngularHelpers.formatPaste(html);
 
 	hotkey.addHotkey({
         combo: ['ctrl+enter', 'command+enter'],

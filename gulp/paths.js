@@ -49,6 +49,7 @@ module.exports = {
 		output: output + 'vendor/'
 	},
 	translations : {
+		inputEn: 'src/translations/en.toml',
 		input: 'src/translations/*.toml',
 		output: output + 'translations/'
 	},

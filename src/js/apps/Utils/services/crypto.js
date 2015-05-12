@@ -6,7 +6,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 	let isInitialized = false;
 
 	const defaultOptions = {
-		isPrivateComputer: false
+		isPrivateComputer: false,
+		isShortMemory: false
 	};
 
 	const wrapOpenpgpKeyring = (keyring) => {
@@ -150,6 +151,19 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 		keyring.store();
 	};
 
+	this.clearPermanentPrivateKeysForEmail = (email) => {
+		return storage.clearPermanentPrivateKeysForEmail(email);
+	};
+
+	this.restorePrivateKeys = (privateKeys, privateSecuredKeys) => {
+		storage.storePrivate(privateKeys);
+		storage.storePrivate(privateSecuredKeys);
+	};
+
+	this.storeKeyring = () => {
+		keyring.store();
+	};
+
 	this.initialize = (opt = {}) => {
 		const storedOptions = utils.def(() => JSON.parse(localStorage['lava-crypto-options']), {});
 		self.options = angular.extend({}, defaultOptions, storedOptions, opt);
@@ -163,16 +177,22 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 			isInitialized = true;
 		}
 
-		storage = new CryptoKeysStorage(self.options.isPrivateComputer);
-		keyring = wrapOpenpgpKeyring(new openpgp.Keyring(storage));
-		window.keyring = keyring;
+		[keyring, storage] = self.createKeyring(true);
+		if (!process.env.IS_PRODUCTION)
+			window.keyring = keyring;
 
 		$rootScope.$broadcast('keyring-updated');
 	};
 
-	this.createKeyring = (isLoadDecrypted = true) => {
-		const storage = new CryptoKeysStorage(self.options.isPrivateComputer, isLoadDecrypted);
-		return wrapOpenpgpKeyring(new openpgp.Keyring(storage));
+	this.createKeyring = (isLoadDecrypted = false) => {
+		const storage = new CryptoKeysStorage(
+			self.options.isPrivateComputer,
+			self.options.isShortMemory,
+			self.options.email ? [self.options.email] : [],
+			isLoadDecrypted
+		);
+
+		return [wrapOpenpgpKeyring(new openpgp.Keyring(storage)), storage];
 	};
 
 	this.generateKeys = (nameEmail, password, numBits) => {

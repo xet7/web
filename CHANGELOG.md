@@ -2,6 +2,28 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.16 - 2015-05-12
+### Added
+- plain/text mode for compose screen
+- settings/general: autocomplete @lavaboom.com
+
+### Modified
+- gulpfile refactored into es6, now using gulp 4.x && node 0.12.x as a build system
+- auto-complete of @lavaboom.com turned off by default
+- new improved keys persistance and display model
+- signup: this is private PC moved to password screen
+- signup: merged sync and backup screens
+- decrypting threads 1-by-1 instead of blocking while the whole bulk is being decrypted
+
+### Fixed
+- fixed unability to export public key in settings/security
+- some notifications could appear without a reason(wrong initialization order)
+- fixed reconnection when connect has been lost
+- fixed notification not working after reconnection
+- fixed some bugs in gulpfile(slow build, livereload, linting issues)
+- various keys management issues
+- public key export for setting/security
+
 ## 0.2.15 - 2015-05-12
 ### Fixed
 - keys notifications behaviour fixed

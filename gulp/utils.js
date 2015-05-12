@@ -8,6 +8,14 @@ var Utils = function() {
 			path
 		);
 	};
+
+	this.def = (func, def) => {
+		try {
+			return func();
+		} catch (err) {
+			return def;
+		}
+	};
 };
 
 module.exports = new Utils();

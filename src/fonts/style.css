@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'lavaboom';
-	src:url('fonts/lavaboom.eot?jdfgjj');
-	src:url('fonts/lavaboom.eot?#iefixjdfgjj') format('embedded-opentype'),
-		url('fonts/lavaboom.woff?jdfgjj') format('woff'),
-		url('fonts/lavaboom.ttf?jdfgjj') format('truetype'),
-		url('fonts/lavaboom.svg?jdfgjj#lavaboom') format('svg');
+	src:url('fonts/lavaboom.eot?-ot3rjy');
+	src:url('fonts/lavaboom.eot?#iefix-ot3rjy') format('embedded-opentype'),
+		url('fonts/lavaboom.woff?-ot3rjy') format('woff'),
+		url('fonts/lavaboom.ttf?-ot3rjy') format('truetype'),
+		url('fonts/lavaboom.svg?-ot3rjy#lavaboom') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -23,24 +23,60 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
-.icon-format-list-bulleted:before {
+.icon-format-align-center:before {
 	content: "\e602";
 }
 
-.icon-align-justify:before {
+.icon-format-align-justify:before {
+	content: "\e603";
+}
+
+.icon-format-align-left:before {
+	content: "\e604";
+}
+
+.icon-format-align-right:before {
+	content: "\e605";
+}
+
+.icon-format-bold:before {
+	content: "\e606";
+}
+
+.icon-format-italic:before {
 	content: "\e619";
 }
 
-.icon-align-left:before {
+.icon-format-list-bulleted:before {
 	content: "\e61a";
 }
 
-.icon-align-right:before {
+.icon-format-list-numbered:before {
 	content: "\e61b";
 }
 
-.icon-download:before {
+.icon-format-underline:before {
 	content: "\e61c";
+}
+
+.icon-format-code:before {
+	content: "\f121";
+}
+
+.icon-download:before {
+	content: "\e620";
+}
+
+.icon-H1:before {
+	content: "\e61d";
+}
+
+.icon-H2:before {
+	content: "\e61e";
+}
+
+.icon-H3:before {
+	content: "\e61f";
 }
 
 .icon-add-contact:before {
@@ -117,46 +153,6 @@
 
 .icon-yes:before {
 	content: "\e618";
-}
-
-.icon-format-bold:before {
-	content: "\f032";
-}
-
-.icon-format-italic:before {
-	content: "\f033";
-}
-
-.icon-format-align-center:before {
-	content: "\f037";
-}
-
-.icon-format-list:before {
-	content: "\f03a";
-}
-
-.icon-format-dedent:before {
-	content: "\f03b";
-}
-
-.icon-format-indent:before {
-	content: "\f03c";
-}
-
-.icon-format-list-numbered:before {
-	content: "\e603";
-}
-
-.icon-format-quote:before {
-	content: "\e604";
-}
-
-.icon-format-underline:before {
-	content: "\e605";
-}
-
-.icon-format-photo:before {
-	content: "\e606";
 }
 
 .icon-plus:before {

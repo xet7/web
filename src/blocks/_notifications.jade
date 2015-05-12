@@ -1,7 +1,7 @@
 nav#notifications.navbar.navbar-inverse.notifications(
 	ng-class="{ active: (Object.keys(notificationsInfo).length + Object.keys(notificationsWarning).length) > 0 }"
 )
-	div(ng-repeat="(name, notification) in notificationsInfo")
+	div(ng-repeat="(name, notification) in notificationsInfo", ng-class="{'notification-auto-dismiss' : notification.timeout > 0}")
 		ul.nav.navbar-nav
 			li
 				p.navbar-text

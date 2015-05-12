@@ -1,7 +1,9 @@
-#notifications.notifications.navbar-inverse{
+#notifications.notifications.navbar-inverse > div:not(.notification-auto-dismiss){
 	background: @lava;
 	color: #FFF;
 	padding: 0 1.5rem;
+	.clearfix();
+	
 	.btn{
 		background: @lava-button-color;
 		padding-left: @lava-button-padding;
@@ -16,16 +18,34 @@
 	}
 }
 
+#notifications.notifications.navbar-inverse > div.notification-auto-dismiss{
+	.text-center();
+	.navbar-nav{
+		float: none;
+		width: auto;
+		margin: 1.1rem auto;
+		// line-height: 2.2rem;
+		border-radius: @border-radius-base;
+		background: @lava;
+		display: inline-block;
+		.navbar-text{
+			color: #FFF;
+			.lava-font-strong();
+			margin: .6rem;
+		}
+	}
+}
+
 .notifications-0 .notifications{
 	display: none;
 }
 
 .notifications-1 + div {
-	top: @filter-height * 2 !important;
+	// top: @filter-height * 2 !important;
 }
 
 .notifications-2 + div {
-	top: @filter-height * 3 !important;
+	// top: @filter-height * 3 !important;
 }
 
 .dialogs-default{
