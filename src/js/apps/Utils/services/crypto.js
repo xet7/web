@@ -178,6 +178,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 		}
 
 		[keyring, storage] = self.createKeyring(true);
+		if (!process.env.IS_PRODUCTION)
+			window.keyring = keyring;
 
 		$rootScope.$broadcast('keyring-updated');
 	};
