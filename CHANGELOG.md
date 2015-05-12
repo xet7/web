@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## UNRELEASED
+## 0.2.16 - 2015-05-12
 ### Added
 - plain/text mode for compose screen
 - settings/general: autocomplete @lavaboom.com
@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - new improved keys persistance and display model
 - signup: this is private PC moved to password screen
 - signup: merged sync and backup screens
+- decrypting threads 1-by-1 instead of blocking while the whole bulk is being decrypted
 
 ### Fixed
 - fixed unability to export public key in settings/security
