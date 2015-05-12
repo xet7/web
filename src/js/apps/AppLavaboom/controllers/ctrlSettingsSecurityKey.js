@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $timeout, $translate, consts, crypto, notifications) => {
+module.exports = /*@ngInject*/($scope, $timeout, $translate, co, consts, crypto, notifications) => {
 	console.log('CtrlSettingsSecurityKey instantiated with key', $scope.key);
 
 	const translations = {
@@ -11,14 +11,17 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, consts, crypto, not
 			return;
 		
 		if ($scope.key) {
-			if ($scope.key.decrypt($scope.key.decryptPassword)) {
-				notifications.set('private-key-decrypted-ok', {
-					text: translations.LB_PRIVATE_KEY_DECRYPTED({email: $scope.email}),
-					type: 'info',
-					timeout: 3000,
-					namespace: 'settings'
-				});
-			}
+			co(function *(){
+				if (yield $scope.key.decrypt($scope.key.decryptPassword)) {
+					notifications.set('private-key-decrypted-ok', {
+						text: translations.LB_PRIVATE_KEY_DECRYPTED({email: $scope.email}),
+						type: 'info',
+						timeout: 3000,
+						namespace: 'settings'
+					});
+					notifications.unSet('no-key');
+				}
+			});
 		}
 	});
 };
