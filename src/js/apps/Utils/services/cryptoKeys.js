@@ -89,8 +89,8 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 		let body = {
 			key_pairs: {
 				[privateKey.users[0].userId.userid]: {
-					prv: privateKey.armor(),
-					pub: publicKey.armor()
+					prv: [privateKey.armor()],
+					pub: [publicKey.armor()]
 				}
 			},
 			exported: $filter('date')(Date.now(), 'yyyy-MM-dd HH:mm:ss Z')

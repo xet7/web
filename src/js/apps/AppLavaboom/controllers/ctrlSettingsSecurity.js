@@ -107,7 +107,7 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 		try {
 			cryptoKeys.importKeys(data);
 		} catch (err) {
-			console.log('LB_CANNOT_IMPORT_' + err.message);
+			console.log('LB_CANNOT_IMPORT_', err.message);
 			const translatedErrorMessage = translations['LB_CANNOT_IMPORT_' + err.message];
 
 			notifications.set('import-keys-fail', {
