@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## UNRELEASED
+### Fixed
+- keys notifications behaviour fixed
+- fixed keys export issue when exporting just one keypair
+
 ## 0.2.14 - 2015-05-10
 ### Added
 - show styled email address in settings/keys
