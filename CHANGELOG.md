@@ -5,7 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## UNRELEASED
 ### Fixed
 - keys notifications behaviour fixed
-- fixed keys export issue when exporting just one keypair
+- fixed keys export/import issue when exporting just one keypair
 
 ## 0.2.14 - 2015-05-10
 ### Added

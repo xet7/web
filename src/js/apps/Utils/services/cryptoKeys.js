@@ -24,6 +24,9 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 			throw new Error('CORRUPTED');
 
 		Object.keys(importObj.body.key_pairs).forEach(email => {
+			if (angular.isString(importObj.body.key_pairs[email].prv))
+				importObj.body.key_pairs[email].prv = [importObj.body.key_pairs[email].prv];
+
 			importObj.body.key_pairs[email].prv.forEach(privateKeyArmored => {
 				try {
 					for(let key of openpgp.key.readArmored(privateKeyArmored).keys) {
@@ -36,6 +39,10 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 					console.warn('cannot import private key', privateKeyArmored, error);
 				}
 			});
+
+			if (angular.isString(importObj.body.key_pairs[email].pub))
+				importObj.body.key_pairs[email].pub = [importObj.body.key_pairs[email].pub];
+
 			importObj.body.key_pairs[email].pub.forEach(publicKeyArmored => {
 				try {
 					for(let key of openpgp.key.readArmored(publicKeyArmored).keys) {
