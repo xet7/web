@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($injector, $translate, $timeout, crypto, utils, consts, dateFilter) => {
+module.exports = /*@ngInject*/($injector, $translate, $timeout, co, crypto, utils, consts, dateFilter) => {
 	const translations = {
 		TP_KEY_IS_ENCRYPTED: '',
 		TP_KEY_IS_DECRYPTED: '',
@@ -55,7 +55,7 @@ module.exports = /*@ngInject*/($injector, $translate, $timeout, crypto, utils, c
 			? translations.TP_KEY_IS_DECRYPTED
 			: translations.TP_KEY_IS_ENCRYPTED;
 
-		this.decrypt = (password) => {
+		this.decrypt = (password) => co(function *(){
 			decodeTimeout = $timeout.schedule(decodeTimeout, () => {
 				let r = false;
 				if (key && !key.primaryKey.isDecrypted) {
@@ -65,7 +65,11 @@ module.exports = /*@ngInject*/($injector, $translate, $timeout, crypto, utils, c
 
 				decryptTime = new Date();
 			}, consts.AUTO_SAVE_TIMEOUT);
-		};
+
+			utils.def(yield decodeTimeout);
+
+			return key.primaryKey.isDecrypted;
+		});
 
 		this.armor = () => key.armor();
 	}

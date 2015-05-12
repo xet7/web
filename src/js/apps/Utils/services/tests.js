@@ -67,7 +67,7 @@ module.exports = /*@ngInject*/function($rootScope, $timeout, $state, $translate,
 		}
 
 		let list = crypto.getAvailablePrivateKeysForEmail(user.email);
-		if (list.length < 1 || list.every(k => !k.primaryKey.isDecrypted))
+		if (list.length < 1 || list.every(k => !k.primaryKey.isDecrypted)) {
 			notifications.set('no-key', {
 				title: notifications18n.NO_KEY_TITLE,
 				text: notifications18n.NO_KEY_TEXT,
@@ -76,6 +76,7 @@ module.exports = /*@ngInject*/function($rootScope, $timeout, $state, $translate,
 					$state.go('main.settings.security');
 				}
 			});
+		}
 	});
 
 	this.isWebCrypto = () => {

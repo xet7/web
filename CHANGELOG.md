@@ -19,6 +19,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - various keys management issues
 - public key export for setting/security
 
+## 0.2.15 - 2015-05-12
+### Fixed
+- keys notifications behaviour fixed
+- fixed keys export/import issue when exporting just one keypair
+- key expire set to high value: this functionality isn't supposed to be used now
+
 ## 0.2.14 - 2015-05-10
 ### Added
 - show styled email address in settings/keys
@@ -28,6 +34,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - show styled email address in compose screen from field
 - temporary restored import/export buttons
+
 ## 0.2.12 - 2015-05-09
 ### Fixed
 - bug in email encryption process
