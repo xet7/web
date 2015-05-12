@@ -15,6 +15,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - signup: merged sync and backup screens
 
 ### Fixed
+- fixed unability to export public key in settings/security
 - some notifications could appear without a reason(wrong initialization order)
 - fixed reconnection when connect has been lost
 - fixed notification not working after reconnection
