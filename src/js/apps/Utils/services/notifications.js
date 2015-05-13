@@ -64,7 +64,7 @@ module.exports = /*@ngInject*/function($rootScope, $translate, $timeout) {
 
 	this.get = (type, namespace = 'root') => {
 		const notificationsSet = angular.copy(notifications);
-		return Object.keys(notificationsSet).reduce((a, name) => {
+		let r =  Object.keys(notificationsSet).reduce((a, name) => {
 			if (!name.startsWith(namespace + '.'))
 				return a;
 
@@ -73,5 +73,10 @@ module.exports = /*@ngInject*/function($rootScope, $translate, $timeout) {
 
 			return a;
 		}, {});
+
+		if (namespace != 'root')
+			angular.extend(r, self.get(type));
+
+		return r;
 	};
 };

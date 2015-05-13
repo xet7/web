@@ -2,6 +2,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## UNRELEASED
+### Added
+- check for browser: downloads from all Safari and some outdated results in a warning
+
 ## 0.2.17 - 2015-05-12
 ### Added
 - opnepgp.js updated, added support for native key generation in Safari

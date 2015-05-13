@@ -53,6 +53,8 @@ DIALOGS_NO = "No"
     SERVED_BY_UNKNOWN_TEXT = "We do not know which server served you Lavaboom. Please contact hello@lavaboom.com."
     NO_KEY_TITLE = "No private key found"
     NO_KEY_TEXT = "You don't have a decrypted private key, please go to settings/security and import or decrypt one"
+    BAD_BROWSER_TITLE = "Please use a modern browser"
+    BAD_BROWSER_TEXT = "Your browser might have problems with downloading, please consider using Chrome, Firefox, Opera or I.E >= 10"
 
 [INBOX]
 	NO_PREVIEW_AVAILABLE = "No preview available"
