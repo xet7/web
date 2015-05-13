@@ -1,4 +1,4 @@
-var integralDigest = require('../../../helpers/intervalDigest.js');
+const integralDigest = require('../../../helpers/intervalDigest.js');
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000*1000;
 
