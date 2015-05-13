@@ -2,14 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## UNRELEASED
+## 0.3.0 - 2015-05-13
 ### Added
 - check for browser: downloads from all Safari and some outdated results in a warning
 - check for browser: display a warning on mobile browsers as we don't support them currently
 - a warning into keyring backup for way too smart browsers who opens the file instead of saving
 - signup: simple performance test to give user a guess about ETA
 
-## 0.2.17 - 2015-05-12
+## 0.2.17 - 2015-05-13
 ### Added
 - opnepgp.js updated, added support for native key generation in Safari
 - fixed issue with not-visible keys for newly created accounts(re-login required)
