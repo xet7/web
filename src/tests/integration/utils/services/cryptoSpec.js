@@ -1,20 +1,15 @@
-var sinon = require('sinon'),
-	_ = require('lodash');
-
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000*1000;
 
 describe('Crypto Service', () => {
 	let service,
 		$rootScope,
-		rootScopeUpdateIntervalId,
-		$timeout;
+		rootScopeUpdateIntervalId;
 
 	beforeEach(angular.mock.module('utils'));
 
-	beforeEach(inject((crypto, _$rootScope_, _$timeout_) => {
+	beforeEach(inject((crypto, _$rootScope_) => {
 		service = crypto;
 		$rootScope = _$rootScope_;
-		$timeout = _$timeout_;
 	}));
 
 	beforeEach(inject(($httpBackend) => {
