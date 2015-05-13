@@ -31,10 +31,6 @@ let plumber = null;
 let isServe = false;
 let isWatching = args.length < 1;
 let manifest = {};
-let scheduledTimeout = null;
-let scheduledCallback = null;
-let isPartialLivereloadBuild = false;
-let isFirstBuild = true;
 
 // Modules
 let serve = require('./serve');
@@ -55,13 +51,16 @@ if (!isWatching) {
 		config.isProduction = true;
 		process.env.IS_PRODUCTION = true;
 	}
+	if (args[0] === 'serve') {
+		isServe = true;
+	}
 } else {
 	plumber = plg.plumber;
 	isServe = true;
 }
 
 const Pipelines = require('./gulp/pipelines');
-const pipelines = new Pipelines(manifest, () => isPartialLivereloadBuild, plumber);
+const pipelines = new Pipelines(manifest, plumber);
 
 /**
  * Gulp Taks
@@ -307,6 +306,7 @@ gulp.task('copy:images', () =>
 	gulp.src(paths.img.input)
 		.pipe(plumber())
 		.pipe(gulp.dest(paths.img.output))
+		.pipe(pipelines.livereloadIndexPipeline()())
 );
 
 // Copy fonts into output folder
@@ -314,6 +314,7 @@ gulp.task('copy:fonts', () =>
 	gulp.src(paths.fonts.input)
 		.pipe(plumber())
 		.pipe(gulp.dest(paths.fonts.output))
+		.pipe(pipelines.livereloadIndexPipeline()())
 );
 
 // Build translation files(toml -> json)
@@ -322,7 +323,7 @@ gulp.task('build:translations', () =>
 		.pipe(plumber())
 		.pipe(plg.toml({to: JSON.stringify, ext: '.json'}))
 		.pipe(gulp.dest(paths.translations.output))
-		.pipe(pipelines.livereloadPipeline()())
+		.pipe(pipelines.livereloadIndexPipeline()())
 );
 
 // Build primary markup jade files
@@ -361,6 +362,16 @@ gulp.task('tests', () =>
 // Automatically install all bower dependencies
 gulp.task('bower', () => plg.bower());
 
+// Serve it, baby!
+gulp.task('serve', cb => {
+	if (isServe) {
+		serve();
+		isServe = false;
+	}
+
+	cb(null);
+});
+
 /**
  * Task Runners
  */
@@ -381,20 +392,6 @@ const scriptCompileSteps = paths.scripts.inputApps.map((appScript, i) => {
 	return name;
 });
 
-gulp.task('lr', gulp.series(gulp.parallel('build:jade', 'copy:vendor'), cb => {
-	if (!isFirstBuild) {
-		return gulp.src(paths.markup.input)
-			.pipe(pipelines.livereloadPipeline(true)());
-	}
-	if (isServe) {
-		serve();
-		isServe = false;
-	}
-	isFirstBuild = false;
-
-	cb(null);
-}));
-
 // Write manifest paths into external file(assets translation see revTap)
 gulp.task('persists:paths', cb => {
 	fs.writeFileSync('paths.json', JSON.stringify(manifest, null, 4));
@@ -403,7 +400,7 @@ gulp.task('persists:paths', cb => {
 
 // Got run when primary compilation finished
 gulp.task('compile:finished', gulp.series(
-	'persists:paths', 'build:jade', 'copy:vendor', 'lr'
+	'persists:paths', 'build:jade', 'copy:vendor', 'serve'
 ));
 
 // Compile files
@@ -415,38 +412,6 @@ gulp.task('compile', gulp.series(
 	'compile:finished'
 ));
 
-function defineLiveReloadTask(taskName, timeout = 1000) {
-	gulp.task(`live-reload:${taskName}`, gulp.series(
-		(cb) => {
-			if (taskName != 'compile')
-				isPartialLivereloadBuild = true;
-
-			console.warn('live reload build scheduled for ' + taskName + ' in ' + timeout + 'ms.');
-			if (scheduledTimeout) {
-				clearTimeout(scheduledTimeout);
-				scheduledCallback(null);
-				scheduledTimeout = null;
-
-				taskName = 'compile';
-				isPartialLivereloadBuild = false;
-				console.warn('live reload conflict - perform full rebuild');
-			}
-
-			scheduledCallback = cb;
-			scheduledTimeout = setTimeout(() => {
-				scheduledTimeout = null;
-				console.warn('perform live reload build for ' + taskName);
-
-				cb(null);
-				gulp.series(taskName)();
-			}, timeout);
-		}
-	));
-}
-
-for(let taskName of ['compile', 'build:styles', 'build:jade', 'build:partials-jade', 'build:translations'])
-	defineLiveReloadTask(taskName);
-
 /*
 	Gulp primary tasks
  */
@@ -454,30 +419,13 @@ for(let taskName of ['compile', 'build:styles', 'build:jade', 'build:partials-ja
 gulp.task('default', gulp.series(
 	'bower', 'compile',
 	cb => {
-		// watch for source changes and rebuild the whole project with _exceptions_
-		/*gulp.watch([
-			paths.input,
-			'!' + paths.styles.inputAll,
-			'!' + paths.markup.input,
-			'!' + paths.partials.input,
-			'!' + paths.translations.input,
-			paths.translations.inputEn],
-			gulp.series('live-reload:compile')
-		);*/
-
-		// _exceptions_
-
-		// partial live-reload for style changes
-		gulp.watch(paths.styles.inputAll, gulp.series('live-reload:build:styles'));
-
-		// partial live-reload for primary jade files
-		gulp.watch(paths.markup.input, gulp.series('live-reload:build:jade'));
-
-		// partial live-reload for partials jade files
-		gulp.watch(paths.partials.input, gulp.series('live-reload:build:partials-jade'));
-
-		// partial live-reload for translations
-		gulp.watch(paths.translations.input, gulp.series('live-reload:build:translations'));
+		// live reload for everything except browserify(as we use watchify)
+		gulp.watch(paths.img.input, gulp.series('copy:images'));
+		gulp.watch(paths.fonts.input, gulp.series('copy:fonts'));
+		gulp.watch(paths.styles.inputAll, gulp.series('build:styles'));
+		gulp.watch(paths.markup.input, gulp.series('build:jade'));
+		gulp.watch(paths.partials.input, gulp.series('build:partials-jade'));
+		gulp.watch(paths.translations.input, gulp.series('build:translations'));
 
 		// start livereload server
 		plg.livereload.listen({
@@ -492,11 +440,5 @@ gulp.task('default', gulp.series(
 gulp.task('develop', gulp.series('bower', 'compile'));
 
 gulp.task('production', gulp.series('bower', 'compile'));
-
-gulp.task('serve', cb => {
-	serve();
-
-	cb(null);
-});
 
 // woa!
