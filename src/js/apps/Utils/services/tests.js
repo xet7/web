@@ -1,4 +1,5 @@
-module.exports = /*@ngInject*/function($rootScope, $timeout, $state, $translate, $http, co, notifications, crypto, user) {
+module.exports = /*@ngInject*/function($rootScope, $timeout, $state, $translate, $http,
+									   co, notifications, crypto, user, utils) {
 	const self = this;
 
 	const notifications18n = {
@@ -13,7 +14,9 @@ module.exports = /*@ngInject*/function($rootScope, $timeout, $state, $translate,
 		SERVED_BY_UNKNOWN_TITLE: '',
 		SERVED_BY_UNKNOWN_TEXT: '',
 		NO_KEY_TITLE: '',
-		NO_KEY_TEXT: ''
+		NO_KEY_TEXT: '',
+		MOBILE_BROWSER_TITLE: '',
+		MOBILE_BROWSER_TEXT: ''
 	};
 
 	let poweredBy = '';
@@ -23,6 +26,15 @@ module.exports = /*@ngInject*/function($rootScope, $timeout, $state, $translate,
 	});
 
 	this.performCompatibilityChecks = () => co(function *(){
+		let browser = utils.getBrowser();
+		if (browser.isMobile) {
+			notifications.set('mobile-platform', {
+				title: notifications18n.MOBILE_BROWSER_TITLE,
+				text: notifications18n.MOBILE_BROWSER_TEXT,
+				type: 'warning'
+			});
+		}
+
 		if (!self.isWebWorkers())
 			notifications.set('web-workers', {
 				title: notifications18n.WEB_WORKERS_IS_NOT_AVAILABLE_TITLE,
