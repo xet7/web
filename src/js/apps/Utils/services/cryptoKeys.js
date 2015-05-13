@@ -1,4 +1,10 @@
-module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, consts, utils) {
+module.exports = /*@ngInject*/function ($q, $rootScope, $filter, $translate, co, crypto, consts, utils) {
+	const translations = {
+		BACKUP_WARNING_TEXT: ''
+	};
+
+	$translate.bindAsObject(translations, 'NOTIFICATIONS');
+
 	this.importKeys = (jsonBackup) => {
 		let importObj = null;
 		try {
@@ -61,6 +67,17 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 		crypto.initialize();
 	};
 
+	function formatExportFile(body) {
+		let bodyHash = utils.hexify(openpgp.crypto.hash.sha512(JSON.stringify(body)));
+
+		return JSON.stringify({
+			readme: consts.KEYS_BACKUP_README,
+			warning: translations.BACKUP_WARNING_TEXT,
+			body: body,
+			bodyHash: bodyHash
+		}, null, 4);
+	}
+
 	this.exportKeys = (email = null) => {
 		const [keyring] = crypto.createKeyring(false);
 
@@ -72,18 +89,10 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 			return a;
 		}, {});
 
-		let body = {
+		return formatExportFile({
 			key_pairs: keyPairs,
 			exported: $filter('date')(Date.now(), 'yyyy-MM-dd HH:mm:ss Z')
-		};
-
-		let bodyHash = utils.hexify(openpgp.crypto.hash.sha512(JSON.stringify(body)));
-
-		return JSON.stringify({
-			readme: consts.KEYS_BACKUP_README,
-			body: body,
-			bodyHash: bodyHash
-		}, null, 4);
+		});
 	};
 
 	this.exportKeyPairByFingerprint = (fingerprint) => {
@@ -94,7 +103,7 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 
 		console.log(privateKey, publicKey);
 
-		let body = {
+		return formatExportFile({
 			key_pairs: {
 				[privateKey.users[0].userId.userid]: {
 					prv: [privateKey.armor()],
@@ -102,15 +111,7 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, co, crypto, con
 				}
 			},
 			exported: $filter('date')(Date.now(), 'yyyy-MM-dd HH:mm:ss Z')
-		};
-
-		let bodyHash = utils.hexify(openpgp.crypto.hash.sha512(JSON.stringify(body)));
-
-		return JSON.stringify({
-			readme: consts.KEYS_BACKUP_README,
-			body: body,
-			bodyHash: bodyHash
-		}, null, 4);
+		});
 	};
 
 	this.exportPublicKeyByFingerprint = (fingerprint) => {
