@@ -13,7 +13,6 @@ module.exports = /*@ngInject*/($scope, $state, signUp, co, crypto, user) => {
 			signUp.password = $scope.form.password;
 		else {
 			yield signUp.setup($scope.form.password, $scope.form.isPrivateComputer);
-			crypto.initialize({isPrivateComputer: $scope.form.isPrivateComputer});
 		}
 
 		yield $state.go('generateKeys');

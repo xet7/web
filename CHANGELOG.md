@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.2.17 - 2015-05-12
+### Added
+- opnepgp.js updated, added support for native key generation in Safari
+- fixed issue with not-visible keys for newly created accounts(re-login required)
+
 ## 0.2.16 - 2015-05-12
 ### Added
 - plain/text mode for compose screen

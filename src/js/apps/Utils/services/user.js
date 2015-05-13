@@ -188,6 +188,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 				res = yield LavaboomAPI.accounts.get('me');
 				setupSettings(res.body.user.settings);
 				setupUserBasicInformation(res.body.user.name, res.body.user.styled_name, res.body.alt_email);
+				crypto.initialize({isPrivateComputer: isPrivateComputer, email: self.email, isShortMemory: self.settings.isLavaboomSynced});
 
 				res = yield LavaboomAPI.keys.list(self.name);
 				if (!res.body.keys || res.body.keys.length < 1) {
@@ -205,12 +206,9 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 				self.key = res.body.key;
 
-				if (self.settings.isLavaboomSynced) {
-					crypto.initialize({isShortMemory: self.settings.isLavaboomSynced});
+				if (self.settings.isLavaboomSynced)
 					cryptoKeys.importKeys(self.settings.keyring);
-				}
 
-				crypto.initialize({isPrivateComputer: isPrivateComputer, email: self.email});
 				crypto.authenticateByEmail(self.email, password);
 
 				$rootScope.$broadcast('user-authenticated');
