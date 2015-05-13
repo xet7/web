@@ -1,5 +1,6 @@
-module.exports = /*@ngInject*/($rootScope, $translate, $filter) => {
+module.exports = /*@ngInject*/() => {
 	return (filename) => {
-		 return '.' + filename.substr((~-filename.lastIndexOf('.') >>> 0) + 2);
+		let i = filename.lastIndexOf('.');
+		return filename && i >= 0 ? ('.' + filename.substr(i, filename.length - i)) : '';
 	};
 };

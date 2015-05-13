@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## UNRELEASE
+### Fixed
+- send public key, correct file name
+- various improvements in attachments handling&&display
+
 ## 0.3.0 - 2015-05-13
 ### Added
 - check for browser: downloads from all Safari and some outdated results in a warning

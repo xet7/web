@@ -359,8 +359,9 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			}
 
 			if (publicKey) {
-				const blob = new Blob([publicKey.armor()], {type: 'text/pgp'});
+				const blob = new Blob([publicKey.armor()], {type: 'text/plain'});
 				blob.lastModifiedDate = publicKey.primaryKey.created;
+				blob.name = utils.getEmailFromAddressString(publicKey.users[0].userId.userid) + '.asc';
 				const attachmentStatus = {
 					attachment: new Attachment(blob)
 				};
