@@ -32,6 +32,7 @@ module.exports = function (config) {
 			'node_modules/sinon/lib/sinon.js',
 			'node_modules/jasmine-sinon/lib/jasmine-sinon.js',
 			'node_modules/phantomjs-polyfill/bind-polyfill.js',
+			'node_modules/to-have-property/lib/index.js',
 
 			'src/tests/unit/**/*Spec.js'
 		],
