@@ -17,7 +17,7 @@ module.exports = /*@ngInject*/function($translate, utils, notifications, co) {
 		return !!window.Blob && !!window.FileReader;
 	}
 
-	this.saveAs = (data, name, type = 'octet/stream') => {
+	this.saveAs = (data, name, type = 'application/octet-stream') => {
 		if (!checkBrowser())
 			return;
 
