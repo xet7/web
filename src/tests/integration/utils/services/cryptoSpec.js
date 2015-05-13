@@ -20,7 +20,7 @@ describe('Crypto Service', () => {
 	}));
 
 	describe('keys generating', () => {
-		beforeEach(integralDigest.start);
+		beforeEach(integralDigest.start());
 
 		it('should return public and private keys', (done) =>
 			service.generateKeys('','',1024).then((keys) => {
@@ -32,6 +32,6 @@ describe('Crypto Service', () => {
 			})
 		);
 
-		afterEach(integralDigest.stop);
+		afterEach(integralDigest.stop());
 	});
 });
