@@ -3,8 +3,38 @@ const sleep = require('co-sleep');
 module.exports = /*@ngInject*/function(co) {
 	const self = this;
 
+	let browser = null;
+
 	this.hexify = (binaryString) => openpgp.util.hexstrdump(binaryString);
 
+	this.getBrowser = () => {
+		if (browser)
+			return browser;
+
+		let ug = navigator.userAgent;
+		
+		let isChrome = ug.indexOf('Chrome') > -1;
+		let isExplorer = ug.indexOf('MSIE') > -1;
+		let isFirefox = ug.indexOf('Firefox') > -1;
+		let isSafari = ug.indexOf('Safari') > -1;
+		let isOpera = ug.toLowerCase().indexOf('op') > -1;
+		
+		if (isChrome && isSafari) 
+			isSafari = false;
+		if (isChrome && isOpera) 
+			isChrome = false;
+
+		browser = {
+			isChrome,
+			isExplorer,
+			isFirefox,
+			isSafari,
+			isOpera
+		};
+
+		return browser;
+	};
+	
 	this.def = (call, def) => {
 		try {
 			return call();
@@ -14,7 +44,7 @@ module.exports = /*@ngInject*/function(co) {
 	};
 
 	this.getDOM = (html) => {
-		var dom = new DOMParser().parseFromString(html, 'text/html');
+		let dom = new DOMParser().parseFromString(html, 'text/html');
 		return dom.querySelector('body');
 	};
 
