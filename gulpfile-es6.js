@@ -432,6 +432,20 @@ gulp.task('compile', gulp.series(
 	'compile:finished'
 ));
 
+gulp.task('tests:integration', (cb) =>
+	karma.start({
+		configFile: __dirname + '/karma-integration.conf.js',
+		singleRun: true
+	}, cb)
+);
+
+gulp.task('tests:unit', (cb) =>
+	karma.start({
+		configFile: __dirname + '/karma-unit.conf.js',
+		singleRun: true
+	}, cb)
+);
+
 /*
 	Gulp primary tasks
  */
@@ -462,13 +476,6 @@ gulp.task('develop', gulp.series('bower', 'compile'));
 
 gulp.task('production', gulp.series('bower', 'compile'));
 
-gulp.task('tests', gulp.series(
-	'compile:script',
-	() =>
-		karma.start({
-			configFile: __dirname + '/karma.conf.js',
-			singleRun: true
-		})
-));
+gulp.task('tests', gulp.series('compile:script', gulp.parallel('lint:scripts', 'tests:integration', 'tests:unit')));
 
 // woa!

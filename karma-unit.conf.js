@@ -33,7 +33,7 @@ module.exports = function (config) {
 			'node_modules/jasmine-sinon/lib/jasmine-sinon.js',
 			'node_modules/phantomjs-polyfill/bind-polyfill.js',
 
-			'src/tests/**/*Spec.js'
+			'src/tests/unit/**/*Spec.js'
 		],
 
 
