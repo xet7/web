@@ -234,7 +234,10 @@ DIALOGS_NO = "No"
 	LB_READY = "Your keys are ready!"
 	LB_REACHED = "Our hamsters are running extra hard, just a little longer to wait..."
 	LB_ERROR = "Cannot generate keys, make sure you are using an up-to-date version of Firefox, Google Chrome or Safari and try again."
-	LB_DO_NOT_CLOSE = "Please do not close this window."
+	LB_PERFORMANCE_TEST = "Testing performance..."
+	LB_DO_NOT_CLOSE_REF = "Please do not close this window"
+	LB_DO_NOT_CLOSE_HAMSTER = "Please be patient, key generation may take few minutes..."
+	LB_DO_NOT_CLOSE_TURTLE = "Please be patient, key generation may take a while..."
 
 [LOGIN.BACKUP_KEY]
 	TITLE = "Back up your key"
