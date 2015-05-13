@@ -1,5 +1,4 @@
-var sinon = require('sinon'),
-	_ = require('lodash');
+var sinon = require('sinon');
 
 describe('Crypto Service', () => {
 	let service,
@@ -27,22 +26,20 @@ describe('Crypto Service', () => {
 			},
 			defer;
 
-		beforeEach(inject(function($q) {
+		beforeEach(inject(($q) => {
 			service.importPublicKey = sinon.spy();
 			service.importPrivateKey = sinon.spy();
 
-			sinon.stub(openpgp, 'generateKeyPair', function() {
+			sinon.stub(openpgp, 'generateKeyPair', () => {
 				//INFO: dirty hack for over come angular-co wrapper
 				//that doesn't give hook on generator resolve before digest
-				setTimeout(function() {
-					$rootScope.$digest();
-				}, 50);
+				setTimeout(() => $rootScope.$digest(), 50);
 
 				defer = $q.defer();
 				return defer.promise;
 			});
 
-			sinon.stub(openpgp.key, 'readArmored', function() {
+			sinon.stub(openpgp.key, 'readArmored', () => {
 				return readArmoredMock;
 			});
 		}));
@@ -58,11 +55,11 @@ describe('Crypto Service', () => {
 		});
 
 		it('should return public and private keys', (done) => {
-			service.generateKeys().then(function(keys) {
+			service.generateKeys().then((keys) => {
 				expect(keys).toHaveProperty('pub');
 				expect(keys).toHaveProperty('prv');
 				done();
-			}, function(err) {
+			}, (err) => {
 				throw new Error(err);
 			});
 
@@ -70,7 +67,7 @@ describe('Crypto Service', () => {
 			$rootScope.$digest();
 		});
 
-		afterEach(function() {
+		afterEach(() => {
 			openpgp.generateKeyPair.restore();
 			openpgp.key.readArmored.restore();
 		});

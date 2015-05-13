@@ -19,27 +19,25 @@ describe('Crypto Service', () => {
 	}));
 
 	describe('keys generating', () => {
-		beforeEach(function() {
+		beforeEach(() => {
 			//INFO: dirty hack for over come angular-co wrapper
 			//that doesn't give hook on generator resolve before digest
-			rootScopeUpdateIntervalId = setInterval(function() {
+			rootScopeUpdateIntervalId = setInterval(() => {
 				console.info('...still waiting for crypto response');
 				$rootScope.$digest();
 			}, 1000);
 		});
 
-		it('should return public and private keys', (done) => {
-			service.generateKeys('','',1024).then(function(keys) {
+		it('should return public and private keys', (done) =>
+			service.generateKeys('','',1024).then((keys) => {
 				expect(keys).toHaveProperty('pub');
 				expect(keys).toHaveProperty('prv');
 				done();
-			}, function(err) {
+			}, (err) => {
 				throw new Error(err);
-			});
-		});
+			})
+		);
 
-		afterEach(function() {
-			clearInterval(rootScopeUpdateIntervalId);
-		});
+		afterEach(() => clearInterval(rootScopeUpdateIntervalId));
 	});
 });
