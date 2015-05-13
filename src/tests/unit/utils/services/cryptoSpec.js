@@ -83,6 +83,6 @@ describe('Crypto Service', () => {
 		afterEach(function() {
 			openpgp.generateKeyPair.restore();
 			openpgp.key.readArmored.restore();
-		})
+		});
 	});
 });

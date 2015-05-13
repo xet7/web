@@ -414,14 +414,21 @@ gulp.task('clean', function () {
 	} catch (e) { }
 });
 
+gulp.task('tests', ['lint:scripts', 'tests:integration', 'tests:unit']);
+
 // Run some unit tests to check key logic
-gulp.task('tests', scriptBuildSteps.concat('copy:vendor'), function(done) {
+gulp.task('tests:unit', scriptBuildSteps.concat('copy:vendor'), function(done) {
 	karma.start({
-		configFile: __dirname + '/karma.conf.js',
+		configFile: __dirname + '/karma-unit.conf.js',
 		singleRun: true
 	}, done);
-	//gulp.start(scriptBuildSteps, function (done){
-	//});
+});
+
+gulp.task('tests:integration', scriptBuildSteps.concat('copy:vendor'), function(done) {
+	karma.start({
+		configFile: __dirname + '/karma-integration.conf.js',
+		singleRun: true
+	}, done);
 });
 
 // Automatically install all bower dependencies

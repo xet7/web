@@ -84,6 +84,7 @@
     "setimmediate": "^1.0.2",
     "sinon": "^1.14.1",
     "stripify": "^2.0.0",
+    "to-have-property": "^0.1.2",
     "toml": "^2.1.1",
     "toml-require": "^1.0.1",
     "uglify": "^0.1.1",
