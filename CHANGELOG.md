@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## UNRELEASE
+### Added
+- build system: finally proper incremental builds for browserify
+- build system: livereload improvements
+
 ### Fixed
 - send public key, correct file name
 - various improvements in attachments handling&&display
