@@ -1,5 +1,5 @@
-var integralDigest = require('../../../helpers/intervalDigest.js'),
-	sinon = require('sinon');
+const integralDigest = require('../../../helpers/intervalDigest.js'),
+	  sinon = require('sinon');
 
 describe('Crypto Service', () => {
 	let service,
