@@ -18,7 +18,7 @@ describe('Crypto Service', () => {
 	}));
 
 	describe('keys generating', () => {
-		var freshKeysMock = {
+		let freshKeysMock = {
 				publicKeyArmored: '',
 				privateKeyArmored: ''
 			},
@@ -41,7 +41,7 @@ describe('Crypto Service', () => {
 			});
 		}));
 
-		beforeEach(integralDigest.start);
+		beforeEach(integralDigest.start(50));
 
 		it('should return promise', () => {
 			const keys = service.generateKeys();
@@ -66,11 +66,52 @@ describe('Crypto Service', () => {
 			$rootScope.$digest();
 		});
 
-		afterEach(integralDigest.stop);
+		afterEach(integralDigest.stop());
 
 		afterEach(() => {
 			openpgp.generateKeyPair.restore();
 			openpgp.key.readArmored.restore();
+		});
+	});
+
+	describe('encrypting', ()=> {
+		let encryptMessageDefer;
+
+		beforeEach(integralDigest.start(50));
+
+		beforeEach(inject(($q) => {
+			sinon.stub(openpgp, 'encryptMessage', () => {
+				encryptMessageDefer = $q.defer();
+				return encryptMessageDefer.promise;
+			});
+		}));
+
+		it('should return promise', () => {
+			const envelope = service.encodeEnvelopeWithKeys();
+			expect(envelope.then).toBeDefined();
+		});
+
+		it('should resolve with data', (done) => {
+			let envelope = {
+				data: 'message'
+			},
+				keys = ['public key'];
+
+			service.encodeEnvelopeWithKeys(envelope, keys)
+				.then((env) => {
+					expect(env).toHaveProperty('data', 'encrypted message');
+					done()
+				}, (err) => {
+					throw new Error(err);
+				});
+
+			encryptMessageDefer.resolve('encrypted message');
+		});
+
+		afterEach(integralDigest.stop());
+
+		afterEach(() => {
+			openpgp.encryptMessage.restore();
 		});
 	});
 });

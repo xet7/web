@@ -5,12 +5,14 @@
 
 let rootScopeUpdateIntervalId;
 module.exports = {
-	start: inject(($rootScope) => {
-		rootScopeUpdateIntervalId = setInterval(() => {
-			console.info('...still waiting for crypto response');
-			$rootScope.$digest();
-		}, 1000);
-	}),
+	start: (interval = 1000)=>
+		inject(($rootScope) =>
+			rootScopeUpdateIntervalId = setInterval(() => {
+				console.info('...still waiting for crypto response');
+				$rootScope.$digest();
+			}, interval)
+		),
 	stop: () =>
-		clearInterval(rootScopeUpdateIntervalId)
+		() =>
+			clearInterval(rootScopeUpdateIntervalId)
 };
