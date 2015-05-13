@@ -114,5 +114,39 @@ describe('Crypto Service', () => {
 			openpgp.encryptMessage.restore();
 		});
 	});
+
+	describe('decrypting', ()=> {
+		let decodeRawDefer;
+
+		beforeEach(integralDigest.start(100));
+
+		beforeEach(inject(($q) => {
+			decodeRawDefer = $q.defer();
+			service.decodeRaw = sinon.stub().returns(decodeRawDefer.promise);
+		}));
+
+		it('should return promise', () => {
+			const envelope = service.decodeEnvelope();
+			expect(envelope.then).toBeDefined();
+		});
+
+		it('should resolve with data', (done) => {
+			let envelope = {
+				data: 'message'
+			};
+
+			service.decodeEnvelope(envelope)
+				.then((env) => {
+					expect(env).toHaveProperty('data', 'decrypted message');
+					done()
+				}, (err) => {
+					throw new Error(err);
+				});
+
+			decodeRawDefer.resolve('decrypted message');
+		});
+
+		afterEach(integralDigest.stop());
+	});
 });
 
