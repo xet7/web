@@ -4,6 +4,7 @@
 		'../../../node_modules/babel-core/browser-polyfill.js',
 		'../../../node_modules/babel-core/external-helpers.js',
 		'../../../node_modules/setimmediate/setImmediate.js',
+		'../../vendor/blob.js',
 
 		# libs
 		'../../bower_components/sockjs-client/dist/sockjs.js',
