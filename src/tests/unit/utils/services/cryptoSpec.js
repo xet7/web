@@ -3,15 +3,13 @@ var sinon = require('sinon'),
 
 describe('Crypto Service', () => {
 	let service,
-		$rootScope,
-		$timeout;
+		$rootScope;
 
 	beforeEach(angular.mock.module('utils'));
 
-	beforeEach(inject((crypto, _$rootScope_, _$timeout_) => {
+	beforeEach(inject((crypto, _$rootScope_) => {
 		service = crypto;
 		$rootScope = _$rootScope_;
-		$timeout = _$timeout_;
 	}));
 
 	beforeEach(inject(($httpBackend) => {
@@ -59,25 +57,17 @@ describe('Crypto Service', () => {
 			expect(openpgp.generateKeyPair).toHaveBeenCalled();
 		});
 
-		it('should resolve generateKeyPair success', (done) => {
-			let success = sinon.spy(),
-				fail = sinon.spy();
+		it('should return public and private keys', (done) => {
+			service.generateKeys().then(function(keys) {
+				expect(keys).toHaveProperty('pub');
+				expect(keys).toHaveProperty('prv');
+				done();
+			}, function(err) {
+				throw new Error(err);
+			});
 
-			try {
-				service.generateKeys().then(function(keys) {
-					console.log('success', keys);
-					done();
-				}, function(er) {
-					console.log('fail', er);
-					done('fail');
-				});
-
-				defer.resolve(freshKeysMock);
-				$rootScope.$digest();
-			} catch(er) {
-				console.log('fail', er);
-				done('fail');
-			}
+			defer.resolve(freshKeysMock);
+			$rootScope.$digest();
 		});
 
 		afterEach(function() {

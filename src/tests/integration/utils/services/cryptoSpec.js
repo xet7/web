@@ -28,7 +28,7 @@ describe('Crypto Service', () => {
 			}, 1000);
 		});
 
-		it('should resolve generateKeyPair success', (done) => {
+		it('should return public and private keys', (done) => {
 			service.generateKeys('','',1024).then(function(keys) {
 				expect(keys).toHaveProperty('pub');
 				expect(keys).toHaveProperty('prv');
