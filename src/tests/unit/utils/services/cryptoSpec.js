@@ -1,4 +1,5 @@
-var sinon = require('sinon');
+var integralDigest = require('../../../helpers/intervalDigest.js'),
+	sinon = require('sinon');
 
 describe('Crypto Service', () => {
 	let service,
@@ -24,25 +25,23 @@ describe('Crypto Service', () => {
 			readArmoredMock = {
 				keys: ['qwerty']
 			},
-			defer;
+			generateKeyPairDefer;
 
 		beforeEach(inject(($q) => {
 			service.importPublicKey = sinon.spy();
 			service.importPrivateKey = sinon.spy();
 
 			sinon.stub(openpgp, 'generateKeyPair', () => {
-				//INFO: dirty hack for over come angular-co wrapper
-				//that doesn't give hook on generator resolve before digest
-				setTimeout(() => $rootScope.$digest(), 50);
-
-				defer = $q.defer();
-				return defer.promise;
+				generateKeyPairDefer = $q.defer();
+				return generateKeyPairDefer.promise;
 			});
 
 			sinon.stub(openpgp.key, 'readArmored', () => {
 				return readArmoredMock;
 			});
 		}));
+
+		beforeEach(integralDigest.start);
 
 		it('should return promise', () => {
 			const keys = service.generateKeys();
@@ -63,9 +62,11 @@ describe('Crypto Service', () => {
 				throw new Error(err);
 			});
 
-			defer.resolve(freshKeysMock);
+			generateKeyPairDefer.resolve(freshKeysMock);
 			$rootScope.$digest();
 		});
+
+		afterEach(integralDigest.stop);
 
 		afterEach(() => {
 			openpgp.generateKeyPair.restore();
