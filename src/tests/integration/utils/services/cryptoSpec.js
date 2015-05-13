@@ -1,9 +1,10 @@
+var integralDigest = require('../../../helpers/intervalDigest.js');
+
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000*1000;
 
 describe('Crypto Service', () => {
 	let service,
-		$rootScope,
-		rootScopeUpdateIntervalId;
+		$rootScope;
 
 	beforeEach(angular.mock.module('utils'));
 
@@ -19,14 +20,7 @@ describe('Crypto Service', () => {
 	}));
 
 	describe('keys generating', () => {
-		beforeEach(() => {
-			//INFO: dirty hack for over come angular-co wrapper
-			//that doesn't give hook on generator resolve before digest
-			rootScopeUpdateIntervalId = setInterval(() => {
-				console.info('...still waiting for crypto response');
-				$rootScope.$digest();
-			}, 1000);
-		});
+		beforeEach(integralDigest.start);
 
 		it('should return public and private keys', (done) =>
 			service.generateKeys('','',1024).then((keys) => {
@@ -38,6 +32,6 @@ describe('Crypto Service', () => {
 			})
 		);
 
-		afterEach(() => clearInterval(rootScopeUpdateIntervalId));
+		afterEach(integralDigest.stop);
 	});
 });
