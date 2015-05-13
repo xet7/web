@@ -1,6 +1,6 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $state, $interval, $timeout, $translate, consts, crypto, user, co, signUp) => {
-	//if (!user.isAuthenticated())
-	//	$state.go('login');
+	if (!user.isAuthenticated())
+		$state.go('login');
 
 	let timePassed = 0;
 	$scope.progress = 0;
