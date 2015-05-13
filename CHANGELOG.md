@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## UNRELEASED
 ### Added
 - check for browser: downloads from all Safari and some outdated results in a warning
+- check for browser: display a warning on mobile browsers as we don't support them currently
 - a warning into keyring backup for way too smart browsers who opens the file instead of saving
 
 ## 0.2.17 - 2015-05-12
