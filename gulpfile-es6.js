@@ -1,6 +1,7 @@
 const gulp = global.gulp;
 const plg = global.plg;
 
+let co = require('co');
 let crypto = require('crypto');
 let os = require('os');
 let fs = require('fs');
@@ -20,6 +21,7 @@ let browserify = require('browserify'),
 	uglifyify = require('uglifyify'),
 	stripify = require('stripify'),
 	envify = require('envify'),
+	watchify = require('watchify'),
 	brfs = require('brfs'),
 	exorcist = require('exorcist');
 
@@ -150,58 +152,79 @@ gulp.task('build:scripts:vendor:normal', () =>
 // Build vendor libraries composite task
 gulp.task('build:scripts:vendor', gulp.series('build:scripts:vendor:min', 'build:scripts:vendor:normal'));
 
+let caches = {};
+
 // Defines generic browserify build task, one task for each item inside paths.scripts.inputApps
 let browserifyBundle = filename => {
 	let basename = path.basename(filename);
-	let jsMapBasename = '';
-
+	let cacheFileName = './' + paths.cacheLL + basename + '.cache';
+	let jsMapBasename = basename.replace('.js', '.js.map');
 	utils.def(() => fs.mkdirSync('./dist/js'));
 
-	return gulp.src(filename, {read: false})
-		.pipe(plg.tap(file => {
-			let d = domain.create();
+	function ownCodebaseTransform (transform) {
+		return filterTransform(
+				file => file.includes(path.resolve(__dirname, paths.scripts.inputFolder)),
+			transform);
+	}
 
-			d.on('error', err => utils.logGulpError('Browserify compile error:', file.path, err));
+	function bundle(b) {
+		return b.bundle()
+			.pipe(exorcist('./' + paths.scripts.output + jsMapBasename))
+			.pipe(source(filename))
+			.pipe(plg.rename({
+				dirname: ''
+			}))
+			.pipe(plg.buffer())
+			.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())
+			.pipe(plg.stream())
+			.pipe(gulp.dest(paths.scripts.output))
+			.pipe(pipelines.livereloadPipeline()());
+	}
 
-			let ownCodebaseTransform = (transform, name) => {
-				return filterTransform(
-					file => file.includes(path.resolve(__dirname, paths.scripts.inputFolder)),
-					transform);
-			};
+	let c = utils.def(() => JSON.parse(fs.readFileSync(cacheFileName)), {
+		cache: {},
+		packageCache: {}
+	});
+	let cache = c.cache;
+	let packageCache = c.packageCache;
 
-			d.run(() => {
-				let browserifyPipeline = browserify(file.path, {
-					basedir: __dirname,
-					debug: config.isDebugable
-				})
-					.transform(ownCodebaseTransform(babelify), {externalHelpers: true})
-					.transform(ownCodebaseTransform(bulkify))
-					.transform(ownCodebaseTransform(envify))
-					.transform(ownCodebaseTransform(brfs));
+	let browserifyInstance = watchify(browserify({
+		cache: cache,
+		packageCache: packageCache,
+		entries: filename,
+		basedir: __dirname,
+		debug: config.isDebugable
+	}), {poll: true});
 
-				if (!config.isLogs) {
-					browserifyPipeline = browserifyPipeline
-						.transform(stripify);
-				}
+	browserifyInstance
+		.transform(ownCodebaseTransform(babelify), {externalHelpers: true})
+		.transform(ownCodebaseTransform(bulkify))
+		.transform(ownCodebaseTransform(envify))
+		.transform(ownCodebaseTransform(brfs));
 
-				if (config.isProduction) {
-					browserifyPipeline = browserifyPipeline
-						.transform(ownCodebaseTransform(browserifyNgAnnotate))
-						.transform(uglifyify);
-				}
+	if (!config.isLogs)
+		browserifyInstance
+			.transform(stripify);
 
-				jsMapBasename = path.basename(file.path).replace('.js', '.js.map');
+	if (config.isProduction)
+		browserifyInstance
+			.transform(ownCodebaseTransform(browserifyNgAnnotate))
+			.transform(uglifyify);
 
-				file.contents = browserifyPipeline
-					.bundle()
-					.pipe(exorcist('./' + paths.scripts.output + jsMapBasename));
-			});
-		}))
-		.pipe(plg.streamify(plg.concat(basename)))
-		.pipe(plg.buffer())
-		.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())
-		.pipe(plg.stream())
-		.pipe(gulp.dest(paths.scripts.output));
+	browserifyInstance
+		.on('update', () => {
+			console.log(`re-bundling '${filename}'...`);
+			return bundle(browserifyInstance);
+		})
+		.on('log', msg => {
+			console.log(`bundled '${filename}'`, msg);
+			fs.writeFileSync(cacheFileName, JSON.stringify({
+				cache: cache,
+				packageCache: packageCache
+			}));
+		});
+
+	return bundle(browserifyInstance);
 };
 
 // Lint scripts
@@ -320,6 +343,7 @@ gulp.task('clean', cb => {
 	// yea...
 	utils.def(() => fs.mkdirSync('./' + paths.output));
 	utils.def(() => fs.mkdirSync('./' + paths.cache));
+	utils.def(() => fs.mkdirSync('./' + paths.cacheLL));
 	utils.def(() => fs.mkdirSync('./' + paths.scripts.output));
 
 	cb(null);
@@ -431,7 +455,7 @@ gulp.task('default', gulp.series(
 	'bower', 'compile',
 	cb => {
 		// watch for source changes and rebuild the whole project with _exceptions_
-		gulp.watch([
+		/*gulp.watch([
 			paths.input,
 			'!' + paths.styles.inputAll,
 			'!' + paths.markup.input,
@@ -439,7 +463,7 @@ gulp.task('default', gulp.series(
 			'!' + paths.translations.input,
 			paths.translations.inputEn],
 			gulp.series('live-reload:compile')
-		);
+		);*/
 
 		// _exceptions_
 

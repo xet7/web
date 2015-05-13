@@ -2,7 +2,8 @@ var output = 'dist/';
 
 module.exports = {
 	input: 'src/**/*',
-	cache : 'cache/',
+	cache: 'cache/',
+	cacheLL: 'cache-ll/',
 	output: output,
 	scripts: {
 		cacheOutput: './cache/',
