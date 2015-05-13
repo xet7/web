@@ -1,5 +1,10 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParams, $translate, $sanitize,
-							   user, utils, co, inbox, saver) => {
+							   user, utils, co, inbox, saver, notifications) => {
+
+	$rootScope.$bind('notifications', () => {
+		$scope.notificationsInfo = notifications.get('info', 'mailbox');
+		$scope.notificationsWarning = notifications.get('warning', 'mailbox');
+	});
 
 	$scope.selfEmail = user.email;
 	$scope.labelName = $stateParams.labelName;

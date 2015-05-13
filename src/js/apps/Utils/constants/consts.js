@@ -18,6 +18,10 @@ module.exports = {
 	CRYPTO_CACHE_MAX_ENTRY_SIZE: 1024 * 512,
 	CRYPTO_CACHE_TTL: 60 * 60 * 1000,
 
+	CRYPTO_PERFORMANCE_TEST_COUNT: 3,
+	CRYPTO_PERFORMANCE_TEST_KEY_LENGTH: 512,
+	CRYPTO_PERFORMANCE_TEST_REF_TIME: 140 * 3,
+
 	// we set this to one year as there is no reason to expire those entries from-memory only cache
 	// inbox.js algos relies on constant in-memory presence of once loaded threads
 	// we can manually invalidate the whole cache of threads when we need to do so(sorting of threads for example, whole because we store in chunks of 15)

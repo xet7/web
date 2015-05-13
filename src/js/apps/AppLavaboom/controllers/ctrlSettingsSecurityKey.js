@@ -19,7 +19,7 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, co, consts, crypto,
 						timeout: 3000,
 						namespace: 'settings'
 					});
-					notifications.unSet('no-key');
+					notifications.unSet('no-key', 'mailbox');
 				}
 			});
 		}

@@ -53,6 +53,11 @@ DIALOGS_NO = "No"
     SERVED_BY_UNKNOWN_TEXT = "We do not know which server served you Lavaboom. Please contact hello@lavaboom.com."
     NO_KEY_TITLE = "No private key found"
     NO_KEY_TEXT = "You don't have a decrypted private key, please go to settings/security and import or decrypt one"
+    BAD_BROWSER_TITLE = "Please use a modern browser"
+    BAD_BROWSER_TEXT = "Your browser might have problems with downloading, please consider using Chrome, Firefox, Opera or I.E >= 10"
+    MOBILE_BROWSER_TITLE = "Please use desktop PC"
+    MOBILE_BROWSER_TEXT = "We currently don't support mobile platforms, please use desktop PC"
+    BACKUP_WARNING_TEXT = "If you see this file just opens in your browser please select save as and save it to a safe location"
 
 [INBOX]
 	NO_PREVIEW_AVAILABLE = "No preview available"
@@ -229,7 +234,10 @@ DIALOGS_NO = "No"
 	LB_READY = "Your keys are ready!"
 	LB_REACHED = "Our hamsters are running extra hard, just a little longer to wait..."
 	LB_ERROR = "Cannot generate keys, make sure you are using an up-to-date version of Firefox, Google Chrome or Safari and try again."
-	LB_DO_NOT_CLOSE = "Please do not close this window."
+	LB_PERFORMANCE_TEST = "Testing performance..."
+	LB_DO_NOT_CLOSE_REF = "Please do not close this window"
+	LB_DO_NOT_CLOSE_HAMSTER = "Please be patient, key generation may take few minutes..."
+	LB_DO_NOT_CLOSE_TURTLE = "Please be patient, key generation may take a while..."
 
 [LOGIN.BACKUP_KEY]
 	TITLE = "Back up your key"
