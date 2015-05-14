@@ -1,5 +1,6 @@
 const sleep = require('co-sleep');
 const fs = require('fs');
+const mimelib = require('mimelib');
 
 module.exports = /*@ngInject*/function(co, consts) {
 	const self = this;
@@ -108,5 +109,13 @@ module.exports = /*@ngInject*/function(co, consts) {
 		}
 	});
 
-	this.getEmailFromAddressString = (address) => address.match(/<([^>]+)>/)[1];
+	this.getEmailFromAddressString = (nameAddress) => {
+		let a = mimelib.parseAddresses(nameAddress)[0];
+		return a.address;
+	};
+
+	this.getNameFromAddressString = (nameAddress) => {
+		let a = mimelib.parseAddresses(nameAddress)[0];
+		return a.name;
+	};
 };
