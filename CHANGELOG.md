@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## UNRELEASED
+## 0.3.1 - 2015-05-13
 ### Added
 - build system: finally proper incremental builds for browserify
 - build system: update bower components on bower.json change and recompile
