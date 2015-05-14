@@ -4,26 +4,59 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, $timeout
 	let isActive = true;
 	let hotkeyList = { };
 	let multiHotkeyList = {};
+	let restoreHotkeys = null;
 
 	self.initialize = (isEnabled) => {
 		self.toggleHotkeys(isEnabled);
 
 		$rootScope.$on('$stateChangeSuccess', (event, toState, toParams, fromState, fromParams) => {
-			self.clearHotkeys();
+			if (restoreHotkeys) {
+				$timeout.cancel(restoreHotkeys);
+				restoreHotkeys = null;
+			}
+			clearHotkeys(!isActive);
 		});
 		$rootScope.$on('hotkeys-state-changed', () => {
 			if (!isActive)
-				self.clearHotkeys();
+				clearHotkeys(true);
 		});
 	};
 
 	self.getKeys = () => utils.toArray(hotkeyList);
 
+	function enableMultiHotkey (multiKey, addedFromState, isGlobal) {
+		clearHotkeys(true);
+
+		multiHotkeyList[multiKey].isActive = true;
+		for(let k of multiHotkeyList[multiKey].list)
+			addHotkey(k, addedFromState, isGlobal, true);
+
+		multiHotkeyList[multiKey].timeout = $timeout(() => {
+			multiHotkeyList[multiKey].timeout = null;
+			disableMultiHotkey(multiKey);
+		}, consts.HOTKEY_MULTI_TIMEOUT);
+
+		restoreHotkeys = $timeout(() => {
+			$rootScope.$broadcast('hotkeys-state-changed');
+		}, consts.HOTKEY_MULTI_TIMEOUT);
+	}
+
+	function disableMultiHotkey (multiKey) {
+		if (multiHotkeyList[multiKey].timeout) {
+			$timeout.cancel(multiHotkeyList[multiKey].timeout);
+			multiHotkeyList[multiKey].timeout = null;
+		}
+
+		multiHotkeyList[multiKey].isActive = false;
+		for(let k of multiHotkeyList[multiKey].list)
+			removeHotkey(k);
+	}
+
 	function removeHotkey (option) {
 		console.debug('hotkeys: removed', option);
-
-		const key = angular.isArray(option.combo) ? option.combo[0] : option.combo;
-		hotkeys.del(key);
+		
+		for(let k of angular.isArray(option.combo) ? option.combo : [option.combo])
+			hotkeys.del(k);
 	}
 
 	function addHotkey (option, addedFromState, isGlobal, isStep = false) {
@@ -50,18 +83,7 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, $timeout
 				callback: event => {
 					event.preventDefault();
 
-					self.clearHotkeys(true);
-
-					multiHotkeyList[option.require].isActive = true;
-					for(let k of multiHotkeyList[option.require].list)
-						addHotkey(k, addedFromState, isGlobal, true);
-
-					$timeout(() => {
-						multiHotkeyList[option.require].isActive = false;
-						for(let k of multiHotkeyList[option.require].list)
-							removeHotkey(k);
-
-					}, consts.HOTKEY_MULTI_TIMEOUT);
+					enableMultiHotkey(option.require, addedFromState, isGlobal);
 				}
 			}, addedFromState, isGlobal, true);
 		}
@@ -80,21 +102,53 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, $timeout
 			if (currentKey)
 				return;
 
+			console.debug('added', option);
 			hotkeys.add(option);
-		}
 
-		if (!isStep) {
 			option.description = $translate.instant(option.description);
 			hotkeyList[key] = {
 				combo: combo,
 				require: option.require,
 				description: option.description,
+				isStep,
 				addedFromState,
 				isGlobal
 			};
 		}
 
 		console.debug('added hotkey', option);
+	}
+
+	function clearHotkeys (isRemoveAll = false) {
+		console.log('hotkeys.clearHotkeys', isRemoveAll);
+
+		let isPopupState = router.isPopupState($state.current.name);
+		let isLegendState = isPopupState && $state.current.name.endsWith('.hotkeys');
+		if (isLegendState) {
+			for (let multiKey of Object.keys(multiHotkeyList))
+				disableMultiHotkey(multiKey);
+		}
+
+		for (let key of Object.keys(hotkeyList)) {
+			if (key !== '?') {
+				let hotkey = hotkeys.get(key);
+				let hotkeyOptions = hotkeyList[key];
+				let isParent = $state.current.name.includes(hotkeyOptions.addedFromState);
+
+				if (!hotkey || !hotkeyOptions)
+					continue;
+
+				if (!isLegendState && !isRemoveAll && hotkeyOptions.isGlobal && (!isPopupState || hotkeyOptions.isPopup))
+					continue;
+
+				if (isLegendState || isRemoveAll || !isParent || (isPopupState && !hotkeyOptions.isPopup)) {
+					removeHotkey(hotkeyOptions);
+
+					if (!isLegendState)
+						delete hotkeyList[key];
+				}
+			}
+		}
 	}
 
 	self.registerCustomHotkeys = (scope, hotkeys, options) => {
@@ -147,33 +201,5 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, $timeout
 	self.getMultiComboPrettified = (multiKey, name) => {
 		let keys = multiHotkeyList[multiKey] ? multiHotkeyList[multiKey].list.filter(k => k.name == name) : null;
 		return keys && keys.length > 0 ? keys[0].combo.join(',') : '';
-	};
-
-	self.clearHotkeys = (isRemoveAll = false) => {
-		console.log('hotkeys.clearHotkeys()');
-
-		let isPopupState = router.isPopupState($state.current.name);
-		let isLegendState = isPopupState && $state.current.name.endsWith('.hotkeys');
-
-		for (let key of Object.keys(hotkeyList)) {
-			if (key !== '?') {
-				let hotkey = hotkeys.get(key);
-				let hotkeyOptions = hotkeyList[key];
-				let isParent = $state.current.name.includes(hotkeyOptions.addedFromState);
-
-				if (!hotkey || !hotkeyOptions)
-					continue;
-
-				if (isActive && !isRemoveAll && hotkeyOptions.isGlobal && (!isPopupState || hotkeyOptions.isPopup))
-					continue;
-
-				if (!isActive || isRemoveAll || !isParent || (isPopupState && !hotkeyOptions.isPopup)) {
-					removeHotkey(hotkeyOptions);
-
-					if (!isLegendState)
-						delete hotkeyList[key];
-				}
-			}
-		}
 	};
 };
