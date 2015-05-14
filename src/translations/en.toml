@@ -74,7 +74,6 @@ DIALOGS_NO = "No"
 	LB_NO_PRIVATE_KEY_FOUND3 = " and check your key"
 	MARK_AS_SPAM = "Mark as spam"
 	MOVE_TO_TRASH = "Send to trash"
-	DELETE_PERMANANTLY = "Delete Permanently"
 	PUT_BACK = "Put back"
 	NOT_SPAM = "This is not spam"
 	STAR_THIS_CONVERSATION = "Star this conversation"
@@ -113,6 +112,8 @@ DIALOGS_NO = "No"
     CORRUPTED_EMAIL_OPEN = "open the original email"
     CORRUPTED_EMAIL_OR = " or "
     CORRUPTED_EMAIL_DOWNLOAD = "download it"
+
+    LB_NO_SUBJECT = "No subject"
 
 
 [INBOX.DOWNLOAD]
@@ -241,7 +242,7 @@ DIALOGS_NO = "No"
 
 [LOGIN.BACKUP_KEY]
 	TITLE = "Back up your key"
-    INFO1 = "We create and store your keychain locally in the chache of the browser you are using right now."
+    INFO1 = "We create and store your keychain locally in the cache of the browser you are using right now."
     INFO2 = "This means that if you want to access your Lavaboom account in a different browser or on a different machine you'll need to import your keychain at login into the new browser."
     INFO3 = "If you clear your cache from Lavaboom your keys will be deleted and you will lose access to your account."
     INFO4 = "To prevent this you should back up your keychain to your hard drive to keep it safe."
@@ -484,7 +485,8 @@ DIALOGS_NO = "No"
 
 
 [HOTKEY]
-	TITLE          		 = "Shortcuts cheatsheet"
+	TITLE_GLOBAL   		 = "Global shortcuts cheatsheet"
+	TITLE_LOCAL   		 = "This page shortcuts cheatsheet"
     CHEATSHEET           = "Show/Hide cheatsheet"
     FOCUS_ON_SEARCH      = "Focus on Search"
     LEAVE_FROM_SEARCH    = "Leave from Search"

@@ -1,6 +1,7 @@
 const gulp = global.gulp;
 const plg = global.plg;
 
+let co = require('co');
 let crypto = require('crypto');
 let os = require('os');
 let fs = require('fs');
@@ -8,6 +9,7 @@ let del = require('del');
 let path = require('path');
 let toml = require('toml');
 let source = require('vinyl-source-stream');
+let merge = require('merge-stream');
 let lazypipe = require('lazypipe');
 let domain = require('domain');
 let filterTransform = require('filter-transform');
@@ -20,6 +22,7 @@ let browserify = require('browserify'),
 	uglifyify = require('uglifyify'),
 	stripify = require('stripify'),
 	envify = require('envify'),
+	watchify = require('watchify'),
 	brfs = require('brfs'),
 	exorcist = require('exorcist');
 
@@ -29,10 +32,6 @@ let plumber = null;
 let isServe = false;
 let isWatching = args.length < 1;
 let manifest = {};
-let scheduledTimeout = null;
-let scheduledCallback = null;
-let isPartialLivereloadBuild = false;
-let isFirstBuild = true;
 
 // Modules
 let serve = require('./serve');
@@ -53,13 +52,16 @@ if (!isWatching) {
 		config.isProduction = true;
 		process.env.IS_PRODUCTION = true;
 	}
+	if (args[0] === 'serve') {
+		isServe = true;
+	}
 } else {
 	plumber = plg.plumber;
 	isServe = true;
 }
 
 const Pipelines = require('./gulp/pipelines');
-const pipelines = new Pipelines(manifest, () => isPartialLivereloadBuild, plumber);
+const pipelines = new Pipelines(manifest, plumber);
 
 /**
  * Gulp Taks
@@ -150,77 +152,108 @@ gulp.task('build:scripts:vendor:normal', () =>
 // Build vendor libraries composite task
 gulp.task('build:scripts:vendor', gulp.series('build:scripts:vendor:min', 'build:scripts:vendor:normal'));
 
-// Defines generic browserify build task, one task for each item inside paths.scripts.inputApps
-let browserifyBundle = filename => {
-	let basename = path.basename(filename);
-	let jsMapBasename = '';
+let caches = {};
 
+function lintScripts (src, status = null) {
+	if (status)
+		status.isError = false;
+
+	return gulp.src(src)
+		.pipe(plumber())
+		.pipe(plg.cached('lint:scripts'))
+		.pipe(plg.tap((file, t) =>
+				console.log('Linting: "' + file.relative + '" ...')
+		))
+		.pipe(plg.jshint())
+		.pipe(plg.jshint.reporter(plg.jshintStylish))
+		.pipe(plg.jshint.reporter({
+			reporter: (result, config, options) => {
+				if (status)
+					status.isError = true;
+
+				delete plg.cached.caches['lint:scripts'];
+			}
+		}))
+		.pipe(plg.jshint.reporter('fail'));
+}
+
+// Defines generic browserify build task, one task for each item inside paths.scripts.inputApps
+function browserifyBundle(filename) {
+	let basename = path.basename(filename);
+	let jsMapBasename = basename.replace('.js', '.js.map');
 	utils.def(() => fs.mkdirSync('./dist/js'));
 
-	return gulp.src(filename, {read: false})
-		.pipe(plg.tap(file => {
-			let d = domain.create();
+	let bundler = watchify(browserify({
+		cache: {},
+		packageCache: {},
+		entries: filename,
+		basedir: __dirname,
+		debug: config.isDebugable
+	}), {poll: true});
 
-			d.on('error', err => utils.logGulpError('Browserify compile error:', file.path, err));
+	function ownCodebaseTransform (transform) {
+		return filterTransform(
+				file => file.includes(path.resolve(__dirname, paths.scripts.inputFolder)),
+			transform);
+	}
 
-			let ownCodebaseTransform = (transform, name) => {
-				return filterTransform(
-					file => file.includes(path.resolve(__dirname, paths.scripts.inputFolder)),
-					transform);
-			};
+	function bundle(changedFiles) {
+		let lintStatus = {};
 
-			d.run(() => {
-				let browserifyPipeline = browserify(file.path, {
-					basedir: __dirname,
-					debug: config.isDebugable
-				})
-					.transform(ownCodebaseTransform(babelify), {externalHelpers: true})
-					.transform(ownCodebaseTransform(bulkify))
-					.transform(ownCodebaseTransform(envify))
-					.transform(ownCodebaseTransform(brfs));
+		let bundleStream =  bundler.bundle()
+			.on('error', (err) => {
+				console.log('browserify error:', err);
+			})
+			.pipe(exorcist('./' + paths.scripts.output + jsMapBasename))
+			.pipe(source(filename))
+			.pipe(plg.rename({
+				dirname: ''
+			}))
+			.pipe(plg.buffer())
+			.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())
+			.pipe(plg.stream())
+			.pipe(gulp.dest(paths.scripts.output))
+			.pipe(pipelines.livereloadPipeline()());
 
-				if (!config.isLogs) {
-					browserifyPipeline = browserifyPipeline
-						.transform(stripify);
-				}
+		if (changedFiles) {
+			let lintStream = lintScripts(changedFiles, lintStatus);
 
-				if (config.isProduction) {
-					browserifyPipeline = browserifyPipeline
-						.transform(ownCodebaseTransform(browserifyNgAnnotate))
-						.transform(uglifyify);
-				}
+			return merge(lintStream, bundleStream);
+		}
 
-				jsMapBasename = path.basename(file.path).replace('.js', '.js.map');
+		return bundleStream;
+	}
 
-				file.contents = browserifyPipeline
-					.bundle()
-					.pipe(exorcist('./' + paths.scripts.output + jsMapBasename));
-			});
-		}))
-		.pipe(plg.streamify(plg.concat(basename)))
-		.pipe(plg.buffer())
-		.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())
-		.pipe(plg.stream())
-		.pipe(gulp.dest(paths.scripts.output));
-};
+	bundler
+		.transform(ownCodebaseTransform(babelify), {externalHelpers: true})
+		.transform(ownCodebaseTransform(bulkify))
+		.transform(ownCodebaseTransform(envify))
+		.transform(ownCodebaseTransform(brfs));
+
+	if (!config.isLogs)
+		bundler
+			.transform(stripify);
+
+	if (config.isProduction)
+		bundler
+			.transform(ownCodebaseTransform(browserifyNgAnnotate))
+			.transform(uglifyify);
+
+	bundler
+		.on('update', (changedFiles) => {
+			console.log(`re-bundling '${filename}'...`);
+			return bundle(changedFiles);
+		})
+		.on('log', msg => {
+			console.log(`bundled '${filename}'`, msg);
+		});
+
+	return bundle();
+}
 
 // Lint scripts
 gulp.task('lint:scripts',  gulp.series(
-	() =>
-		gulp.src(paths.scripts.inputAll)
-			.pipe(plumber())
-			.pipe(plg.cached('lint:scripts'))
-			.pipe(plg.tap((file, t) =>
-				console.log('Linting: "' + file.relative + '" ...')
-			))
-			.pipe(plg.jshint())
-			.pipe(plg.jshint.reporter(plg.jshintStylish))
-			.pipe(plg.jshint.reporter({
-				reporter: (result, config, options) => {
-					delete plg.cached.caches['lint:scripts'];
-				}
-			}))
-			.pipe(plg.jshint.reporter('fail'))
+	() => lintScripts(paths.scripts.inputAll)
 ));
 
 
@@ -284,6 +317,7 @@ gulp.task('copy:images', () =>
 	gulp.src(paths.img.input)
 		.pipe(plumber())
 		.pipe(gulp.dest(paths.img.output))
+		.pipe(pipelines.livereloadIndexPipeline()())
 );
 
 // Copy fonts into output folder
@@ -291,6 +325,7 @@ gulp.task('copy:fonts', () =>
 	gulp.src(paths.fonts.input)
 		.pipe(plumber())
 		.pipe(gulp.dest(paths.fonts.output))
+		.pipe(pipelines.livereloadIndexPipeline()())
 );
 
 // Build translation files(toml -> json)
@@ -299,7 +334,7 @@ gulp.task('build:translations', () =>
 		.pipe(plumber())
 		.pipe(plg.toml({to: JSON.stringify, ext: '.json'}))
 		.pipe(gulp.dest(paths.translations.output))
-		.pipe(pipelines.livereloadPipeline()())
+		.pipe(pipelines.livereloadIndexPipeline()())
 );
 
 // Build primary markup jade files
@@ -336,6 +371,17 @@ gulp.task('tests', () =>
 
 // Automatically install all bower dependencies
 gulp.task('bower', () => plg.bower());
+gulp.task('bower-update', () => plg.bower({cmd: 'update'}));
+
+// Serve it, baby!
+gulp.task('serve', cb => {
+	if (isServe) {
+		serve();
+		isServe = false;
+	}
+
+	cb(null);
+});
 
 /**
  * Task Runners
@@ -357,20 +403,6 @@ const scriptCompileSteps = paths.scripts.inputApps.map((appScript, i) => {
 	return name;
 });
 
-gulp.task('lr', gulp.series(gulp.parallel('build:jade', 'copy:vendor'), cb => {
-	if (!isFirstBuild) {
-		return gulp.src(paths.markup.input)
-			.pipe(pipelines.livereloadPipeline(true)());
-	}
-	if (isServe) {
-		serve();
-		isServe = false;
-	}
-	isFirstBuild = false;
-
-	cb(null);
-}));
-
 // Write manifest paths into external file(assets translation see revTap)
 gulp.task('persists:paths', cb => {
 	fs.writeFileSync('paths.json', JSON.stringify(manifest, null, 4));
@@ -379,7 +411,7 @@ gulp.task('persists:paths', cb => {
 
 // Got run when primary compilation finished
 gulp.task('compile:finished', gulp.series(
-	'persists:paths', 'build:jade', 'copy:vendor', 'lr'
+	'persists:paths', 'build:jade', 'copy:vendor', 'serve'
 ));
 
 // Compile files
@@ -391,38 +423,6 @@ gulp.task('compile', gulp.series(
 	'compile:finished'
 ));
 
-function defineLiveReloadTask(taskName, timeout = 1000) {
-	gulp.task(`live-reload:${taskName}`, gulp.series(
-		(cb) => {
-			if (taskName != 'compile')
-				isPartialLivereloadBuild = true;
-
-			console.warn('live reload build scheduled for ' + taskName + ' in ' + timeout + 'ms.');
-			if (scheduledTimeout) {
-				clearTimeout(scheduledTimeout);
-				scheduledCallback(null);
-				scheduledTimeout = null;
-
-				taskName = 'compile';
-				isPartialLivereloadBuild = false;
-				console.warn('live reload conflict - perform full rebuild');
-			}
-
-			scheduledCallback = cb;
-			scheduledTimeout = setTimeout(() => {
-				scheduledTimeout = null;
-				console.warn('perform live reload build for ' + taskName);
-
-				cb(null);
-				gulp.series(taskName)();
-			}, timeout);
-		}
-	));
-}
-
-for(let taskName of ['compile', 'build:styles', 'build:jade', 'build:partials-jade', 'build:translations'])
-	defineLiveReloadTask(taskName);
-
 /*
 	Gulp primary tasks
  */
@@ -430,30 +430,14 @@ for(let taskName of ['compile', 'build:styles', 'build:jade', 'build:partials-ja
 gulp.task('default', gulp.series(
 	'bower', 'compile',
 	cb => {
-		// watch for source changes and rebuild the whole project with _exceptions_
-		gulp.watch([
-			paths.input,
-			'!' + paths.styles.inputAll,
-			'!' + paths.markup.input,
-			'!' + paths.partials.input,
-			'!' + paths.translations.input,
-			paths.translations.inputEn],
-			gulp.series('live-reload:compile')
-		);
-
-		// _exceptions_
-
-		// partial live-reload for style changes
-		gulp.watch(paths.styles.inputAll, gulp.series('live-reload:build:styles'));
-
-		// partial live-reload for primary jade files
-		gulp.watch(paths.markup.input, gulp.series('live-reload:build:jade'));
-
-		// partial live-reload for partials jade files
-		gulp.watch(paths.partials.input, gulp.series('live-reload:build:partials-jade'));
-
-		// partial live-reload for translations
-		gulp.watch(paths.translations.input, gulp.series('live-reload:build:translations'));
+		// live reload for everything except browserify(as we use watchify)
+		gulp.watch('./bower.json', gulp.series('bower-update', 'compile'));
+		gulp.watch(paths.img.input, gulp.series('copy:images'));
+		gulp.watch(paths.fonts.input, gulp.series('copy:fonts'));
+		gulp.watch(paths.styles.inputAll, gulp.series('build:styles'));
+		gulp.watch(paths.markup.input, gulp.series('build:jade'));
+		gulp.watch(paths.partials.input, gulp.series('build:partials-jade'));
+		gulp.watch(paths.translations.input, gulp.series('build:translations'));
 
 		// start livereload server
 		plg.livereload.listen({
@@ -468,11 +452,5 @@ gulp.task('default', gulp.series(
 gulp.task('develop', gulp.series('bower', 'compile'));
 
 gulp.task('production', gulp.series('bower', 'compile'));
-
-gulp.task('serve', cb => {
-	serve();
-
-	cb(null);
-});
 
 // woa!

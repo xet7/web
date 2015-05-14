@@ -1,4 +1,6 @@
 module.exports = /*@ngInject*/($scope, hotkey) => {
-	$scope.hotkeys = hotkey.getKeys();
-	console.log('$scope.hotkeys', $scope.hotkeys);
+	let hotkeys = hotkey.getKeys();
+
+	$scope.globalHotkeys = hotkeys.filter(h => h.isGlobal);
+	$scope.localHotkeys = hotkeys.filter(h => !h.isGlobal);
 };

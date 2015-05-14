@@ -2,6 +2,25 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.3.1 - 2015-05-13
+### Added
+- build system: finally proper incremental builds for browserify
+- build system: update bower components on bower.json change and recompile
+- initial email aliases support
+
+### Modified
+- build system: livereload works smarter now and without hacks
+- shortcuts improved: added (g) goto, better legend
+- key header now shows name + email not just email
+
+### Fixed
+- send public key, correct file name
+- various improvements in attachments handling && display
+- multiple bugfixes in shortcuts
+- search issue
+- "download button" when no decrypted private key found
+- private key import when key user.name does not conform to `name <email>` syntax
+
 ## 0.3.0 - 2015-05-13
 ### Added
 - check for browser: downloads from all Safari and some outdated results in a warning

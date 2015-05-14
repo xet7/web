@@ -14,15 +14,18 @@ div#left-panel.ng-cloak
 					span(ng-class="label.iconClass")
 					span.action(ng-bind="label.name")
 					span.badge(ng-bind="label.threadsUnread | unread")
+					span.combo(ng-show="isActive('g')") ({{getMultiComboPrettified('g', label.name)}})
 			li.separator
 			li(ui-sref-active="active")
 				a(ui-sref="main.contacts", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_CONTACTS' | translate}}")
 					span.icon-contacts
 					span.action {{'MAIN.NAV.LB_CONTACTS' | translate}}
+					span.combo(ng-show="isActive('g')") ({{getMultiComboPrettified('g', 'Contacts')}})
 			li(ng-class="{ active: $state.includes('main.settings') }")
 				a(ui-sref="main.settings.general", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_SETTINGS' | translate}}")
 					span.icon-cog
 					span.action {{'MAIN.NAV.LB_SETTINGS' | translate}}
+					span.combo(ng-show="isActive('g')") ({{getMultiComboPrettified('g', 'Settings')}})
 			li.logout
 				small {{manifest.name}} {{manifest.version}}
 				small(title="{{servedBy.title}}") {{servedBy.text}}

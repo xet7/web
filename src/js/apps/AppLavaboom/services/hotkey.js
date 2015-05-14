@@ -1,189 +1,205 @@
-module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys, router) {
+module.exports = /*@ngInject*/function ($rootScope, $translate, $state, $timeout, hotkeys, router, utils, consts) {
 	const self = this;
 
 	let isActive = true;
 	let hotkeyList = { };
+	let multiHotkeyList = {};
+	let restoreHotkeys = null;
 
 	self.initialize = (isEnabled) => {
 		self.toggleHotkeys(isEnabled);
 
-		$rootScope.$on('$stateChangeStart', (event, toState, toParams, fromState, fromParams) => {
-			if (!toState.name.includes('.hotkeys') && !fromState.name.includes('.hotkeys')) {
-				self.clearHotkeys();
-				self.addGlobalHotkeys();
+		$rootScope.$on('$stateChangeSuccess', (event, toState, toParams, fromState, fromParams) => {
+			if (restoreHotkeys) {
+				$timeout.cancel(restoreHotkeys);
+				restoreHotkeys = null;
 			}
+			clearHotkeys(!isActive);
+		});
+		$rootScope.$on('hotkeys-state-changed', () => {
+			if (!isActive)
+				clearHotkeys(true);
 		});
 	};
 
-	self.getKeys = () => hotkeyList;
+	self.getKeys = () => utils.toArray(hotkeyList);
 
-	self.addHotkey = (option) => {
-		if (!isActive || !option)
-			return;
+	function enableMultiHotkey (multiKey, addedFromState, isGlobal) {
+		clearHotkeys(true);
 
-		const key = angular.isArray(option.combo) ? option.combo[0] : option.combo;
-		const currentKey = hotkeys.get(key);
-		if (currentKey)
-			hotkeys.del(currentKey);
+		multiHotkeyList[multiKey].isActive = true;
+		for(let k of multiHotkeyList[multiKey].list)
+			addHotkey(k, addedFromState, isGlobal, true);
 
-		option.description = $translate.instant(option.description);
-		hotkeys.add(option);
+		multiHotkeyList[multiKey].timeout = $timeout(() => {
+			multiHotkeyList[multiKey].timeout = null;
+			disableMultiHotkey(multiKey);
+		}, consts.HOTKEY_MULTI_TIMEOUT);
 
-		hotkeyList[key] = {
-			combo: option.combo,
-			description: option.description
-		};
-	};
+		restoreHotkeys = $timeout(() => {
+			$rootScope.$broadcast('hotkeys-state-changed');
+		}, consts.HOTKEY_MULTI_TIMEOUT);
+	}
 
-	self.toggleHotkeys = (enable) => {
-		isActive = enable;
-		if (enable) {
-			self.addGlobalHotkeys();
-		} else {
-			self.clearHotkeys();
+	function disableMultiHotkey (multiKey) {
+		if (multiHotkeyList[multiKey].timeout) {
+			$timeout.cancel(multiHotkeyList[multiKey].timeout);
+			multiHotkeyList[multiKey].timeout = null;
 		}
 
-		$rootScope.$broadcast('hotkeys-enabled', isActive);
-	};
+		multiHotkeyList[multiKey].isActive = false;
+		for(let k of multiHotkeyList[multiKey].list)
+			removeHotkey(k);
+	}
 
-	self.clearHotkeys = () => {
-		let r;
+	function removeHotkey (option) {
+		console.debug('hotkeys: removed', option);
+		
+		for(let k of angular.isArray(option.combo) ? option.combo : [option.combo])
+			hotkeys.del(k);
+	}
+
+	function addHotkey (option, addedFromState, isGlobal, isStep = false) {
+		option = angular.copy(option);
+		let combo = angular.copy(option.combo);
+		const key = angular.isArray(option.combo) ? option.combo[0] : option.combo;
+
+		if (option.require) {
+			if (!multiHotkeyList[option.require])
+				multiHotkeyList[option.require] = {
+					isActive: false,
+					list: []
+				};
+
+			multiHotkeyList[option.require].list.push({
+				combo: option.combo,
+				name: option.name,
+				description: option.description,
+				callback: option.callback
+			});
+
+			addHotkey({
+				combo: [option.require],
+				callback: event => {
+					event.preventDefault();
+
+					enableMultiHotkey(option.require, addedFromState, isGlobal);
+				}
+			}, addedFromState, isGlobal, true);
+		}
+		else
+		{
+			let callback = option.callback;
+			option.callback = (event, key) => {
+				console.log('router.isOpenedDialog()', router.isOpenedDialog());
+				if (router.isOpenedDialog())
+					return;
+
+				callback(event, key);
+			};
+
+			const currentKey = hotkeys.get(key);
+			if (currentKey)
+				return;
+
+			console.debug('added', option);
+			hotkeys.add(option);
+
+			option.description = $translate.instant(option.description);
+			hotkeyList[key] = {
+				combo: combo,
+				require: option.require,
+				description: option.description,
+				isStep,
+				addedFromState,
+				isGlobal
+			};
+		}
+
+		console.debug('added hotkey', option);
+	}
+
+	function clearHotkeys (isRemoveAll = false) {
+		console.log('hotkeys.clearHotkeys', isRemoveAll);
+
+		let isPopupState = router.isPopupState($state.current.name);
+		let isLegendState = isPopupState && $state.current.name.endsWith('.hotkeys');
+		if (isLegendState) {
+			for (let multiKey of Object.keys(multiHotkeyList))
+				disableMultiHotkey(multiKey);
+		}
+
 		for (let key of Object.keys(hotkeyList)) {
 			if (key !== '?') {
-				const hotkey = hotkeys.get(key);
-				if (hotkey) {
-					hotkeys.del(hotkey);
+				let hotkey = hotkeys.get(key);
+				let hotkeyOptions = hotkeyList[key];
+				let isParent = $state.current.name.includes(hotkeyOptions.addedFromState);
+
+				if (!hotkey || !hotkeyOptions)
+					continue;
+
+				if (!isLegendState && !isRemoveAll && hotkeyOptions.isGlobal && (!isPopupState || hotkeyOptions.isPopup))
+					continue;
+
+				if (isLegendState || isRemoveAll || !isParent || (isPopupState && !hotkeyOptions.isPopup)) {
+					removeHotkey(hotkeyOptions);
+
+					if (!isLegendState)
+						delete hotkeyList[key];
 				}
-			} else r = hotkeyList[key];
+			}
+		}
+	}
+
+	self.registerCustomHotkeys = (scope, hotkeys, options) => {
+		if (!options)
+			options = {};
+
+		if (!scope)
+			throw new Error('hotkey.registerCustomHotkeys please define scope!');
+		if (!options.scope)
+			throw new Error('hotkey.registerCustomHotkeys please define scope name!');
+
+		if (!options.isPopup)
+			options.isPopup = false;
+		if (!options.isGlobal)
+			options.isGlobal = false;
+		if (!options.addedFromState)
+			options.addedFromState = $state.current.name;
+
+		console.log('registerCustomHotkeys', options, 'isActive: ', isActive);
+
+		function register(isFirstTime = false) {
+			if (!isFirstTime && router.isPopupState($state.current.name) && !options.isPopup)
+				return;
+
+			if (!$state.current.name.includes(options.addedFromState))
+				return;
+
+			console.debug(`hotkeys: register(${options.scope}),
+				current state is ${$state.current.name} added from state is ${options.addedFromState}`, hotkeys);
+
+			for (let k of hotkeys)
+				addHotkey(k, options.addedFromState, options.isGlobal);
 		}
 
-		hotkeyList = {'?': r};
-		console.log('hotkeys.clearHotkeys()');
+
+		if (isActive)
+			register(true);
+
+		scope.$on('$stateChangeSuccess', () => register());
+		scope.$on('hotkeys-state-changed', () => register());
 	};
 
-	const notWhenPopupOpened = (callback) =>
-		(event, key) => {
-			if (!router.isPopupState($state.current.name))
-				return callback(event, key);
-		};
+	self.toggleHotkeys = (isEnabled) => {
+		isActive = isEnabled;
+		$rootScope.$broadcast('hotkeys-state-changed');
+	};
 
-	self.addGlobalHotkeys = () => {
-		self.addHotkey({
-			combo: ['c', 'n'],
-			description: 'HOTKEY.COMPOSE_EMAIL',
-			callback: notWhenPopupOpened((event, key) => {
-				event.preventDefault();
-				router.showPopup('compose');
-			})
-		});
+	self.isActive = (multiKey) => isActive && (!multiKey || (multiHotkeyList[multiKey] && multiHotkeyList[multiKey].isActive));
 
-		self.addHotkey({
-			combo: ['ctrl+i', 'command+i'],
-			description: 'HOTKEY.GOTO_INBOX',
-			callback: notWhenPopupOpened((event, key) => {
-				event.preventDefault();
-				$state.go('main.inbox.label', {labelName: 'Inbox'});
-			})
-		});
-
-		self.addHotkey({
-			combo: ['ctrl+d', 'command+d'],
-			description: 'HOTKEY.GOTO_DRAFTS',
-			callback: notWhenPopupOpened((event, key) => {
-				event.preventDefault();
-				$state.go('main.inbox.label', {labelName: 'Drafts'});
-			})
-		});
-
-		self.addHotkey({
-			combo: ['ctrl+s', 'command+s'],
-			description: 'HOTKEY.GOTO_SENT',
-			callback: notWhenPopupOpened((event, key) => {
-				event.preventDefault();
-				$state.go('main.inbox.label', {labelName: 'Sent'});
-			})
-		});
-
-		self.addHotkey({
-			combo: ['ctrl+m', 'command+m'],
-			description: 'HOTKEY.GOTO_SPAM',
-			callback: notWhenPopupOpened((event, key) => {
-				event.preventDefault();
-				$state.go('main.inbox.label', {labelName: 'Spam'});
-			})
-		});
-
-		self.addHotkey({
-			combo: ['ctrl+t', 'command+t'],
-			description: 'HOTKEY.GOTO_STARRED',
-			callback: notWhenPopupOpened((event, key) => {
-				event.preventDefault();
-				$state.go('main.inbox.label', {labelName: 'Starred'});
-			})
-		});
-
-		self.addHotkey({
-			combo: ['ctrl+h', 'command+h'],
-			description: 'HOTKEY.GOTO_TRASH',
-			callback: notWhenPopupOpened((event, key) => {
-				event.preventDefault();
-				$state.go('main.inbox.label', {labelName: 'Trash'});
-			})
-		});
-
-		self.addHotkey({
-			combo: ['ctrl+x', 'command+x'],
-			description: 'HOTKEY.GOTO_CONTACTS',
-			callback: notWhenPopupOpened((event, key) => {
-				event.preventDefault();
-				$state.go('main.contacts');
-			})
-		});
-
-		self.addHotkey({
-			combo: ['ctrl+e', 'command+e'],
-			description: 'HOTKEY.GOTO_SETTINGS',
-			callback: notWhenPopupOpened((event, key) => {
-				event.preventDefault();
-				$state.go('main.settings.general');
-			})
-		});
-
-		self.addHotkey({
-			combo: '/',
-			description: 'HOTKEY.FOCUS_ON_SEARCH',
-			callback: notWhenPopupOpened((event, key) => {
-				event.preventDefault();
-				document.getElementById('top-search').focus();
-			})
-		});
-
-		self.addHotkey({
-			combo: 'esc',
-			description: 'HOTKEY.LEAVE_FROM_SEARCH',
-			callback: notWhenPopupOpened((event, key) => {
-				event.preventDefault();
-				document.getElementById('top-search').blur();
-			}),
-			allowIn: ['INPUT']
-		});
-
-		self.addHotkey({
-			combo: '?',
-			description: 'HOTKEY.CHEATSHEET',
-			callback: (event, key) => {
-				if ($state.current.name.includes('.hotkeys')) {
-					event.preventDefault();
-					router.hidePopup();
-				}
-				else if (!router.isPopupState($state.current.name)) {
-					event.preventDefault();
-					router.showPopup('hotkeys');
-				}
-			},
-			allowIn: ['INPUT']
-		});
-
-		console.log('hotkeys.addGlobalHotkeys()');
+	self.getMultiComboPrettified = (multiKey, name) => {
+		let keys = multiHotkeyList[multiKey] ? multiHotkeyList[multiKey].list.filter(k => k.name == name) : null;
+		return keys && keys.length > 0 ? keys[0].combo.join(',') : '';
 	};
 };

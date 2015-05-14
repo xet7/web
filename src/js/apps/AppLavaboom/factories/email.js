@@ -10,7 +10,10 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 		this.date = opt.date_created;
 
 		this.manifest = manifest;
-		this.subject = manifest ? manifest.subject : opt.name;
+		this.subject = manifest && manifest.subject ? manifest.subject : opt.name;
+		if (!self.subject)
+			self.subject = '';
+
 		this.files = manifest ? manifest.files : [];
 		this.isHtml = manifest ? manifest.getPart('body').isHtml() : false;
 
@@ -33,7 +36,7 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 		this.attachments = opt.attachments ? opt.attachments : [];
 	}
 
-	Email.getSubjectWithoutRe = (subject) => subject.replace(reRegex, '');
+	Email.getSubjectWithoutRe = (subject) => subject ? subject.replace(reRegex, '') : '';
 
 	Email.isSecuredKeys = (keys) => !Object.keys(keys).some(e => !keys[e]);
 
@@ -111,7 +114,7 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 			manifestRaw = manifestRawData;
 		} catch (err) {
 			console.error('Email.fromEnvelope decrypt error', err);
-			body = {state: err.message, data: ''};
+			body = {state: err.message, data: envelope.body};
 		}
 
 		let email = new Email(angular.extend({}, envelope, {

@@ -94,14 +94,13 @@ div#compose-wrapper
 
 						hgroup
 							div
-								div.file-name(title = "attachment.attachment.dateModified | date")
-									span(ng-bind="attachment.attachment.name")
+								div.file-name(title = "{{attachment.attachment.dateModified | date}}")
+									span(ng-bind="attachment.attachment.name | fileName")
 								div.file-ext
-									span(ng-bind="attachment.ext | fileExtension")
+									span(ng-bind="attachment.attachment.name | fileExtension")
 							span
 								span(ng-bind="attachment.attachment.size | filesize")
-								span
-									| ({{attachment.status}})
+								span {{attachment.status ? '(' + attachment.status + ')' : ''}}
 							div
 								span(ng-click="deleteAttachment(attachment, $index)", ng-autodisable) {{'MAIN.COMPOSE.BTN_DELETE' | translate}}
 		.mask(ng-show="isWarning", ng-click="reject()")

@@ -1,8 +1,13 @@
 .cfp-hotkeys(ng-class="{ mac : (navigator.userAgent.indexOf('Mac OS X') != -1)}")
-	h4.cfp-hotkeys-title {{ 'HOTKEY.TITLE' | translate }}
-	.key-row(ng-repeat='hotkey in hotkeys')
+	h4.cfp-hotkeys-title {{ 'HOTKEY.TITLE_GLOBAL' | translate }}
+	.key-row(ng-repeat='hotkey in globalHotkeys')
 		.cfp-hotkeys-keys
-			span.cfp-hotkeys-key.label.label-default(ng-repeat='key in hotkey.combo track by $index') {{ key }}
+			span.cfp-hotkeys-key.label.label-default(ng-repeat='key in hotkey.combo track by $index') {{ hotkey.require }} {{ key }}
+		.cfp-hotkeys-text {{ hotkey.description }}
+	h4.cfp-hotkeys-title {{ 'HOTKEY.TITLE_LOCAL' | translate }}
+	.key-row(ng-repeat='hotkey in localHotkeys')
+		.cfp-hotkeys-keys
+			span.cfp-hotkeys-key.label.label-default(ng-repeat='key in hotkey.combo track by $index') {{ hotkey.require }} {{ key }}
 		.cfp-hotkeys-text {{ hotkey.description }}
 	.cfp-hotkeys-close(ng-click='hidePopup()')
 		span.icon-close

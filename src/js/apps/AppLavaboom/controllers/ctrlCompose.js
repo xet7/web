@@ -359,8 +359,9 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 			}
 
 			if (publicKey) {
-				const blob = new Blob([publicKey.armor()], {type: 'text/pgp'});
+				const blob = new Blob([publicKey.armor()], {type: 'text/plain'});
 				blob.lastModifiedDate = publicKey.primaryKey.created;
+				blob.name = utils.getEmailFromAddressString(publicKey.users[0].userId.userid) + '.asc';
 				const attachmentStatus = {
 					attachment: new Attachment(blob)
 				};
@@ -462,14 +463,16 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 	$scope.formatPaste = (html) => textAngularHelpers.formatPaste(html);
 
-	hotkey.addHotkey({
-        combo: ['ctrl+enter', 'command+enter'],
-        description: 'HOTKEY.SEND_EMAIL',
-        callback: (event, key) => {
-            event.preventDefault();
-            $scope.send();
-        }
-    });
+	hotkey.registerCustomHotkeys($scope, [
+		{
+			combo: ['ctrl+enter', 'command+enter'],
+			description: 'HOTKEY.SEND_EMAIL',
+			callback: (event, key) => {
+				event.preventDefault();
+				$scope.send();
+			}
+		}
+	], {scope: 'ctrlCompose'});
 
 	textAngularHelpers.ctrlEnterCallback = $scope.send;
 };

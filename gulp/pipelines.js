@@ -9,7 +9,7 @@ let lazypipe = require('lazypipe');
 let config = require('./config');
 let paths = require('./paths');
 
-function Pipelines(manifest, isPartialLivereloadBuild, plumber) {
+function Pipelines(manifest, plumber) {
 	const self = this;
 
 	this.revTap = output =>
@@ -25,8 +25,22 @@ function Pipelines(manifest, isPartialLivereloadBuild, plumber) {
 			console.log('Perform manifest translation for a static asset', key, '->', value);
 		};
 
-	this.livereloadPipeline  = (isForce = false) =>
-		config.isProduction || (!isForce && !isPartialLivereloadBuild())
+	this.livereloadIndexPipeline  = () => {
+		let isReloaded = false;
+		return config.isProduction
+			? lazypipe()
+			.pipe(plg.util.noop)
+			: lazypipe()
+			.pipe(plg.tap, () => {
+				if (!isReloaded) {
+					plg.livereload.reload();
+					isReloaded = true;
+				}
+			});
+	};
+
+	this.livereloadPipeline  = () =>
+		config.isProduction
 			? lazypipe()
 			.pipe(plg.util.noop)
 			: lazypipe()
@@ -51,7 +65,7 @@ function Pipelines(manifest, isPartialLivereloadBuild, plumber) {
 				}
 			}))
 			.pipe(gulp.dest(output))
-			.pipe(self.livereloadPipeline()());
+			.pipe(self.livereloadIndexPipeline()());
 
 		if (config.isProduction && isTemplateCache) {
 			pipeline = pipeline

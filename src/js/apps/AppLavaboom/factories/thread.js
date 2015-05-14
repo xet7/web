@@ -23,7 +23,7 @@ module.exports = /*@ngInject*/($injector, $translate, co, utils, crypto, user, E
 			let myself = null;
 			members = members.
 				map(e => {
-					if (e.address == user.email){
+					if (e.address == user.email || user.aliases.includes(e.address)){
 						myself = e;
 						return null;
 					}
@@ -52,7 +52,10 @@ module.exports = /*@ngInject*/($injector, $translate, co, utils, crypto, user, E
 			self.isRead = opt.is_read;
 			self.secure = opt.secure;
 
-			self.subject = manifest && manifest.subject ? manifest.subject : opt.name;
+			self.subject = manifest && manifest.subject ? manifest.subject : opt.subject;
+			if (!self.subject)
+				self.subject = '';
+
 			self.attachmentsCount = manifest && manifest.files ? manifest.files.length : 0;
 
 			self.isReplied = opt.emails.length > 1;
