@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $state, co, inbox, user) => {
+module.exports = /*@ngInject*/($rootScope, $scope, $state, co, inbox, user, hotkey) => {
 	$scope.$state = $state;
 	$scope.name = user.styledName;
 
@@ -11,6 +11,10 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, co, inbox, user) => {
 	$scope.$on('inbox-labels', (e, labels) => {
 		$scope.labels = labels.list;
 	});
+
+	$scope.isActive = (multiKey) => hotkey.isActive(multiKey);
+
+	$scope.getMultiComboPrettified = (multiKey, name) => hotkey.getMultiComboPrettified(multiKey, name);
 
 	$scope.logout = () => {
 		user.logout();

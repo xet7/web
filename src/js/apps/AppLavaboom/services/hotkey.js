@@ -19,6 +19,13 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 
 	self.getKeys = () => utils.toArray(hotkeyList);
 
+	function removeHotkey (option) {
+		console.debug('hotkeys: removed', option);
+
+		const key = angular.isArray(option.combo) ? option.combo[0] : option.combo;
+		hotkeys.del(key);
+	}
+
 	function addHotkey (option, addedFromState, isGlobal, isStep = false) {
 		option = angular.copy(option);
 		let combo = angular.copy(option.combo);
@@ -26,16 +33,16 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 
 		if (option.require) {
 			if (!multiHotkeyList[option.require])
-				multiHotkeyList[option.require] = [];
+				multiHotkeyList[option.require] = {
+					isActive: false,
+					list: []
+				};
 
-			multiHotkeyList[option.require].push({
-				option: {
-					combo: option.combo,
-					description: option.description,
-					callback: option.callback
-				},
-				addedFromState,
-				isGlobal
+			multiHotkeyList[option.require].list.push({
+				combo: option.combo,
+				name: option.name,
+				description: option.description,
+				callback: option.callback
 			});
 
 			addHotkey({
@@ -45,12 +52,15 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 
 					self.clearHotkeys(true);
 
-					for(let k of multiHotkeyList[option.require])
-						addHotkey(k.option, k.addedFromState, k.isGlobal, true);
+					multiHotkeyList[option.require].isActive = true;
+					for(let k of multiHotkeyList[option.require].list)
+						addHotkey(k, addedFromState, isGlobal, true);
 
 					setTimeout(() => {
-						for(let k of multiHotkeyList[option.require])
-							removeHotkey(k.option);
+						multiHotkeyList[option.require].isActive = false;
+						for(let k of multiHotkeyList[option.require].list)
+							removeHotkey(k);
+
 					}, consts.HOTKEY_MULTI_TIMEOUT);
 				}
 			}, addedFromState, isGlobal, true);
@@ -76,11 +86,6 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 		}
 
 		console.debug('added hotkey', option);
-	}
-
-	function removeHotkey (option) {
-		const key = angular.isArray(option.combo) ? option.combo[0] : option.combo;
-		hotkeys.del(key);
 	}
 
 	self.registerCustomHotkeys = (scope, hotkeys, options) => {
@@ -128,7 +133,12 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 		$rootScope.$broadcast('hotkeys-state-changed');
 	};
 
-	self.isActive = () => isActive;
+	self.isActive = (multiKey) => isActive && (!multiKey || (multiHotkeyList[multiKey] && multiHotkeyList[multiKey].isActive));
+
+	self.getMultiComboPrettified = (multiKey, name) => {
+		let keys = multiHotkeyList[multiKey] ? multiHotkeyList[multiKey].list.filter(k => k.name == name) : null;
+		return keys && keys.length > 0 ? keys[0].combo.join(',') : '';
+	};
 
 	self.clearHotkeys = (isRemoveAll = false) => {
 		console.log('hotkeys.clearHotkeys()');
@@ -149,8 +159,7 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 					continue;
 
 				if (!isActive || isRemoveAll || !isParent || (isPopupState && !hotkeyOptions.isPopup)) {
-					console.debug('hotkeys: removed', hotkeyList[key]);
-					hotkeys.del(hotkey);
+					removeHotkey(hotkeyOptions);
 
 					if (!isLegendState)
 						delete hotkeyList[key];
@@ -170,6 +179,7 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 		},
 		{
 			combo: ['i'],
+			name: 'Inbox',
 			require: 'g',
 			description: 'HOTKEY.GOTO_INBOX',
 			callback: (event, key) => {
@@ -179,6 +189,7 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 		},
 		{
 			combo: ['s'],
+			name: 'Sent',
 			require: 'g',
 			description: 'HOTKEY.GOTO_SENT',
 			callback: (event, key) => {
@@ -188,6 +199,7 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 		},
 		{
 			combo: ['p'],
+			name: 'Spam',
 			require: 'g',
 			description: 'HOTKEY.GOTO_SPAM',
 			callback: (event, key) => {
@@ -197,6 +209,7 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 		},
 		{
 			combo: ['a'],
+			name: 'Starred',
 			require: 'g',
 			description: 'HOTKEY.GOTO_STARRED',
 			callback: (event, key) => {
@@ -206,6 +219,7 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 		},
 		{
 			combo: ['t'],
+			name: 'Trash',
 			require: 'g',
 			description: 'HOTKEY.GOTO_TRASH',
 			callback: (event, key) => {
@@ -215,6 +229,7 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 		},
 		{
 			combo: ['c'],
+			name: 'Contacts',
 			require: 'g',
 			description: 'HOTKEY.GOTO_CONTACTS',
 			callback: (event, key) => {
@@ -224,6 +239,7 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 		},
 		{
 			combo: ['x'],
+			name: 'Settings',
 			require: 'g',
 			description: 'HOTKEY.GOTO_SETTINGS',
 			callback: (event, key) => {
