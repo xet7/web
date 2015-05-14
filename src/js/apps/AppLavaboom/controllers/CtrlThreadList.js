@@ -209,29 +209,23 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			}
 		};
 
-		const moveUp = (event, key) => {
-			console.log('up!');
-			event.preventDefault();
-			moveThreads(-1);
-		};
-
-		const moveDown = (event, key) => {
-			console.log('down!');
-			event.preventDefault();
-			moveThreads(1);
-		};
-
 		hotkey.registerCustomHotkeys($scope, [
 			{
 				combo: ['h', 'k', 'left', 'up'],
 				description: 'HOTKEY.MOVE_UP',
-				callback: moveUp
+				callback: (event, key) => {
+					event.preventDefault();
+					moveThreads(-1);
+				}
 			},
 
 			{
 				combo: ['j', 'l', 'right', 'down'],
 				description: 'HOTKEY.MOVE_DOWN',
-				callback: moveDown
+				callback: (event, key) => {
+					event.preventDefault();
+					moveThreads(1);
+				}
 			},
 
 			{
@@ -244,7 +238,8 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			},
 
 			{
-				combo: 'd',
+				combo: ['d', 'backspace'],
+
 				description: 'HOTKEY.DELETE_EMAIL',
 				callback: (event, key) => {
 					console.log('d');
