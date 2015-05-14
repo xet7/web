@@ -1,7 +1,6 @@
 module.exports = /*@ngInject*/($injector, $translate, co, utils, crypto, user, Email, Manifest) => {
 	const translations = {
-		LB_EMAIL_TO_YOURSELF: '',
-		LB_NO_SUBJECT: ''
+		LB_EMAIL_TO_YOURSELF: ''
 	};
 	$translate.bindAsObject(translations, 'INBOX');
 
@@ -53,7 +52,10 @@ module.exports = /*@ngInject*/($injector, $translate, co, utils, crypto, user, E
 			self.isRead = opt.is_read;
 			self.secure = opt.secure;
 
-			self.subject = manifest && manifest.subject ? manifest.subject : translations.LB_NO_SUBJECT;
+			self.subject = manifest && manifest.subject ? manifest.subject : opt.subject;
+			if (!self.subject)
+				self.subject = '';
+
 			self.attachmentsCount = manifest && manifest.files ? manifest.files.length : 0;
 
 			self.isReplied = opt.emails.length > 1;

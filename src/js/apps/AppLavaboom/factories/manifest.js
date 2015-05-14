@@ -1,6 +1,11 @@
 const mimelib = require('mimelib');
 
-module.exports = /*@ngInject*/(contacts, utils, crypto) => {
+module.exports = /*@ngInject*/($translate, contacts, utils, crypto) => {
+	const translations = {
+		LB_NO_SUBJECT: ''
+	};
+	$translate.bindAsObject(translations, 'INBOX');
+
 	function ManifestPart (manifestPart) {
 		const self = this;
 
@@ -11,8 +16,7 @@ module.exports = /*@ngInject*/(contacts, utils, crypto) => {
 
 		this.isValid = (body) => body.length == self.size && crypto.hash(body) == self.hash;
 
-		// todo: hack, there should be just one content type, blocked: https://github.com/lavab/mailer/issues/33
-		const contentType = manifestPart.content_type || manifestPart['content-type'];
+		const contentType = manifestPart.content_type;
 		if (contentType) {
 			this.contentType = (contentType.defaultValue ? contentType.defaultValue : contentType).toLowerCase();
 			this.charset = (contentType.charset ? contentType.charset : 'utf-8').toLowerCase();
@@ -32,7 +36,7 @@ module.exports = /*@ngInject*/(contacts, utils, crypto) => {
 		this.cc = Manifest.parseAddresses(manifest.headers.cc);
 		this.bcc = Manifest.parseAddresses(manifest.headers.bcc);
 
-		this.subject = manifest.headers.subject;
+		this.subject = manifest.headers.subject ? manifest.headers.subject : translations.LB_NO_SUBJECT;
 
 		this.getDestinationEmails = () => {
 			const emails = utils.uniq([
