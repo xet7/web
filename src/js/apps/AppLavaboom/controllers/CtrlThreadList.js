@@ -262,6 +262,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 					$scope.replyThread(event, $scope.selectedTid);
 				}
 			}
-		]);
+		], {scope: 'ctrlThreadList'});
 	}
 };

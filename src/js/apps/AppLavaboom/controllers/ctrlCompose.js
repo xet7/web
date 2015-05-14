@@ -472,7 +472,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 				$scope.send();
 			}
 		}
-	]);
+	], {scope: 'ctrlCompose'});
 
 	textAngularHelpers.ctrlEnterCallback = $scope.send;
 };

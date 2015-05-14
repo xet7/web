@@ -158,6 +158,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 				description: 'HOTKEY.MOVE_DOWN',
 				callback: moveDown
 			}
-		]);
+		], {scope: 'ctrlContactList'});
 	}
 };

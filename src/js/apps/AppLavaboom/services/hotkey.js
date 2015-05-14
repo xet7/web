@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys, router) {
+module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys, router, utils) {
 	const self = this;
 
 	let isActive = true;
@@ -7,187 +7,203 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 	self.initialize = (isEnabled) => {
 		self.toggleHotkeys(isEnabled);
 
-		$rootScope.$on('$stateChangeStart', (event, toState, toParams, fromState, fromParams) => {
-			if (!toState.name.includes('.hotkeys') && !fromState.name.includes('.hotkeys')) {
+		$rootScope.$on('$stateChangeSuccess', (event, toState, toParams, fromState, fromParams) => {
+			self.clearHotkeys();
+		});
+		$rootScope.$on('hotkeys-state-changed', () => {
+			if (!isActive)
 				self.clearHotkeys();
-				self.addGlobalHotkeys();
-			}
 		});
 	};
 
-	self.getKeys = () => hotkeyList;
+	self.getKeys = () => utils.toArray(hotkeyList);
 
-	self.addHotkey = (option) => {
-		if (!isActive || !option)
-			return;
+	function addHotkey (option, addedFromState, isGlobal) {
+		option = angular.copy(option);
+		let combo = angular.copy(option.combo);
 
 		const key = angular.isArray(option.combo) ? option.combo[0] : option.combo;
 		const currentKey = hotkeys.get(key);
 		if (currentKey)
-			hotkeys.del(currentKey);
+			return;
 
 		option.description = $translate.instant(option.description);
-		console.log('add hotkey', option);
 		hotkeys.add(option);
 
 		hotkeyList[key] = {
-			combo: option.combo,
-			description: option.description
+			combo: combo,
+			description: option.description,
+			addedFromState,
+			isGlobal
 		};
-	};
+
+		console.debug('added hotkey', option);
+	}
 
 	self.registerCustomHotkeys = (scope, hotkeys, options) => {
 		if (!options)
 			options = {};
-		options.isPopup = false;
 
-		function register() {
-			for(let k of hotkeys)
-				self.addHotkey(k);
-		}
+		if (!scope)
+			throw new Error('hotkey.registerCustomHotkeys please define scope!');
+		if (!options.scope)
+			throw new Error('hotkey.registerCustomHotkeys please define scope name!');
 
-		register();
-		scope.$on('$stateChangeSuccess', () => {
-			if (router.isPopupState($state.current.name) && !options.isPopup)
+		if (!options.isPopup)
+			options.isPopup = false;
+		if (!options.isGlobal)
+			options.isGlobal = false;
+		if (!options.addedFromState)
+			options.addedFromState = $state.current.name;
+
+		console.log('registerCustomHotkeys', options, 'isActive: ', isActive);
+
+		function register(isFirstTime = false) {
+			if (!isFirstTime && router.isPopupState($state.current.name) && !options.isPopup)
 				return;
-			register();
-		});
-	};
 
-	self.toggleHotkeys = (enable) => {
-		isActive = enable;
-		if (enable) {
-			self.addGlobalHotkeys();
-		} else {
-			self.clearHotkeys();
+			if (!$state.current.name.includes(options.addedFromState))
+				return;
+
+			console.debug(`hotkeys: register(${options.scope}),
+				current state is ${$state.current.name} added from state is ${options.addedFromState}`, hotkeys);
+
+			for (let k of hotkeys)
+				addHotkey(k, options.addedFromState, options.isGlobal);
 		}
 
-		$rootScope.$broadcast('hotkeys-enabled', isActive);
+		if (isActive)
+			register(true);
+
+		scope.$on('$stateChangeSuccess', () => register());
+		scope.$on('hotkeys-state-changed', () => register());
 	};
+
+	self.toggleHotkeys = (isEnabled) => {
+		isActive = isEnabled;
+		$rootScope.$broadcast('hotkeys-state-changed');
+	};
+
+	self.isActive = () => isActive;
 
 	self.clearHotkeys = () => {
-		let r;
+		console.log('hotkeys.clearHotkeys()');
+
+		let isPopupState = router.isPopupState($state.current.name);
+		let isLegendState = isPopupState && $state.current.name.endsWith('.hotkeys');
+
 		for (let key of Object.keys(hotkeyList)) {
 			if (key !== '?') {
-				const hotkey = hotkeys.get(key);
-				if (hotkey) {
-					hotkeys.del(hotkey);
-				}
-			} else r = hotkeyList[key];
-		}
+				let hotkey = hotkeys.get(key);
+				let hotkeyOptions = hotkeyList[key];
+				let isParent = $state.current.name.includes(hotkeyOptions.addedFromState);
 
-		hotkeyList = {'?': r};
-		console.log('hotkeys.clearHotkeys()');
+				if (!hotkey || !hotkeyOptions)
+					continue;
+
+				if (isActive && hotkeyOptions.isGlobal && (!isPopupState || hotkeyOptions.isPopup))
+					continue;
+
+				if (!isActive || !isParent || (isPopupState && !hotkeyOptions.isPopup)) {
+					console.debug('hotkeys: removed', hotkeyList[key]);
+					hotkeys.del(hotkey);
+
+					if (!isLegendState)
+						delete hotkeyList[key];
+				}
+			}
+		}
 	};
 
-	const notWhenPopupOpened = (callback) =>
-		(event, key) => {
-			if (!router.isPopupState($state.current.name))
-				return callback(event, key);
-		};
-
-	self.addGlobalHotkeys = () => {
-		self.addHotkey({
+	self.registerCustomHotkeys($rootScope, [
+		{
 			combo: ['c', 'n'],
 			description: 'HOTKEY.COMPOSE_EMAIL',
-			callback: notWhenPopupOpened((event, key) => {
+			callback: (event, key) => {
 				event.preventDefault();
 				router.showPopup('compose');
-			})
-		});
-
-		self.addHotkey({
+			}
+		},
+		{
 			combo: ['ctrl+i', 'command+i'],
 			description: 'HOTKEY.GOTO_INBOX',
-			callback: notWhenPopupOpened((event, key) => {
+			callback: (event, key) => {
 				event.preventDefault();
 				$state.go('main.inbox.label', {labelName: 'Inbox'});
-			})
-		});
-
-		/*self.addHotkey({
-			combo: ['ctrl+d', 'command+d'],
-			description: 'HOTKEY.GOTO_DRAFTS',
-			callback: notWhenPopupOpened((event, key) => {
-				event.preventDefault();
-				$state.go('main.inbox.label', {labelName: 'Drafts'});
-			})
-		});*/
-
-		self.addHotkey({
+			}
+		},
+		{
 			combo: ['ctrl+s', 'command+s'],
 			description: 'HOTKEY.GOTO_SENT',
-			callback: notWhenPopupOpened((event, key) => {
+			callback: (event, key) => {
 				event.preventDefault();
 				$state.go('main.inbox.label', {labelName: 'Sent'});
-			})
-		});
-
-		self.addHotkey({
+			}
+		},
+		{
 			combo: ['ctrl+m', 'command+m'],
 			description: 'HOTKEY.GOTO_SPAM',
-			callback: notWhenPopupOpened((event, key) => {
+			callback: (event, key) => {
 				event.preventDefault();
 				$state.go('main.inbox.label', {labelName: 'Spam'});
-			})
-		});
-
-		self.addHotkey({
+			}
+		},
+		{
 			combo: ['ctrl+t', 'command+t'],
 			description: 'HOTKEY.GOTO_STARRED',
-			callback: notWhenPopupOpened((event, key) => {
+			callback: (event, key) => {
 				event.preventDefault();
 				$state.go('main.inbox.label', {labelName: 'Starred'});
-			})
-		});
-
-		self.addHotkey({
+			}
+		},
+		{
 			combo: ['ctrl+h', 'command+h'],
 			description: 'HOTKEY.GOTO_TRASH',
-			callback: notWhenPopupOpened((event, key) => {
+			callback: (event, key) => {
 				event.preventDefault();
 				$state.go('main.inbox.label', {labelName: 'Trash'});
-			})
-		});
-
-		self.addHotkey({
+			}
+		},
+		{
 			combo: ['ctrl+x', 'command+x'],
 			description: 'HOTKEY.GOTO_CONTACTS',
-			callback: notWhenPopupOpened((event, key) => {
+			callback: (event, key) => {
 				event.preventDefault();
 				$state.go('main.contacts');
-			})
-		});
-
-		self.addHotkey({
+			}
+		},
+			{
 			combo: ['ctrl+e', 'command+e'],
 			description: 'HOTKEY.GOTO_SETTINGS',
-			callback: notWhenPopupOpened((event, key) => {
+			callback: (event, key) => {
 				event.preventDefault();
 				$state.go('main.settings.general');
-			})
-		});
-
-		self.addHotkey({
+			}
+		},
+		{
 			combo: '/',
 			description: 'HOTKEY.FOCUS_ON_SEARCH',
-			callback: notWhenPopupOpened((event, key) => {
+			callback: (event, key) => {
 				event.preventDefault();
-				document.getElementById('top-search').focus();
-			})
-		});
 
-		self.addHotkey({
+				let element = document.getElementById('top-search');
+				if (element)
+					element.focus();
+			}
+		},
+			{
 			combo: 'esc',
 			description: 'HOTKEY.LEAVE_FROM_SEARCH',
-			callback: notWhenPopupOpened((event, key) => {
+			callback: (event, key) => {
 				event.preventDefault();
-				document.getElementById('top-search').blur();
-			}),
-			allowIn: ['INPUT']
-		});
 
-		self.addHotkey({
+				let element = document.getElementById('top-search');
+				if (element)
+					element.blur();
+			},
+			allowIn: ['INPUT']
+		},
+		{
 			combo: '?',
 			description: 'HOTKEY.CHEATSHEET',
 			callback: (event, key) => {
@@ -201,8 +217,6 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 				}
 			},
 			allowIn: ['INPUT']
-		});
-
-		console.log('hotkeys.addGlobalHotkeys()');
-	};
+		}
+	], {isPopup: false, isGlobal: true, scope: 'root'});
 };

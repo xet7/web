@@ -27,6 +27,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, router, hotkey) => {
 				description: 'HOTKEY.MOVE_DOWN',
 				callback: (event, key) => goSettings(event, +1)
 			}
-		]);
+		], {scope: 'ctrlSettingsList', addedFromState: 'main.settings'});
 	}
 };
