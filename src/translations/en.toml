@@ -138,7 +138,7 @@ DIALOGS_NO = "No"
 	LB_PRIVATE_KEY = "Private Key"
     LB_PUBLIC_KEY = "Public Key"
     LB_NOT_IMPLEMENTED = "Not yet implemented"
-    BTN_REMOVE_NOTIFICATION = "OK"
+    BTN_REMOVE_NOTIFICATION = "Ok"
 
 [VALIDATION]
 	LB_REQUIRED = "This field is required"
@@ -378,7 +378,7 @@ DIALOGS_NO = "No"
 	LB_SEND_ME_NEWS = "Send me News about Lavaboom"
 	LB_SIGNATURE_LN1 = "Sent with Lavaboom - your secure email provider."
 	LB_SIGNATURE_LN2 = "Get your own address at lavaboom.com"
-	LB_PROFILE_SAVED = "Profile has been saved"
+	LB_PROFILE_SAVED = "Settings has been saved"
     LB_PROFILE_CANNOT_BE_SAVED = "Cannot save profile"
 
 [MAIN.SETTINGS.PLAN]
