@@ -143,7 +143,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 	$scope.searchFilter = (thread) => {
 		let searchText = $scope.searchText.toLowerCase();
 		return thread.subject.toLowerCase().includes(searchText)
-			|| thread.membersPretty.toLowerCase().includes(searchText);
+			|| thread.membersPretty.join(',').toLowerCase().includes(searchText);
 	};
 
 	$scope.$on('$stateChangeStart', (e, toState, toParams) => {
