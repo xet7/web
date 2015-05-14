@@ -177,11 +177,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 		if (!numBits)
 			numBits = consts.DEFAULT_KEY_LENGTH;
 
-		console.log('generating keys 2', nameEmail, password, numBits);
-
-		console.log('before return co(function *(){');
 		return co(function *(){
-			console.log('before yield openpgp.generateKeyPair');
 			const freshKeys = yield openpgp.generateKeyPair({numBits: numBits, userId: nameEmail, passphrase: password});
 
 			console.log('keys generated', freshKeys);
