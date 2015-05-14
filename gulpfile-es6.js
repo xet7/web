@@ -356,6 +356,7 @@ gulp.task('tests', () =>
 
 // Automatically install all bower dependencies
 gulp.task('bower', () => plg.bower());
+gulp.task('bower-update', () => plg.bower({cmd: 'update'}));
 
 // Serve it, baby!
 gulp.task('serve', cb => {
@@ -415,6 +416,7 @@ gulp.task('default', gulp.series(
 	'bower', 'compile',
 	cb => {
 		// live reload for everything except browserify(as we use watchify)
+		gulp.watch('./bower.json', gulp.series('bower-update', 'compile'));
 		gulp.watch(paths.img.input, gulp.series('copy:images'));
 		gulp.watch(paths.fonts.input, gulp.series('copy:fonts'));
 		gulp.watch(paths.styles.inputAll, gulp.series('build:styles'));
