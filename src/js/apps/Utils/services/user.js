@@ -13,6 +13,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	this.styledEmail = '';
 	this.nameEmail = '';
 	this.altEmail = '';
+	this.aliases = [];
 
 	// information about user from API
 	this.settings = {};
@@ -51,15 +52,14 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 	this.styleEmail = (email) => email.replace(self.name, self.styledName);
 
-	const setupUserBasicInformation = (username, styledUsername, altEmail) => {
+	const setupUserBasicInformation = (username, styledUsername, altEmail, aliases) => {
 		self.name = username;
 		self.styledName = styledUsername;
 		self.email = `${username}@${consts.ROOT_DOMAIN}`;
 		self.styledEmail = `${styledUsername}@${consts.ROOT_DOMAIN}`;
 		self.nameEmail = `${self.name} <${self.email}>`;
 		self.altEmail = altEmail;
-
-		return username;
+		self.aliases = aliases ? aliases : [];
 	};
 
 	const restoreAuth = () => {
@@ -108,12 +108,13 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	this.authenticate = () => co(function * () {
 		restoreAuth();
 
-		let res = yield LavaboomAPI.accounts.get('me');
+		let [res, addresses] = yield [LavaboomAPI.accounts.get('me'), LavaboomAPI.addresses.get()];
+		let aliases = addresses.body.addresses.map(a => a.id);
 
 		setupSettings(res.body.user.settings);
 		$rootScope.$broadcast('user-settings');
 
-		setupUserBasicInformation(res.body.user.name, res.body.user.styled_name, res.body.alt_email);
+		setupUserBasicInformation(res.body.user.name, res.body.user.styled_name, res.body.alt_email, aliases);
 
 		if (!isAuthenticated) {
 			isAuthenticated = true;
@@ -174,6 +175,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 			try {
 				restoreAuth();
 
+				let addresses = null;
 				let res = yield LavaboomAPI.tokens.create({
 					type: 'auth',
 					username: username,
@@ -185,9 +187,11 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 				self.persistAuth(isRemember);
 				isAuthenticated = true;
 
-				res = yield LavaboomAPI.accounts.get('me');
+				[res, addresses] = yield [LavaboomAPI.accounts.get('me'), LavaboomAPI.addresses.get()];
+				let aliases = addresses.body.addresses.map(a => a.id);
+
 				setupSettings(res.body.user.settings);
-				setupUserBasicInformation(res.body.user.name, res.body.user.styled_name, res.body.alt_email);
+				setupUserBasicInformation(res.body.user.name, res.body.user.styled_name, res.body.alt_email, aliases);
 				crypto.initialize({isPrivateComputer: isPrivateComputer, email: self.email, isShortMemory: self.settings.isLavaboomSynced});
 
 				res = yield LavaboomAPI.keys.list(self.name);
