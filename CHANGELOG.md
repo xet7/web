@@ -10,10 +10,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Modified
 - build system: livereload works smarter now and without hacks
+- shortcuts improved: added (g) goto, better legend
 
 ### Fixed
 - send public key, correct file name
-- various improvements in attachments handling&&display
+- various improvements in attachments handling && display
+- multiple bugfixes in shortcuts
 
 ## 0.3.0 - 2015-05-13
 ### Added
