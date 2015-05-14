@@ -11,13 +11,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Modified
 - build system: livereload works smarter now and without hacks
 - shortcuts improved: added (g) goto, better legend
+- key header now shows name + email not just email
 
 ### Fixed
 - send public key, correct file name
 - various improvements in attachments handling && display
 - multiple bugfixes in shortcuts
-- fixed search issue
-- fixed "download button" when no decrypted private key found
+- search issue
+- "download button" when no decrypted private key found
+- private key import when key user.name does not conform to `name <email>` syntax
 
 ## 0.3.0 - 2015-05-13
 ### Added
