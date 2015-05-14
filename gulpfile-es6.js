@@ -9,6 +9,7 @@ let del = require('del');
 let path = require('path');
 let toml = require('toml');
 let source = require('vinyl-source-stream');
+let merge = require('merge-stream');
 let lazypipe = require('lazypipe');
 let domain = require('domain');
 let filterTransform = require('filter-transform');
@@ -153,12 +154,42 @@ gulp.task('build:scripts:vendor', gulp.series('build:scripts:vendor:min', 'build
 
 let caches = {};
 
+function lintScripts (src, status = null) {
+	if (status)
+		status.isError = false;
+
+	return gulp.src(src)
+		.pipe(plumber())
+		.pipe(plg.cached('lint:scripts'))
+		.pipe(plg.tap((file, t) =>
+				console.log('Linting: "' + file.relative + '" ...')
+		))
+		.pipe(plg.jshint())
+		.pipe(plg.jshint.reporter(plg.jshintStylish))
+		.pipe(plg.jshint.reporter({
+			reporter: (result, config, options) => {
+				if (status)
+					status.isError = true;
+
+				delete plg.cached.caches['lint:scripts'];
+			}
+		}))
+		.pipe(plg.jshint.reporter('fail'));
+}
+
 // Defines generic browserify build task, one task for each item inside paths.scripts.inputApps
-let browserifyBundle = filename => {
+function browserifyBundle(filename) {
 	let basename = path.basename(filename);
-	let cacheFileName = './' + paths.cacheLL + basename + '.cache';
 	let jsMapBasename = basename.replace('.js', '.js.map');
 	utils.def(() => fs.mkdirSync('./dist/js'));
+
+	let bundler = watchify(browserify({
+		cache: {},
+		packageCache: {},
+		entries: filename,
+		basedir: __dirname,
+		debug: config.isDebugable
+	}), {poll: true});
 
 	function ownCodebaseTransform (transform) {
 		return filterTransform(
@@ -166,8 +197,13 @@ let browserifyBundle = filename => {
 			transform);
 	}
 
-	function bundle(b) {
-		return b.bundle()
+	function bundle(changedFiles) {
+		let lintStatus = {};
+
+		let bundleStream =  bundler.bundle()
+			.on('error', (err) => {
+				console.log('browserify error:', err);
+			})
 			.pipe(exorcist('./' + paths.scripts.output + jsMapBasename))
 			.pipe(source(filename))
 			.pipe(plg.rename({
@@ -178,71 +214,46 @@ let browserifyBundle = filename => {
 			.pipe(plg.stream())
 			.pipe(gulp.dest(paths.scripts.output))
 			.pipe(pipelines.livereloadPipeline()());
+
+		if (changedFiles) {
+			let lintStream = lintScripts(changedFiles, lintStatus);
+
+			return merge(lintStream, bundleStream);
+		}
+
+		return bundleStream;
 	}
 
-	let c = utils.def(() => JSON.parse(fs.readFileSync(cacheFileName)), {
-		cache: {},
-		packageCache: {}
-	});
-	let cache = c.cache;
-	let packageCache = c.packageCache;
-
-	let browserifyInstance = watchify(browserify({
-		cache: cache,
-		packageCache: packageCache,
-		entries: filename,
-		basedir: __dirname,
-		debug: config.isDebugable
-	}), {poll: true});
-
-	browserifyInstance
+	bundler
 		.transform(ownCodebaseTransform(babelify), {externalHelpers: true})
 		.transform(ownCodebaseTransform(bulkify))
 		.transform(ownCodebaseTransform(envify))
 		.transform(ownCodebaseTransform(brfs));
 
 	if (!config.isLogs)
-		browserifyInstance
+		bundler
 			.transform(stripify);
 
 	if (config.isProduction)
-		browserifyInstance
+		bundler
 			.transform(ownCodebaseTransform(browserifyNgAnnotate))
 			.transform(uglifyify);
 
-	browserifyInstance
-		.on('update', () => {
+	bundler
+		.on('update', (changedFiles) => {
 			console.log(`re-bundling '${filename}'...`);
-			return bundle(browserifyInstance);
+			return bundle(changedFiles);
 		})
 		.on('log', msg => {
 			console.log(`bundled '${filename}'`, msg);
-			fs.writeFileSync(cacheFileName, JSON.stringify({
-				cache: cache,
-				packageCache: packageCache
-			}));
 		});
 
-	return bundle(browserifyInstance);
-};
+	return bundle();
+}
 
 // Lint scripts
 gulp.task('lint:scripts',  gulp.series(
-	() =>
-		gulp.src(paths.scripts.inputAll)
-			.pipe(plumber())
-			.pipe(plg.cached('lint:scripts'))
-			.pipe(plg.tap((file, t) =>
-				console.log('Linting: "' + file.relative + '" ...')
-			))
-			.pipe(plg.jshint())
-			.pipe(plg.jshint.reporter(plg.jshintStylish))
-			.pipe(plg.jshint.reporter({
-				reporter: (result, config, options) => {
-					delete plg.cached.caches['lint:scripts'];
-				}
-			}))
-			.pipe(plg.jshint.reporter('fail'))
+	() => lintScripts(paths.scripts.inputAll)
 ));
 
 
@@ -344,7 +355,6 @@ gulp.task('clean', cb => {
 	// yea...
 	utils.def(() => fs.mkdirSync('./' + paths.output));
 	utils.def(() => fs.mkdirSync('./' + paths.cache));
-	utils.def(() => fs.mkdirSync('./' + paths.cacheLL));
 	utils.def(() => fs.mkdirSync('./' + paths.scripts.output));
 
 	cb(null);
@@ -361,6 +371,7 @@ gulp.task('tests', () =>
 
 // Automatically install all bower dependencies
 gulp.task('bower', () => plg.bower());
+gulp.task('bower-update', () => plg.bower({cmd: 'update'}));
 
 // Serve it, baby!
 gulp.task('serve', cb => {
@@ -420,6 +431,7 @@ gulp.task('default', gulp.series(
 	'bower', 'compile',
 	cb => {
 		// live reload for everything except browserify(as we use watchify)
+		gulp.watch('./bower.json', gulp.series('bower-update', 'compile'));
 		gulp.watch(paths.img.input, gulp.series('copy:images'));
 		gulp.watch(paths.fonts.input, gulp.series('copy:fonts'));
 		gulp.watch(paths.styles.inputAll, gulp.series('build:styles'));
