@@ -485,7 +485,8 @@ DIALOGS_NO = "No"
 
 
 [HOTKEY]
-	TITLE          		 = "Shortcuts cheatsheet"
+	TITLE_GLOBAL   		 = "Global shortcuts cheatsheet"
+	TITLE_LOCAL   		 = "This page shortcuts cheatsheet"
     CHEATSHEET           = "Show/Hide cheatsheet"
     FOCUS_ON_SEARCH      = "Focus on Search"
     LEAVE_FROM_SEARCH    = "Leave from Search"
