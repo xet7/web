@@ -113,6 +113,8 @@ DIALOGS_NO = "No"
     CORRUPTED_EMAIL_OR = " or "
     CORRUPTED_EMAIL_DOWNLOAD = "download it"
 
+    LB_NO_SUBJECT = "No subject"
+
 
 [INBOX.DOWNLOAD]
 	TITLE = "Downloading your attachment"
