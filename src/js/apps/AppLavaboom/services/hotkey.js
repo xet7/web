@@ -67,6 +67,15 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, $timeout
 		}
 		else
 		{
+			let callback = option.callback;
+			option.callback = (event, key) => {
+				console.log('router.isOpenedDialog()', router.isOpenedDialog());
+				if (router.isOpenedDialog())
+					return;
+
+				callback(event, key);
+			};
+
 			const currentKey = hotkeys.get(key);
 			if (currentKey)
 				return;
