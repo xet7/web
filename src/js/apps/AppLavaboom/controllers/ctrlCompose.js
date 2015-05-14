@@ -463,14 +463,16 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 
 	$scope.formatPaste = (html) => textAngularHelpers.formatPaste(html);
 
-	hotkey.addHotkey({
-        combo: ['ctrl+enter', 'command+enter'],
-        description: 'HOTKEY.SEND_EMAIL',
-        callback: (event, key) => {
-            event.preventDefault();
-            $scope.send();
-        }
-    });
+	hotkey.registerCustomHotkeys($scope, [
+		{
+			combo: ['ctrl+enter', 'command+enter'],
+			description: 'HOTKEY.SEND_EMAIL',
+			callback: (event, key) => {
+				event.preventDefault();
+				$scope.send();
+			}
+		}
+	]);
 
 	textAngularHelpers.ctrlEnterCallback = $scope.send;
 };

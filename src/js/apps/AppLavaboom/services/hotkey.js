@@ -36,6 +36,24 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 		};
 	};
 
+	self.registerCustomHotkeys = (scope, hotkeys, options) => {
+		if (!options)
+			options = {};
+		options.isPopup = false;
+
+		function register() {
+			for(let k of hotkeys)
+				self.addHotkey(k);
+		}
+
+		register();
+		scope.$on('$stateChangeSuccess', () => {
+			if (router.isPopupState($state.current.name) && !options.isPopup)
+				return;
+			register();
+		});
+	};
+
 	self.toggleHotkeys = (enable) => {
 		isActive = enable;
 		if (enable) {

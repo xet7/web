@@ -123,46 +123,41 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 		return yield contacts.deleteContact(contactId);
 	});
 
-	const stateChangeSuccess = $scope.$bind('$stateChangeSuccess', () => {
+	$scope.$bind('$stateChangeSuccess', () => {
 		$scope.selectedContactId = $stateParams.contactId;
+	});
 
-		const addHotkeys = () => {
-			const moveContacts = delta => {
-				let oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
+	{
+		const moveContacts = delta => {
+			let oldContactPosition = $scope.selectedContactId !== null ? findContact($scope.selectedContactId) : null;
 
-				if (oldContactPosition) {
-					let cid = nextContactId(oldContactPosition, delta);
-					$state.go('main.contacts.profile', {contactId: cid});
-				}
-			};
+			if (oldContactPosition) {
+				let cid = nextContactId(oldContactPosition, delta);
+				$state.go('main.contacts.profile', {contactId: cid});
+			}
+		};
 
-			const moveUp = (event, key) => {
-				event.preventDefault();
-				moveContacts(-1);
-			};
+		const moveUp = (event, key) => {
+			event.preventDefault();
+			moveContacts(-1);
+		};
 
-			const moveDown = (event, key) => {
-				event.preventDefault();
-				moveContacts(1);
-			};
+		const moveDown = (event, key) => {
+			event.preventDefault();
+			moveContacts(1);
+		};
 
-			hotkey.addHotkey({
+		hotkey.registerCustomHotkeys($scope, [
+			{
 				combo: ['h', 'k', 'left', 'up'],
 				description: 'HOTKEY.MOVE_UP',
 				callback: moveUp
-			});
-
-			hotkey.addHotkey({
+			},
+			{
 				combo: ['j', 'l', 'right', 'down'],
 				description: 'HOTKEY.MOVE_DOWN',
 				callback: moveDown
-			});
-		};
-
-		addHotkeys();
-	});
-
-	$scope.$on('$destroy', () => {
-		stateChangeSuccess();
-	});
+			}
+		]);
+	}
 };
