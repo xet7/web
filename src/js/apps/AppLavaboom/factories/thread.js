@@ -23,7 +23,7 @@ module.exports = /*@ngInject*/($injector, $translate, co, utils, crypto, user, E
 			let myself = null;
 			members = members.
 				map(e => {
-					if (e.address == user.email){
+					if (e.address == user.email || user.aliases.includes(e.address)){
 						myself = e;
 						return null;
 					}

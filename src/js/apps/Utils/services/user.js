@@ -59,7 +59,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		self.styledEmail = `${styledUsername}@${consts.ROOT_DOMAIN}`;
 		self.nameEmail = `${self.name} <${self.email}>`;
 		self.altEmail = altEmail;
-		self.aliases = aliases ? aliases : [];
+		self.aliases = aliases ? aliases.map(a => `${a}@${consts.ROOT_DOMAIN}`) : [];
 	};
 
 	const restoreAuth = () => {
