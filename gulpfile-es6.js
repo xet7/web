@@ -183,13 +183,16 @@ function browserifyBundle(filename) {
 	let jsMapBasename = basename.replace('.js', '.js.map');
 	utils.def(() => fs.mkdirSync('./dist/js'));
 
-	let bundler = watchify(browserify({
+	let bundler = browserify({
 		cache: {},
 		packageCache: {},
 		entries: filename,
 		basedir: __dirname,
 		debug: config.isDebugable
-	}), {poll: true});
+	});
+
+	if (isWatching)
+		bundler = watchify(bundler, {poll: true});
 
 	function ownCodebaseTransform (transform) {
 		return filterTransform(
@@ -239,14 +242,15 @@ function browserifyBundle(filename) {
 			.transform(ownCodebaseTransform(browserifyNgAnnotate))
 			.transform(uglifyify);
 
-	bundler
-		.on('update', (changedFiles) => {
-			console.log(`re-bundling '${filename}'...`);
-			return bundle(changedFiles);
-		})
-		.on('log', msg => {
-			console.log(`bundled '${filename}'`, msg);
-		});
+	if (isWatching)
+		bundler
+			.on('update', (changedFiles) => {
+				console.log(`re-bundling '${filename}'...`);
+				return bundle(changedFiles);
+			})
+			.on('log', msg => {
+				console.log(`bundled '${filename}'`, msg);
+			});
 
 	return bundle();
 }
