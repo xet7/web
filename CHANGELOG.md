@@ -2,10 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## UNRELEASE
+## UNRELEASED
 ### Added
 - build system: finally proper incremental builds for browserify
-- build system: livereload improvements
+- build system: update bower components on bower.json change and recompile
+- initial email aliases support
+
+### Modified
+- build system: livereload works smarter now and without hacks
 
 ### Fixed
 - send public key, correct file name
