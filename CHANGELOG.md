@@ -16,6 +16,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - send public key, correct file name
 - various improvements in attachments handling && display
 - multiple bugfixes in shortcuts
+- fixed search issue
+- fixed "download button" when no decrypted private key found
 
 ## 0.3.0 - 2015-05-13
 ### Added
