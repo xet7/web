@@ -114,7 +114,7 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 			manifestRaw = manifestRawData;
 		} catch (err) {
 			console.error('Email.fromEnvelope decrypt error', err);
-			body = {state: err.message, data: ''};
+			body = {state: err.message, data: envelope.body};
 		}
 
 		let email = new Email(angular.extend({}, envelope, {

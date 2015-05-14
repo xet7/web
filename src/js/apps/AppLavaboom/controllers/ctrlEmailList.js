@@ -117,6 +117,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 			$scope.isLoading = true;
 			try {
 				$scope.emails = (yield inbox.getEmailsByThreadId(threadId)).map(e => {
+					console.log('!', e.body);
 					e.originalBodyData = e.body.data;
 					return e;
 				});
