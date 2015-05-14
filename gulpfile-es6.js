@@ -180,10 +180,10 @@ let browserifyBundle = filename => {
 			.pipe(pipelines.livereloadPipeline()());
 	}
 
-	let c = utils.def(() => JSON.parse(fs.readFileSync(cacheFileName)), {
+	let c = {
 		cache: {},
 		packageCache: {}
-	});
+	};
 	let cache = c.cache;
 	let packageCache = c.packageCache;
 
@@ -217,10 +217,6 @@ let browserifyBundle = filename => {
 		})
 		.on('log', msg => {
 			console.log(`bundled '${filename}'`, msg);
-			fs.writeFileSync(cacheFileName, JSON.stringify({
-				cache: cache,
-				packageCache: packageCache
-			}));
 		});
 
 	return bundle(browserifyInstance);
@@ -344,7 +340,6 @@ gulp.task('clean', cb => {
 	// yea...
 	utils.def(() => fs.mkdirSync('./' + paths.output));
 	utils.def(() => fs.mkdirSync('./' + paths.cache));
-	utils.def(() => fs.mkdirSync('./' + paths.cacheLL));
 	utils.def(() => fs.mkdirSync('./' + paths.scripts.output));
 
 	cb(null);
