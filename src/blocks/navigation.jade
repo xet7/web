@@ -1,4 +1,4 @@
-div#left-panel.ng-cloak
+div.ng-cloak
 	nav#navigation
 		div#brand
 			a(ui-sref="main.inbox.label({labelName: 'Inbox', threadId: null})")
@@ -6,20 +6,20 @@ div#left-panel.ng-cloak
 				img(src="#{resolveAsset('/img/Lavaboom-logo-wordmark-min.svg')}")
 		ul.list-unstyled
 			li.compose
-				a(ng-click="showPopup('compose')", tooltip-placement="right", tooltip="{{'MAIN.NAV.LB_COMPOSE' | translate}}")
+				a(ng-click="showPopup('compose'); toggleLeftPanel()", tooltip-placement="right", tooltip="{{'MAIN.NAV.LB_COMPOSE' | translate}}")
 					span.icon-compose
 					span#compose-action.action {{'MAIN.NAV.LB_COMPOSE' | translate}}
 			li(ng-class="{ active: $state.includes('main.inbox.label', {labelName: label.name}) }", ng-repeat="label in labels track by label.id")
-				a(ui-sref="main.inbox.label({labelName: label.name, threadId: getThreadForLabel(label.name)})", tooltip="{{label.name}}", tooltip-placement="right")
+				a(ui-sref="main.inbox.label({labelName: label.name, threadId: getThreadForLabel(label.name)})", tooltip="{{label.name}}", tooltip-placement="right", ng-click="toggleLeftPanel();")
 					span(ng-class="label.iconClass")
 					span.action(ng-bind="label.name")
 					span.badge(ng-bind="label.threadsUnread | unread")
 			li.separator
 			li(ui-sref-active="active")
-				a(ui-sref="main.contacts", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_CONTACTS' | translate}}")
+				a(ng-click="toggleLeftPanel()", ui-sref="main.contacts", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_CONTACTS' | translate}}")
 					span.icon-contacts
 					span.action {{'MAIN.NAV.LB_CONTACTS' | translate}}
-			li(ng-class="{ active: $state.includes('main.settings') }")
+			li(ng-click="toggleLeftPanel()", ng-class="{ active: $state.includes('main.settings') }")
 				a(ui-sref="main.settings.general", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_SETTINGS' | translate}}")
 					span.icon-cog
 					span.action {{'MAIN.NAV.LB_SETTINGS' | translate}}

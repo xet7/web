@@ -1,0 +1,135 @@
+@media (max-width: @screen-sm-max) {
+
+	#responsive-functions{
+		.z4();
+		display: block;
+		position: fixed;
+		.btn{
+			.lava-icon-22();
+		}
+	}
+
+	#left-panel{
+		.z3();
+		transform: translateX(-@left-panel-width);
+		transition: .2s all;
+		nav{
+			padding-top: 4.4rem;
+		}
+		&.show-left-panel{
+			transform: translateX(0);
+		}
+	}
+	#left-panel-mask{
+		.z2();
+		position: absolute;
+		.fill-abs();
+		background: @lava-fadeouts;
+		transform: translateX(-100%);
+		transition: .2s opacity;
+		.opacity(0);
+		&.show-left-panel{
+			transform: translateX(0);
+			.opacity(1);
+		}
+	}
+
+	#content{
+		.z1();
+		left: 0;
+		right: 0;
+	}
+
+	.list-pane{
+		.fill-abs();
+		width: 100%;
+		.actions .navbar{
+			padding-left: @filter-height;
+		}
+	}
+
+	.details-pane{
+		width: 0;
+		overflow: 	hidden;
+		transform: translateX(100%);
+		transition: .2s transform;
+		margin-left: 0;
+	}
+
+	.show-details{
+		#nav-toggle{
+			transform: translateX(-5rem);
+		}
+
+		.details-pane{
+			transform: translateX(0);
+			width: 100%;
+		}
+	}
+
+	.actions{
+		padding-left: 4.4rem;
+	}
+
+	#nav-toggle {
+	    cursor: pointer;
+	    
+	    height: 4.4rem; width: 4.4rem;
+	    content: ' ';
+	    position: relative;
+
+	    span:before {
+	        top: -.8rem;
+	    }
+	    span:after {
+	        bottom: -.8rem;
+	    }
+	    span{
+	    	top: 2.1rem;
+	    }
+	}
+	#nav-toggle span,#nav-toggle span:before,#nav-toggle span:after {
+	    cursor: pointer;
+	    border-radius: @border-radius-small;
+	    height: .2rem;
+	    width: 2.2rem;
+	    background: white;
+	    position: absolute;
+	    display: block;
+	    content: '';
+	    transition: all .2s ease-in-out;
+	}
+	#nav-toggle.active {
+	    span {
+	        height: .2rem;
+	        &:before, &:after {
+				top: 0;
+				left: -.7rem;
+				height: .3rem;
+	        }
+	        &:before {
+	        	transform: rotate(-45deg) scale(.5);
+	        	top: -.4rem;
+		    }
+		    &:after {
+		    	top: .3rem;
+		        transform: rotate(45deg) scale(.5);
+		    }
+	    }
+	}
+
+	.navbar-nav > li {
+		float: left;
+	}
+
+	.navbar-nav{
+		float: left;
+		&.navbar-right{
+			float: right;
+		}
+	}
+
+	.tooltip{
+		display: none !important;
+	}
+}

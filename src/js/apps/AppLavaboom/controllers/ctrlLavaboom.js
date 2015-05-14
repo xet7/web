@@ -15,6 +15,18 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 
 	$scope.tooltipDelay = () => (window.getComputedStyle(document.getElementById('compose-action')).display==='none') ? true : 1000000;
 
+	$scope.showLeftPanel = false;
+	$scope.toggleLeftPanel = () => {
+		$scope.showLeftPanel = !$scope.showLeftPanel;
+		console.log('left panel triggered');
+	};
+
+	$scope.showDetails = false;
+	$scope.toggleShowDetails = () => {
+		$scope.showDetails = !$scope.showDetails;
+		console.log('showDetails triggered');
+	};
+
 	const initializeTimeAgo = () => co(function *(){
 		const datesTranslations = {
 			PREFIX_AGO: '',

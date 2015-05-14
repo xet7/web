@@ -56,11 +56,15 @@ html(lang="en")
 								//- 		span(class="{{notification.cssClass}}")
 								//- 		span(title="{{notification.title}}") {{notification.text}}
 
-		#main-app-container.hidden(ng-controller="CtrlLavaboom")
+		#main-app-container.hidden(ng-controller="CtrlLavaboom", ng-class="{'show-details': showDetails}")
 			div(ng-if="isInitialized && isShown", custom-drop-zone, event-filter="ddEventFilter(name, event)")
-				#leftPanel(ui-view="left-view", autoscroll="false")
+				#left-panel(ui-view="left-view", autoscroll="false", ng-class="{'show-left-panel': showLeftPanel}")
 				#content(ui-view="main-view", autoscroll="false")
 				#modal(ui-view="modal-view", autoscroll="false")
+				#left-panel-mask(ng-click="toggleLeftPanel()", ng-class="{'show-left-panel': showLeftPanel}")
+				#responsive-functions
+					a#nav-toggle.btn.btn-clear.btn-large.show-menu(ng-click="toggleLeftPanel()", ng-class="{'active': showLeftPanel}")
+						span
 
 		if globs.IS_PRODUCTION
 			script!= 'window.assets = ' + JSON.stringify(assets) + ';'
