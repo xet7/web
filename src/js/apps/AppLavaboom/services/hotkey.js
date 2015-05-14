@@ -27,6 +27,7 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 			hotkeys.del(currentKey);
 
 		option.description = $translate.instant(option.description);
+		console.log('add hotkey', option);
 		hotkeys.add(option);
 
 		hotkeyList[key] = {
@@ -86,14 +87,14 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, hotkeys,
 			})
 		});
 
-		self.addHotkey({
+		/*self.addHotkey({
 			combo: ['ctrl+d', 'command+d'],
 			description: 'HOTKEY.GOTO_DRAFTS',
 			callback: notWhenPopupOpened((event, key) => {
 				event.preventDefault();
 				$state.go('main.inbox.label', {labelName: 'Drafts'});
 			})
-		});
+		});*/
 
 		self.addHotkey({
 			combo: ['ctrl+s', 'command+s'],
