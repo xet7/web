@@ -1,6 +1,7 @@
 module.exports = /*@ngInject*/function (utils, taSelection) {
 	const self = this;
 	const newLineRegex = /(\r\n|\r|\n)/g;
+	const tagRegex = /<[a-z][\s\S]*>/gi;
 
 	this.ctrlEnterCallback = null;
 
@@ -50,8 +51,14 @@ module.exports = /*@ngInject*/function (utils, taSelection) {
 		if (selection.start.element.nodeName == 'PRE' && selection.end.element.nodeName == 'PRE') {
 			let dom = utils.getDOM(paste);
 			formatted = htmlToText(dom);
-		} else
-			formatted = textToHtml(paste);
+		} else {
+			if (tagRegex.test(paste))
+				formatted = textToHtml(paste);
+			else {
+				let dom = utils.getDOM(paste);
+				formatted = htmlToText(dom);
+			}
+		}
 
 		return formatted;
 	};
