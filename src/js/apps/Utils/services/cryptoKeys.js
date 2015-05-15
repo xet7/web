@@ -16,6 +16,9 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, $translate, co,
 				throw new Error('WRONG_FORMAT');
 
 			for(let key of keyring.keys) {
+				if (key.primaryKey.tag != 5)
+					throw new Error('PUB_KEY_NOT_SUPPORTED');
+
 				if (!crypto.getPrivateKeyByFingerprint(key.primaryKey.fingerprint))
 					crypto.importPrivateKey(key);
 				else

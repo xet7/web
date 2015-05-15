@@ -164,6 +164,11 @@ module.exports = /*@ngInject*/function($q, $rootScope, $injector, consts, co, ut
 	this.restorePrivateKeys = (privateKeys, privateSecuredKeys) => {
 		storage.storePrivate(privateKeys);
 		storage.storePrivate(privateSecuredKeys);
+		self.initialize();
+		for(let k of privateKeys)
+			self.importPrivateKey(k);
+		for(let k of privateSecuredKeys)
+			self.importPrivateKey(k);
 	};
 
 	this.storeKeyring = () => {

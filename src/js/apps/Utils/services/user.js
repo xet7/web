@@ -107,16 +107,22 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		yield keysCreationPromises;
 	});
 
+	function gatherAndSetupInformation () {
+		return co(function *() {
+			let [account, addresses] = yield [LavaboomAPI.accounts.get('me'), LavaboomAPI.addresses.get()];
+			let aliases = addresses.body.addresses && angular.isArray(addresses.body.addresses)
+				? addresses.body.addresses.map(a => a.id)
+				: [];
+
+			setupSettings(account.body.user.settings);
+			setupUserBasicInformation(account.body.user.name, account.body.user.styled_name, account.body.alt_email, aliases);
+		});
+	}
+
 	this.authenticate = () => co(function * () {
 		restoreAuth();
-
-		let [res, addresses] = yield [LavaboomAPI.accounts.get('me'), LavaboomAPI.addresses.get()];
-		let aliases = addresses.body.addresses.map(a => a.id);
-
-		setupSettings(res.body.user.settings);
+		yield gatherAndSetupInformation();
 		$rootScope.$broadcast('user-settings');
-
-		setupUserBasicInformation(res.body.user.name, res.body.user.styled_name, res.body.alt_email, aliases);
 
 		if (!isAuthenticated) {
 			isAuthenticated = true;
@@ -190,11 +196,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 				self.persistAuth(isRemember);
 				isAuthenticated = true;
 
-				[res, addresses] = yield [LavaboomAPI.accounts.get('me'), LavaboomAPI.addresses.get()];
-				let aliases = addresses.body.addresses.map(a => a.id);
-
-				setupSettings(res.body.user.settings);
-				setupUserBasicInformation(res.body.user.name, res.body.user.styled_name, res.body.alt_email, aliases);
+				yield gatherAndSetupInformation();
 				crypto.initialize({isPrivateComputer: isPrivateComputer, email: self.email, isShortMemory: self.settings.isLavaboomSynced});
 
 				res = yield LavaboomAPI.keys.list(self.name);

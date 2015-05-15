@@ -21,7 +21,8 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 		LB_CONFIRM_KEYS_REMOVAL: '',
 		LB_CANNOT_IMPORT: '',
 		LB_CANNOT_IMPORT_WRONG_FORMAT: '',
-		LB_CANNOT_IMPORT_CORRUPTED: ''
+		LB_CANNOT_IMPORT_CORRUPTED: '',
+		LB_CANNOT_IMPORT_PUB_KEY_NOT_SUPPORTED: ''
 	};
 	$translate.bindAsObject(translations, 'MAIN.SETTINGS.SECURITY');
 
@@ -105,7 +106,7 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 		try {
 			cryptoKeys.importKeys(data);
 		} catch (err) {
-			console.log('LB_CANNOT_IMPORT_', err.message);
+			console.log('cannot import', err.message);
 			const translatedErrorMessage = translations['LB_CANNOT_IMPORT_' + err.message];
 
 			notifications.set('import-keys-fail', {
@@ -138,14 +139,13 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 				}
 			}
 
+			let LavaboomSyncedKeyring = '';
 			if($scope.settings.isLavaboomSynced){
 				let keysBackup = cryptoKeys.exportKeys(user.email);
 				$scope.settings.keyring = keysBackup;
 			} else {
+				LavaboomSyncedKeyring = $scope.settings.keyring;
 				$scope.settings.keyring = '';
-
-				let keysBackup = cryptoKeys.exportKeys(user.email);
-				saver.saveAs(keysBackup, cryptoKeys.getExportFilename(keysBackup, user.name), 'text/plain;charset=utf-8');
 			}
 
 			if (Object.keys($scope.settings).length > 0) {
@@ -159,6 +159,10 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 							crypto.initialize({isShortMemory: true});
 						} else {
 							crypto.initialize({isShortMemory: false});
+						}
+						if (LavaboomSyncedKeyring) {
+							cryptoKeys.importKeys(LavaboomSyncedKeyring);
+							saver.saveAs(LavaboomSyncedKeyring, cryptoKeys.getExportFilename(LavaboomSyncedKeyring, user.name), 'text/plain;charset=utf-8');
 						}
 						crypto.restorePrivateKeys(...keys);
 
