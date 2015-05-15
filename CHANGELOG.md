@@ -7,7 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - contacts request public key, attach own public key by default
 
 ### Fixed
-- keyring backup url fixed
+- keyring backup url
+- private key persistence
+- Lavaboom Sync
+- plain/text unencrypted attachments to unsecure destinations(binary support is in todo)
 
 ## 0.3.1 - 2015-05-13
 ### Added
@@ -48,7 +51,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Modified
 - gulpfile refactored into es6, now using gulp 4.x && node 0.12.x as a build system
 - auto-complete of @lavaboom.com turned off by default
-- new improved keys persistance and display model
+- new improved keys persistence and display model
 - signup: this is private PC moved to password screen
 - signup: merged sync and backup screens
 - decrypting threads 1-by-1 instead of blocking while the whole bulk is being decrypted
