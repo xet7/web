@@ -17,6 +17,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - build system: finally proper incremental builds for browserify
 - build system: update bower components on bower.json change and recompile
 - initial email aliases support
+- disallow import public keys in security/settings
 
 ### Modified
 - build system: livereload works smarter now and without hacks
