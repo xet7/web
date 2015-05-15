@@ -486,6 +486,7 @@ DIALOGS_NO = "No"
 
 
 [HOTKEY]
+	GOTO				 = "Go to - press this key followed by another one"
 	TITLE_GLOBAL   		 = "Global shortcuts cheatsheet"
 	TITLE_LOCAL   		 = "This page shortcuts cheatsheet"
     CHEATSHEET           = "Show/Hide cheatsheet"

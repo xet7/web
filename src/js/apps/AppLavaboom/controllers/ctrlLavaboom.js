@@ -92,6 +92,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 				combo: ['i'],
 				name: 'Inbox',
 				require: 'g',
+				requireDescription: 'HOTKEY.GOTO',
 				description: 'HOTKEY.GOTO_INBOX',
 				callback: (event, key) => {
 					event.preventDefault();
@@ -102,6 +103,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 				combo: ['s'],
 				name: 'Sent',
 				require: 'g',
+				requireDescription: 'HOTKEY.GOTO',
 				description: 'HOTKEY.GOTO_SENT',
 				callback: (event, key) => {
 					event.preventDefault();
@@ -112,6 +114,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 				combo: ['p'],
 				name: 'Spam',
 				require: 'g',
+				requireDescription: 'HOTKEY.GOTO',
 				description: 'HOTKEY.GOTO_SPAM',
 				callback: (event, key) => {
 					event.preventDefault();
@@ -122,6 +125,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 				combo: ['a'],
 				name: 'Starred',
 				require: 'g',
+				requireDescription: 'HOTKEY.GOTO',
 				description: 'HOTKEY.GOTO_STARRED',
 				callback: (event, key) => {
 					event.preventDefault();
@@ -132,6 +136,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 				combo: ['t'],
 				name: 'Trash',
 				require: 'g',
+				requireDescription: 'HOTKEY.GOTO',
 				description: 'HOTKEY.GOTO_TRASH',
 				callback: (event, key) => {
 					event.preventDefault();
@@ -142,6 +147,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 				combo: ['c'],
 				name: 'Contacts',
 				require: 'g',
+				requireDescription: 'HOTKEY.GOTO',
 				description: 'HOTKEY.GOTO_CONTACTS',
 				callback: (event, key) => {
 					event.preventDefault();
@@ -152,6 +158,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 				combo: ['x'],
 				name: 'Settings',
 				require: 'g',
+				requireDescription: 'HOTKEY.GOTO',
 				description: 'HOTKEY.GOTO_SETTINGS',
 				callback: (event, key) => {
 					event.preventDefault();
