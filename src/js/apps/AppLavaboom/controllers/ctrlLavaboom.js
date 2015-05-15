@@ -193,8 +193,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 						event.preventDefault();
 						router.showPopup('hotkeys');
 					}
-				},
-				allowIn: ['INPUT']
+				}
 			}
 		], {isPopup: false, isGlobal: true, scope: 'root'});
 	}
