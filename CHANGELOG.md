@@ -4,7 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## UNRELEASED
 ### Fixed
-- buggy templates(signature mostly, reply, forward, etc)
+- templates(signature mostly, reply, forward, etc)
+- text-angular paste processing
 
 ## 0.3.2 - 2015-05-13
 ### Added
