@@ -120,7 +120,7 @@ module.exports = /*@ngInject*/($translate, co, user, crypto, ContactEmail) => {
 		const envelope = yield crypto.encodeEnvelopeWithKeys({
 			data: data,
 			encoding: 'json'
-		}, [user.key.key], 'data');
+		}, [user.key.armor()], 'data');
 		envelope.name = contact.name == '$hidden' ? '$hidden' : '$contact';
 
 		return envelope;

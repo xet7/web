@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, crypto, saver, notifications, router, Key) => {
+module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, crypto, saver, notifications, router, user, Key) => {
 	$scope.selectedContactId = $stateParams.contactId;
 	$scope.isNotFound = false;
 	$scope.emails = [];
@@ -16,7 +16,7 @@ module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, cry
 	};
 
 	$scope.requestPublicKey = () => {
-		router.showPopup('compose', {to: $scope.currentEmail.email});
+		router.showPopup('compose', {to: $scope.currentEmail.email, publicKey: user.key.fingerprint});
 	};
 
 	$scope.uploadPublicKey = (data) => {
