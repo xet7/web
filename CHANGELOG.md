@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## UNRELEASED
+## 0.3.2 - 2015-05-13
 ### Added
 - contacts request public key, attach own public key by default
 
@@ -11,13 +11,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - private key persistence
 - Lavaboom Sync
 - plain/text unencrypted attachments to unsecure destinations(binary support is in todo)
+- disallow import public keys in security/settings
 
 ## 0.3.1 - 2015-05-13
 ### Added
 - build system: finally proper incremental builds for browserify
 - build system: update bower components on bower.json change and recompile
 - initial email aliases support
-- disallow import public keys in security/settings
 
 ### Modified
 - build system: livereload works smarter now and without hacks
