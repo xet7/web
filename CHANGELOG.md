@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - templates(signature mostly, reply, forward, etc)
 - text-angular paste processing
+- save contact automatically if user leaves state in edit mode
 
 ## 0.3.2 - 2015-05-13
 ### Added
