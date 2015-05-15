@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window, $translate, $templateCache, $interpolate,
-									   consts, LavaboomAPI, co, crypto, cryptoKeys, loader, utils) {
+									   consts, LavaboomAPI, co, crypto, cryptoKeys, loader, utils, Key) {
 	const self = this;
 
 	const translations = {
@@ -132,7 +132,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		}
 
 		let res = yield LavaboomAPI.keys.get(self.email);
-		self.key = res.body.key;
+		self.key = new Key(crypto.readKey(res.body.key.key));
 
 		if (!isAuthenticated) {
 			isAuthenticated = true;
@@ -208,7 +208,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 					return;
 				}
 
-				self.key = res.body.key;
+				self.key = new Key(crypto.readKey(res.body.key.key));
 
 				if (self.settings.isLavaboomSynced)
 					cryptoKeys.importKeys(self.settings.keyring);

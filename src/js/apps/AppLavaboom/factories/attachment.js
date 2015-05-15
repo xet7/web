@@ -23,7 +23,7 @@ module.exports = /*@ngInject*/(co, user, crypto, utils, fileReader, Email) => {
 		const isSecured = Email.isSecuredKeys(keys);
 
 		if (isSecured)
-			keys[user.email] = user.key.key;
+			keys[user.email] = user.key.armor();
 		const publicKeys = isSecured ? Email.keysMapToList(keys) : [];
 
 		const envelope = yield crypto.encodeEnvelopeWithKeys({

@@ -60,7 +60,7 @@ module.exports = /*@ngInject*/(co, crypto, user, Manifest) => {
 		const subjectHash = crypto.hash(Email.getSubjectWithoutRe(manifest.subject));
 
 		if (isSecured) {
-			keys[user.email] = user.key.key;
+			keys[user.email] = user.key.armor();
 			let publicKeys = Email.keysMapToList(keys);
 
 			console.log('Email.toEnvelope keys', keys, publicKeys);
