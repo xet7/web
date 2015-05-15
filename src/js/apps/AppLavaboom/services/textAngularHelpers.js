@@ -17,7 +17,7 @@ module.exports = /*@ngInject*/function (utils, taSelection) {
 				curText += htmlToText(node, level + 1);
 		}
 
-		return curText;
+		return level === 0 ? `<pre>${curText}</pre>` : curText;
 	}
 
 	function textToHtml (text) {

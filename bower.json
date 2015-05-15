@@ -40,7 +40,7 @@
     "openpgp": "https://github.com/lavab/openpgpjs/archive/v1.0.1.2.tar.gz",
     "angular-dialog-service": "~5.2.6",
     "file-saver": "https://github.com/eligrey/FileSaver.js/archive/master.tar.gz",
-    "textAngular": "https://github.com/lavab/textAngular/archive/textAngular/fix-ta-paste-sanitizing.tar.gz",
+    "textAngular": "https://github.com/lavab/textAngular/archive/v1.3.11.1.tar.gz",
     "lavaboom": "~0.4.1"
   },
   "resolutions": {
