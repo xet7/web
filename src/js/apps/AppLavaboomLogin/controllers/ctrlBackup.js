@@ -24,7 +24,6 @@ module.exports = /*@ngInject*/($scope, $state, $window, co, user, signUp, crypto
 
 		let keys = crypto.clearPermanentPrivateKeysForEmail(user.email);
 		crypto.initialize({isShortMemory: true});
-
 		crypto.restorePrivateKeys(...keys);
 
 		navigateMainApplication();

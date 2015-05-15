@@ -138,14 +138,13 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 				}
 			}
 
+			let LavaboomSyncedKeyring = '';
 			if($scope.settings.isLavaboomSynced){
 				let keysBackup = cryptoKeys.exportKeys(user.email);
 				$scope.settings.keyring = keysBackup;
 			} else {
+				LavaboomSyncedKeyring = $scope.settings.keyring;
 				$scope.settings.keyring = '';
-
-				let keysBackup = cryptoKeys.exportKeys(user.email);
-				saver.saveAs(keysBackup, cryptoKeys.getExportFilename(keysBackup, user.name), 'text/plain;charset=utf-8');
 			}
 
 			if (Object.keys($scope.settings).length > 0) {
@@ -159,6 +158,10 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 							crypto.initialize({isShortMemory: true});
 						} else {
 							crypto.initialize({isShortMemory: false});
+						}
+						if (LavaboomSyncedKeyring) {
+							cryptoKeys.importKeys(LavaboomSyncedKeyring);
+							saver.saveAs(LavaboomSyncedKeyring, cryptoKeys.getExportFilename(LavaboomSyncedKeyring, user.name), 'text/plain;charset=utf-8');
 						}
 						crypto.restorePrivateKeys(...keys);
 
