@@ -2,14 +2,14 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## UNRELEASED
+## 0.3.3 - 2015-05-15
 ### Fixed
 - templates(signature mostly, reply, forward, etc)
 - text-angular paste processing
 - save contact automatically if user leaves state in edit mode
 - more shortcuts fixes and improvements
 
-## 0.3.2 - 2015-05-13
+## 0.3.2 - 2015-05-15
 ### Added
 - contacts request public key, attach own public key by default
 
