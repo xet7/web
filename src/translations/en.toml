@@ -104,8 +104,8 @@ DIALOGS_NO = "No"
 	TITLE_CONFIRM = "Confirm action"
     LB_EMAIL_HAS_EMBEDDED_STYLING = "This email contains embedded styling, do you want to display it?"
 
-    TITLE_OPENPGP_BLOCK_DECRYPT_ERROR_NO_KEY_FOUND = "Cannot find proper decrypted private key to decrypt this openpgp envelope"
-    TITLE_OPENPGP_BLOCK_DECRYPT_ERROR = "Something went wrong during decryption of this openpgp envelope"
+    TITLE_OPENPGP_BLOCK_DECRYPT_ERROR_NO_KEY_FOUND = "Cannot find decrypted private key for this embedded openpgp envelope"
+    TITLE_OPENPGP_BLOCK_DECRYPT_ERROR = "Something went wrong during decryption of embedded openpgp envelope"
 
     CORRUPTED_EMAIL_TITLE = "Aw, Snap!"
     CORRUPTED_EMAIL = "Something went wrong while displaying this email. To continue, try to "

@@ -1,4 +1,5 @@
-module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize, $templateCache, co, user, consts, utils, crypto) => {
+module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize, $templateCache,
+							   co, user, consts, utils, crypto, notifications) => {
 	const emailRegex = /([-A-Z0-9_.]*[A-Z0-9]@[-A-Z0-9_.]*[A-Z0-9])/ig;
 	const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
 	const pgpRegex = /(-----BEGIN PGP MESSAGE-----[^-]+-----END PGP MESSAGE-----)/ig;
@@ -65,8 +66,20 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 
 					return dom.innerHTML;
 				} catch (error) {
-					if (error.message == 'no_private_key')
+					if (error.message == 'no_private_key') {
+						notifications.set('openpgp-envelope-decode-failed', {
+							text: translations.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR_NO_KEY_FOUND,
+							type: 'warning',
+							namespace: 'mailbox'
+						});
 						return `<pre title='${translations.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR_NO_KEY_FOUND}'>${pgpMessage}</pre>`;
+					}
+
+					notifications.set('openpgp-envelope-decode-failed', {
+						text: translations.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR,
+						type: 'warning',
+						namespace: 'mailbox'
+					});
 					return `<pre title='${translations.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR}'>${pgpMessage}</pre>`;
 				}
 			});
