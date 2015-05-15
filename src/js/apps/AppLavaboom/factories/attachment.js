@@ -31,6 +31,8 @@ module.exports = /*@ngInject*/(co, user, crypto, utils, fileReader, Email) => {
 		}, publicKeys, 'data');
 		envelope.name = isSecured ? attachment.id + '.pgp' : attachment.name;
 
+		console.log('attachment envelope', envelope, isSecured, keys);
+
 		return envelope;
 	});
 

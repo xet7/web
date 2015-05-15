@@ -277,9 +277,15 @@ module.exports = /*@ngInject*/function($q, $rootScope, $injector, consts, co, ut
 
 		const dataObj = data.encoding == 'json' ? JSON.stringify(data.data) : data.data;
 
+		function formatDataObj() {
+			if (Object.prototype.toString.call(dataObj) == '[object Uint8Array]')
+				return utils.Uint8Array2str(dataObj);
+			return dataObj;
+		}
+
 		const {pgpData, mergedPublicKeys} = publicKeys && publicKeys.length > 0
 			? yield self.encodeWithKeys(dataObj, publicKeys)
-			: {pgpData: dataObj, mergedPublicKeys: []};
+			: {pgpData: formatDataObj(dataObj), mergedPublicKeys: []};
 
 		const envelope = {
 			pgp_fingerprints: mergedPublicKeys.map(k => k.primaryKey.fingerprint),

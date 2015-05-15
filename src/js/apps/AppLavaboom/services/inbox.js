@@ -1,4 +1,5 @@
-module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts, co, LavaboomAPI, user, crypto, contacts, Email, Thread, Label) {
+module.exports = /*@ngInject*/function($q, $rootScope, $timeout,
+									   router, consts, co, LavaboomAPI, LavaboomHttpAPI, user, crypto, contacts, Email, Thread, Label) {
 	const self = this;
 
 	const newLineRegex = /(\r\n|\n)/g;
@@ -147,7 +148,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $timeout, router, consts,
 	});
 
 	this.uploadAttachment = (envelope) => co(function *(){
-		return yield LavaboomAPI.files.create(envelope);
+		return yield LavaboomHttpAPI.files.create(envelope);
 	});
 
 	this.deleteAttachment = (attachmentId) => co(function *(){
