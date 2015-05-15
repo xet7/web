@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window, $translate, $templateCache, $interpolate,
-									   consts, LavaboomAPI, co, crypto, cryptoKeys, loader, utils, Key) {
+									   consts, LavaboomAPI, LavaboomHttpAPI, co, crypto, cryptoKeys, loader, utils, Key) {
 	const self = this;
 
 	const translations = {
@@ -65,8 +65,10 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	const restoreAuth = () => {
 		token = sessionStorage['lava-token'] ? sessionStorage['lava-token'] : localStorage['lava-token'];
 
-		if (token)
+		if (token) {
 			LavaboomAPI.setAuthToken(token);
+			LavaboomHttpAPI.setAuthToken(token);
+		}
 	};
 
 	this.persistAuth = (isRemember = true) => {
@@ -184,6 +186,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 				token = res.body.token.id;
 				LavaboomAPI.setAuthToken(token);
+				LavaboomHttpAPI.setAuthToken(token);
 				self.persistAuth(isRemember);
 				isAuthenticated = true;
 
@@ -236,6 +239,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		crypto.removeSensitiveKeys();
 
 		LavaboomAPI.setAuthToken('');
+		LavaboomHttpAPI.setAuthToken('');
 		isAuthenticated = false;
 		token = '';
 
