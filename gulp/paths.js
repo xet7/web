@@ -11,11 +11,12 @@ module.exports = {
 		inputFolder: 'src/js/',
 		inputAll: 'src/js/**/*.js',
 		inputApps: [
-			'./src/js/apps/utils.js',
-			'./src/js/apps/appLavaboom.js',
-			'./src/js/apps/appLavaboomLogin.js',
+			'./src/js/apps/Utils/index.toml',
+			'./src/js/apps/AppLavaboom/index.toml',
+			'./src/js/apps/AppLavaboomLogin/index.toml',
 			'./src/js/loader.js'
 		],
+		inputApplication: './src/js/apps/app.js',
 		inputDeps: 'src/js/apps/*.toml',
 		inputAppsFolder: 'src/js/apps/',
 		output: output + 'js/'

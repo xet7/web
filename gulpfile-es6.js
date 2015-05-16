@@ -2,7 +2,7 @@ const gulp = global.gulp;
 const plg = global.plg;
 
 let bluebird = require('bluebird');
-
+let File = require('vinyl');
 let co = require('co');
 let crypto = require('crypto');
 let os = require('os');
@@ -23,7 +23,7 @@ let browserify = require('browserify'),
 	bulkify = require('bulkify'),
 	uglifyify = require('uglifyify'),
 	stripify = require('stripify'),
-	envify = require('envify'),
+	envify = require('envify/custom'),
 	watchify = require('watchify'),
 	brfs = require('brfs'),
 	exorcist = require('exorcist');
@@ -42,10 +42,10 @@ let utils = require('./gulp/utils');
 // Configuration
 let config = require('./gulp/config');
 let paths = require('./gulp/paths');
-if (!process.env.API_URI)
-	process.env.API_URI = config.defaultApiUri;
-if (!process.env.ROOT_DOMAIN)
-	process.env.ROOT_DOMAIN = config.defaultRootDomain;
+let sharedEnvironment = {
+	API_URI: process.env.API_URI ? process.env.API_URI : config.defaultApiUri,
+	ROOT_DOMAIN: process.env.ROOT_DOMAIN ? process.env.ROOT_DOMAIN : config.defaultRootDomain
+};
 require('./gulp/plugins');
 
 if (!isWatching) {
@@ -53,7 +53,7 @@ if (!isWatching) {
 	if (args[0] === 'production') {
 		console.log('Making a production build...');
 		config.isProduction = true;
-		process.env.IS_PRODUCTION = true;
+		sharedEnvironment.IS_PRODUCTION = true;
 	}
 	if (args[0] === 'serve') {
 		isServe = true;
@@ -78,8 +78,8 @@ gulp.task('build:scripts:vendor:min', () =>
 			let appConfig = toml.parse(file.contents);
 			let dependencies = [];
 
-			for(let i = 0; i < appConfig.application.dependencies.length; i++) {
-				let resolvedFileOriginal = paths.scripts.inputAppsFolder + appConfig.application.dependencies[i];
+			for(let i = 0; i < appConfig.APPLICATION.vendorDependencies.length; i++) {
+				let resolvedFileOriginal = paths.scripts.inputAppsFolder + appConfig.APPLICATION.vendorDependencies[i];
 
 				if (fs.existsSync(resolvedFileOriginal)) {
 					let resolvedFile = resolvedFileOriginal.replace('.js', '.min.js');
@@ -109,8 +109,8 @@ gulp.task('build:scripts:vendor:normal', () =>
 			let appConfig = toml.parse(file.contents);
 			let dependencies = [];
 
-			for(let i = 0; i < appConfig.application.dependencies.length; i++) {
-				let resolvedFileOriginal = paths.scripts.inputAppsFolder + appConfig.application.dependencies[i];
+			for(let i = 0; i < appConfig.APPLICATION.vendorDependencies.length; i++) {
+				let resolvedFileOriginal = paths.scripts.inputAppsFolder + appConfig.APPLICATION.vendorDependencies[i];
 
 				let resolvedFile = '';
 
@@ -126,14 +126,14 @@ gulp.task('build:scripts:vendor:normal', () =>
 					}
 
 					if (!fs.existsSync(resolvedFile)) {
-						console.log('Cannot find minified version for vendor library: ', appConfig.application.dependencies[i]);
+						console.log('Cannot find minified version for vendor library: ', appConfig.APPLICATION.vendorDependencies[i]);
 						resolvedFile = resolvedFileOriginal;
 					}
 				} else resolvedFile = resolvedFileOriginal;
 
 				if (!fs.existsSync(resolvedFile)) {
 					console.log(resolvedFile);
-					throw new Error('Cannot find vendor library: "' + appConfig.application.dependencies[i] + '"');
+					throw new Error('Cannot find vendor library: "' + appConfig.APPLICATION.vendorDependencies[i] + '"');
 				}
 
 				dependencies.push(resolvedFile);
@@ -182,20 +182,28 @@ function lintScripts (src, status = null) {
 
 // Defines generic browserify build task, one task for each item inside paths.scripts.inputApps
 function browserifyBundle(filename) {
-	let basename = path.basename(filename);
-	let jsMapBasename = basename.replace('.js', '.js.map');
-	utils.def(() => fs.mkdirSync('./dist/js'));
+	let isApplicationBundle = filename.endsWith('.toml');
+	let inputApplication = isApplicationBundle ? paths.scripts.inputApplication : filename;
+	let outputFile = isApplicationBundle ? '' : path.basename(filename).replace('.js', '');
+
+	let environment = {};
+	for(let k of Object.keys(sharedEnvironment))
+		environment[k] = sharedEnvironment[k];
 
 	let bundler = browserify({
 		cache: {},
 		packageCache: {},
-		entries: filename,
+		entries: inputApplication,
 		basedir: __dirname,
 		debug: config.isDebugable
 	});
 
-	if (isWatching)
-		bundler = watchify(bundler, {poll: true});
+	function addRequire(content, name) {
+		bundler.require(new File({
+			contents: new Buffer(content)
+		}), {expose: name});
+		bundler.exclude(name);
+	}
 
 	function ownCodebaseTransform (transform) {
 		return filterTransform(
@@ -210,10 +218,11 @@ function browserifyBundle(filename) {
 			.on('error', (err) => {
 				console.log('browserify error:', err);
 			})
-			.pipe(exorcist('./' + paths.scripts.output + jsMapBasename))
-			.pipe(source(filename))
+			.pipe(exorcist('./' + paths.scripts.output + path.basename(filename).replace('.js', '.js.map')))
+			.pipe(source(inputApplication))
 			.pipe(plg.rename({
-				dirname: ''
+				dirname: '',
+				basename: outputFile
 			}))
 			.pipe(plg.buffer())
 			.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())
@@ -230,10 +239,28 @@ function browserifyBundle(filename) {
 		return bundleStream;
 	}
 
+	if (isApplicationBundle) {
+		let application = require(filename).APPLICATION;
+		let applicationConfig = {
+			name: application.name,
+			dependencies: application.dependencies,
+			productionOnlyDependencies: application.productionOnlyDependencies
+		};
+		environment.applicationConfig = applicationConfig;
+		environment.applicationPath = path.dirname(filename);
+
+		outputFile = applicationConfig.name;
+
+		addRequire(utils.angularApplicationTemplate, 'AngularApplication');
+	}
+
+	if (isWatching)
+		bundler = watchify(bundler, {poll: true});
+
 	bundler
 		.transform(ownCodebaseTransform(babelify), {externalHelpers: true})
+		.transform(ownCodebaseTransform(envify(environment)))
 		.transform(ownCodebaseTransform(bulkify))
-		.transform(ownCodebaseTransform(envify))
 		.transform(ownCodebaseTransform(brfs));
 
 	if (!config.isLogs)
@@ -422,12 +449,14 @@ gulp.task('compile:finished', gulp.series(
 	'persists:paths', 'build:jade', 'copy:vendor', 'serve'
 ));
 
+gulp.task('compile-scripts', gulp.parallel(scriptCompileSteps));
+
 // Compile files
 gulp.task('compile', gulp.series(
 	gulp.parallel('clean', 'lint:scripts'),
 	'tests',
 	gulp.parallel(compileSteps),
-	gulp.parallel(scriptCompileSteps),
+	'compile-scripts',
 	'compile:finished'
 ));
 

@@ -20,7 +20,7 @@
     "better-console": "^0.2.4",
     "bluebird": "^2.9.25",
     "brfs": "^1.2.0",
-    "browserify": "^8.1.0",
+    "browserify": "^10.2.0",
     "browserify-ngannotate": "^0.6.0",
     "bulk-require": "^0.2.1",
     "bulkify": "^1.0.2",
@@ -87,7 +87,9 @@
     "toml-require": "^1.0.1",
     "uglify": "^0.1.1",
     "uglifyify": "^2.6.0",
+    "vinyl": "^0.4.6",
     "vinyl-source-stream": "^1.0.0",
+    "vinyl-transform": "^1.0.0",
     "watchify": "^3.2.1"
   },
   "dependencies": {

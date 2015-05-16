@@ -1,4 +1,8 @@
-var Utils = function() {
+const fs = require('fs');
+
+function Utils() {
+	this.angularApplicationTemplate = fs.readFileSync('./gulp/angularApplicationTemplate.js', 'utf-8');
+
 	this.logGulpError = function (prefix, path, err) {
 		plg.util.log(
 			plg.util.colors.red(prefix),
@@ -16,6 +20,6 @@ var Utils = function() {
 			return def;
 		}
 	};
-};
+}
 
 module.exports = new Utils();

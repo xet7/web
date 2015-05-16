@@ -1,0 +1,16 @@
+[APPLICATION]
+	name = "appLavaboomLogin"
+
+	dependencies = [
+		"utils",
+		"lavaboom.api",
+		"ui.router",
+		"pascalprecht.translate",
+		"ngMessages",
+		"angular-co",
+		"ngAutodisable"
+	]
+
+	productionOnlyDependencies = [
+		"templates"
+	]

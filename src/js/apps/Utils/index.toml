@@ -1,0 +1,39 @@
+[APPLICATION]
+	name = "utils"
+
+	dependencies = [
+		"lavaboom.api",
+		"ui.router",
+		"pascalprecht.translate",
+		"angular-co"
+	]
+
+	productionOnlyDependencies = [
+		"templates"
+	]
+
+	vendorDependencies = [
+		"../../../node_modules/babel-core/browser-polyfill.js",
+		"../../../node_modules/babel-core/external-helpers.js",
+		"../../../node_modules/setimmediate/setImmediate.js",
+		"../../vendor/blob.js",
+
+		"../../bower_components/sockjs-client/dist/sockjs.js",
+
+		"../../bower_components/lavaboom/dist/lavaboom-api.js",
+
+		"../../bower_components/angular/angular.js",
+
+		"../../bower_components/angular-ui-router/release/angular-ui-router.js",
+		"../../bower_components/angular-translate/angular-translate.js",
+		"../../bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js",
+		"../../bower_components/angular-messages/angular-messages.js",
+		"../../bower_components/angular-autodisable/angular-autodisable.js",
+
+		"../../bower_components/lavaboom/dist/lavaboom-angular.js",
+		"../../bower_components/angular-co/dist/co.js",
+
+		"../../bower_components/textAngular/dist/textAngular-sanitize.min.js",
+
+		"../../bower_components/file-saver/FileSaver.js"
+	]
