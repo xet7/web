@@ -24,8 +24,13 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 	$scope.showDetails = false;
 	$scope.toggleShowDetails = () => {
 		$scope.showDetails = !$scope.showDetails;
+		$scope.showLeftPanel = false;
 		console.log('showDetails triggered');
 	};
+
+	$scope.resetDetails = () => {
+		$scope.showDetails = false;
+	}
 
 	const initializeTimeAgo = () => co(function *(){
 		const datesTranslations = {

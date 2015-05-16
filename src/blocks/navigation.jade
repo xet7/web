@@ -19,8 +19,8 @@ div.ng-cloak
 				a(ng-click="toggleLeftPanel()", ui-sref="main.contacts", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_CONTACTS' | translate}}")
 					span.icon-contacts
 					span.action {{'MAIN.NAV.LB_CONTACTS' | translate}}
-			li(ng-click="toggleLeftPanel()", ng-class="{ active: $state.includes('main.settings') }")
-				a(ui-sref="main.settings.general", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_SETTINGS' | translate}}")
+			li(ng-class="{ active: $state.includes('main.settings') }")
+				a(ng-click="toggleLeftPanel()", ui-sref="main.settings.general", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_SETTINGS' | translate}}")
 					span.icon-cog
 					span.action {{'MAIN.NAV.LB_SETTINGS' | translate}}
 			li.logout
