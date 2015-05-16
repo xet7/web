@@ -2,7 +2,6 @@ const gulp = global.gulp;
 const plg = global.plg;
 
 let bluebird = require('bluebird');
-let git = bluebird.promisifyAll(plg.git);
 
 let co = require('co');
 let crypto = require('crypto');
@@ -16,7 +15,6 @@ let merge = require('merge-stream');
 let lazypipe = require('lazypipe');
 let domain = require('domain');
 let filterTransform = require('filter-transform');
-
 
 // Browserify the mighty one
 let browserify = require('browserify'),
@@ -48,9 +46,7 @@ if (!process.env.API_URI)
 	process.env.API_URI = config.defaultApiUri;
 if (!process.env.ROOT_DOMAIN)
 	process.env.ROOT_DOMAIN = config.defaultRootDomain;
-
-let PLUGIN_REPO = process.env.PLUGIN_REPO ? process.env.PLUGIN_REPO : '';
-let PLUGIN_LIST = process.env.PLUGIN_LIST ? process.env.PLUGIN_LIST.split(',') : [];
+require('./gulp/plugins');
 
 if (!isWatching) {
 	plumber = plg.util.noop;
@@ -434,21 +430,6 @@ gulp.task('compile', gulp.series(
 	gulp.parallel(scriptCompileSteps),
 	'compile:finished'
 ));
-
-gulp.task('update-plugins', () => {
-	let name = PLUGIN_REPO.split('/').slice(-1)[0];
-
-	console.log('updating', PLUGIN_REPO, '->', name);
-	return co(function *(){
-		try {
-			yield git.cloneAsync(PLUGIN_REPO, {cwd: './' + paths.plugins});
-			console.log('Plugins repository has been cloned...');
-		} catch (err) {
-			yield git.pullAsync('origin', 'master', {cwd: './' + paths.plugins + name});
-			console.log('Plugins repository has been updated...');
-		}
-	});
-});
 
 let startingTasks = gulp.series(gulp.parallel('bower', 'update-plugins'), 'compile');
 /*
