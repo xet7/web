@@ -1,10 +1,8 @@
 var gulp = require('gulp');
-var nodemon = require('gulp-nodemon');
-var console = require('better-console');
+var args = process.argv.slice(2);
+var target = process.env.TARGET;
 
-var exec = require('child_process').exec;
-
-if (process.env.TARGET == 'run') {
+if (target == 'run' || args.length > 0) {
 	global.gulp = gulp;
 	global.plg = require('gulp-load-plugins')({
 		pattern: ['gulp-*', 'gulp.*'],
@@ -14,12 +12,17 @@ if (process.env.TARGET == 'run') {
 	require('babel/register');
 	require('./gulpfile-es6.js');
 }
-else {
+else
+{
+	var nodemon = require('gulp-nodemon');
+	var console = require('better-console');
+	var exec = require('child_process').exec;
+
 	gulp.task('default', function (){
 		exec('which gulp', function (error, stdout, stderr) {
 			nodemon({
 				script: stdout.trim(),
-				watch: 'gulpfile-es6.js',
+				watch: ['gulpfile.js', 'gulpfile-es6.js', 'serve.js', 'gulp/*'],
 				env: {'TARGET': 'run'}
 			})
 				.on('start', function() {
