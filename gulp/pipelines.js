@@ -122,10 +122,16 @@ function Pipelines(manifest, plumber, isWatching) {
 			.pipe(plg.jshint.reporter('fail'));
 	};
 
-	this.browserifyBundle = (base, filename, sharedEnvironment, codePath = '') => {
+	this.browserifyBundle = (base, filename, sectionName, sharedEnvironment, codePath = '', pre = null, post = null) => {
+		if (!pre)
+			pre = bundler => bundler;
+		if (!post)
+			post = bundler => bundler;
+
 		let isApplicationBundle = filename.endsWith('.toml');
 		let inputApplication = isApplicationBundle ? paths.scripts.inputApplication : filename;
-		let outputFile = isApplicationBundle ? '' : path.basename(filename).replace('.js', '');
+		let outputFile = isApplicationBundle ? '' : path.basename(filename);
+		let applicationPath = path.resolve(path.dirname(filename), codePath);
 
 		let environment = {};
 		for(let k of Object.keys(sharedEnvironment))
@@ -148,28 +154,27 @@ function Pipelines(manifest, plumber, isWatching) {
 
 		function ownCodebaseTransform (transform) {
 			return filterTransform(
-					file => file.includes(path.resolve(base, paths.scripts.inputFolder)),
+					file => {
+						return file.includes('_stream_') ||
+							file.includes(path.resolve(base, paths.scripts.inputFolder)) ||
+							file.includes(applicationPath);
+					},
 				transform);
 		}
 
 		function bundle(changedFiles) {
 			let lintStatus = {};
 
-			let bundleStream =  bundler.bundle()
-				.on('error', (err) => {
-					console.log('browserify error:', err);
-				})
-				.pipe(exorcist('./' + paths.scripts.output + path.basename(filename).replace('.js', '.js.map')))
-				.pipe(source(inputApplication))
-				.pipe(plg.rename({
-					dirname: '',
-					basename: outputFile
-				}))
-				.pipe(plg.buffer())
-				.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())
-				.pipe(plg.stream())
-				.pipe(gulp.dest(paths.scripts.output))
-				.pipe(self.livereloadPipeline()());
+			let bundleStream = post(
+				pre(bundler.bundle(), outputFile)
+					.pipe(source(inputApplication))
+					.pipe(plg.rename({
+						dirname: '',
+						basename: outputFile.replace('.js', '')
+					}))
+					.pipe(plg.buffer()),
+				outputFile
+			);
 
 			if (changedFiles) {
 				let lintStream = self.lintScripts(changedFiles, lintStatus);
@@ -177,22 +182,11 @@ function Pipelines(manifest, plumber, isWatching) {
 				return merge(lintStream, bundleStream);
 			}
 
+			bundleStream.on('error', (err) => {
+				console.log('browserify error:', err);
+			});
+
 			return bundleStream;
-		}
-
-		if (isApplicationBundle) {
-			let application = require('../' + filename).APPLICATION;
-			let applicationConfig = {
-				name: application.name,
-				dependencies: application.dependencies,
-				productionOnlyDependencies: application.productionOnlyDependencies
-			};
-			environment.applicationConfig = applicationConfig;
-			environment.applicationPath = path.resolve(path.dirname(filename), codePath);
-
-			outputFile = applicationConfig.name;
-
-			addRequire(utils.angularApplicationTemplate, 'AngularApplication');
 		}
 
 		if (isWatching)
@@ -212,6 +206,22 @@ function Pipelines(manifest, plumber, isWatching) {
 			bundler
 				.transform(ownCodebaseTransform(browserifyNgAnnotate))
 				.transform(uglifyify);
+
+		if (isApplicationBundle) {
+			let application = require('../' + filename)[sectionName];
+			let applicationConfig = {
+				name: sectionName == 'PLUGIN' ? 'utils' : application.name,
+				dependencies: application.dependencies,
+				productionOnlyDependencies: application.productionOnlyDependencies,
+				isPlugin: sectionName == 'PLUGIN'
+			};
+			environment.applicationConfig = applicationConfig;
+			environment.applicationPath = applicationPath;
+
+			outputFile = application.name;
+
+			addRequire(utils.angularApplicationTemplate, 'AngularApplication');
+		}
 
 		if (isWatching)
 			bundler

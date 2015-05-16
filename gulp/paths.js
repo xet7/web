@@ -17,9 +17,10 @@ module.exports = {
 			'./src/js/loader.js'
 		],
 		inputApplication: './src/js/apps/app.js',
-		inputDeps: 'src/js/apps/*.toml',
+		inputDeps: 'src/js/apps/**/*.toml',
 		inputAppsFolder: 'src/js/apps/',
-		output: output + 'js/'
+		output: output + 'js/',
+		pluginsOutput: output + 'js/plugins.js'
 	},
 	styles: {
 		input: 'src/less/lavaboom.less',

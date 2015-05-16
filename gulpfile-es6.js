@@ -29,10 +29,10 @@ let utils = require('./gulp/utils');
 let config = require('./gulp/config');
 let paths = require('./gulp/paths');
 let sharedEnvironment = {
+	_: 'purge',
 	API_URI: process.env.API_URI ? process.env.API_URI : config.defaultApiUri,
 	ROOT_DOMAIN: process.env.ROOT_DOMAIN ? process.env.ROOT_DOMAIN : config.defaultRootDomain
 };
-require('./gulp/plugins');
 
 if (!isWatching) {
 	plumber = plg.util.noop;
@@ -40,7 +40,9 @@ if (!isWatching) {
 		console.log('Making a production build...');
 		config.isProduction = true;
 		sharedEnvironment.IS_PRODUCTION = true;
-	}
+	} else
+		sharedEnvironment.IS_PRODUCTION = '';
+
 	if (args[0] === 'serve') {
 		isServe = true;
 	}
@@ -49,8 +51,12 @@ if (!isWatching) {
 	isServe = true;
 }
 
+global.sharedEnvironment = sharedEnvironment;
 const Pipelines = require('./gulp/pipelines');
 const pipelines = new Pipelines(manifest, plumber, isWatching);
+global.pipelines = pipelines;
+
+require('./gulp/plugins');
 
 /**
  * Gulp Taks
@@ -62,6 +68,9 @@ gulp.task('build:scripts:vendor:min', () =>
 		.pipe(plumber())
 		.pipe(plg.tap((file, t) => {
 			let appConfig = toml.parse(file.contents);
+			if (!appConfig.APPLICATION.vendorDependencies)
+				appConfig.APPLICATION.vendorDependencies = [];
+
 			let dependencies = [];
 
 			for(let i = 0; i < appConfig.APPLICATION.vendorDependencies.length; i++) {
@@ -93,6 +102,9 @@ gulp.task('build:scripts:vendor:normal', () =>
 		.pipe(plumber())
 		.pipe(plg.tap((file, t) => {
 			let appConfig = toml.parse(file.contents);
+			if (!appConfig.APPLICATION.vendorDependencies)
+				appConfig.APPLICATION.vendorDependencies = [];
+
 			let dependencies = [];
 
 			for(let i = 0; i < appConfig.APPLICATION.vendorDependencies.length; i++) {
@@ -125,7 +137,7 @@ gulp.task('build:scripts:vendor:normal', () =>
 				dependencies.push(resolvedFile);
 			}
 
-			let newName = file.relative.replace('.toml', '-vendor.js');
+			let newName = path.dirname(file.relative) + '../../' + appConfig.APPLICATION.name + '-vendor.js';
 
 			return gulp.src(dependencies)
 				.pipe(plumber())
@@ -289,9 +301,29 @@ const compileSteps = [
 	'build:scripts:vendor'
 ];
 
+function fileFromVariable(name, content) {
+	var stream = source(name);
+	stream.write(content);
+	process.nextTick(() => stream.end());
+
+	return stream;
+}
+let exorcist = require('exorcist');
 const scriptCompileSteps = paths.scripts.inputApps.map((appScript, i) => {
 	let name = 'build:scripts-' + (i + 1);
-	gulp.task(name, () => pipelines.browserifyBundle(__dirname, appScript, sharedEnvironment));
+	gulp.task(name, () => pipelines.browserifyBundle(__dirname, appScript, 'APPLICATION', sharedEnvironment, '',
+		bundler => {
+			return bundler
+				.pipe(exorcist(paths.scripts.output + path.basename(appScript) + '.js.map'));
+		},
+		bundler => {
+			return bundler
+				.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())
+				.pipe(plg.stream())
+				.pipe(gulp.dest(paths.scripts.output))
+				.pipe(pipelines.livereloadPipeline()());
+		}
+	));
 	return name;
 });
 
@@ -306,18 +338,18 @@ gulp.task('compile:finished', gulp.series(
 	'persists:paths', 'build:jade', 'copy:vendor', 'serve'
 ));
 
-gulp.task('compile-scripts', gulp.parallel(scriptCompileSteps));
+gulp.task('compile:scripts', gulp.parallel(scriptCompileSteps));
 
 // Compile files
 gulp.task('compile', gulp.series(
-	gulp.parallel('clean', 'lint:scripts'),
+	gulp.parallel('lint:scripts'),
 	'tests',
 	gulp.parallel(compileSteps),
-	'compile-scripts',
+	'compile:scripts',
 	'compile:finished'
 ));
 
-let startingTasks = gulp.series(gulp.parallel('bower', 'update-plugins'), 'compile');
+let startingTasks = gulp.series(gulp.parallel('clean','bower'), 'build:plugins', 'compile');
 /*
 	Gulp primary tasks
  */

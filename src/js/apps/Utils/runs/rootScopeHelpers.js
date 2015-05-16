@@ -1,4 +1,5 @@
 const fs = require('fs');
+window.coJS = require('co');
 
 module.exports = /*@ngInject*/($rootScope, $translate, $injector, translate, consts) => {
 	$rootScope.$bind = (bindName, bindHandler) => {

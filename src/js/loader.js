@@ -7,6 +7,7 @@
 		SRC_APP_LAVABOOM_LOGIN = '/js/appLavaboomLogin.js',
 		SRC_APP_LAVABOOM_MAIN = '/js/appLavaboom.js',
 		SRC_UTILS = '/js/utils.js',
+		SRC_PLUGINS = '/js/plugins.js',
 		SRC_UTILS_VENDOR = '/js/utils-vendor.js',
 		SRC_TEMPLATE_CACHE = '/js/templates.js';
 
@@ -36,6 +37,10 @@
 				{
 					src: SRC_UTILS,
 					progressText: 'Loading Lavaboom utils(2)...'
+				},
+				{
+					src: SRC_PLUGINS,
+					progressText: 'Loading Lavaboom plugins...'
 				}
 			]
 		},
@@ -43,7 +48,7 @@
 			container: loaderContainer
 		},
 		APP_LAVABOOM_LOGIN = {
-			appName: 'AppLavaboomLogin',
+			appName: 'appLavaboomLogin',
 			container: loginAppContainer,
 			afterProgressText: 'Please wait...',
 			afterProgressValue: 90,
@@ -63,7 +68,7 @@
 			]
 		},
 		APP_LAVABOOM_MAIN = {
-			appName: 'AppLavaboom',
+			appName: 'appLavaboom',
 			container: mainAppContainer,
 			afterProgressText: 'Please wait...',
 			afterProgressValue: 50,
