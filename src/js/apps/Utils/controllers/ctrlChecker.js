@@ -16,7 +16,7 @@ module.exports = /*@ngInject*/(co, consts, LavaboomAPI, $scope) => {
 				console.log('checker: accounts.get(me) success', me);
 
 				try {
-					const res = yield LavaboomAPI.keys.get(`${me.body.user.name}@${process.env.TLD}`);
+					const res = yield LavaboomAPI.keys.get(`${me.body.user.name}@${process.env.ROOT_DOMAIN}`);
 					console.log('checker: keys.get success', res);
 
 					if (!me.body.user.settings || me.body.user.settings.state != 'ok') {

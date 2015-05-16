@@ -60,7 +60,7 @@ function Pipelines(manifest, plumber) {
 					globs: {
 						IS_PRODUCTION: process.env.IS_PRODUCTION,
 						API_URI: process.env.API_URI,
-						TLD: process.env.TLD
+						ROOT_DOMAIN: process.env.ROOT_DOMAIN
 					}
 				}
 			}))

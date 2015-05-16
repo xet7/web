@@ -43,8 +43,8 @@ let config = require('./gulp/config');
 let paths = require('./gulp/paths');
 if (!process.env.API_URI)
 	process.env.API_URI = config.defaultApiUri;
-if (!process.env.TLD)
-	process.env.TLD = config.defaultRootDomain;
+if (!process.env.ROOT_DOMAIN)
+	process.env.ROOT_DOMAIN = config.defaultRootDomain;
 
 if (!isWatching) {
 	plumber = plg.util.noop;
