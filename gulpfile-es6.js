@@ -1,6 +1,9 @@
 const gulp = global.gulp;
 const plg = global.plg;
 
+let bluebird = require('bluebird');
+let git = bluebird.promisifyAll(plg.git);
+
 let co = require('co');
 let crypto = require('crypto');
 let os = require('os');
@@ -45,6 +48,9 @@ if (!process.env.API_URI)
 	process.env.API_URI = config.defaultApiUri;
 if (!process.env.ROOT_DOMAIN)
 	process.env.ROOT_DOMAIN = config.defaultRootDomain;
+
+let PLUGIN_REPO = process.env.PLUGIN_REPO ? process.env.PLUGIN_REPO : '';
+let PLUGIN_LIST = process.env.PLUGIN_LIST ? process.env.PLUGIN_LIST.split(',') : [];
 
 if (!isWatching) {
 	plumber = plg.util.noop;
@@ -359,6 +365,7 @@ gulp.task('clean', cb => {
 
 	// yea...
 	utils.def(() => fs.mkdirSync('./' + paths.output));
+	utils.def(() => fs.mkdirSync('./' + paths.plugins));
 	utils.def(() => fs.mkdirSync('./' + paths.cache));
 	utils.def(() => fs.mkdirSync('./' + paths.scripts.output));
 
@@ -428,12 +435,28 @@ gulp.task('compile', gulp.series(
 	'compile:finished'
 ));
 
+gulp.task('update-plugins', () => {
+	let name = PLUGIN_REPO.split('/').slice(-1)[0];
+
+	console.log('updating', PLUGIN_REPO, '->', name);
+	return co(function *(){
+		try {
+			yield git.cloneAsync(PLUGIN_REPO, {cwd: './' + paths.plugins});
+			console.log('Plugins repository has been cloned...');
+		} catch (err) {
+			yield git.pullAsync('origin', 'master', {cwd: './' + paths.plugins + name});
+			console.log('Plugins repository has been updated...');
+		}
+	});
+});
+
+let startingTasks = gulp.series(gulp.parallel('bower', 'update-plugins'), 'compile');
 /*
 	Gulp primary tasks
  */
 
 gulp.task('default', gulp.series(
-	'bower', 'compile',
+	startingTasks,
 	cb => {
 		// live reload for everything except browserify(as we use watchify)
 		gulp.watch('./bower.json', gulp.series('bower-update', 'compile'));
@@ -454,8 +477,8 @@ gulp.task('default', gulp.series(
 	}
 ));
 
-gulp.task('develop', gulp.series('bower', 'compile'));
+gulp.task('develop', startingTasks);
 
-gulp.task('production', gulp.series('bower', 'compile'));
+gulp.task('production', startingTasks);
 
 // woa!

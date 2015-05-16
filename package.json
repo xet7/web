@@ -18,6 +18,7 @@
     "babel-runtime": "^5.2.17",
     "babelify": "^6.0.2",
     "better-console": "^0.2.4",
+    "bluebird": "^2.9.25",
     "brfs": "^1.2.0",
     "browserify": "^8.1.0",
     "browserify-ngannotate": "^0.6.0",

@@ -4,6 +4,7 @@ module.exports = {
 	input: 'src/**/*',
 	cache: 'cache/',
 	output: output,
+	plugins: 'plugins/',
 	scripts: {
 		cacheOutput: './cache/',
 		input: 'src/js/*.js',
