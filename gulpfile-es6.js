@@ -2,7 +2,6 @@ const gulp = global.gulp;
 const plg = global.plg;
 
 let bluebird = require('bluebird');
-let File = require('vinyl');
 let co = require('co');
 let crypto = require('crypto');
 let os = require('os');
@@ -14,19 +13,6 @@ let source = require('vinyl-source-stream');
 let merge = require('merge-stream');
 let lazypipe = require('lazypipe');
 let domain = require('domain');
-let filterTransform = require('filter-transform');
-
-// Browserify the mighty one
-let browserify = require('browserify'),
-	babelify = require('babelify'),
-	browserifyNgAnnotate = require('browserify-ngannotate'),
-	bulkify = require('bulkify'),
-	uglifyify = require('uglifyify'),
-	stripify = require('stripify'),
-	envify = require('envify/custom'),
-	watchify = require('watchify'),
-	brfs = require('brfs'),
-	exorcist = require('exorcist');
 
 // Global variables
 let args = process.argv.slice(2);
@@ -64,7 +50,7 @@ if (!isWatching) {
 }
 
 const Pipelines = require('./gulp/pipelines');
-const pipelines = new Pipelines(manifest, plumber);
+const pipelines = new Pipelines(manifest, plumber, isWatching);
 
 /**
  * Gulp Taks
@@ -157,139 +143,10 @@ gulp.task('build:scripts:vendor', gulp.series('build:scripts:vendor:min', 'build
 
 let caches = {};
 
-function lintScripts (src, status = null) {
-	if (status)
-		status.isError = false;
-
-	return gulp.src(src)
-		.pipe(plumber())
-		.pipe(plg.cached('lint:scripts'))
-		.pipe(plg.tap((file, t) =>
-				console.log('Linting: "' + file.relative + '" ...')
-		))
-		.pipe(plg.jshint())
-		.pipe(plg.jshint.reporter(plg.jshintStylish))
-		.pipe(plg.jshint.reporter({
-			reporter: (result, config, options) => {
-				if (status)
-					status.isError = true;
-
-				delete plg.cached.caches['lint:scripts'];
-			}
-		}))
-		.pipe(plg.jshint.reporter('fail'));
-}
-
-// Defines generic browserify build task, one task for each item inside paths.scripts.inputApps
-function browserifyBundle(filename) {
-	let isApplicationBundle = filename.endsWith('.toml');
-	let inputApplication = isApplicationBundle ? paths.scripts.inputApplication : filename;
-	let outputFile = isApplicationBundle ? '' : path.basename(filename).replace('.js', '');
-
-	let environment = {};
-	for(let k of Object.keys(sharedEnvironment))
-		environment[k] = sharedEnvironment[k];
-
-	let bundler = browserify({
-		cache: {},
-		packageCache: {},
-		entries: inputApplication,
-		basedir: __dirname,
-		debug: config.isDebugable
-	});
-
-	function addRequire(content, name) {
-		bundler.require(new File({
-			contents: new Buffer(content)
-		}), {expose: name});
-		bundler.exclude(name);
-	}
-
-	function ownCodebaseTransform (transform) {
-		return filterTransform(
-				file => file.includes(path.resolve(__dirname, paths.scripts.inputFolder)),
-			transform);
-	}
-
-	function bundle(changedFiles) {
-		let lintStatus = {};
-
-		let bundleStream =  bundler.bundle()
-			.on('error', (err) => {
-				console.log('browserify error:', err);
-			})
-			.pipe(exorcist('./' + paths.scripts.output + path.basename(filename).replace('.js', '.js.map')))
-			.pipe(source(inputApplication))
-			.pipe(plg.rename({
-				dirname: '',
-				basename: outputFile
-			}))
-			.pipe(plg.buffer())
-			.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())
-			.pipe(plg.stream())
-			.pipe(gulp.dest(paths.scripts.output))
-			.pipe(pipelines.livereloadPipeline()());
-
-		if (changedFiles) {
-			let lintStream = lintScripts(changedFiles, lintStatus);
-
-			return merge(lintStream, bundleStream);
-		}
-
-		return bundleStream;
-	}
-
-	if (isApplicationBundle) {
-		let application = require(filename).APPLICATION;
-		let applicationConfig = {
-			name: application.name,
-			dependencies: application.dependencies,
-			productionOnlyDependencies: application.productionOnlyDependencies
-		};
-		environment.applicationConfig = applicationConfig;
-		environment.applicationPath = path.dirname(filename);
-
-		outputFile = applicationConfig.name;
-
-		addRequire(utils.angularApplicationTemplate, 'AngularApplication');
-	}
-
-	if (isWatching)
-		bundler = watchify(bundler, {poll: true});
-
-	bundler
-		.transform(ownCodebaseTransform(babelify), {externalHelpers: true})
-		.transform(ownCodebaseTransform(envify(environment)))
-		.transform(ownCodebaseTransform(bulkify))
-		.transform(ownCodebaseTransform(brfs));
-
-	if (!config.isLogs)
-		bundler
-			.transform(stripify);
-
-	if (config.isProduction)
-		bundler
-			.transform(ownCodebaseTransform(browserifyNgAnnotate))
-			.transform(uglifyify);
-
-	if (isWatching)
-		bundler
-			.on('update', (changedFiles) => {
-				console.log(`re-bundling '${filename}'...`);
-				return bundle(changedFiles);
-			})
-			.on('log', msg => {
-				console.log(`bundled '${filename}'`, msg);
-			});
-
-	return bundle();
-}
-
 // Lint scripts
 gulp.task('lint:scripts',  gulp.series(
-	() => lintScripts(paths.scripts.inputAll)
+	() => pipelines.lintScripts(paths.scripts.inputAll)
 ));
-
 
 // Process, lint, and minify less files
 gulp.task('build:styles', () => {
@@ -434,7 +291,7 @@ const compileSteps = [
 
 const scriptCompileSteps = paths.scripts.inputApps.map((appScript, i) => {
 	let name = 'build:scripts-' + (i + 1);
-	gulp.task(name, () => browserifyBundle(appScript));
+	gulp.task(name, () => pipelines.browserifyBundle(__dirname, appScript, sharedEnvironment));
 	return name;
 });
 
