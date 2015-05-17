@@ -22,7 +22,7 @@
 		div.item-wrapper(
 		ng-repeat="thread in threadsList | filter: searchFilter as filteredThreadsList track by thread.id",
 		ng-class="{active: selectedTid == thread.id}",
-		ng-click="selectThread(thread.id)",
+		ng-click="selectThread(thread.id); toggleShowDetails();",
 		ng-show="thread.isLoaded()")
 			.mail-list-item
 				.mail-list-wrapper

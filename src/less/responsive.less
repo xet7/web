@@ -1,0 +1,240 @@
+@media (max-width: @screen-sm-max) {
+
+	#responsive-functions{
+		.z4();
+		display: block;
+		position: fixed;
+		.btn{
+			.lava-icon-22();
+		}
+	}
+
+	#left-panel{
+		.z3();
+		transform: translateX(-@left-panel-width);
+		transition: .2s all;
+		top: 4.4rem;
+		nav{
+			
+			bottom: 5.5rem;
+		}
+		ul.list-unstyled{
+			.pos-abs();
+			.fill-abs();
+			overflow-y: auto;
+			// top: 4.4rem;
+		}
+		&.show-left-panel{
+			transform: translateX(0);
+		}
+		#brand{
+			display: none;
+		}
+		.logout{
+			padding-top: 2.2rem !important;
+			position: static !important;
+		}
+	}
+	#left-panel-mask{
+		.z2();
+		position: absolute;
+		.fill-abs();
+		background: @lava-fadeouts;
+		transform: translateX(-100%);
+		transition: .2s opacity;
+		.opacity(0);
+		&.show-left-panel{
+			transform: translateX(0);
+			.opacity(1);
+		}
+	}
+
+	#content{
+		.z1();
+		left: 0;
+		right: 0;
+	}
+
+	.list-pane{
+		.fill-abs();
+		width: 100%;
+		.actions .navbar{
+			padding-left: @filter-height;
+		}
+	}
+
+	.details-pane{
+		width: 0;
+		overflow: 	hidden;
+		transform: translateX(100%);
+		transition: .2s transform;
+		margin-left: 0;
+	}
+
+	.show-details{
+		#nav-toggle{
+			transform: translateX(0);
+			display: none;
+		}
+
+		.details-pane{
+			transition: .2s transform;
+			transform: translateX(0);
+			width: 100%;
+		}
+		#hide-details{
+			display: block;
+		}
+	}
+
+	.actions{
+		padding-left: 4.4rem;
+	}
+
+	.filters{
+		padding-left: 3.1rem;
+	}
+
+	#hide-details{
+		display: none;
+	}
+
+	#nav-toggle {
+	    cursor: pointer;
+	    
+	    height: 4.4rem; width: 4.4rem;
+	    content: ' ';
+	    position: relative;
+
+	    transition: .2s transform;
+	    transform: rotate(360deg);
+
+	    span:before {
+	        top: -.8rem;
+	    }
+	    span:after {
+	        bottom: -.8rem;
+	    }
+	    span{
+	    	top: 2.1rem;
+	    }
+	}
+	#nav-toggle span,#nav-toggle span:before,#nav-toggle span:after {
+	    cursor: pointer;
+	    border-radius: @border-radius-small;
+	    height: .1rem;
+	    width: 2.2rem;
+	    background: @lava-gray-light;
+	    position: absolute;
+	    display: block;
+	    content: '';
+	    transition: all .2s ease-in-out;
+	}
+	#nav-toggle.active {
+		transform: rotate(0);
+		box-shadow: none !important;
+	    span {
+	        height: .1rem;
+	        &:before, &:after {
+				top: 0;
+				left: -.7rem;
+				height: .2rem;
+	        }
+	        &:before {
+	        	transform: rotate(-45deg) scale(.5);
+	        	top: -.4rem;
+		    }
+		    &:after {
+		    	top: .3rem;
+		        transform: rotate(45deg) scale(.5);
+		    }
+	    }
+	}
+
+	.navbar-nav > li {
+		float: left;
+	}
+
+	.navbar-nav{
+		float: left;
+		&.navbar-right{
+			float: right;
+		}
+	}
+
+	.tooltip{
+		display: none !important;
+	}
+
+	#mail-list .mail-list-group .active .mail-list-item{
+		background: #FFF !important;
+		// color: @lava-text !important;
+		// p, [class^="icon-"], [class*=" icon-"]{
+		// 	color: @lava-text !important;
+		// }
+	}
+
+	// #mail-list .mail-list-group .active + div .mail-list-item .details, #mail-list .mail-list-group .item-wrapper:hover + div .mail-list-item .details{
+	// 	border-top: @border-site-wide !important;
+	// }
+
+	.main-contacts-view{
+		form h4:first-child{
+			height: 4.4rem;
+			margin: 0;
+		}
+	}
+
+	#compose {
+		header{
+			padding-left: 1.1rem; padding-right: 1.1rem;
+			.table-list .fields{
+				padding-right: 0;
+				.pos-rel();
+				.ui-select-container{
+					  // width: 125%;
+					  padding-right: 5.5rem;
+					  // left: -6.6rem;
+					.pos-abs();
+					.dropdown-menu{
+						left: -6.6rem;
+					}
+				}
+			}
+		}
+		.filters{
+			padding-left: 0;
+			.navbar-nav:not(.navbar-right) {
+				li:first-child button{
+					padding-left: 1.1rem;
+				}
+			}
+			.navbar-right li:last-child button{
+				padding-right: 1.1rem;
+			}
+		}
+
+		.ta-editor{
+			padding: 1.1rem;
+		}
+	}
+
+	.profile-picture{
+		.aspect-ratio(1,1);
+		margin-bottom: 2.2rem;
+	}
+
+	.list-group-item.active{
+		background: #FFF !important;
+		a {
+			color: @lava-text !important;
+		}
+
+		box-shadow: inset 0 1px 0 0 #d9d9d9, inset 0 -1px 0 0 #d9d9d9 !important;
+
+		&:last-child{
+			box-shadow: inset 0 1px 0 0 #d9d9d9, inset 0 -1px 0 0 #d9d9d9 !important;
+		}
+	}
+
+}

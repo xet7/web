@@ -9,7 +9,7 @@ nav#notifications.navbar.navbar-inverse.notifications(
 		ul.nav.navbar-nav.navbar-right(ng-hide="notification.timeout")
 			li
 				button.btn.btn-default(ng-click="unSetNotification(name, notification.namespace)")
-					span.icon-trash
+					//- span.icon-trash
 					| {{'GLOBAL.BTN_REMOVE_NOTIFICATION' | translate}}
 
 	div(ng-repeat="(name, notification) in notificationsWarning", class="notifications-warning")
@@ -20,5 +20,5 @@ nav#notifications.navbar.navbar-inverse.notifications(
 		ul.nav.navbar-nav.navbar-right(ng-hide="notification.timeout")
 			li
 				button.btn.btn-default(ng-click="unSetNotification(name, notification.namespace)")
-					span.icon-trash
+					//- span.icon-trash
 					| {{'GLOBAL.BTN_REMOVE_NOTIFICATION' | translate}}
