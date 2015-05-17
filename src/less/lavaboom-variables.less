@@ -47,13 +47,13 @@
 //borders
 @lava-border-color: 		@lava-gray-lighter;
 @border-site-wide: 			1pt solid @lava-border-color;
-@border-radius-base:        2px;
-@border-radius-large:       3px;
-@border-radius-small:       1px;
+@border-radius-base:                2px;
+@border-radius-large:             3px;
+@border-radius-small:             1px;
 
 //grid system - we're going 24 because we're THAT crazy
-@grid-columns:              24;
-@grid-gutter-width:         20px;
+@grid-columns:                            24;
+@grid-gutter-width:                 20px;
 
 
 @base-rem: 10px;
@@ -61,11 +61,11 @@
 //== Typography
 //
 //## Font, line-height, and color for body text, headings, and more.
-@font-family-sans-serif:  "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+@font-family-sans-serif:    "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
 //** Default monospace fonts for `<code>`, `<kbd>`, and `<pre>`.
-@font-family-monospace:   Menlo, Monaco, Consolas, "Courier New", monospace;
-@font-family-base:        @font-family-sans-serif;
+@font-family-monospace:     Menlo, Monaco, Consolas, "Courier New", monospace;
+@font-family-base:                @font-family-sans-serif;
 
 @light-font-weight: 100;
 @base-font-weight: 300;
@@ -115,7 +115,7 @@
 
 @mail-thread-width: 100% - @mail-list-width;
 @mail-thread-width-sm: 100% - @mail-list-width-sm;
-@mail-thread-padding: 2.2rem 0 1.1rem 4.4rem;
+@mail-thread-padding: 2.2rem 0 1.1rem 0;
 @mail-thread-fg: @lava-gray;
 @mail-thread-muted: @lava-gray-lighter;
 @mail-thread-attachment-border: @lava-gray-lightest; 
@@ -137,58 +137,58 @@
 
 
 // Basics of a navbar
-@navbar-height:                    @filter-height;
-@navbar-margin-bottom:             0; //@line-height-computed;
-@navbar-border-radius:             0; //@border-radius-base;
-@navbar-padding-horizontal:        0; //floor((@grid-gutter-width / 2));
-@navbar-padding-vertical:          0; //((@navbar-height - @line-height-computed) / 2);
-@navbar-collapse-max-height:       340px;
+@navbar-height:                                        @filter-height;
+@navbar-margin-bottom:                         0; //@line-height-computed;
+@navbar-border-radius:                         0; //@border-radius-base;
+@navbar-padding-horizontal:                0; //floor((@grid-gutter-width / 2));
+@navbar-padding-vertical:                    0; //((@navbar-height - @line-height-computed) / 2);
+@navbar-collapse-max-height:             340px;
 
 // Inverted navbar
 // Reset inverted navbar basics
-@navbar-inverse-color:                      @lava-gray-light;
-@navbar-inverse-bg:                         transparent;
-@navbar-inverse-border:                     transparent;
+@navbar-inverse-color:                                            @lava-gray-light;
+@navbar-inverse-bg:                                                 transparent;
+@navbar-inverse-border:                                         transparent;
 
 // Inverted navbar links
-@navbar-inverse-link-color:                 @lava-gray-light;
-@navbar-inverse-link-hover-color:           @lava-gray-lighter;
-@navbar-inverse-link-hover-bg:              transparent;
-@navbar-inverse-link-active-color:          @lava-gray-lighter;
-@navbar-inverse-link-active-bg:             transparent;
-@navbar-inverse-link-disabled-color:        @lava-gray;
-@navbar-inverse-link-disabled-bg:           transparent;
+@navbar-inverse-link-color:                                 @lava-gray-light;
+@navbar-inverse-link-hover-color:                     @lava-gray-lighter;
+@navbar-inverse-link-hover-bg:                            transparent;
+@navbar-inverse-link-active-color:                    @lava-gray-lighter;
+@navbar-inverse-link-active-bg:                         transparent;
+@navbar-inverse-link-disabled-color:                @lava-gray;
+@navbar-inverse-link-disabled-bg:                     transparent;
 
 
 //** Background for the dropdown menu.
-@dropdown-bg:                    @lava;
+@dropdown-bg:                                        @lava;
 //** Dropdown menu `border-color`.
-@dropdown-border:                rgba(0,0,0,.15);
+@dropdown-border:                                rgba(0,0,0,.15);
 //** Dropdown menu `border-color` **for IE8**.
-@dropdown-fallback-border:       #ccc;
+@dropdown-fallback-border:             #ccc;
 //** Divider color for between dropdown items.
-@dropdown-divider-bg:            @lava-gray-lightest;
+@dropdown-divider-bg:                        @lava-gray-lightest;
 
 //** Dropdown link text color.
-@dropdown-link-color:            @lava-gray-lightest;
+@dropdown-link-color:                        @lava-gray-lightest;
 //** Hover color for dropdown links.
-@dropdown-link-hover-color:      #FFF;
+@dropdown-link-hover-color:            #FFF;
 //** Hover background for dropdown links.
-@dropdown-link-hover-bg:         transparent;
+@dropdown-link-hover-bg:                 transparent;
 
 //** Active dropdown menu item text color.
-@dropdown-link-active-color:     @component-active-color;
+@dropdown-link-active-color:         @component-active-color;
 //** Active dropdown menu item background color.
-@dropdown-link-active-bg:        @component-active-bg;
+@dropdown-link-active-bg:                @component-active-bg;
 
 //** Disabled dropdown menu item background color.
-@dropdown-link-disabled-color:   @gray-light;
+@dropdown-link-disabled-color:     @gray-light;
 
 //** Text color for headers within dropdown menus.
-@dropdown-header-color:          #FFF;
+@dropdown-header-color:                    #FFF;
 
 //** Deprecated `@dropdown-caret-color` as of v3.1.0
-@dropdown-caret-color:           #000;
+@dropdown-caret-color:                     #000;
 
 @dropdown-border-radius: 		 .5rem;
 
@@ -232,11 +232,11 @@ body{
 	}
 }
 .ellipsis {
-  text-overflow: ellipsis;
+	text-overflow: ellipsis;
 
-  /* Required for text-overflow to do anything */
-  white-space: nowrap;
-  overflow: hidden;
+	/* Required for text-overflow to do anything */
+	white-space: nowrap;
+	overflow: hidden;
 }
 
 .pos-rel{
@@ -332,12 +332,33 @@ body{
 	// 	font-weight: 100 !important;
 	// }
 }
+//non-essential styles imported from another pen
+.aspect-ratio(@width, @height) {
+	position: relative;
+	&:before {
+		display: block;
+		content: " ";
+		width: 100%;
+		padding-top: (@height / @width) * 100%;
+	}
+	> .content {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+	}
+}
+
+.sixteen-nine {
+	.aspect-ratio(16, 9);
+}
 
 .no-gutter {
 	margin: 0 !important;
 	> [class*='col-'] {
-	  padding-right:0 !important;
-	  padding-left:0 !important;
+		padding-right:0 !important;
+		padding-left:0 !important;
 	}
 }
 
@@ -368,28 +389,28 @@ body{
 
 .effect7
 {
-  	position:relative;
-    box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+		position:relative;
+		box-shadow:0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
 }
 .effect7:before, .effect7:after
 {
 	content:"";
-    position:absolute; 
-    z-index:-1;
+		position:absolute; 
+		z-index:-1;
 
-    box-shadow:0 0 20px rgba(0,0,0,0.8);
-    top:0;
-    bottom:0;
-    left:10px;
-    right:10px;
-    -moz-border-radius:100px / 10px;
-    border-radius:100px / 10px;
+		box-shadow:0 0 20px rgba(0,0,0,0.8);
+		top:0;
+		bottom:0;
+		left:10px;
+		right:10px;
+		-moz-border-radius:100px / 10px;
+		border-radius:100px / 10px;
 } 
 .effect7:after
 {
 	right:10px; 
-    left:auto;
-    transform:skew(8deg) rotate(3deg);
+		left:auto;
+		transform:skew(8deg) rotate(3deg);
 }
 
 .box h3{
@@ -407,44 +428,44 @@ body{
 
 .effect8
 {
-  	position:relative;  
-  	background: #FFF;     
+		position:relative;    
+		background: #FFF;         
 }
 .effect8:before, .effect8:after
 {
 	content:"";
-    position:absolute; 
-    z-index:-1;
+		position:absolute; 
+		z-index:-1;
 
-    box-shadow:0 0 20px rgba(0,0,0,0.8);
-    top:10px;
-    bottom:10px;
-    left:0;
-    right:0;
-    -moz-border-radius:100px / 10px;
-    border-radius:100px / 10px;
+		box-shadow:0 0 20px rgba(0,0,0,0.8);
+		top:10px;
+		bottom:10px;
+		left:0;
+		right:0;
+		-moz-border-radius:100px / 10px;
+		border-radius:100px / 10px;
 }
 
 .effect8:after
 {
 	right:10px; 
-    left:auto;
+		left:auto;
 	transform:skew(8deg) rotate(3deg);
 }
 
 .placeholder(@c : @lava-login-gray){
 	&::-moz-placeholder {
 		color: @c;
-	  	opacity: 1;
-	  	.lava-font();
+			opacity: 1;
+			.lava-font();
 	}
 	&:-ms-input-placeholder {
-	  	color: @c;
-	  	.lava-font();
+			color: @c;
+			.lava-font();
 	}
 	&::-webkit-input-placeholder {
-	  	color: @c;
-	  	.lava-font();
+			color: @c;
+			.lava-font();
 	}
 }
 
@@ -472,8 +493,8 @@ body{
 }
 
 .select2 > .select2-choice.ui-select-match {
-  /* Because of the inclusion of Bootstrap */
-  height: 29px;
+	/* Because of the inclusion of Bootstrap */
+	height: 29px;
 }
 
 .transition-default(@t : all){
