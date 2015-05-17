@@ -1,11 +1,6 @@
 .actions.row.no-gutter.lava-icon-row(ng-class="'notifications-' + getNotificationsLength(notificationsInfo, notificationsWarning)")
 	nav.navbar.navbar-inverse(role="navigation")
 		div
-
-			ul.nav.navbar-nav
-				li(ng-click="toggleShowDetails()")
-					button.btn.btn-default(type="button", ng-click="cancelEditMode()", tooltip="{{'MAIN.CONTACTS.BTN_DISCARD_CHANGES' | translate}}", tooltip-placement="bottom")
-						span.icon-cancel
 			ul.nav.navbar-nav.navbar-right
 				li(ng-show="isEditMode")
 					button.btn.btn-default(type="button", ng-click="cancelEditMode()", tooltip="{{'MAIN.CONTACTS.BTN_DISCARD_CHANGES' | translate}}", tooltip-placement="bottom")
@@ -30,7 +25,7 @@
 			//- h4(ng-show="details.isNew", ng-bind="details.name | defaultValue:('MAIN.CONTACTS.LB_NEW_CONTACT' | translate)")
 			h4 &nbsp;
 			.row
-				.col-md-11.col-xs-24
+				.col-md-11.col-xs-16.col-xs-offset-4
 					div.thumbnail.pack
 						.profile-picture(style="background-image: url(/img/avatar.svg);")
 				.col-md-12.col-md-offset-1.col-xs-24.col-xs-offset-0
