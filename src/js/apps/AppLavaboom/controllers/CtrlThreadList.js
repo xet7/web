@@ -135,10 +135,15 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 		$scope.showPopup('compose', {replyThreadId: tid});
 	};
 
+	$scope.deleteThread = (tid) => {
+		console.log('deleteThread', tid, $scope.threads[tid]);
+		inbox.requestDelete($scope.threads[tid]);
+	};
+
 	$scope.searchFilter = (thread) => {
 		let searchText = $scope.searchText.toLowerCase();
 		return thread.subject.toLowerCase().includes(searchText)
-			|| thread.membersPretty.toLowerCase().includes(searchText);
+			|| thread.membersPretty.join(',').toLowerCase().includes(searchText);
 	};
 
 	$scope.$on('$stateChangeStart', (e, toState, toParams) => {
@@ -192,8 +197,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 
 	requestList();
 
-    // Add hotkeys
-	const addHotkeys = () => {
+	{
 		const moveThreads = (delta) => {
 			let selectedIndex = $scope.threadsList && $scope.selectedTid !== null
 				? $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid)
@@ -205,55 +209,54 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			}
 		};
 
-		const moveUp = (event, key) => {
-			event.preventDefault();
-			moveThreads(-1);
-		};
+		hotkey.registerCustomHotkeys($scope, [
+			{
+				combo: ['h', 'k', 'left', 'up'],
+				description: 'HOTKEY.MOVE_UP',
+				callback: (event, key) => {
+					event.preventDefault();
+					moveThreads(-1);
+				}
+			},
 
-		const moveDown = (event, key) => {
-			event.preventDefault();
-			moveThreads(1);
-		};
+			{
+				combo: ['j', 'l', 'right', 'down'],
+				description: 'HOTKEY.MOVE_DOWN',
+				callback: (event, key) => {
+					event.preventDefault();
+					moveThreads(1);
+				}
+			},
 
-		hotkey.addHotkey({
-			combo: ['h', 'k', 'left', 'up'],
-			description: 'HOTKEY.MOVE_UP',
-			callback: moveUp
-		});
+			{
+				combo: 'a',
+				description: 'HOTKEY.ARCHIVE_EMAIL',
+				callback: (event, key) => {
+					event.preventDefault();
+					//$scope.archive($scope.selectedTid);
+				}
+			},
 
-		hotkey.addHotkey({
-			combo: ['j', 'l', 'right', 'down'],
-			description: 'HOTKEY.MOVE_DOWN',
-			callback: moveDown
-		});
+			{
+				combo: ['d', 'backspace'],
 
-		hotkey.addHotkey({
-			combo: 'a',
-			description: 'HOTKEY.ARCHIVE_EMAIL',
-			callback: (event, key) => {
-				event.preventDefault();
-				//$scope.archive($scope.selectedTid);
+				description: 'HOTKEY.DELETE_EMAIL',
+				callback: (event, key) => {
+					console.log('d');
+					event.preventDefault();
+					$scope.deleteThread($scope.selectedTid);
+				}
+			},
+
+			{
+				combo: 'r',
+				description: 'HOTKEY.REPLY_EMAIL',
+				callback: (event, key) => {
+					console.log('к');
+					event.preventDefault();
+					$scope.replyThread(event, $scope.selectedTid);
+				}
 			}
-		});
-
-		hotkey.addHotkey({
-			combo: 'd',
-			description: 'HOTKEY.DELETE_EMAIL',
-			callback: (event, key) => {
-				event.preventDefault();
-				$scope.deleteThread($scope.selectedTid);
-			}
-		});
-
-		hotkey.addHotkey({
-			combo: 'r',
-			description: 'HOTKEY.REPLY_EMAIL',
-			callback: (event, key) => {
-				event.preventDefault();
-				$scope.replyThread(event, $scope.selectedTid);
-			}
-		});
-	};
-
-	addHotkeys();
+		], {scope: 'ctrlThreadList'});
+	}
 };

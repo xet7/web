@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, CryptoKeysStorage) {
+module.exports = /*@ngInject*/function($q, $rootScope, $injector, consts, co, utils, CryptoKeysStorage) {
 	const self = this;
 
 	let storage = null;
@@ -135,9 +135,11 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 		if (!privateKeySubst)
 			return;
 
-		let [privateKeys, privateKeyArmored] = privateKeySubst.armor
-			? [[privateKeySubst], privateKeySubst.armor()]
-			: [openpgp.key.readArmored(privateKeySubst).keys, privateKeySubst];
+		let user = $injector.get('user');
+
+		let privateKeys = privateKeySubst.armor
+			? [privateKeySubst]
+			: openpgp.key.readArmored(privateKeySubst).keys;
 
 		for(let privateKey of privateKeys) {
 			const i = keyring.privateKeys.findIndexByFingerprint(privateKey.primaryKey.fingerprint);
@@ -145,10 +147,14 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 				console.log('remove existing private key with fingerprint', privateKey.primaryKey.fingerprint, 'index', i);
 				keyring.privateKeys.keys.splice(i, 1);
 			}
-		}
 
-		keyring.privateKeys.importKey(privateKeyArmored);
-		keyring.store();
+			privateKey.users.splice(1);
+			let name = utils.getNameFromAddressString(privateKey.users[0].userId.userid);
+			privateKey.users[0].userId.userid = `${name} <${user.email}>`;
+
+			keyring.privateKeys.importKey(privateKey.armor());
+			keyring.store();
+		}
 	};
 
 	this.clearPermanentPrivateKeysForEmail = (email) => {
@@ -158,6 +164,11 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 	this.restorePrivateKeys = (privateKeys, privateSecuredKeys) => {
 		storage.storePrivate(privateKeys);
 		storage.storePrivate(privateSecuredKeys);
+		self.initialize();
+		for(let k of privateKeys)
+			self.importPrivateKey(k);
+		for(let k of privateSecuredKeys)
+			self.importPrivateKey(k);
 	};
 
 	this.storeKeyring = () => {
@@ -271,9 +282,15 @@ module.exports = /*@ngInject*/function($q, $rootScope, consts, co, utils, Crypto
 
 		const dataObj = data.encoding == 'json' ? JSON.stringify(data.data) : data.data;
 
+		function formatDataObj() {
+			if (Object.prototype.toString.call(dataObj) == '[object Uint8Array]')
+				return utils.Uint8Array2str(dataObj);
+			return dataObj;
+		}
+
 		const {pgpData, mergedPublicKeys} = publicKeys && publicKeys.length > 0
 			? yield self.encodeWithKeys(dataObj, publicKeys)
-			: {pgpData: dataObj, mergedPublicKeys: []};
+			: {pgpData: formatDataObj(dataObj), mergedPublicKeys: []};
 
 		const envelope = {
 			pgp_fingerprints: mergedPublicKeys.map(k => k.primaryKey.fingerprint),

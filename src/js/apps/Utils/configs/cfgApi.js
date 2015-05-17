@@ -1,3 +1,3 @@
-module.exports = /*@ngInject*/(LavaboomAPIProvider, consts) => {
-	LavaboomAPIProvider.url = consts.API_URI;
+module.exports = /*@ngInject*/(LavaboomAPIProvider, LavaboomHttpAPIProvider, consts) => {
+	LavaboomAPIProvider.url = LavaboomHttpAPIProvider.url = consts.API_URI;
 };

@@ -14,6 +14,14 @@ module.exports = /*@ngInject*/function ($rootScope, $state, $modal, $timeout) {
 	});
 
 	this.currentModal = null;
+	let openedDialogs = 0;
+
+	this.registerDialog = (dialogPromise) => {
+		openedDialogs++;
+		dialogPromise.finally(() => openedDialogs--);
+	};
+
+	this.isOpenedDialog = () => openedDialogs > 0;
 
 	this.createPopup = (opts) => {
 		if (isInitialized) {

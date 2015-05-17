@@ -18,6 +18,8 @@ module.exports = {
 	CRYPTO_CACHE_MAX_ENTRY_SIZE: 1024 * 512,
 	CRYPTO_CACHE_TTL: 60 * 60 * 1000,
 
+	HOTKEY_MULTI_TIMEOUT: 3000,
+
 	CRYPTO_PERFORMANCE_TEST_COUNT: 3,
 	CRYPTO_PERFORMANCE_TEST_KEY_LENGTH: 512,
 	CRYPTO_PERFORMANCE_TEST_REF_TIME: 140 * 3,
@@ -30,7 +32,7 @@ module.exports = {
 
 	INBOX_EMAILS_CACHE_TTL: 60 * 10 * 1000,
 	SET_READ_AFTER_TIMEOUT: 3000,
-	KEYS_BACKUP_README: 'https://lavaboom.com/faq/keyring-backup',
+	KEYS_BACKUP_README: 'https://lavab.groovehq.com/knowledge_base/topics/backing-up-your-keyring',
 	POPUP_AUTO_HIDE_DELAY: 500,
 	ORDERED_LABELS: ['Inbox', 'Drafts', 'Sent', 'Starred', 'Spam', 'Trash'],
 	PLAN_LIST: ['BASIC'/*, 'TEST'*/],

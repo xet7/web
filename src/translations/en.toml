@@ -434,6 +434,7 @@ DIALOGS_NO = "No"
 	LB_CANNOT_IMPORT = "Cannot import keys, something went wrong..."
 	LB_CANNOT_IMPORT_WRONG_FORMAT = "Cannot import keys, json or armored key expected"
 	LB_CANNOT_IMPORT_CORRUPTED = "Cannot import keys, backup is corrupted or has wrong format"
+	LB_CANNOT_IMPORT_PUB_KEY_NOT_SUPPORTED = "Expected to see a private key..."
 
 	TITLE_CONFIRM = "Please confirm"
 	LB_CONFIRM_PASSWORD_CHANGE = "Do you really want to change password?"
@@ -485,7 +486,8 @@ DIALOGS_NO = "No"
 
 
 [HOTKEY]
-	TITLE          		 = "Shortcuts cheatsheet"
+	TITLE_GLOBAL   		 = "Global shortcuts cheatsheet"
+	TITLE_LOCAL   		 = "This page shortcuts cheatsheet"
     CHEATSHEET           = "Show/Hide cheatsheet"
     FOCUS_ON_SEARCH      = "Focus on Search"
     LEAVE_FROM_SEARCH    = "Leave from Search"

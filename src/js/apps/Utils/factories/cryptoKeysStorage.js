@@ -7,20 +7,34 @@ module.exports = /*@ngInject*/(co, utils) => {
 	const privateName = prefix + privateKeysItem;
 	const privateSecureName = prefix + 'secure-' + privateKeysItem;
 
-	/*
-	 isPrivateComputer: store decrypted private keys in local storage
-	 isShortMemory: store both encrypted and decrypted private keys in session storage only
-	 normally we want isShortMemory only when Lavaboom Sync is enabled and all our encrypted private keys were synced
 
+	const memoryStorage = [];
+
+	/*
+	There are 3 storages for private key possible:
+		- memory variable (exists just during application live-cycle)
+		- session storage entry (exists across page refreshes)
+		- local storage entry (permanent existence)
+
+	- current private key persistance model:
+	 isPrivateComputer && isLavaboomSync: encrypted -> memory variable, decrypted -> local storage
+	 isPrivateComputer && !isLavaboomSync: encrypted/decrypted private keys -> local storage
+
+	 !isPrivateComputer && isLavaboomSync: encrypted -> memory variable, decrypted private keys -> session storage
+	 !isPrivateComputer && !isLavaboomSync: encrypted -> local storage, decrypted private keys -> session storage
+
+	- private key loading model:
 	 loadOnlyForEmails: load private and public keys that match only those email
 	 isLoadDecrypted: load decrypted private keys
 	 */
 
-	function CryptoKeysStorage (isPrivateComputer = false, isShortMemory = false, loadOnlyForEmails = [], isLoadDecrypted = false) {
+
+
+	function CryptoKeysStorage (isPrivateComputer = false, isLavaboomSync = false, loadOnlyForEmails = [], isLoadDecrypted = false) {
 		const self = this;
 
 		console.log('CryptoKeysStorage created, isPrivateComputer:', isPrivateComputer,
-			'isShortMemory:', isShortMemory,
+			'isLavaboomSync:', isLavaboomSync,
 			'loadOnlyForEmails:', loadOnlyForEmails,
 			'isLoadDecrypted:', isLoadDecrypted);
 
@@ -102,6 +116,7 @@ module.exports = /*@ngInject*/(co, utils) => {
 		this.loadPrivate = () => {
 			const keys = loadKeys(localStorage, privateName);
 			replaceKeys(keys, loadKeys(sessionStorage, privateName));
+			replaceKeys(keys, loadKeys(memoryStorage, privateName));
 
 			if (isLoadDecrypted) {
 				replaceKeys(keys, loadKeys(localStorage, privateSecureName));
@@ -122,11 +137,9 @@ module.exports = /*@ngInject*/(co, utils) => {
 		};
 
 		this.storePrivate = (keys) => {
-			console.log('storePrivate called, isShortMemory:', isShortMemory);
-			storePrivateKeys(isShortMemory ? sessionStorage : localStorage,
-				privateName, keys.filter(k => !k.primaryKey.isDecrypted));
+			storePrivateKeys(isLavaboomSync ? memoryStorage : localStorage, privateName, keys.filter(k => !k.primaryKey.isDecrypted));
 
-			storePrivateKeys(isPrivateComputer && !isShortMemory ? localStorage : sessionStorage,
+			storePrivateKeys(isPrivateComputer ? localStorage : sessionStorage,
 				privateSecureName, keys.filter(k => k.primaryKey.isDecrypted));
 		};
 	}
