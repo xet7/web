@@ -10,17 +10,17 @@ div.ng-cloak
 					span.icon-compose
 					span#compose-action.action {{'MAIN.NAV.LB_COMPOSE' | translate}}
 			li(ng-class="{ active: $state.includes('main.inbox.label', {labelName: label.name}) }", ng-repeat="label in labels track by label.id")
-				a(ui-sref="main.inbox.label({labelName: label.name, threadId: getThreadForLabel(label.name)})", tooltip="{{label.name}}", tooltip-placement="right", ng-click="toggleLeftPanel();")
+				a(ng-click="toggleLeftPanel('main.inbox.label', {labelName: label.name, threadId: getThreadForLabel(label.name)})" ui-sref="main.inbox.label({labelName: label.name, threadId: getThreadForLabel(label.name)})", tooltip="{{label.name}}", tooltip-placement="right")
 					span(ng-class="label.iconClass")
 					span.action(ng-bind="label.name")
 					span.badge(ng-bind="label.threadsUnread | unread")
 			li.separator
 			li(ui-sref-active="active")
-				a(ng-click="toggleLeftPanel()", ui-sref="main.contacts", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_CONTACTS' | translate}}")
+				a(ng-click="toggleLeftPanel('main.contacts')", ui-sref="main.contacts", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_CONTACTS' | translate}}")
 					span.icon-contacts
 					span.action {{'MAIN.NAV.LB_CONTACTS' | translate}}
 			li(ng-class="{ active: $state.includes('main.settings') }")
-				a(ng-click="toggleLeftPanel()", ui-sref="main.settings.general", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_SETTINGS' | translate}}")
+				a(ng-click="toggleLeftPanel('main.settings.general')", ui-sref="main.settings.general", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_SETTINGS' | translate}}")
 					span.icon-cog
 					span.action {{'MAIN.NAV.LB_SETTINGS' | translate}}
 			li.logout

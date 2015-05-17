@@ -16,10 +16,11 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 	$scope.tooltipDelay = () => (window.getComputedStyle(document.getElementById('compose-action')).display==='none') ? true : 1000000;
 
 	$scope.showLeftPanel = false;
-	$scope.toggleLeftPanel = (url) => {
+	$scope.toggleLeftPanel = (url, params) => {
 		$scope.showLeftPanel = !$scope.showLeftPanel;
 		if (url !== undefined) 
-			$state.go(url);
+			$state.go(url, params);
+		console.log(url);
 		console.log('left panel triggered');
 	};
 
@@ -27,8 +28,10 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 	$scope.toggleShowDetails = (url, params) => {
 		$scope.showDetails = !$scope.showDetails;
 		$scope.showLeftPanel = false;
-		if (url !== undefined) 
+		if (url !== undefined)
 			$state.go(url, params);
+		console.log(url);
+		console.log(params);
 		console.log('showDetails triggered');
 	};
 
