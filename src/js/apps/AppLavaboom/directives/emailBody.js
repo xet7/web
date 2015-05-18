@@ -43,7 +43,7 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 			return dom;
 	};
 
-	const transformTextNodes = (dom, level = 0) => co(function *(){
+	const transformTextNodes = (dom, threadId, level = 0) => co(function *(){
 		if (level >= 3)
 			return;
 
@@ -60,7 +60,7 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 
 					let dom = utils.getDOM(sanitizedMessage);
 
-					yield transformTextNodes(dom, level + 1);
+					yield transformTextNodes(dom, threadId, level + 1);
 
 					console.log('decrypted hidden message', dom.innerHTML);
 
@@ -70,7 +70,7 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 						notifications.set('openpgp-envelope-decode-failed', {
 							text: translations.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR_NO_KEY_FOUND,
 							type: 'warning',
-							namespace: 'mailbox'
+							namespace: 'mailbox-' + threadId
 						});
 						return `<pre title='${translations.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR_NO_KEY_FOUND}'>${pgpMessage}</pre>`;
 					}
@@ -78,7 +78,7 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 					notifications.set('openpgp-envelope-decode-failed', {
 						text: translations.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR,
 						type: 'warning',
-						namespace: 'mailbox'
+						namespace: 'mailbox-' + threadId
 					});
 					return `<pre title='${translations.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR}'>${pgpMessage}</pre>`;
 				}
@@ -214,7 +214,7 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 
 			let dom = utils.getDOM(sanitizedEmailBody);
 
-			yield transformTextNodes(dom);
+			yield transformTextNodes(dom, scope.threadId);
 
 			transformEmail(dom, {
 				imagesSetting: user.settings.images,
@@ -250,6 +250,7 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 		restrict : 'A',
 		scope: {
 			isHtml: '=',
+			threadId: '=',
 			emailBody: '=',
 			originalEmailName: '=',
 			noImageTemplateUrl: '@',

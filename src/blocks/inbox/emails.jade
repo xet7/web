@@ -64,6 +64,7 @@ div(ng-if="selectedTid").main-view
 			.mail-content.row.no-gutter
 				.col-xs-22(ng-show="email.body.state == 'ok'",
 					is-html="email.isHtml",
+					thread-id="selectedTid",
 					open-email="openEmail",
 					download-email="downloadEmail",
 					original-email-name="email.id",
