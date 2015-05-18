@@ -27,6 +27,12 @@ div#left-panel.ng-cloak
 					span.action {{'MAIN.NAV.LB_SETTINGS' | translate}}
 					span.combo(ng-show="isActive('g')") ({{getMultiComboPrettified('g', 'Settings')}})
 			li.logout
+				.help-us
+					a(
+						href="https://www.indiegogo.com/projects/lavaboom-secure-email-for-everyone",
+						title="Help us on indiegogo",
+						target="_blank"
+					) Help us fight government surveillance
 				small {{manifest.name}} 2015
 				small(title="{{servedBy.title}}") {{manifest.version}} {{servedBy.text}}
 				button(ng-click="logout()", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_LOGOUT' | translate}}")

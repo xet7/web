@@ -1,26 +1,48 @@
 module.exports = /*@ngInject*/($scope, $translate, $interval, consts, user) => {
 	$scope.currentPlanName = user.accountType;
-	console.log('$scope.currentPlanName', $scope.currentPlanName);
 
-	$scope.planList = consts.PLAN_LIST;
+	$scope.planList = consts.PLAN_LIST.filter(plan => {
+		if (user.isHiddenAccountType(plan))
+			return plan == user.accountType;
+		return true;
+	});
+
 	$scope.plans = { };
 
 	const translations = {
-		LB_CURRENT: ''
+		LB_CURRENT: '',
+		LB_GET_ON_IGG_TEXT: '',
+		LB_GET_ON_IGG_TITLE: ''
 	};
+	const translationsForPlans = {};
 	$translate.bindAsObject(translations, 'MAIN.SETTINGS.PLAN');
 
-	consts.PLAN_LIST.forEach(name => {
-		$scope.plans[name] = {
+	$scope.planList.forEach(name => {
+		translationsForPlans[name] = {
 			TITLE: '',
 			LB_TAG: '',
 			LB_ITEMS: ''
 		};
+		((name) => {
+			$translate.bindAsObject(translationsForPlans[name], 'MAIN.SETTINGS.PLAN.' + name.toUpperCase(), t => {
+				let plan = {
+					title: t.TITLE,
+					tag: t.LB_TAG,
+					items: t.LB_ITEMS.split('|'),
+					hoverTitle: name == user.accountType ? translations.LB_CURRENT : ''
+				};
 
-		$translate.bindAsObject($scope.plans[name], 'MAIN.SETTINGS.PLAN.' + name.toUpperCase(), t => {
-			t.LB_ITEMS = t.LB_ITEMS.split('|');
-			t.title = name == $scope.currentPlanName ? translations.LB_CURRENT : '';
-			return t;
-		});
+				if (user.accountType == 'beta' && name == 'supporter') {
+					plan.tag = translations.LB_GET_ON_IGG_TEXT;
+					plan.tagTitle = translations.LB_GET_ON_IGG_TITLE;
+					plan.tagIsLink = true;
+					plan.tagHref =
+						'https://www.indiegogo.com/projects/lavaboom-secure-email-for-everyone/contributions/new/#/contribute?perk_amt=17&perk_id=2839034';
+				}
+
+				$scope.plans[name] = plan;
+				return t;
+			});
+		})(name);
 	});
 };

@@ -7,6 +7,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - web crypto detection warnings
 - different issues with gulpfile
 
+### Modified
+- version/served by text
+
 ## 0.3.4 - 2015-05-18
 ### Added
 - generate new key pair button under settings/keys

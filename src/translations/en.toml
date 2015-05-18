@@ -384,22 +384,29 @@ DIALOGS_NO = "No"
     LB_PROFILE_CANNOT_BE_SAVED = "Cannot save profile"
 
 [MAIN.SETTINGS.PLAN]
-	LB_CURRENT = "this is your current plan"
+	LB_CURRENT = "This is your current plan"
+	LB_GET_ON_IGG_TEXT = "GET IT ON INDIEGOGO"
+	LB_GET_ON_IGG_TITLE = "Get a supporter account for life for as little as $17"
 
 [MAIN.SETTINGS.PLAN.FREE]
 	TITLE = "Lavaboom Free"
-	LB_TAG = "FREE"
+	LB_TAG = "COMING SOON"
 	LB_ITEMS = "500MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
 
 [MAIN.SETTINGS.PLAN.BETA]
 	TITLE = "Lavaboom Beta"
-	LB_TAG = "BETA"
-	LB_ITEMS = "1GB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+	LB_TAG = ""
+	LB_ITEMS = "1GB of Space|Access to early Lavaboom features|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
 
 [MAIN.SETTINGS.PLAN.SUPPORTER]
 	TITLE = "Lavaboom Supporter"
-	LB_TAG = "SUPPORTER"
-	LB_ITEMS = "2GB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+	LB_TAG = ""
+	LB_ITEMS = "2GB of Space|Access to early Lavaboom features|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+
+[MAIN.SETTINGS.PLAN.PREMIUM]
+	TITLE = "Lavaboom Premium"
+	LB_TAG = "COMING SOON"
+	LB_ITEMS = "15GB of Space|Use your own domain|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
 
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
