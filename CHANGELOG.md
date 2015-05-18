@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## UNRELEASED
+### Added
+- generate new key pair button under settings/keys
+
+### Fixed
+- some minor issues with notifications
+
 ## 0.3.3 - 2015-05-15
 ### Fixed
 - templates(signature mostly, reply, forward, etc)
