@@ -21,7 +21,7 @@ module.exports = {
 	},
 	styles: {
 		input: 'src/less/lavaboom.less',
-		inputAll: 'src/less/**/*.less',
+		inputAll: ['src/less/**/*.less', 'src/fonts/**/*'],
 		output: output + 'css/'
 	},
 	svgs: {
