@@ -1,15 +1,6 @@
 module.exports = /*@ngInject*/function($rootScope, $translate, $timeout) {
 	const self = this;
 
-	const translations = {
-		WEB_CRYPTO_IS_NOT_AVAILABLE_TITLE:'',
-		WEB_CRYPTO_IS_NOT_AVAILABLE_TEXT:'',
-		WEB_WORKERS_IS_NOT_AVAILABLE_TITLE:'',
-		WEB_WORKERS_IS_NOT_AVAILABLE_TEXT:''
-	};
-
-	$translate.bindAsObject(translations, 'NOTIFICATIONS');
-
 	let notifications = {};
 
 	this.clear = () => {
