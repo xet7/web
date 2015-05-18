@@ -27,8 +27,8 @@ div#left-panel.ng-cloak
 					span.action {{'MAIN.NAV.LB_SETTINGS' | translate}}
 					span.combo(ng-show="isActive('g')") ({{getMultiComboPrettified('g', 'Settings')}})
 			li.logout
-				small {{manifest.name}} {{manifest.version}}
-				small(title="{{servedBy.title}}") {{servedBy.text}}
+				small {{manifest.name}} 2015
+				small(title="{{servedBy.title}}") {{manifest.version}} {{servedBy.text}}
 				button(ng-click="logout()", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_LOGOUT' | translate}}")
 					span.icon-power
 					span.action {{'MAIN.NAV.LB_LOGOUT' | translate}} ({{name}})
