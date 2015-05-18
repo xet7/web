@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - web crypto detection warnings
 - different issues with gulpfile
+- Inbox should be default when app loads in the first time
 
 ### Modified
 - version/served by text
