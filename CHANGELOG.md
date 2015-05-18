@@ -6,8 +6,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - generate new key pair button under settings/keys
 
+### Modified
+- now using google caja html sanitizer which seems to work much better and can process almost any html
+
 ### Fixed
 - some minor issues with notifications
+- issue during compose screen initialization that lead to duplicated attached public keys
 
 ## 0.3.3 - 2015-05-15
 ### Fixed
