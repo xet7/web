@@ -385,28 +385,28 @@ DIALOGS_NO = "No"
 
 [MAIN.SETTINGS.PLAN]
 	LB_CURRENT = "This is your current plan"
-	LB_GET_ON_IGG_TEXT = "GET IT ON INDIEGOGO"
+	LB_GET_ON_IGG_TEXT = "BUY ON INDIEGOGO"
 	LB_GET_ON_IGG_TITLE = "Get a supporter account for life for as little as $17"
 
 [MAIN.SETTINGS.PLAN.FREE]
 	TITLE = "Lavaboom Free"
 	LB_TAG = "COMING SOON"
-	LB_ITEMS = "500MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+	LB_ITEMS = "500MB storage|End to end encryption|Bank-grade security|Zero Knowledge"
 
 [MAIN.SETTINGS.PLAN.BETA]
 	TITLE = "Lavaboom Beta"
 	LB_TAG = ""
-	LB_ITEMS = "1GB of Space|Access to early Lavaboom features|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+	LB_ITEMS = "1GB storage|Early access to new features|End to end encryption|Bank-grade security|Zero Knowledge"
 
 [MAIN.SETTINGS.PLAN.SUPPORTER]
 	TITLE = "Lavaboom Supporter"
 	LB_TAG = ""
-	LB_ITEMS = "2GB of Space|Access to early Lavaboom features|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+	LB_ITEMS = "2GB storage|Early access to new features|End to end encryption|Bank-grade security|Zero Knowledge"
 
 [MAIN.SETTINGS.PLAN.PREMIUM]
 	TITLE = "Lavaboom Premium"
 	LB_TAG = "COMING SOON"
-	LB_ITEMS = "15GB of Space|Use your own domain|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+	LB_ITEMS = "15GB storage|Use your own domain|End to end encryption|Bank-grade security|Zero Knowledge"
 
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"

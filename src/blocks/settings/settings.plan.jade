@@ -8,7 +8,7 @@
 				span.text(ng-show="!plans[name].tagIsLink") {{plans[name].tag}}
 				span.caret
 			ul.list-group.suppress-borders
-				li.list-group-item(ng-repeat="item in plans[name].items") {{item}}
+				li.list-group-item(ng-repeat="item in plans[name].items", ng-bind-html="item")
 				li.list-group-item(ng-show="name == currentPlanName")
 					hr
 					| {{'MAIN.SETTINGS.PLAN.LB_CURRENT' | translate}}
