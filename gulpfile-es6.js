@@ -478,6 +478,7 @@ gulp.task('develop', gulp.series('bower', 'compile'));
 
 gulp.task('production', gulp.series('bower', 'compile'));
 
-gulp.task('tests', gulp.series('compile:script', 'tests:all'));
+//should build translation as well because they are injected direct to sources
+gulp.task('tests', gulp.series('build:translations', 'compile:script', 'tests:all'));
 
 // woa!
