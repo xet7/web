@@ -386,17 +386,22 @@ DIALOGS_NO = "No"
     LB_PROFILE_CANNOT_BE_SAVED = "Cannot save profile"
 
 [MAIN.SETTINGS.PLAN]
-	LB_CURRENT = "This is your current plan"
+	LB_CURRENT = "this is your current plan"
 
-[MAIN.SETTINGS.PLAN.BASIC]
-	TITLE = "Lavaboom (Basic)"
+[MAIN.SETTINGS.PLAN.FREE]
+	TITLE = "Lavaboom Free"
 	LB_TAG = "FREE"
-	LB_ITEMS = "1,000MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+	LB_ITEMS = "500MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
 
-#[MAIN.SETTINGS.PLAN.TEST]
-#	TITLE = "Lavaboom (Test)"
-#	LB_TAG = "SECRET"
-#	LB_ITEMS = "1,000MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+[MAIN.SETTINGS.PLAN.BETA]
+	TITLE = "Lavaboom Beta"
+	LB_TAG = "BETA"
+	LB_ITEMS = "1GB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+
+[MAIN.SETTINGS.PLAN.SUPPORTER]
+	TITLE = "Lavaboom Supporter"
+	LB_TAG = "SUPPORTER"
+	LB_ITEMS = "2GB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
 
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"

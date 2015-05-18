@@ -1,13 +1,9 @@
 .row.settings-panel.ng-cloak(ng-controller="CtrlSettingsPlan")
 	form.settings.col-xs-12.col-xs-offset-6
-		.form-wrap(ng-repeat="(name, plan) in plans")
-			h4 {{plan.TITLE}}
-			.price-tag
-				span.text {{plan.LB_TAG}}
+		.form-wrap(ng-repeat="name in planList", title="{{plans[name].title}}")
+			h4 {{plans[name].TITLE}}
+			.price-tag(ng-show="name == currentPlanName")
+				span.text {{plans[name].LB_TAG}}
 				span.caret
 			ul.list-group.suppress-borders
-				li.list-group-item(ng-repeat="item in plan.LB_ITEMS") {{item}}
-				li.list-group-item(ng-show="name == currentPlanName")
-					hr
-					| {{'MAIN.SETTINGS.PLAN.LB_CURRENT' | translate}}
-					span.icon.icon-tick.pull-right.icon-circle
+				li.list-group-item(ng-repeat="item in plans[name].LB_ITEMS") {{item}}

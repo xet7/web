@@ -14,6 +14,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	this.nameEmail = '';
 	this.altEmail = '';
 	this.aliases = [];
+	this.accountType = '';
 
 	// information about user from API
 	this.settings = {};
@@ -60,17 +61,18 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 				: [];
 
 			yield setupSettings(account.body.user.settings);
-			setupUserBasicInformation(account.body.user.name, account.body.user.styled_name, account.body.alt_email, aliases);
+			setupUserBasicInformation(account.body.user.name, account.body.user.styled_name, account.body.user.type, account.body.alt_email, aliases);
 		});
 	}
 
-	function setupUserBasicInformation (username, styledUsername, altEmail, aliases) {
+	function setupUserBasicInformation (username, styledUsername, type, altEmail, aliases) {
 		self.name = username;
 		self.styledName = styledUsername;
 		self.email = `${username}@${consts.ROOT_DOMAIN}`;
 		self.styledEmail = `${styledUsername}@${consts.ROOT_DOMAIN}`;
 		self.nameEmail = `${self.name} <${self.email}>`;
 		self.altEmail = altEmail;
+		self.accountType = type;
 		self.aliases = aliases ? aliases.map(a => `${a}@${consts.ROOT_DOMAIN}`) : [];
 	}
 
