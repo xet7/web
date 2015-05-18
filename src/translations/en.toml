@@ -42,9 +42,7 @@ DIALOGS_NO = "No"
 
 [NOTIFICATIONS]
 	WEB_CRYPTO_IS_NOT_AVAILABLE_TITLE="Please update your browser."
-	WEB_CRYPTO_IS_NOT_AVAILABLE_TEXT="Looks like this browser will not run Lavaboom, please log in again with an up-to-date version of Firefox, Safari or Google Chrome."
-	WEB_CRYPTO_LIMITED_TITLE="Please update your browser."
-    WEB_CRYPTO_LIMITED_TEXT="Looks like this browser is too slow for Lavaboom, please upgrade your browser or switch to an up-to-date version of Google Chrome, Firefox or Safari."
+	WEB_CRYPTO_IS_NOT_AVAILABLE_TEXT="Looks like this browser is too slow for Lavaboom, please upgrade your browser or switch to an up-to-date version of Google Chrome, Firefox or Safari."
 	WEB_WORKERS_IS_NOT_AVAILABLE_TITLE="Please update your browser."
     WEB_WORKERS_IS_NOT_AVAILABLE_TEXT="Looks like this browser is too slow for Lavaboom, please upgrade your browser or switch to an up-to-date version of Google Chrome, Firefox or Safari"
     SERVED_BY_TITLE = "Welcome back"
