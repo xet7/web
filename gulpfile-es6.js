@@ -446,6 +446,8 @@ gulp.task('tests:unit', (cb) =>
 	}, cb)
 );
 
+gulp.task('tests:all', gulp.parallel('lint:scripts', 'tests:integration', 'tests:unit'));
+
 /*
 	Gulp primary tasks
  */
@@ -476,6 +478,6 @@ gulp.task('develop', gulp.series('bower', 'compile'));
 
 gulp.task('production', gulp.series('bower', 'compile'));
 
-gulp.task('tests', gulp.series('compile:script', gulp.parallel('lint:scripts', 'tests:integration', 'tests:unit')));
+gulp.task('tests', gulp.series('compile:script', 'tests:all'));
 
 // woa!

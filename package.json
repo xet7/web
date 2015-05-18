@@ -69,6 +69,7 @@
     "gulp-util": "^3.0.1",
     "http-static-gzip-regexp": "0.0.2",
     "jasmine-core": "^2.3.0",
+    "jasmine-es6-generator": "^0.1.0",
     "jasmine-sinon": "^0.4.0",
     "jshint": "^2.7.0",
     "jshint-stylish": "^1.0.2",
