@@ -219,6 +219,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 			loader.incProgress(translations.LB_INITIALIZING_OPENPGP, 1);
 
 			crypto.initialize();
+			notifications.clear();
 
 			yield connectionPromise;
 
