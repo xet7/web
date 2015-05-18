@@ -10,8 +10,14 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 	$scope.isLoading = false;
 
 	$rootScope.$bind('notifications', () => {
-		$scope.notificationsInfo = angular.extend({}, notifications.get('info', 'mailbox'), notifications.get('info', 'mailbox-' + $scope.selectedTid));
-		$scope.notificationsWarning = angular.extend({}, notifications.get('warning', 'mailbox'), notifications.get('warning', 'mailbox-' + $scope.selectedTid));
+		$scope.notificationsInfo = angular.extend({},
+			notifications.get('info', 'mailbox'),
+			notifications.get('info', 'mailbox-' + $scope.selectedTid)
+		);
+		$scope.notificationsWarning = angular.extend({},
+			notifications.get('warning', 'mailbox'),
+			notifications.get('warning', 'mailbox-' + $scope.selectedTid)
+		);
 	});
 
 	{
