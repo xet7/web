@@ -93,7 +93,7 @@ module.exports = /*@ngInject*/function($rootScope, $timeout, $state, $translate,
 	});
 
 	this.isWebCrypto = () => {
-		return !!window.crypto || !!window.msCrypto;
+		return window.crypto || window.msCrypto;
 	};
 
 	this.isWebWorkers = () => co(function *(){
