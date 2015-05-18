@@ -2,6 +2,8 @@ module.exports = /*@ngInject*/($scope, $state, $window, co, user, signUp, crypto
 	if (!user.isAuthenticated())
 		$state.go('login');
 
+	$scope.isPartiallyFlow = signUp.isPartiallyFlow;
+
 	const navigateMainApplication = () => {
 		user.update({state: 'ok'});
 
@@ -14,6 +16,10 @@ module.exports = /*@ngInject*/($scope, $state, $window, co, user, signUp, crypto
 		let keysBackup = cryptoKeys.exportKeys(user.email);
 		saver.saveAs(keysBackup, cryptoKeys.getExportFilename(keysBackup, user.name), 'text/plain;charset=utf-8');
 
+		navigateMainApplication();
+	};
+
+	$scope.skip = () => {
 		navigateMainApplication();
 	};
 

@@ -211,6 +211,7 @@ DIALOGS_NO = "No"
 [LOGIN.CHOOSE_PASSWORD_INTRO]
 	TITLE = "Choose your password"
 	LB_WARNING_TITLE = "Attention"
+	LB_WARNING0 = "You are about to generate a new key pair for your account, but before this you need to select desired password"
     LB_WARNING1 = "Please note that we do not store your passwords in plain text on our servers. This makes Lavaboom more secure, however if you lose your password we are unable reset it for you."
     LB_WARNING2 = "When you have chosen a password make sure to write it down on a piece of paper. Losing your password may prevent access to your account."
     BTN_NEXT = "I understand"
@@ -250,6 +251,7 @@ DIALOGS_NO = "No"
     INFO6 = "Lavaboom Sync works basically backing up your keyring on our servers. Lavaboom Sync can work with or without a sync passphrase (similar to how Chrome works)."
     BTN_ENABLE_LB_SYNC = "Enable Lavaboom Sync"
     BTN_BACKUP_NOW = "Back up my key now"
+    BTN_SKIP = "Skip and get back"
 	LB_PRIVATE_PC = "This is private computer"
 
 [LOGIN.IMPORT_KEY]
