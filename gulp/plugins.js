@@ -12,36 +12,41 @@ const git = bluebird.promisifyAll(plg.git);
 const config = require('./config');
 const paths = require('./paths');
 
-const PLUGIN_REPO = process.env.PLUGIN_REPO ? process.env.PLUGIN_REPO : '';
-const PLUGIN_REPO_NAME = PLUGIN_REPO ? PLUGIN_REPO.split('/').slice(-1)[0] : '';
-const PLUGIN_LIST = process.env.PLUGIN_LIST ? process.env.PLUGIN_LIST.split(',') : [];
+const PLUGIN_REPOS = process.env.PLUGIN_REPOS ? process.env.PLUGIN_REPOS.split(',') : [];
+const plugins = [];
 
 const pipelines = global.pipelines;
 let sharedEnvironment = global.sharedEnvironment;
 
 gulp.task('plugins:update', (cb) => {
-	if (!PLUGIN_REPO)
+	if (PLUGIN_REPOS.length < 1)
 		return cb();
 
-	console.log('updating', PLUGIN_REPO, '->', PLUGIN_REPO_NAME);
 	return co(function *(){
-		try {
-			yield git.cloneAsync(PLUGIN_REPO, {cwd: './' + paths.plugins});
-			console.log('Plugins repository has been cloned...');
-		} catch (err) {
-			yield git.pullAsync('origin', 'master', {cwd: './' + paths.plugins + PLUGIN_REPO_NAME});
-			console.log('Plugins repository has been updated...');
-		}
+		yield PLUGIN_REPOS.map(repo => co(function *(){
+			let name = repo.split('/').splice(-1)[0];
+			plugins.push(name);
+
+			console.log('updating', repo);
+			try {
+				yield git.cloneAsync(repo, {cwd: './' + paths.plugins});
+				console.log(`Plugins repository [${repo}] has been cloned...`);
+			} catch (err) {
+				yield git.pullAsync('origin', 'master', {cwd: './' + paths.plugins + name});
+				console.log(`Plugins repository [${repo}] has been updated...`);
+			}
+		}));
+
 	});
 });
 
 let base = path.resolve(__dirname, '..');
 let tasks = [];
 let contents = [];
-for(let pluginName of PLUGIN_LIST) {
+for(let pluginName of plugins) {
 	console.log('creating task for plugin', pluginName);
 
-	let pluginPath = './' + paths.plugins + PLUGIN_REPO_NAME + '/' + pluginName + '/index.toml';
+	let pluginPath = './' + paths.plugins + '/' + pluginName + '/index.toml';
 	let taskName = 'plugins:build:' + pluginName;
 	gulp.task(taskName, () => {
 		return pipelines.browserifyBundle(base, pluginPath, 'PLUGIN', sharedEnvironment, 'js', null, bundler => {

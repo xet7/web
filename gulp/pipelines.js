@@ -23,8 +23,7 @@ const browserify = require('browserify'),
 	stripify = require('stripify'),
 	envify = require('envify/custom'),
 	watchify = require('watchify'),
-	brfs = require('brfs'),
-	exorcist = require('exorcist');
+	brfs = require('brfs');
 
 function Pipelines(manifest, plumber, isWatching) {
 	const self = this;
@@ -209,13 +208,12 @@ function Pipelines(manifest, plumber, isWatching) {
 
 		if (isApplicationBundle) {
 			let application = require('../' + filename)[sectionName];
-			let applicationConfig = {
+			environment.applicationConfig = {
 				name: sectionName == 'PLUGIN' ? 'utils' : application.name,
 				dependencies: application.dependencies,
 				productionOnlyDependencies: application.productionOnlyDependencies,
 				isPlugin: sectionName == 'PLUGIN'
 			};
-			environment.applicationConfig = applicationConfig;
 			environment.applicationPath = applicationPath;
 
 			outputFile = application.name;
