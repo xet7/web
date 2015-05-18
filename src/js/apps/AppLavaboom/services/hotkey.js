@@ -25,6 +25,9 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, $timeout
 	self.getKeys = () => utils.toArray(hotkeyList);
 
 	function enableMultiHotkey (multiKey, addedFromState, isGlobal) {
+		if (multiHotkeyList[multiKey].isActive)
+			return;
+		
 		clearHotkeys(true);
 
 		multiHotkeyList[multiKey].isActive = true;
@@ -49,14 +52,18 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, $timeout
 
 		multiHotkeyList[multiKey].isActive = false;
 		for(let k of multiHotkeyList[multiKey].list)
-			removeHotkey(k);
+			removeHotkey(k, true);
 	}
 
-	function removeHotkey (option) {
+	function removeHotkey (option, isDeleteFromList = false) {
 		console.debug('hotkeys: removed', option);
 		
-		for(let k of angular.isArray(option.combo) ? option.combo : [option.combo])
+		for(let k of angular.isArray(option.combo) ? option.combo : [option.combo]) {
 			hotkeys.del(k);
+
+			if (isDeleteFromList)
+				delete hotkeyList[k];
+		}
 	}
 
 	function addHotkey (option, addedFromState, isGlobal, isStep = false) {
@@ -80,6 +87,7 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, $timeout
 
 			addHotkey({
 				combo: [option.require],
+				description: option.requireDescription,
 				callback: event => {
 					event.preventDefault();
 
@@ -102,7 +110,6 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, $timeout
 			if (currentKey)
 				return;
 
-			console.debug('added', option);
 			hotkeys.add(option);
 
 			option.description = $translate.instant(option.description);
@@ -141,12 +148,8 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, $timeout
 				if (!isLegendState && !isRemoveAll && hotkeyOptions.isGlobal && (!isPopupState || hotkeyOptions.isPopup))
 					continue;
 
-				if (isLegendState || isRemoveAll || !isParent || (isPopupState && !hotkeyOptions.isPopup)) {
-					removeHotkey(hotkeyOptions);
-
-					if (!isLegendState)
-						delete hotkeyList[key];
-				}
+				if (isLegendState || isRemoveAll || !isParent || (isPopupState && !hotkeyOptions.isPopup))
+					removeHotkey(hotkeyOptions, !isLegendState);
 			}
 		}
 	}
@@ -170,14 +173,18 @@ module.exports = /*@ngInject*/function ($rootScope, $translate, $state, $timeout
 		console.log('registerCustomHotkeys', options, 'isActive: ', isActive);
 
 		function register(isFirstTime = false) {
-			if (!isFirstTime && router.isPopupState($state.current.name) && !options.isPopup)
+			let isPopupState = router.isPopupState($state.current.name);
+			let isLegendState = isPopupState && $state.current.name.endsWith('.hotkeys');
+			let currentStateName = isLegendState ? $state.current.name.replace('.hotkeys', '') : $state.current.name;
+
+			if (!isFirstTime && !options.isPopup && router.isPopupState(currentStateName))
 				return;
 
-			if (!$state.current.name.includes(options.addedFromState))
+			if (!options.isGlobal && !currentStateName.includes(options.addedFromState))
 				return;
 
 			console.debug(`hotkeys: register(${options.scope}),
-				current state is ${$state.current.name} added from state is ${options.addedFromState}`, hotkeys);
+				current state is ${currentStateName} added from state is ${options.addedFromState}`, hotkeys);
 
 			for (let k of hotkeys)
 				addHotkey(k, options.addedFromState, options.isGlobal);

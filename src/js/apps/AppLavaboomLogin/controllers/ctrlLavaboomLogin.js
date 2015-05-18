@@ -28,22 +28,22 @@ module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate,
 
 			tests.performCompatibilityChecks();
 
-			if ($rootScope.isInitialized) {
-				yield $state.go('login', {}, {reload: true});
-			} else {
-				$rootScope.isInitialized = true;
-				console.log('opts', opts);
-				if (opts) {
+			$rootScope.isInitialized = true;
 
-					signUp.isPartiallyFlow = !!opts.state;
-					if (signUp.isPartiallyFlow) {
-						yield user.authenticate();
+			console.log('opts', opts);
+			if (opts) {
+				signUp.isPartiallyFlow = !!opts.state;
+				if (signUp.isPartiallyFlow) {
+					yield user.authenticate();
 
-						yield $state.go(opts.state);
-					}
+					yield $state.go(opts.state);
 				}
-				return {lbDone: translations.LB_SUCCESS};
+			} else {
+				yield $state.go('login', {}, {reload: true});
 			}
+
+
+			return {lbDone: translations.LB_SUCCESS};
 		} catch (error) {
 			throw {message: translations.LB_INITIALIZATION_FAILED, error: error};
 		}

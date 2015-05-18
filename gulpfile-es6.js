@@ -285,7 +285,7 @@ gulp.task('build:styles', () => {
 		.pipe(config.isDebugable ? plg.sourcemaps.init() : plg.util.noop())
 		// oh yes, gulp is full of hacks and totally weird behavior
 		// the special solution for the special gulp-less plugin
-		.pipe(isWatching ? plg.less().on('error', err => {
+		.pipe(isWatching ? plg.less().on('error', function (err) {
 			utils.logGulpError('Less error', 'gulpfile.js', err);
 			this.emit('end');
 		}) : plg.less())
@@ -372,9 +372,8 @@ gulp.task('tests', () =>
 		.pipe(gulp.dest(os.tmpdir()))
 		.pipe(plg.jasmine())
 );
-
 // Automatically install all bower dependencies
-gulp.task('bower', () => plg.bower());
+gulp.task('bower', (cb) => process.env.NO_BOWER_UPDATE ? cb() : plg.bower());
 gulp.task('bower-update', () => plg.bower({cmd: 'update'}));
 
 // Serve it, baby!
@@ -437,7 +436,7 @@ gulp.task('default', gulp.series(
 		// live reload for everything except browserify(as we use watchify)
 		gulp.watch('./bower.json', gulp.series('bower-update', 'compile'));
 		gulp.watch(paths.img.input, gulp.series('copy:images'));
-		gulp.watch(paths.fonts.input, gulp.series('copy:fonts'));
+		gulp.watch(paths.fonts.inputWatch, gulp.series('copy:fonts'));
 		gulp.watch(paths.styles.inputAll, gulp.series('build:styles'));
 		gulp.watch(paths.markup.input, gulp.series('build:jade'));
 		gulp.watch(paths.partials.input, gulp.series('build:partials-jade'));

@@ -1,6 +1,14 @@
-module.exports = /*@ngInject*/($scope, $translate, $interval, consts) => {
-	$scope.currentPlanName = 'BASIC';
+module.exports = /*@ngInject*/($scope, $translate, $interval, consts, user) => {
+	$scope.currentPlanName = user.accountType;
+	console.log('$scope.currentPlanName', $scope.currentPlanName);
+
+	$scope.planList = consts.PLAN_LIST;
 	$scope.plans = { };
+
+	const translations = {
+		LB_CURRENT: ''
+	};
+	$translate.bindAsObject(translations, 'MAIN.SETTINGS.PLAN');
 
 	consts.PLAN_LIST.forEach(name => {
 		$scope.plans[name] = {
@@ -8,9 +16,10 @@ module.exports = /*@ngInject*/($scope, $translate, $interval, consts) => {
 			LB_TAG: '',
 			LB_ITEMS: ''
 		};
-		console.log('translating', $scope.plans[name], 'MAIN.SETTINGS.PLAN.' + name);
-		$translate.bindAsObject($scope.plans[name], 'MAIN.SETTINGS.PLAN.' + name, t => {
+
+		$translate.bindAsObject($scope.plans[name], 'MAIN.SETTINGS.PLAN.' + name.toUpperCase(), t => {
 			t.LB_ITEMS = t.LB_ITEMS.split('|');
+			t.title = name == $scope.currentPlanName ? translations.LB_CURRENT : '';
 			return t;
 		});
 	});

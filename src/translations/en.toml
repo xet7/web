@@ -42,9 +42,7 @@ DIALOGS_NO = "No"
 
 [NOTIFICATIONS]
 	WEB_CRYPTO_IS_NOT_AVAILABLE_TITLE="Please update your browser."
-	WEB_CRYPTO_IS_NOT_AVAILABLE_TEXT="Looks like this browser will not run Lavaboom, please log in again with an up-to-date version of Firefox, Safari or Google Chrome."
-	WEB_CRYPTO_LIMITED_TITLE="Please update your browser."
-    WEB_CRYPTO_LIMITED_TEXT="Looks like this browser is too slow for Lavaboom, please upgrade your browser or switch to an up-to-date version of Google Chrome, Firefox or Safari."
+	WEB_CRYPTO_IS_NOT_AVAILABLE_TEXT="Looks like this browser is too slow for Lavaboom, please upgrade your browser or switch to an up-to-date version of Google Chrome, Firefox or Safari."
 	WEB_WORKERS_IS_NOT_AVAILABLE_TITLE="Please update your browser."
     WEB_WORKERS_IS_NOT_AVAILABLE_TEXT="Looks like this browser is too slow for Lavaboom, please upgrade your browser or switch to an up-to-date version of Google Chrome, Firefox or Safari"
     SERVED_BY_TITLE = "Welcome back"
@@ -104,8 +102,8 @@ DIALOGS_NO = "No"
 	TITLE_CONFIRM = "Confirm action"
     LB_EMAIL_HAS_EMBEDDED_STYLING = "This email contains embedded styling, do you want to display it?"
 
-    TITLE_OPENPGP_BLOCK_DECRYPT_ERROR_NO_KEY_FOUND = "Cannot find proper decrypted private key to decrypt this openpgp envelope"
-    TITLE_OPENPGP_BLOCK_DECRYPT_ERROR = "Something went wrong during decryption of this openpgp envelope"
+    TITLE_OPENPGP_BLOCK_DECRYPT_ERROR_NO_KEY_FOUND = "Cannot find decrypted private key for this embedded openpgp envelope"
+    TITLE_OPENPGP_BLOCK_DECRYPT_ERROR = "Something went wrong during decryption of embedded openpgp envelope"
 
     CORRUPTED_EMAIL_TITLE = "Aw, Snap!"
     CORRUPTED_EMAIL = "Something went wrong while displaying this email. To continue, try to "
@@ -211,6 +209,7 @@ DIALOGS_NO = "No"
 [LOGIN.CHOOSE_PASSWORD_INTRO]
 	TITLE = "Choose your password"
 	LB_WARNING_TITLE = "Attention"
+	LB_WARNING0 = "You are about to generate a new key pair for your account, but before this you need to select desired password"
     LB_WARNING1 = "Please note that we do not store your passwords in plain text on our servers. This makes Lavaboom more secure, however if you lose your password we are unable reset it for you."
     LB_WARNING2 = "When you have chosen a password make sure to write it down on a piece of paper. Losing your password may prevent access to your account."
     BTN_NEXT = "I understand"
@@ -250,6 +249,7 @@ DIALOGS_NO = "No"
     INFO6 = "Lavaboom Sync works basically backing up your keyring on our servers. Lavaboom Sync can work with or without a sync passphrase (similar to how Chrome works)."
     BTN_ENABLE_LB_SYNC = "Enable Lavaboom Sync"
     BTN_BACKUP_NOW = "Back up my key now"
+    BTN_SKIP = "Skip and get back"
 	LB_PRIVATE_PC = "This is private computer"
 
 [LOGIN.IMPORT_KEY]
@@ -384,17 +384,22 @@ DIALOGS_NO = "No"
     LB_PROFILE_CANNOT_BE_SAVED = "Cannot save profile"
 
 [MAIN.SETTINGS.PLAN]
-	LB_CURRENT = "This is your current plan"
+	LB_CURRENT = "this is your current plan"
 
-[MAIN.SETTINGS.PLAN.BASIC]
-	TITLE = "Lavaboom (Basic)"
+[MAIN.SETTINGS.PLAN.FREE]
+	TITLE = "Lavaboom Free"
 	LB_TAG = "FREE"
-	LB_ITEMS = "1,000MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+	LB_ITEMS = "500MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
 
-#[MAIN.SETTINGS.PLAN.TEST]
-#	TITLE = "Lavaboom (Test)"
-#	LB_TAG = "SECRET"
-#	LB_ITEMS = "1,000MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+[MAIN.SETTINGS.PLAN.BETA]
+	TITLE = "Lavaboom Beta"
+	LB_TAG = "BETA"
+	LB_ITEMS = "1GB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+
+[MAIN.SETTINGS.PLAN.SUPPORTER]
+	TITLE = "Lavaboom Supporter"
+	LB_TAG = "SUPPORTER"
+	LB_ITEMS = "2GB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
 
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
@@ -486,6 +491,7 @@ DIALOGS_NO = "No"
 
 
 [HOTKEY]
+	GOTO				 = "Go to - press this key followed by another one"
 	TITLE_GLOBAL   		 = "Global shortcuts cheatsheet"
 	TITLE_LOCAL   		 = "This page shortcuts cheatsheet"
     CHEATSHEET           = "Show/Hide cheatsheet"

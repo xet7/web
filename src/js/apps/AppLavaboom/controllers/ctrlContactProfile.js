@@ -109,4 +109,9 @@ module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $statePar
 			throw err;
 		}
 	});
+
+	$scope.$on('$stateChangeStart', () => {
+		if ($scope.isEditMode)
+			$scope.saveThisContact();
+	});
 };

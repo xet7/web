@@ -2,7 +2,7 @@ const sleep = require('co-sleep');
 const fs = require('fs');
 const mimelib = require('mimelib');
 
-module.exports = /*@ngInject*/function(co, consts) {
+module.exports = /*@ngInject*/function($injector, $rootScope, $templateCache, co, consts) {
 	const self = this;
 
 	let detectIsMobile;
@@ -61,6 +61,41 @@ module.exports = /*@ngInject*/function(co, consts) {
 		let dom = new DOMParser().parseFromString(html, 'text/html');
 		return dom.querySelector('body');
 	};
+
+	this.fetchAndCompile = (templateUrl, args) => co(function *(){
+		let template = yield $templateCache.fetch(templateUrl);
+		
+		return (yield self.compile(template, args));
+	});
+	
+	this.compile = (template, args) => co(function *(){
+		if (!args)
+			args = {};
+
+		let $compile = $injector.get('$compile');
+
+		let marker = self.getRandomString(16);
+		let templateFunction = $compile(template + '<span>{{marker}}</span>');
+
+		let isolatedScope = $rootScope.$new(true);
+
+		for(let arg of Object.keys(args))
+			isolatedScope[arg] = args[arg];
+		isolatedScope.marker = marker;
+
+		let body = templateFunction(isolatedScope);
+
+		yield self.wait(() => body.find(e => e.innerText == marker));
+
+		let nodes = [];
+		for(let i = 0; i < body.length; i++)
+			nodes.push(body[i]);
+
+		return nodes
+			.filter(e => e.innerText != marker)
+			.map(e => e.outerHTML)
+			.join('');
+	});
 
 	this.str2Uint8Array = (str) => openpgp.util.str2Uint8Array(str);
 

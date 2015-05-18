@@ -2,7 +2,30 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## 0.3.2 - 2015-05-13
+## UNRELEASED
+### Fixed
+- web crypto detection warnings
+- different issues with gulpfile
+
+## 0.3.4 - 2015-05-18
+### Added
+- generate new key pair button under settings/keys
+
+### Modified
+- now using google caja html sanitizer which seems to work much better and can process almost any html
+
+### Fixed
+- some minor issues with notifications
+- issue during compose screen initialization that lead to duplicated attached public keys
+
+## 0.3.3 - 2015-05-15
+### Fixed
+- templates(signature mostly, reply, forward, etc)
+- text-angular paste processing
+- save contact automatically if user leaves state in edit mode
+- more shortcuts fixes and improvements
+
+## 0.3.2 - 2015-05-15
 ### Added
 - contacts request public key, attach own public key by default
 

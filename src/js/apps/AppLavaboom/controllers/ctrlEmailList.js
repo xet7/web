@@ -1,11 +1,6 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParams, $translate, $sanitize,
 							   user, utils, co, inbox, saver, notifications) => {
 
-	$rootScope.$bind('notifications', () => {
-		$scope.notificationsInfo = notifications.get('info', 'mailbox');
-		$scope.notificationsWarning = notifications.get('warning', 'mailbox');
-	});
-
 	$scope.selfEmail = user.email;
 	$scope.labelName = $stateParams.labelName;
 	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
@@ -13,6 +8,17 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 
 	$scope.isThreads = false;
 	$scope.isLoading = false;
+
+	$rootScope.$bind('notifications', () => {
+		$scope.notificationsInfo = angular.extend({},
+			notifications.get('info', 'mailbox'),
+			notifications.get('info', 'mailbox-' + $scope.selectedTid)
+		);
+		$scope.notificationsWarning = angular.extend({},
+			notifications.get('warning', 'mailbox'),
+			notifications.get('warning', 'mailbox-' + $scope.selectedTid)
+		);
+	});
 
 	{
 		let list = inbox.requestListCached($scope.labelName);
