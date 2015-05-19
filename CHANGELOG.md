@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Modified
 - routes for labels are now lower cased
 - logo leads to lavaboom.com
+- proper informational messages for keyring import under settings/security
 
 ## 0.3.6 - 2015-05-19
 ### Fixed
