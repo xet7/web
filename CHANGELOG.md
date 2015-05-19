@@ -4,8 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## UNRELEASED
 ### Fixed
-- reference to a missing Lavaboom Sync Keys state
-- wrong error displayed when server returns "weak password"
+- removed reference to a missing Lavaboom Sync Keys state
+- show correct error when server returns "weak password"
+- sanitizer shouldn't wipe all links and styles
 
 ## 0.3.5 - 2015-05-18
 ### Fixed
