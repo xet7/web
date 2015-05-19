@@ -2,11 +2,15 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## UNRELEASED
+## 0.3.6 - 2015-05-19
 ### Fixed
 - removed reference to a missing Lavaboom Sync Keys state
 - show correct error when server returns "weak password"
 - sanitizer shouldn't wipe all links and styles
+- email: links to the same location can be opened in the same window
+
+### Modified
+- settings/plans reworked, clickable 'zero-knowledge' links
 
 ## 0.3.5 - 2015-05-18
 ### Fixed
