@@ -1,5 +1,5 @@
 form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-submit="__form.$valid && logIn()", novalidate, ng-autodisable)
-	img.login-logo(src="img/Lavaboom-logo.svg")
+	img.login-logo(src="#{resolveAsset('/img/Lavaboom-logo-no-shadow.svg')}")
 	p.lead {{'LOGIN.SIGNUP.LOGIN' | translate}}
 
 	div.alert.alert-danger(ng-show="currentErrorMessage", ng-bind="currentErrorMessage")
