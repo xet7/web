@@ -2,10 +2,15 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## UNRELEASED
+## 0.3.7 - 2015-05-19
+### Fixed
+- remove notifications regarding crypto after key decryption
+
 ### Modified
 - routes for labels are now lower cased
 - logo leads to lavaboom.com
+- proper informational messages for keyring import under settings/security
+- no warning if no backup available when Lavaboom Sync is being disabled
 
 ## 0.3.6 - 2015-05-19
 ### Fixed

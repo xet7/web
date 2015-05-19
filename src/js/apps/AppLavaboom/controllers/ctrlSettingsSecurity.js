@@ -22,7 +22,9 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 		LB_CANNOT_IMPORT: '',
 		LB_CANNOT_IMPORT_WRONG_FORMAT: '',
 		LB_CANNOT_IMPORT_CORRUPTED: '',
-		LB_CANNOT_IMPORT_PUB_KEY_NOT_SUPPORTED: ''
+		LB_CANNOT_IMPORT_PUB_KEY_NOT_SUPPORTED: '',
+		LB_CANNOT_IMPORT_NO_PRIVATE_KEYS_FOUND: '',
+		LB_IMPORTED: '%'
 	};
 	$translate.bindAsObject(translations, 'MAIN.SETTINGS.SECURITY');
 
@@ -104,14 +106,31 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 
 	$scope.importKeys = (data) => {
 		try {
-			cryptoKeys.importKeys(data);
+			let c = cryptoKeys.importKeys(data);
+
+			if (c < 1) {
+				notifications.set('import-keys', {
+					text: translations.LB_CANNOT_IMPORT_NO_PRIVATE_KEYS_FOUND,
+					type: 'warning',
+					namespace: 'settings',
+					kind: 'crypto'
+				});
+			} else {
+				notifications.set('import-keys', {
+					text: translations.LB_IMPORTED({count: c}),
+					namespace: 'settings',
+					kind: 'crypto'
+				});
+			}
 		} catch (err) {
 			console.log('cannot import', err.message);
 			const translatedErrorMessage = translations['LB_CANNOT_IMPORT_' + err.message];
 
-			notifications.set('import-keys-fail', {
+			notifications.set('import-keys', {
 				text: translatedErrorMessage ? translatedErrorMessage : translations.LB_CANNOT_IMPORT,
-				namespace: 'settings'
+				type: 'warning',
+				namespace: 'settings',
+				kind: 'crypto'
 			});
 		}
 		inbox.invalidateEmailCache();
@@ -126,25 +145,29 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 		}
 
 		co (function *(){
-			if (!$scope.settings.isLavaboomSynced) {
-				const confirmed = yield co.def(dialogs.create(
-					'/partials/lsOff.html',
-					'CtrlLsOff'
-				).result, 'cancelled');
-
-				if (confirmed == 'cancelled') {
-					isLavaboomSyncRestored = true;
-					$scope.settings.isLavaboomSynced = true;
-					return;
-				}
-			}
-
 			let LavaboomSyncedKeyring = '';
-			if($scope.settings.isLavaboomSynced){
+
+			if ($scope.settings.isLavaboomSynced) {
 				let keysBackup = cryptoKeys.exportKeys(user.email);
 				$scope.settings.keyring = keysBackup;
-			} else {
-				LavaboomSyncedKeyring = $scope.settings.keyring;
+			}
+			else
+			{
+				let backup = utils.def(() => cryptoKeys.verifyAndReadBackup($scope.settings.keyring), null);
+				if (backup && backup.prv.length > 0) {
+					const confirmed = yield co.def(dialogs.create(
+						'/partials/lsOff.html',
+						'CtrlLsOff'
+					).result, 'cancelled');
+
+					if (confirmed == 'cancelled') {
+						isLavaboomSyncRestored = true;
+						$scope.settings.isLavaboomSynced = true;
+						return;
+					}
+
+					LavaboomSyncedKeyring = $scope.settings.keyring;
+				}
 				$scope.settings.keyring = '';
 			}
 

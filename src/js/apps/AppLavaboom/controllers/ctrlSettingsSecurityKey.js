@@ -13,13 +13,15 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, co, consts, crypto,
 		if ($scope.key) {
 			co(function *(){
 				if (yield $scope.key.decrypt($scope.key.decryptPassword)) {
+					notifications.unSetByKind('crypto');
+
 					notifications.set('private-key-decrypted-ok', {
 						text: translations.LB_PRIVATE_KEY_DECRYPTED({email: $scope.email}),
 						type: 'info',
 						timeout: 3000,
-						namespace: 'settings'
+						namespace: 'settings',
+						kind: 'crypto'
 					});
-					notifications.unSet('no-key', 'mailbox');
 				}
 			});
 		}

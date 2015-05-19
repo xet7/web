@@ -76,6 +76,7 @@ module.exports = /*@ngInject*/function($rootScope, $timeout, $state, $translate,
 				text: notifications18n.NO_KEY_TEXT,
 				type: 'warning',
 				namespace: 'mailbox',
+				kind: 'crypto',
 				onRemove: () => {
 					$state.go('main.settings.security');
 				}
