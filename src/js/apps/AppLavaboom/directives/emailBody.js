@@ -11,6 +11,8 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 
 	$translate.bindAsObject(translations, 'INBOX');
 
+	let thisLocationPrefix = window.location.protocol + '//' + window.location.host;
+
 	const transformCustomTextNodes = (dom, transforms, level = 0) => {
 		for(let node of dom.childNodes) {
 			if (node.nodeName == '#text') {
@@ -172,8 +174,9 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 					emailContextMenuDOM.appendChild(node);
 
 					linksCounter++;
-				} else
+				} else if (!href.startsWith(thisLocationPrefix)) {
 					node.setAttribute('target', '_blank');
+				}
 			}
 		};
 
