@@ -280,6 +280,9 @@ DIALOGS_NO = "No"
 [LAVABOOM.API.ERROR.ACCOUNTS.UPDATE]
 	403 = "Incorrect old password specified"
 
+[LAVABOOM.API.ERROR.ACCOUNTS.CREATE.SETUP]
+	403 = "Weak password specified"
+
 [MAIN.NAV]
 	LB_COMPOSE = "Compose"
 	LB_CONTACTS = "Contacts"
@@ -391,22 +394,22 @@ DIALOGS_NO = "No"
 [MAIN.SETTINGS.PLAN.FREE]
 	TITLE = "Lavaboom Free"
 	LB_TAG = "COMING SOON"
-	LB_ITEMS = "500MB storage|End to end encryption|Bank-grade security|Zero Knowledge"
+	LB_ITEMS = "500MB storage|End to end encryption|Bank-grade security|<a href='http://zeroknowledgeprivacy.org/' target='blank'>Zero Knowledge</a> privacy"
 
 [MAIN.SETTINGS.PLAN.BETA]
 	TITLE = "Lavaboom Beta"
 	LB_TAG = ""
-	LB_ITEMS = "1GB storage|Early access to new features|End to end encryption|Bank-grade security|Zero Knowledge"
+	LB_ITEMS = "1GB storage|Early access to new features|End to end encryption|Bank-grade security|<a href='http://zeroknowledgeprivacy.org/' target='blank'>Zero Knowledge</a> privacy"
 
 [MAIN.SETTINGS.PLAN.SUPPORTER]
 	TITLE = "Lavaboom Supporter"
 	LB_TAG = ""
-	LB_ITEMS = "2GB storage|Early access to new features|End to end encryption|Bank-grade security|Zero Knowledge"
+	LB_ITEMS = "2GB storage|Early access to new features|End to end encryption|Bank-grade security|<a href='http://zeroknowledgeprivacy.org/' target='blank'>Zero Knowledge</a> privacy"
 
 [MAIN.SETTINGS.PLAN.PREMIUM]
 	TITLE = "Lavaboom Premium"
 	LB_TAG = "COMING SOON"
-	LB_ITEMS = "15GB storage|Use your own domain|End to end encryption|Bank-grade security|Zero Knowledge"
+	LB_ITEMS = "15GB storage|Use your own domain|End to end encryption|Bank-grade security|<a href='http://zeroknowledgeprivacy.org/' target='blank'>Zero Knowledge</a> privacy"
 
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
