@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $translate, $interval, consts, user) => {
+module.exports = /*@ngInject*/($scope, $translate, $interval, consts, user, $sce) => {
 	$scope.currentPlanName = user.accountType;
 
 	$scope.planList = consts.PLAN_LIST.filter(plan => {
@@ -28,7 +28,7 @@ module.exports = /*@ngInject*/($scope, $translate, $interval, consts, user) => {
 				let plan = {
 					title: t.TITLE,
 					tag: t.LB_TAG,
-					items: t.LB_ITEMS.split('|'),
+					items: t.LB_ITEMS.split('|').map(item => $sce.trustAsHtml(item)),
 					hoverTitle: name == user.accountType ? translations.LB_CURRENT : ''
 				};
 
