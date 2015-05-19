@@ -22,7 +22,9 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 		LB_CANNOT_IMPORT: '',
 		LB_CANNOT_IMPORT_WRONG_FORMAT: '',
 		LB_CANNOT_IMPORT_CORRUPTED: '',
-		LB_CANNOT_IMPORT_PUB_KEY_NOT_SUPPORTED: ''
+		LB_CANNOT_IMPORT_PUB_KEY_NOT_SUPPORTED: '',
+		LB_CANNOT_IMPORT_NO_PRIVATE_KEYS_FOUND: '',
+		LB_IMPORTED: '%'
 	};
 	$translate.bindAsObject(translations, 'MAIN.SETTINGS.SECURITY');
 
@@ -104,13 +106,27 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 
 	$scope.importKeys = (data) => {
 		try {
-			cryptoKeys.importKeys(data);
+			let c = cryptoKeys.importKeys(data);
+
+			if (c < 1) {
+				notifications.set('import-keys', {
+					text: translations.LB_CANNOT_IMPORT_NO_PRIVATE_KEYS_FOUND,
+					type: 'warning',
+					namespace: 'settings'
+				});
+			} else {
+				notifications.set('import-keys', {
+					text: translations.LB_IMPORTED({count: c}),
+					namespace: 'settings'
+				});
+			}
 		} catch (err) {
 			console.log('cannot import', err.message);
 			const translatedErrorMessage = translations['LB_CANNOT_IMPORT_' + err.message];
 
-			notifications.set('import-keys-fail', {
+			notifications.set('import-keys', {
 				text: translatedErrorMessage ? translatedErrorMessage : translations.LB_CANNOT_IMPORT,
+				type: 'warning',
 				namespace: 'settings'
 			});
 		}

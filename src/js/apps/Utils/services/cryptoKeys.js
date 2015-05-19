@@ -25,13 +25,14 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, $translate, co,
 					console.log('skip private key import - already existing', key.primaryKey.fingerprint);
 			}
 
-			return;
+			return keyring.keys.length;
 		}
 
 		let bodyHash = utils.hexify(openpgp.crypto.hash.sha512(JSON.stringify(importObj.body)));
 		if (bodyHash != importObj.bodyHash)
 			throw new Error('CORRUPTED');
 
+		let privateKeysCount = 0;
 		Object.keys(importObj.body.key_pairs).forEach(email => {
 			if (angular.isString(importObj.body.key_pairs[email].prv))
 				importObj.body.key_pairs[email].prv = [importObj.body.key_pairs[email].prv];
@@ -39,6 +40,7 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, $translate, co,
 			importObj.body.key_pairs[email].prv.forEach(privateKeyArmored => {
 				try {
 					for(let key of openpgp.key.readArmored(privateKeyArmored).keys) {
+						privateKeysCount++;
 						if (!crypto.getPrivateKeyByFingerprint(key.primaryKey.fingerprint))
 							crypto.importPrivateKey(key);
 						else
@@ -68,6 +70,8 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, $translate, co,
 
 		crypto.storeKeyring();
 		crypto.initialize();
+
+		return privateKeysCount;
 	};
 
 	function formatExportFile(body) {
