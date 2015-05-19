@@ -67,7 +67,7 @@ div#compose-wrapper
 				email-builder="", ta-file-drop="onFileDrop", ta-paste="formatPaste($html)", ta-toolbar="toolbar", ta-min-text="1", text-angular-focus="")
 		footer
 			#attachments.row
-				div.col-xs-6(ng-repeat="attachment in attachments")
+				div.col-xs-12.col-md-6(ng-repeat="attachment in attachments")
 					//- a.attachment
 					//- 	span.fileCorner
 					//- 	span(ng-bind="attachment.attachment.name")
@@ -102,6 +102,6 @@ div#compose-wrapper
 								span(ng-bind="attachment.attachment.size | filesize")
 								span {{attachment.status ? '(' + attachment.status + ')' : ''}}
 							div
-								span(ng-click="deleteAttachment(attachment, $index)", ng-autodisable) {{'MAIN.COMPOSE.BTN_DELETE' | translate}}
+								span.clickable(ng-click="deleteAttachment(attachment, $index)", ng-autodisable) ({{'MAIN.COMPOSE.BTN_DELETE' | translate}})
 		.mask(ng-show="isWarning", ng-click="reject()")
 
