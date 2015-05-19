@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## UNRELEASED
+### Fixed
+- reference to a missing Lavaboom Sync Keys state
+- wrong error displayed when server returns "weak password"
+
 ## 0.3.5 - 2015-05-18
 ### Fixed
 - web crypto detection warnings

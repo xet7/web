@@ -50,7 +50,6 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 		let pgpMessages = {};
 
 		const pgpRemember = (str, pgpMessage) => {
-			console.log('remember hidden message', pgpMessage);
 			pgpMessages[pgpMessage] = co(function *(){
 				try {
 					let message = yield crypto.decodeRaw(pgpMessage);
@@ -61,8 +60,6 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 					let dom = utils.getDOM(sanitizedMessage);
 
 					yield transformTextNodes(dom, threadId, level + 1);
-
-					console.log('decrypted hidden message', dom.innerHTML);
 
 					return dom.innerHTML;
 				} catch (error) {
@@ -88,9 +85,8 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 
 		const pgpReplace = (str, pgpMessage) => {
 			if (pgpMessages[pgpMessage]) {
-				console.log('replace hidden message!');
 				return pgpMessages[pgpMessage];
-			} else console.log('cannot replace hidden message!');
+			} else console.error('cannot replace hidden message!');
 			return pgpMessage;
 		};
 
@@ -100,13 +96,9 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 
 		pgpMessages = yield pgpMessages;
 
-		console.log('replacing possible hidden messages...', dom.innerHTML);
-
 		transformCustomTextNodes(dom, [
 			{regex: pgpRegex, replace: pgpReplace}
 		]);
-
-		console.log('replaced possible hidden messages...', dom.innerHTML);
 
 		transformCustomTextNodes(dom, [
 			{regex: emailRegex, replace: '<a href="mailto:$1">$1</a>'},
@@ -210,7 +202,10 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 		try {
 			let wrapperTag = scope.isHtml ? 'div' : 'pre';
 			let wrappedEmailBody = `<${wrapperTag}>${scope.emailBody}</${wrapperTag}>`;
+
+			console.log('email before sanitize', wrappedEmailBody);
 			let sanitizedEmailBody = $sanitize(wrappedEmailBody);
+			console.log('email after sanitize', sanitizedEmailBody);
 
 			let dom = utils.getDOM(sanitizedEmailBody);
 
