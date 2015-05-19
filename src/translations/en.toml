@@ -42,21 +42,19 @@ DIALOGS_NO = "No"
 
 [NOTIFICATIONS]
 	WEB_CRYPTO_IS_NOT_AVAILABLE_TITLE="Please update your browser."
-	WEB_CRYPTO_IS_NOT_AVAILABLE_TEXT="Looks like this browser will not run Lavaboom, please log in again with an up-to-date version of Firefox, Safari or Google Chrome."
-	WEB_CRYPTO_LIMITED_TITLE="Please update your browser."
-    WEB_CRYPTO_LIMITED_TEXT="Looks like this browser is too slow for Lavaboom, please upgrade your browser or switch to an up-to-date version of Google Chrome, Firefox or Safari."
+	WEB_CRYPTO_IS_NOT_AVAILABLE_TEXT="Looks like this browser is too slow for Lavaboom, please upgrade your browser or switch to an up-to-date version of Google Chrome, Firefox or Safari."
 	WEB_WORKERS_IS_NOT_AVAILABLE_TITLE="Please update your browser."
     WEB_WORKERS_IS_NOT_AVAILABLE_TEXT="Looks like this browser is too slow for Lavaboom, please upgrade your browser or switch to an up-to-date version of Google Chrome, Firefox or Safari"
     SERVED_BY_TITLE = "Welcome back"
-    SERVED_BY_TEXT = "Served by {{servedBy}}"
-    SERVED_BY_UNKNOWN_TITLE = "Served by Unknown server"
+    SERVED_BY_TEXT = "served by {{servedBy}}"
+    SERVED_BY_UNKNOWN_TITLE = "served by Unknown server"
     SERVED_BY_UNKNOWN_TEXT = "We do not know which server served you Lavaboom. Please contact hello@lavaboom.com."
     NO_KEY_TITLE = "No private key found"
     NO_KEY_TEXT = "You don't have a decrypted private key, please go to settings/security and import or decrypt one"
     BAD_BROWSER_TITLE = "Please use a modern browser"
     BAD_BROWSER_TEXT = "Your browser might have problems with downloading, please consider using Chrome, Firefox, Opera or I.E >= 10"
     MOBILE_BROWSER_TITLE = "Please use desktop PC"
-    MOBILE_BROWSER_TEXT = "We currently don't support mobile platforms, please use desktop PC"
+    MOBILE_BROWSER_TEXT = "Our mobile platform is in the early alpha stage. Please let us know if you experience any bugs."
     BACKUP_WARNING_TEXT = "If you see this file just opens in your browser please select save as and save it to a safe location"
 
 [INBOX]
@@ -104,8 +102,8 @@ DIALOGS_NO = "No"
 	TITLE_CONFIRM = "Confirm action"
     LB_EMAIL_HAS_EMBEDDED_STYLING = "This email contains embedded styling, do you want to display it?"
 
-    TITLE_OPENPGP_BLOCK_DECRYPT_ERROR_NO_KEY_FOUND = "Cannot find proper decrypted private key to decrypt this openpgp envelope"
-    TITLE_OPENPGP_BLOCK_DECRYPT_ERROR = "Something went wrong during decryption of this openpgp envelope"
+    TITLE_OPENPGP_BLOCK_DECRYPT_ERROR_NO_KEY_FOUND = "Cannot find decrypted private key for this embedded openpgp envelope"
+    TITLE_OPENPGP_BLOCK_DECRYPT_ERROR = "Something went wrong during decryption of embedded openpgp envelope"
 
     CORRUPTED_EMAIL_TITLE = "Aw, Snap!"
     CORRUPTED_EMAIL = "Something went wrong while displaying this email. To continue, try to "
@@ -140,7 +138,7 @@ DIALOGS_NO = "No"
 	LB_PRIVATE_KEY = "Private Key"
     LB_PUBLIC_KEY = "Public Key"
     LB_NOT_IMPLEMENTED = "Not yet implemented"
-    BTN_REMOVE_NOTIFICATION = "OK"
+    BTN_REMOVE_NOTIFICATION = "Ok"
 
 [VALIDATION]
 	LB_REQUIRED = "This field is required"
@@ -211,6 +209,7 @@ DIALOGS_NO = "No"
 [LOGIN.CHOOSE_PASSWORD_INTRO]
 	TITLE = "Choose your password"
 	LB_WARNING_TITLE = "Attention"
+	LB_WARNING0 = "You are about to generate a new key pair for your account, but before this you need to select desired password"
     LB_WARNING1 = "Please note that we do not store your passwords in plain text on our servers. This makes Lavaboom more secure, however if you lose your password we are unable reset it for you."
     LB_WARNING2 = "When you have chosen a password make sure to write it down on a piece of paper. Losing your password may prevent access to your account."
     BTN_NEXT = "I understand"
@@ -250,6 +249,7 @@ DIALOGS_NO = "No"
     INFO6 = "Lavaboom Sync works basically backing up your keyring on our servers. Lavaboom Sync can work with or without a sync passphrase (similar to how Chrome works)."
     BTN_ENABLE_LB_SYNC = "Enable Lavaboom Sync"
     BTN_BACKUP_NOW = "Back up my key now"
+    BTN_SKIP = "Skip and get back"
 	LB_PRIVATE_PC = "This is private computer"
 
 [LOGIN.IMPORT_KEY]
@@ -279,6 +279,9 @@ DIALOGS_NO = "No"
 # Specific error message for Lavaboom REST API
 [LAVABOOM.API.ERROR.ACCOUNTS.UPDATE]
 	403 = "Incorrect old password specified"
+
+[LAVABOOM.API.ERROR.ACCOUNTS.CREATE.SETUP]
+	403 = "Weak password specified"
 
 [MAIN.NAV]
 	LB_COMPOSE = "Compose"
@@ -380,21 +383,33 @@ DIALOGS_NO = "No"
 	LB_SEND_ME_NEWS = "Send me News about Lavaboom"
 	LB_SIGNATURE_LN1 = "Sent with Lavaboom - your secure email provider."
 	LB_SIGNATURE_LN2 = "Get your own address at lavaboom.com"
-	LB_PROFILE_SAVED = "Profile has been saved"
+	LB_PROFILE_SAVED = "Settings has been saved"
     LB_PROFILE_CANNOT_BE_SAVED = "Cannot save profile"
 
 [MAIN.SETTINGS.PLAN]
 	LB_CURRENT = "This is your current plan"
+	LB_GET_ON_IGG_TEXT = "BUY ON INDIEGOGO"
+	LB_GET_ON_IGG_TITLE = "Get a supporter account for life for as little as $17"
 
-[MAIN.SETTINGS.PLAN.BASIC]
-	TITLE = "Lavaboom (Basic)"
-	LB_TAG = "FREE"
-	LB_ITEMS = "1,000MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+[MAIN.SETTINGS.PLAN.FREE]
+	TITLE = "Lavaboom Free"
+	LB_TAG = "COMING SOON"
+	LB_ITEMS = "500MB storage|End to end encryption|Bank-grade security|<a href='http://zeroknowledgeprivacy.org/' target='blank'>Zero Knowledge</a> privacy"
 
-#[MAIN.SETTINGS.PLAN.TEST]
-#	TITLE = "Lavaboom (Test)"
-#	LB_TAG = "SECRET"
-#	LB_ITEMS = "1,000MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+[MAIN.SETTINGS.PLAN.BETA]
+	TITLE = "Lavaboom Beta"
+	LB_TAG = ""
+	LB_ITEMS = "1GB storage|Early access to new features|End to end encryption|Bank-grade security|<a href='http://zeroknowledgeprivacy.org/' target='blank'>Zero Knowledge</a> privacy"
+
+[MAIN.SETTINGS.PLAN.SUPPORTER]
+	TITLE = "Lavaboom Supporter"
+	LB_TAG = ""
+	LB_ITEMS = "2GB storage|Early access to new features|End to end encryption|Bank-grade security|<a href='http://zeroknowledgeprivacy.org/' target='blank'>Zero Knowledge</a> privacy"
+
+[MAIN.SETTINGS.PLAN.PREMIUM]
+	TITLE = "Lavaboom Premium"
+	LB_TAG = "COMING SOON"
+	LB_ITEMS = "15GB storage|Use your own domain|End to end encryption|Bank-grade security|<a href='http://zeroknowledgeprivacy.org/' target='blank'>Zero Knowledge</a> privacy"
 
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
@@ -432,6 +447,8 @@ DIALOGS_NO = "No"
 	LB_EXPIRING_SOON = "expiring soon"
 	ADD_NEW_KEY_PAIR = "Add new key pair for "
 	LB_CANNOT_IMPORT = "Cannot import keys, something went wrong..."
+	LB_CANNOT_IMPORT_NO_PRIVATE_KEYS_FOUND = "No private keys found in backup file"
+	LB_IMPORTED = "Imported {{count}} new key(s)"
 	LB_CANNOT_IMPORT_WRONG_FORMAT = "Cannot import keys, json or armored key expected"
 	LB_CANNOT_IMPORT_CORRUPTED = "Cannot import keys, backup is corrupted or has wrong format"
 	LB_CANNOT_IMPORT_PUB_KEY_NOT_SUPPORTED = "Expected to see a private key..."
@@ -486,6 +503,7 @@ DIALOGS_NO = "No"
 
 
 [HOTKEY]
+	GOTO				 = "Go to - press this key followed by another one"
 	TITLE_GLOBAL   		 = "Global shortcuts cheatsheet"
 	TITLE_LOCAL   		 = "This page shortcuts cheatsheet"
     CHEATSHEET           = "Show/Hide cheatsheet"

@@ -71,7 +71,7 @@
 					display: inline-block;
 					.lava-icon-22();
 					position: relative;
-					color: @lava-left-panel-icon-hover;
+					color: @lava-gray-light;
 					padding-left: 0;
 					padding-right: 1.7rem;
 					left: -.3rem;
@@ -120,13 +120,14 @@
 					margin-top: -1px;
 				}
 			}
+
 			&.logout{
 				position: absolute;
 				bottom: 0; left: 0; right: 0;
 				small{
 					.text-center();
 					display: block;
-					color: @lava-gray-light;
+					color: #999999;
 					padding: 0 3.3rem .7rem 2.2rem;
 				}
 				button{
@@ -139,6 +140,17 @@
 						// color: @lava-gray;
 					}
 				}
+
+				.help-us{
+					margin-bottom: 1em;
+					a {
+						white-space: normal;
+						text-align: center;
+						top: 1.1rem;
+						padding: 0 1.1rem;
+						height: auto;
+					}
+				}
 			}
 			&.active a, &.active button{
 				background: @lava-gray-dark !important;
@@ -149,7 +161,7 @@
 		}
 	}
 
-	@media (max-width: @screen-md-max) {
+	@media (min-width: @screen-md-min) and (max-width: @screen-md-max) {
 		width: @left-panel-width-sm;
 
 		#brand{

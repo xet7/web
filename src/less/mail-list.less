@@ -142,25 +142,27 @@
 
 			
 		}
-		.active .mail-list-item{
-			background-color: @lava;
-			color: @lava-mail-list-active-color;
-			p, [class^="icon-"],
-			[class*=" icon-"] {
-				color: @lava-mail-list-active-color !important;
-			}
-
-			&:hover{
+		@media (min-width: @screen-md-min) {
+			.active .mail-list-item{
 				background-color: @lava;
-			}
+				color: @lava-mail-list-active-color;
+				p, [class^="icon-"],
+				[class*=" icon-"] {
+					color: @lava-mail-list-active-color !important;
+				}
 
-			.details{
-				border-color: transparent;
+				&:hover{
+					background-color: @lava;
+				}
+
+				.details{
+					border-color: transparent;
+				}
 			}
-		}
-		.active, .item-wrapper:hover{
-			& + div .mail-list-item .details{
-				border-color: transparent;
+			.active, .item-wrapper:hover{
+				& + div .mail-list-item .details{
+					border-color: transparent;
+				}
 			}
 		}
 

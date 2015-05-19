@@ -10,6 +10,7 @@ module.exports = /*@ngInject*/() => {
 
 		this.id = opt.id;
 		this.name = opt.name;
+		this.lname = opt.name.toLowerCase();
 		this.created = opt.date_created;
 		this.modified = opt.date_modified;
 		this.emailsTotal = opt.emails_total;

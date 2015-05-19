@@ -18,7 +18,7 @@
 			section(ng-repeat="alpha in letters")
 				li.separator.list-group-item(ng-bind="alpha")
 				li.list-group-item(ng-repeat="contact in people[alpha] | filter: searchText", ng-class="{active: selectedContactId == contact.id}")
-					a(ng-class="'sec-' + contact.sec", ui-sref="main.contacts.profile({contactId: contact.id})")
+					a(ng-click="toggleShowDetails('main.contacts.profile', {contactId: contact.id})", ng-class="'sec-' + contact.sec", ui-sref="main.contacts.profile({contactId: contact.id})")
 						span(ng-show="contact.isNew", ng-bind="contact.getFullName() | defaultValue:('MAIN.CONTACTS.LB_NEW_CONTACT' | translate)")
 						span(ng-show="!contact.isNew", ng-bind="contact.getFullName() | defaultValue:('MAIN.CONTACTS.LB_CONTACT_NAME' | translate)")
 						span.sec-icon.icon-lock(ng-show="contact.isSecured()")

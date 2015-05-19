@@ -1,7 +1,7 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, $translate,
 							   co, utils, consts, hotkey, user, inbox) => {
 
-	$scope.labelName = $state.params.labelName;
+	$scope.labelName = utils.capitalize($state.params.labelName);
 	$scope.selectedTid = $state.params.threadId ? $state.params.threadId : (
 		inbox.selectedTidByLabelName[$scope.labelName]
 			? inbox.selectedTidByLabelName[$scope.labelName]
@@ -166,7 +166,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, 
 			$scope.threadsList = threadsList;
 
 			if (!$scope.threadsList || $scope.threadsList.length < 1)
-				$state.go('main.inbox.label', {labelName: $scope.labelName, threadId: null});
+				$state.go('main.inbox.label', {labelName: $scope.labelName.toLowerCase(), threadId: null});
 			else if (selectedIndex > -1 && $scope.threadsList.findIndex(thread => thread.id == $scope.selectedTid) < 0) {
 				selectedIndex = Math.min(Math.max(selectedIndex, 0), $scope.threadsList.length - 1);
 				$scope.selectThread($scope.threadsList[selectedIndex].id);

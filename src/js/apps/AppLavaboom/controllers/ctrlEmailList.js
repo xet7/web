@@ -1,18 +1,24 @@
 module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParams, $translate, $sanitize,
 							   user, utils, co, inbox, saver, notifications) => {
 
-	$rootScope.$bind('notifications', () => {
-		$scope.notificationsInfo = notifications.get('info', 'mailbox');
-		$scope.notificationsWarning = notifications.get('warning', 'mailbox');
-	});
-
 	$scope.selfEmail = user.email;
-	$scope.labelName = $stateParams.labelName;
+	$scope.labelName = utils.capitalize($state.params.labelName);
 	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
 	inbox.selectedTidByLabelName[$scope.labelName] = $scope.selectedTid;
 
 	$scope.isThreads = false;
 	$scope.isLoading = false;
+
+	$rootScope.$bind('notifications', () => {
+		$scope.notificationsInfo = angular.extend({},
+			notifications.get('info', 'mailbox'),
+			notifications.get('info', 'mailbox-' + $scope.selectedTid)
+		);
+		$scope.notificationsWarning = angular.extend({},
+			notifications.get('warning', 'mailbox'),
+			notifications.get('warning', 'mailbox-' + $scope.selectedTid)
+		);
+	});
 
 	{
 		let list = inbox.requestListCached($scope.labelName);
@@ -91,7 +97,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 
 				if (!thread || !thread.isLabel($scope.labelName)) {
 					inbox.selectedTidByLabelName[$scope.labelName] = null;
-					yield $state.go('main.inbox.label', {labelName: $scope.labelName, threadId: null});
+					yield $state.go('main.inbox.label', {labelName: $scope.labelName.toLowerCase(), threadId: null});
 					return;
 				}
 

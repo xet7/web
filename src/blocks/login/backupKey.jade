@@ -18,9 +18,12 @@ form.steps-form.ng-cloak(ng-class="{'errors': currentErrorMessage}")
 			p {{'LOGIN.BACKUP_KEY.INFO3' | translate}}
 			p {{'LOGIN.BACKUP_KEY.INFO4' | translate}}
 			p {{'LOGIN.BACKUP_KEY.INFO5' | translate}}
-			p {{'LOGIN.BACKUP_KEY.INFO6' | translate}}
+			p(ng-show="!isPartiallyFlow") {{'LOGIN.BACKUP_KEY.INFO6' | translate}}
 	hr.blank
 
-	footer
+	footer(ng-show="!isPartiallyFlow")
 		button.btn.btn-block.btn-lg.btn-primary(ng-click="sync()") {{'LOGIN.BACKUP_KEY.BTN_ENABLE_LB_SYNC' | translate}}
 		button.btn.btn-block.btn-lg.btn(ng-click="backup()") {{'LOGIN.BACKUP_KEY.BTN_BACKUP_NOW' | translate}}
+	footer(ng-show="isPartiallyFlow")
+		button.btn.btn-block.btn-lg.btn-primary(ng-click="backup()") {{'LOGIN.BACKUP_KEY.BTN_BACKUP_NOW' | translate}}
+		button.btn.btn-block.btn-lg.btn(ng-click="skip()") {{'LOGIN.BACKUP_KEY.BTN_SKIP' | translate}}

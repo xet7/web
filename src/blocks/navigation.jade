@@ -1,34 +1,34 @@
-div#left-panel.ng-cloak
+div.ng-cloak
 	nav#navigation
 		div#brand
-			a(ui-sref="main.inbox.label({labelName: 'Inbox', threadId: null})")
+			a(href="https://lavaboom.com", target="_blank")
 				img(src="#{resolveAsset('/img/Lavaboom-logo-no-shadow.svg')}")
 				img(src="#{resolveAsset('/img/Lavaboom-logo-wordmark-min.svg')}")
 		ul.list-unstyled
 			li.compose
-				a(ng-click="showPopup('compose')", tooltip-placement="right", tooltip="{{'MAIN.NAV.LB_COMPOSE' | translate}}")
+				a(ng-click="showPopup('compose'); toggleLeftPanel()", tooltip-placement="right", tooltip="{{'MAIN.NAV.LB_COMPOSE' | translate}}")
 					span.icon-compose
 					span#compose-action.action {{'MAIN.NAV.LB_COMPOSE' | translate}}
-			li(ng-class="{ active: $state.includes('main.inbox.label', {labelName: label.name}) }", ng-repeat="label in labels track by label.id")
-				a(ui-sref="main.inbox.label({labelName: label.name, threadId: getThreadForLabel(label.name)})", tooltip="{{label.name}}", tooltip-placement="right")
+			li(ng-class="{ active: $state.includes('main.inbox.label', {labelName: label.lname}) }", ng-repeat="label in labels track by label.id")
+				a(ng-click="toggleLeftPanel('main.inbox.label', {labelName: label.lname, threadId: getThreadForLabel(label.name)})" ui-sref="main.inbox.label({labelName: label.name, threadId: getThreadForLabel(label.name)})", tooltip="{{label.name}}", tooltip-placement="right")
 					span(ng-class="label.iconClass")
 					span.action(ng-bind="label.name")
 					span.badge(ng-bind="label.threadsUnread | unread")
 					span.combo(ng-show="isActive('g')") ({{getMultiComboPrettified('g', label.name)}})
 			li.separator
 			li(ui-sref-active="active")
-				a(ui-sref="main.contacts", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_CONTACTS' | translate}}")
+				a(ng-click="toggleLeftPanel('main.contacts')", ui-sref="main.contacts", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_CONTACTS' | translate}}")
 					span.icon-contacts
 					span.action {{'MAIN.NAV.LB_CONTACTS' | translate}}
 					span.combo(ng-show="isActive('g')") ({{getMultiComboPrettified('g', 'Contacts')}})
 			li(ng-class="{ active: $state.includes('main.settings') }")
-				a(ui-sref="main.settings.general", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_SETTINGS' | translate}}")
+				a(ng-click="toggleLeftPanel('main.settings.general')", ui-sref="main.settings.general", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_SETTINGS' | translate}}")
 					span.icon-cog
 					span.action {{'MAIN.NAV.LB_SETTINGS' | translate}}
 					span.combo(ng-show="isActive('g')") ({{getMultiComboPrettified('g', 'Settings')}})
 			li.logout
-				small {{manifest.name}} {{manifest.version}}
-				small(title="{{servedBy.title}}") {{servedBy.text}}
+				small {{manifest.name}} 2015
+				small(title="{{servedBy.title}}") {{manifest.version}} {{servedBy.text}}
 				button(ng-click="logout()", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_LOGOUT' | translate}}")
 					span.icon-power
 					span.action {{'MAIN.NAV.LB_LOGOUT' | translate}} ({{name}})

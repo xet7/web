@@ -22,10 +22,7 @@ module.exports = /*@ngInject*/(co, consts, LavaboomAPI, $scope) => {
 					if (!me.body.user.settings || me.body.user.settings.state != 'ok') {
 						console.log('checker: user haven\'t decided with keys');
 
-						if (me.body.user.settings.state == 'backupKeys')
-							return loader.loadLoginApplication({state: 'backupKeys', noDelay: true});
-
-						return loader.loadLoginApplication({state: 'lavaboomSync', noDelay: true});
+						return loader.loadLoginApplication({state: 'backupKeys', noDelay: true});
 					}
 
 					return loader.loadMainApplication({noDelay: true});

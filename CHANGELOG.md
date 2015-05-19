@@ -2,7 +2,55 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## 0.3.2 - 2015-05-13
+## 0.3.7 - 2015-05-19
+### Fixed
+- remove notifications regarding crypto after key decryption
+
+### Modified
+- routes for labels are now lower cased
+- logo leads to lavaboom.com
+- proper informational messages for keyring import under settings/security
+- no warning if no backup available when Lavaboom Sync is being disabled
+
+## 0.3.6 - 2015-05-19
+### Fixed
+- removed reference to a missing Lavaboom Sync Keys state
+- show correct error when server returns "weak password"
+- sanitizer shouldn't wipe all links and styles
+- email: links to the same location can be opened in the same window
+
+### Modified
+- settings/plans reworked, clickable 'zero-knowledge' links
+
+## 0.3.5 - 2015-05-18
+### Fixed
+- web crypto detection warnings
+- different issues with gulpfile
+- Inbox should be default when app loads in the first time
+- issue with templates compilation which leaded to hexstrings in email bodies
+
+### Modified
+- version/served by text
+
+## 0.3.4 - 2015-05-18
+### Added
+- generate new key pair button under settings/keys
+
+### Modified
+- now using google caja html sanitizer which seems to work much better and can process almost any html
+
+### Fixed
+- some minor issues with notifications
+- issue during compose screen initialization that lead to duplicated attached public keys
+
+## 0.3.3 - 2015-05-15
+### Fixed
+- templates(signature mostly, reply, forward, etc)
+- text-angular paste processing
+- save contact automatically if user leaves state in edit mode
+- more shortcuts fixes and improvements
+
+## 0.3.2 - 2015-05-15
 ### Added
 - contacts request public key, attach own public key by default
 

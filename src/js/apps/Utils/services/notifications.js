@@ -1,15 +1,6 @@
 module.exports = /*@ngInject*/function($rootScope, $translate, $timeout) {
 	const self = this;
 
-	const translations = {
-		WEB_CRYPTO_IS_NOT_AVAILABLE_TITLE:'',
-		WEB_CRYPTO_IS_NOT_AVAILABLE_TEXT:'',
-		WEB_WORKERS_IS_NOT_AVAILABLE_TITLE:'',
-		WEB_WORKERS_IS_NOT_AVAILABLE_TEXT:''
-	};
-
-	$translate.bindAsObject(translations, 'NOTIFICATIONS');
-
 	let notifications = {};
 
 	this.clear = () => {
@@ -17,11 +8,13 @@ module.exports = /*@ngInject*/function($rootScope, $translate, $timeout) {
 		$rootScope.$broadcast('notifications');
 	};
 
-	this.set = (name, {text, title, type, timeout, namespace, onRemove}) => {
+	this.set = (name, {text, title, type, timeout, namespace, kind, onRemove}) => {
 		if (!type)
 			type = 'warning';
 		if (!namespace)
 			namespace = 'root';
+		if (!kind)
+			kind = 'unspecified';
 		if (!title)
 			title = '';
 		if (!timeout)
@@ -39,6 +32,7 @@ module.exports = /*@ngInject*/function($rootScope, $translate, $timeout) {
 			type,
 			timeout,
 			namespace,
+			kind,
 			cssClass,
 			onRemove
 		};
@@ -60,6 +54,17 @@ module.exports = /*@ngInject*/function($rootScope, $translate, $timeout) {
 			delete notifications[name];
 			$rootScope.$broadcast('notifications');
 		}
+	};
+
+	this.unSetByKind = (kind) => {
+		for(let cName of Object.keys(notifications))
+			if (notifications[cName].kind == kind) {
+				if (notifications[cName].onRemove)
+					notifications[cName].onRemove();
+				delete notifications[cName];
+			}
+
+		$rootScope.$broadcast('notifications');
 	};
 
 	this.get = (type, namespace = 'root') => {

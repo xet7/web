@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'lavaboom';
-	src:url('fonts/lavaboom.eot?-ot3rjy');
-	src:url('fonts/lavaboom.eot?#iefix-ot3rjy') format('embedded-opentype'),
-		url('fonts/lavaboom.woff?-ot3rjy') format('woff'),
-		url('fonts/lavaboom.ttf?-ot3rjy') format('truetype'),
-		url('fonts/lavaboom.svg?-ot3rjy#lavaboom') format('svg');
+	src:url('fonts/lavaboom.eot?4624jc');
+	src:url('fonts/lavaboom.eot?#iefix4624jc') format('embedded-opentype'),
+		url('fonts/lavaboom.woff?4624jc') format('woff'),
+		url('fonts/lavaboom.ttf?4624jc') format('truetype'),
+		url('fonts/lavaboom.svg?4624jc#lavaboom') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -245,6 +245,10 @@
 
 .icon-chevron-down:before {
 	content: "\76";
+}
+
+.icon-arrow-left:before {
+	content: "\e621";
 }
 
 .icon-arrow-right:before {

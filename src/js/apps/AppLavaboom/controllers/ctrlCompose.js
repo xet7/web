@@ -71,6 +71,133 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		}
 	});
 
+	function initialize() {
+		if (publicKey) {
+			let blob = new Blob([publicKey.armor()], {type: 'text/plain'});
+			blob.lastModifiedDate = publicKey.primaryKey.created;
+			blob.name = utils.getEmailFromAddressString(publicKey.users[0].userId.userid) + '.asc';
+			const attachmentStatus = {
+				attachment: new Attachment(blob)
+			};
+			attachmentStatus.processingPromise = processAttachment(attachmentStatus);
+			$scope.attachments.push(attachmentStatus);
+		}
+
+		$scope.$bind('contacts-changed', () => {
+			let toEmailContact = ContactEmail.transform(toEmail);
+
+			let people = [...contacts.people.values()];
+			let map = new Map();
+
+			const addHiddenEmails = (checkEmail) => {
+				people.reduce((a, c) => {
+					if (c.hiddenEmail && c.hiddenEmail.email && checkEmail(c.hiddenEmail))
+						a.set(c.hiddenEmail.email, c.hiddenEmail);
+
+					return a;
+				}, map);
+			};
+
+			const addEmails = (checkEmail) => {
+				people.reduce((a, c) => {
+					c.privateEmails.forEach(e => {
+						if (e.email && checkEmail(e))
+							a.set(e.email, e);
+					});
+					c.businessEmails.forEach(e => {
+						if (e.email && checkEmail(e))
+							a.set(e.email, e);
+					});
+
+					return a;
+				}, map);
+			};
+
+			addEmails(e => e.isSecured() && e.isStar);
+			addEmails(e => e.isSecured() && !e.isStar);
+			addEmails(e => !e.isSecured() && e.isStar);
+			addEmails(e => !e.isSecured() && !e.isStar);
+
+			addHiddenEmails(e => e.isSecured());
+			addHiddenEmails(e => !e.isSecured());
+
+			if (toEmailContact)
+				map.set(toEmailContact.email, toEmailContact);
+
+			$scope.people = [...map.values()];
+			console.log('$scope.people', $scope.people);
+
+			co(function *() {
+				let body = '<br/>';
+				let subject = '';
+
+				const signature = user.settings.isSignatureEnabled && user.settings.signatureHtml ? user.settings.signatureHtml : '';
+				if (forwardEmailId) {
+					let emails = [yield inbox.getEmailById(forwardEmailId)];
+					body = yield composeHelpers.buildForwardedTemplate(body, '', emails);
+					subject = 'Fwd: ' + Email.getSubjectWithoutRe(emails[0].subject);
+				}
+				else
+				if (forwardThreadId) {
+					let emails = yield inbox.getEmailsByThreadId(forwardThreadId);
+					body = yield composeHelpers.buildForwardedTemplate(body, '', emails);
+					subject = 'Fwd: ' + Email.getSubjectWithoutRe(emails[0].subject);
+				}
+				else
+				if (replyEmailId) {
+					let email = yield inbox.getEmailById(replyEmailId);
+
+					body = yield composeHelpers.buildRepliedTemplate(body, signature, [{
+						date: email.date,
+						name: email.from[0].name,
+						address: email.from[0].address,
+						body: email.body.data
+					}]);
+				} else
+					body = yield composeHelpers.buildDirectTemplate(body, signature);
+
+				if (replyThreadId && replyEmailId) {
+					let thread = yield inbox.getThreadById(replyThreadId);
+					let email = yield inbox.getEmailById(replyEmailId);
+
+					let to = (isReplyAll ? thread.members : email.from)
+						.map(m => ContactEmail.transform(m.address));
+
+					console.log('reply to', to);
+					$scope.form = {
+						person: {},
+						selected: {
+							to: to,
+							cc: [],
+							bcc: [],
+							from: contacts.myself
+						},
+						fromEmails: [contacts.myself],
+						subject: `Re: ${Email.getSubjectWithoutRe(thread.subject)}`,
+						body: body
+					};
+				} else {
+					$scope.form = {
+						person: {},
+						selected: {
+							to: toEmailContact ? [toEmailContact] : [],
+							cc: [],
+							bcc: [],
+							from: contacts.myself
+						},
+						fromEmails: [contacts.myself],
+						subject: subject,
+						body: body
+					};
+				}
+
+				console.log('$scope.form', $scope.form);
+			});
+		});
+	}
+
+	initialize();
+
 	$scope.onFileDrop = (file) => {
 		if (file.type && file.type.startsWith('image'))
 			return;
@@ -249,129 +376,6 @@ module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
 		inbox.rejectSend();
 		manifest = null;
 	};
-
-	$scope.$bind('contacts-changed', () => {
-		let toEmailContact = ContactEmail.transform(toEmail);
-
-		let people = [...contacts.people.values()];
-		let map = new Map();
-
-		const addHiddenEmails = (checkEmail) => {
-			people.reduce((a, c) => {
-				if (c.hiddenEmail && c.hiddenEmail.email && checkEmail(c.hiddenEmail))
-					a.set(c.hiddenEmail.email, c.hiddenEmail);
-
-				return a;
-			}, map);
-		};
-
-		const addEmails = (checkEmail) => {
-			people.reduce((a, c) => {
-				c.privateEmails.forEach(e => {
-					if (e.email && checkEmail(e))
-						a.set(e.email, e);
-				});
-				c.businessEmails.forEach(e => {
-					if (e.email && checkEmail(e))
-						a.set(e.email, e);
-				});
-
-				return a;
-			}, map);
-		};
-
-		addEmails(e => e.isSecured() && e.isStar);
-		addEmails(e => e.isSecured() && !e.isStar);
-		addEmails(e => !e.isSecured() && e.isStar);
-		addEmails(e => !e.isSecured() && !e.isStar);
-
-		addHiddenEmails(e => e.isSecured());
-		addHiddenEmails(e => !e.isSecured());
-
-		if (toEmailContact)
-			map.set(toEmailContact.email, toEmailContact);
-
-		$scope.people = [...map.values()];
-		console.log('$scope.people', $scope.people);
-
-		co(function *() {
-			let body = '<br/>';
-			let subject = '';
-
-			const signature = user.settings.isSignatureEnabled && user.settings.signatureHtml ? user.settings.signatureHtml : '';
-			if (forwardEmailId) {
-				let emails = [yield inbox.getEmailById(forwardEmailId)];
-				body = yield composeHelpers.buildForwardedTemplate(body, '', emails);
-				subject = 'Fwd: ' + Email.getSubjectWithoutRe(emails[0].subject);
-			}
-			else
-			if (forwardThreadId) {
-				let emails = yield inbox.getEmailsByThreadId(forwardThreadId);
-				body = yield composeHelpers.buildForwardedTemplate(body, '', emails);
-				subject = 'Fwd: ' + Email.getSubjectWithoutRe(emails[0].subject);
-			}
-			else
-			if (replyEmailId) {
-				let email = yield inbox.getEmailById(replyEmailId);
-
-				body = yield composeHelpers.buildRepliedTemplate(body, signature, [{
-					date: email.date,
-					name: email.from[0].name,
-					address: email.from[0].address,
-					body: email.body.data
-				}]);
-			} else
-				body = yield composeHelpers.buildDirectTemplate(body, signature);
-
-			if (replyThreadId && replyEmailId) {
-				let thread = yield inbox.getThreadById(replyThreadId);
-				let email = yield inbox.getEmailById(replyEmailId);
-
-				let to = (isReplyAll ? thread.members : email.from)
-					.map(m => ContactEmail.transform(m.address));
-
-				console.log('reply to', to);
-				$scope.form = {
-					person: {},
-					selected: {
-						to: to,
-						cc: [],
-						bcc: [],
-						from: contacts.myself
-					},
-					fromEmails: [contacts.myself],
-					subject: `Re: ${Email.getSubjectWithoutRe(thread.subject)}`,
-					body: body
-				};
-			} else {
-				$scope.form = {
-					person: {},
-					selected: {
-						to: toEmailContact ? [toEmailContact] : [],
-						cc: [],
-						bcc: [],
-						from: contacts.myself
-					},
-					fromEmails: [contacts.myself],
-					subject: subject,
-					body: body
-				};
-			}
-
-			if (publicKey) {
-				const blob = new Blob([publicKey.armor()], {type: 'text/plain'});
-				blob.lastModifiedDate = publicKey.primaryKey.created;
-				blob.name = utils.getEmailFromAddressString(publicKey.users[0].userId.userid) + '.asc';
-				const attachmentStatus = {
-					attachment: new Attachment(blob)
-				};
-				attachmentStatus.processingPromise = processAttachment(attachmentStatus);
-				$scope.attachments.push(attachmentStatus);
-			}
-
-			console.log('$scope.form', $scope.form);
-		});
-	});
 
 	$scope.addAttachment = (file) => {
 		const attachmentStatus = {

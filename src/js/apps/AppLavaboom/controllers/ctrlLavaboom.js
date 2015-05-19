@@ -17,6 +17,31 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 
 	$scope.tooltipDelay = () => (window.getComputedStyle(document.getElementById('compose-action')).display==='none') ? true : 1000000;
 
+	$scope.showLeftPanel = false;
+	$scope.toggleLeftPanel = (url, params) => {
+		$scope.showLeftPanel = !$scope.showLeftPanel;
+		if (url !== undefined) 
+			$state.go(url, params);
+		console.log(url);
+		console.log('left panel triggered');
+	};
+
+	$scope.showDetails = false;
+	$scope.toggleShowDetails = (url, params) => {
+		$scope.showDetails = !$scope.showDetails;
+		$scope.showLeftPanel = false;
+		if (url !== undefined)
+			$state.go(url, params);
+		console.log(url);
+		console.log(params);
+		console.log('showDetails triggered');
+	};
+
+	$scope.resetDetails = () => {
+		$scope.showDetails = false;
+	};
+
+	
 	function initializeTimeAgo () {
 		return co(function *() {
 			const datesTranslations = {
@@ -92,56 +117,62 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 				combo: ['i'],
 				name: 'Inbox',
 				require: 'g',
+				requireDescription: 'HOTKEY.GOTO',
 				description: 'HOTKEY.GOTO_INBOX',
 				callback: (event, key) => {
 					event.preventDefault();
-					$state.go('main.inbox.label', {labelName: 'Inbox'});
+					$state.go('main.inbox.label', {labelName: 'inbox'});
 				}
 			},
 			{
 				combo: ['s'],
 				name: 'Sent',
 				require: 'g',
+				requireDescription: 'HOTKEY.GOTO',
 				description: 'HOTKEY.GOTO_SENT',
 				callback: (event, key) => {
 					event.preventDefault();
-					$state.go('main.inbox.label', {labelName: 'Sent'});
+					$state.go('main.inbox.label', {labelName: 'sent'});
 				}
 			},
 			{
 				combo: ['p'],
 				name: 'Spam',
 				require: 'g',
+				requireDescription: 'HOTKEY.GOTO',
 				description: 'HOTKEY.GOTO_SPAM',
 				callback: (event, key) => {
 					event.preventDefault();
-					$state.go('main.inbox.label', {labelName: 'Spam'});
+					$state.go('main.inbox.label', {labelName: 'spam'});
 				}
 			},
 			{
 				combo: ['a'],
 				name: 'Starred',
 				require: 'g',
+				requireDescription: 'HOTKEY.GOTO',
 				description: 'HOTKEY.GOTO_STARRED',
 				callback: (event, key) => {
 					event.preventDefault();
-					$state.go('main.inbox.label', {labelName: 'Starred'});
+					$state.go('main.inbox.label', {labelName: 'starred'});
 				}
 			},
 			{
 				combo: ['t'],
 				name: 'Trash',
 				require: 'g',
+				requireDescription: 'HOTKEY.GOTO',
 				description: 'HOTKEY.GOTO_TRASH',
 				callback: (event, key) => {
 					event.preventDefault();
-					$state.go('main.inbox.label', {labelName: 'Trash'});
+					$state.go('main.inbox.label', {labelName: 'trash'});
 				}
 			},
 			{
 				combo: ['c'],
 				name: 'Contacts',
 				require: 'g',
+				requireDescription: 'HOTKEY.GOTO',
 				description: 'HOTKEY.GOTO_CONTACTS',
 				callback: (event, key) => {
 					event.preventDefault();
@@ -152,6 +183,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 				combo: ['x'],
 				name: 'Settings',
 				require: 'g',
+				requireDescription: 'HOTKEY.GOTO',
 				description: 'HOTKEY.GOTO_SETTINGS',
 				callback: (event, key) => {
 					event.preventDefault();
@@ -212,6 +244,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 			loader.incProgress(translations.LB_INITIALIZING_OPENPGP, 1);
 
 			crypto.initialize();
+			notifications.clear();
 
 			yield connectionPromise;
 
@@ -226,7 +259,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 			yield tests.performCompatibilityChecks();
 
 			if ($state.current.name == 'empty')
-				yield $state.go('main.inbox.label', {labelName: 'Inbox', threadId: null}, {reload: true});
+				yield $state.go('main.inbox.label', {labelName: 'inbox', threadId: null}, {reload: true});
 
 			registerGlobalHotkeys();
 

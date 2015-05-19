@@ -14,6 +14,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	this.nameEmail = '';
 	this.altEmail = '';
 	this.aliases = [];
+	this.accountType = '';
 
 	// information about user from API
 	this.settings = {};
@@ -33,43 +34,60 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 		// not implemented
 	};
 
-	co(function *(){
-		self.defaultSettings.signatureHtml = $interpolate(yield $templateCache.fetch('/partials/inbox/defaultSignature.html'))();
-	});
-
-	const setupSettings = (settings) => {
-		self.settings = angular.extend({},
-			self.defaultSettings,
-			settings ? settings : {}
-		);
-	};
-
 	// primary key
 	this.key = null;
+
+	this.isHiddenAccountType = (accountType = self.accountType) => accountType == 'beta' || accountType == 'superuser';
 
 	let token = null;
 	let isAuthenticated = false;
 
-	this.styleEmail = (email) => email.replace(self.name, self.styledName);
+	function setupSettings (settings) {
+		return co(function *(){
+			self.defaultSettings.signatureHtml = yield utils.fetchAndCompile('/partials/inbox/defaultSignature.html');
 
-	const setupUserBasicInformation = (username, styledUsername, altEmail, aliases) => {
+			console.warn(self.defaultSettings.signatureHtml);
+
+			self.settings = angular.extend({},
+				self.defaultSettings,
+				settings ? settings : {}
+			);
+		});
+	}
+
+	function gatherAndSetupInformation () {
+		return co(function *() {
+			let [account, addresses] = yield [LavaboomAPI.accounts.get('me'), LavaboomAPI.addresses.get()];
+			let aliases = addresses.body.addresses && angular.isArray(addresses.body.addresses)
+				? addresses.body.addresses.map(a => a.id)
+				: [];
+
+			yield setupSettings(account.body.user.settings);
+			setupUserBasicInformation(account.body.user.name, account.body.user.styled_name, account.body.user.type, account.body.alt_email, aliases);
+		});
+	}
+
+	function setupUserBasicInformation (username, styledUsername, type, altEmail, aliases) {
 		self.name = username;
 		self.styledName = styledUsername;
 		self.email = `${username}@${consts.ROOT_DOMAIN}`;
 		self.styledEmail = `${styledUsername}@${consts.ROOT_DOMAIN}`;
 		self.nameEmail = `${self.name} <${self.email}>`;
 		self.altEmail = altEmail;
+		self.accountType = type;
 		self.aliases = aliases ? aliases.map(a => `${a}@${consts.ROOT_DOMAIN}`) : [];
-	};
+	}
 
-	const restoreAuth = () => {
+	function restoreAuth () {
 		token = sessionStorage['lava-token'] ? sessionStorage['lava-token'] : localStorage['lava-token'];
 
 		if (token) {
 			LavaboomAPI.setAuthToken(token);
 			LavaboomHttpAPI.setAuthToken(token);
 		}
-	};
+	}
+
+	this.styleEmail = (email) => email.replace(self.name, self.styledName);
 
 	this.persistAuth = (isRemember = true) => {
 		let storage = isRemember ? localStorage : sessionStorage;
@@ -106,18 +124,6 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 		yield keysCreationPromises;
 	});
-
-	function gatherAndSetupInformation () {
-		return co(function *() {
-			let [account, addresses] = yield [LavaboomAPI.accounts.get('me'), LavaboomAPI.addresses.get()];
-			let aliases = addresses.body.addresses && angular.isArray(addresses.body.addresses)
-				? addresses.body.addresses.map(a => a.id)
-				: [];
-
-			setupSettings(account.body.user.settings);
-			setupUserBasicInformation(account.body.user.name, account.body.user.styled_name, account.body.alt_email, aliases);
-		});
-	}
 
 	this.authenticate = () => co(function * () {
 		restoreAuth();

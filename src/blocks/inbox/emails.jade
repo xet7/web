@@ -1,7 +1,7 @@
 div.pane-status(ng-if="selectedTid === null")
 	.col-xs-24 {{'INBOX.LB_NOTHING_SELECTED' | translate}}
 
-.filters.row.no-gutter.lava-icon-row(ng-class="'notifications-' + getNotificationsLength(notificationsInfo, notificationsWarning)")
+.actions.row.no-gutter.lava-icon-row(ng-class="'notifications-' + getNotificationsLength(notificationsInfo, notificationsWarning)")
 	nav.navbar.navbar-inverse(role="navigation")
 		div
 			ul.nav.navbar-nav
@@ -9,7 +9,7 @@ div.pane-status(ng-if="selectedTid === null")
 					button.btn.btn-default(ng-click="deleteThread(selectedTid)", tooltip="{{'INBOX.MOVE_TO_TRASH' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-trash
 				li(ng-show="(selectedTid && labelName == 'Trash') || (selectedTid && labelName == 'Spam')")
-					button.btn.btn-default(ng-click="deleteThread(selectedTid)", tooltip="{{'INBOX.MOVE_TO_TRASH' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
+					button.btn.btn-default(ng-click="deleteThread(selectedTid)", tooltip="{{'INBOX.DELETE_PERMANANTLY' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-empty-trash
 				li(ng-show="selectedTid && labelName != 'Spam'")
 					button.btn.btn-default(ng-click="spamThread(selectedTid)", tooltip="{{'INBOX.MARK_AS_SPAM' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
@@ -64,6 +64,7 @@ div(ng-if="selectedTid").main-view
 			.mail-content.row.no-gutter
 				.col-xs-22(ng-show="email.body.state == 'ok'",
 					is-html="email.isHtml",
+					thread-id="selectedTid",
 					open-email="openEmail",
 					download-email="downloadEmail",
 					original-email-name="email.id",

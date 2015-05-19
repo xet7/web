@@ -7,8 +7,6 @@ module.exports = /*@ngInject*/function($rootScope, $timeout, $state, $translate,
 		WEB_CRYPTO_IS_NOT_AVAILABLE_TEXT: '',
 		WEB_WORKERS_IS_NOT_AVAILABLE_TITLE: '',
 		WEB_WORKERS_IS_NOT_AVAILABLE_TEXT: '',
-		WEB_CRYPTO_LIMITED_TITLE: '',
-		WEB_CRYPTO_LIMITED_TEXT: '',
 		SERVED_BY_TITLE: '%',
 		SERVED_BY_TEXT: '%',
 		SERVED_BY_UNKNOWN_TITLE: '',
@@ -47,13 +45,6 @@ module.exports = /*@ngInject*/function($rootScope, $timeout, $state, $translate,
 				text: notifications18n.WEB_CRYPTO_IS_NOT_AVAILABLE_TEXT
 			});
 
-		let isWebCryptoKeysGeneration = yield self.isWebCryptoKeysGeneration();
-		if (!isWebCryptoKeysGeneration)
-			notifications.set('web-crypto-limited', {
-				title: notifications18n.WEB_CRYPTO_LIMITED_TITLE,
-				text: notifications18n.WEB_CRYPTO_LIMITED_TEXT
-			});
-
 		let headRes = yield $http.head('/');
 		poweredBy = headRes.headers('X-Powered-By');
 
@@ -85,6 +76,7 @@ module.exports = /*@ngInject*/function($rootScope, $timeout, $state, $translate,
 				text: notifications18n.NO_KEY_TEXT,
 				type: 'warning',
 				namespace: 'mailbox',
+				kind: 'crypto',
 				onRemove: () => {
 					$state.go('main.settings.security');
 				}
@@ -93,21 +85,11 @@ module.exports = /*@ngInject*/function($rootScope, $timeout, $state, $translate,
 	});
 
 	this.isWebCrypto = () => {
-		return !!window.crypto || !!window.msCrypto;
+		return window.crypto || window.msCrypto;
 	};
 
 	this.isWebWorkers = () => co(function *(){
 		return !!window.Worker;
-	});
-
-	this.isWebCryptoKeysGeneration = () => co(function *(){
-		try {
-			yield openpgp.key.generate({numBits: 1024, userId: 'test@test', passphrase: 'test'});
-
-			return true;
-		} catch (err) {
-			return false;
-		}
 	});
 
 	this.getPoweredBy = () => poweredBy;

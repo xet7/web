@@ -1,4 +1,4 @@
-.filters.row.no-gutter.lava-icon-row(ng-class="'notifications-' + getNotificationsLength(notificationsInfo, notificationsWarning)")
+.actions.row.no-gutter.lava-icon-row(ng-class="'notifications-' + getNotificationsLength(notificationsInfo, notificationsWarning)")
 	nav.navbar.navbar-inverse(role="navigation")
 		div
 			ul.nav.navbar-nav.navbar-right
@@ -20,12 +20,12 @@
 			div {{'MAIN.CONTACTS.LB_NO_PRIVATE_KEY_FOUND2' | translate}}
 				a(ui-sref="main.settings.security") {{'MAIN.CONTACTS.LB_SETTINGS' | translate}}
 				| {{'MAIN.CONTACTS.LB_NO_PRIVATE_KEY_FOUND3' | translate}}
-		form.settings.col-md-12.col-md-offset-6.col-xs-22.col-xs-offset-1(
+		form.settings.col-xs-22.col-xs-offset-1.col-sm-20.col-sm-offset-2.col-md-12.col-md-offset-6.col-xs-22.col-xs-offset-1(
 			name="__form", ng-show="details && (details.isDecrypted || details.isNew)", ng-submit="__form.$valid && saveThisContact()", novalidate)
 			//- h4(ng-show="details.isNew", ng-bind="details.name | defaultValue:('MAIN.CONTACTS.LB_NEW_CONTACT' | translate)")
 			h4 &nbsp;
 			.row
-				.col-md-11.col-xs-24
+				.col-md-11.col-xs-16.col-xs-offset-4
 					div.thumbnail.pack
 						.profile-picture(style="background-image: url(/img/avatar.svg);")
 				.col-md-12.col-md-offset-1.col-xs-24.col-xs-offset-0
