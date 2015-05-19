@@ -2,10 +2,15 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## UNRELEASED
+## 0.3.5 - 2015-05-18
 ### Fixed
 - web crypto detection warnings
 - different issues with gulpfile
+- Inbox should be default when app loads in the first time
+- issue with templates compilation which leaded to hexstrings in email bodies
+
+### Modified
+- version/served by text
 
 ## 0.3.4 - 2015-05-18
 ### Added

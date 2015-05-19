@@ -6,7 +6,7 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 		console.log('main router otherwise: window.loader.isMainApplication()', window.loader.isMainApplication(), $location);
 		if (!window.loader.isMainApplication())
 			return undefined;
-		return '/label/Inbox';
+		return '/label/Inbox/';
 	});
 
 	const primaryStates = {

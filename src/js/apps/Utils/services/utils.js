@@ -85,14 +85,16 @@ module.exports = /*@ngInject*/function($injector, $rootScope, $templateCache, co
 
 		let body = templateFunction(isolatedScope);
 
-		yield self.wait(() => body.find(e => e.innerText == marker));
+		yield self.wait(() => body.find(e => e.textContent == marker));
 
 		let nodes = [];
 		for(let i = 0; i < body.length; i++)
 			nodes.push(body[i]);
 
 		return nodes
-			.filter(e => e.innerText != marker)
+			.filter(e => {
+				return e.textContent != marker;
+			})
 			.map(e => e.outerHTML)
 			.join('');
 	});

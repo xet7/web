@@ -37,6 +37,8 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 	// primary key
 	this.key = null;
 
+	this.isHiddenAccountType = (accountType = self.accountType) => accountType == 'beta' || accountType == 'superuser';
+
 	let token = null;
 	let isAuthenticated = false;
 

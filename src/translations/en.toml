@@ -46,8 +46,8 @@ DIALOGS_NO = "No"
 	WEB_WORKERS_IS_NOT_AVAILABLE_TITLE="Please update your browser."
     WEB_WORKERS_IS_NOT_AVAILABLE_TEXT="Looks like this browser is too slow for Lavaboom, please upgrade your browser or switch to an up-to-date version of Google Chrome, Firefox or Safari"
     SERVED_BY_TITLE = "Welcome back"
-    SERVED_BY_TEXT = "Served by {{servedBy}}"
-    SERVED_BY_UNKNOWN_TITLE = "Served by Unknown server"
+    SERVED_BY_TEXT = "served by {{servedBy}}"
+    SERVED_BY_UNKNOWN_TITLE = "served by Unknown server"
     SERVED_BY_UNKNOWN_TEXT = "We do not know which server served you Lavaboom. Please contact hello@lavaboom.com."
     NO_KEY_TITLE = "No private key found"
     NO_KEY_TEXT = "You don't have a decrypted private key, please go to settings/security and import or decrypt one"
@@ -384,22 +384,29 @@ DIALOGS_NO = "No"
     LB_PROFILE_CANNOT_BE_SAVED = "Cannot save profile"
 
 [MAIN.SETTINGS.PLAN]
-	LB_CURRENT = "this is your current plan"
+	LB_CURRENT = "This is your current plan"
+	LB_GET_ON_IGG_TEXT = "BUY ON INDIEGOGO"
+	LB_GET_ON_IGG_TITLE = "Get a supporter account for life for as little as $17"
 
 [MAIN.SETTINGS.PLAN.FREE]
 	TITLE = "Lavaboom Free"
-	LB_TAG = "FREE"
-	LB_ITEMS = "500MB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+	LB_TAG = "COMING SOON"
+	LB_ITEMS = "500MB storage|End to end encryption|Bank-grade security|Zero Knowledge"
 
 [MAIN.SETTINGS.PLAN.BETA]
 	TITLE = "Lavaboom Beta"
-	LB_TAG = "BETA"
-	LB_ITEMS = "1GB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+	LB_TAG = ""
+	LB_ITEMS = "1GB storage|Early access to new features|End to end encryption|Bank-grade security|Zero Knowledge"
 
 [MAIN.SETTINGS.PLAN.SUPPORTER]
 	TITLE = "Lavaboom Supporter"
-	LB_TAG = "SUPPORTER"
-	LB_ITEMS = "2GB of Space|Super-strong PGP-Encryption|Zero Knowledge Data Handling|Slick Web-App"
+	LB_TAG = ""
+	LB_ITEMS = "2GB storage|Early access to new features|End to end encryption|Bank-grade security|Zero Knowledge"
+
+[MAIN.SETTINGS.PLAN.PREMIUM]
+	TITLE = "Lavaboom Premium"
+	LB_TAG = "COMING SOON"
+	LB_ITEMS = "15GB storage|Use your own domain|End to end encryption|Bank-grade security|Zero Knowledge"
 
 [MAIN.SETTINGS.SECURITY]
 	TITLE_CHANGE_PASSWORD = "Change Password"
