@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## UNRELEASED
+### Fixed
+- remove notifications regarding crypto after key decryption
+
 ### Modified
 - routes for labels are now lower cased
 - logo leads to lavaboom.com

@@ -112,12 +112,14 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 				notifications.set('import-keys', {
 					text: translations.LB_CANNOT_IMPORT_NO_PRIVATE_KEYS_FOUND,
 					type: 'warning',
-					namespace: 'settings'
+					namespace: 'settings',
+					kind: 'crypto'
 				});
 			} else {
 				notifications.set('import-keys', {
 					text: translations.LB_IMPORTED({count: c}),
-					namespace: 'settings'
+					namespace: 'settings',
+					kind: 'crypto'
 				});
 			}
 		} catch (err) {
@@ -127,7 +129,8 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 			notifications.set('import-keys', {
 				text: translatedErrorMessage ? translatedErrorMessage : translations.LB_CANNOT_IMPORT,
 				type: 'warning',
-				namespace: 'settings'
+				namespace: 'settings',
+				kind: 'crypto'
 			});
 		}
 		inbox.invalidateEmailCache();

@@ -69,7 +69,8 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 						notifications.set('openpgp-envelope-decode-failed', {
 							text: translations.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR_NO_KEY_FOUND,
 							type: 'warning',
-							namespace: 'mailbox-' + threadId
+							namespace: 'mailbox-' + threadId,
+							kind: 'crypto'
 						});
 						return `<pre title='${translations.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR_NO_KEY_FOUND}'>${pgpMessage}</pre>`;
 					}
@@ -77,7 +78,8 @@ module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize
 					notifications.set('openpgp-envelope-decode-failed', {
 						text: translations.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR,
 						type: 'warning',
-						namespace: 'mailbox-' + threadId
+						namespace: 'mailbox-' + threadId,
+						kind: 'crypto'
 					});
 					return `<pre title='${translations.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR}'>${pgpMessage}</pre>`;
 				}

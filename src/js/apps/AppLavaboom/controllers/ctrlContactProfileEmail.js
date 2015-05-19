@@ -39,12 +39,14 @@ module.exports = /*@ngInject*/($scope, $stateParams, $translate, co, consts, cry
 					length: $scope.currentEmail.key.length
 				}),
 				namespace: 'contact.profile',
-				timeout: 3000
+				timeout: 3000,
+				kind: 'crypto'
 			});
 		} catch (err) {
 			notifications.set('public-key-import-fail' +  $scope.currentEmail.email, {
 				text: translations.LB_CANNOT_IMPORT_PUBLIC_KEY,
-				namespace: 'contact.profile'
+				namespace: 'contact.profile',
+				kind: 'crypto'
 			});
 		}
 	};
