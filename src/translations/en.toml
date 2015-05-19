@@ -279,6 +279,9 @@ DIALOGS_NO = "No"
 # Specific error message for Lavaboom REST API
 [LAVABOOM.API.ERROR.ACCOUNTS.UPDATE]
 	403 = "Incorrect old password specified"
+	
+[LAVABOOM.API.ERROR.ACCOUNTS.CREATE.SETUP]
+	403 = "Weak password specified"
 
 [MAIN.NAV]
 	LB_COMPOSE = "Compose"
