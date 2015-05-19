@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - routes for labels are now lower cased
 - logo leads to lavaboom.com
 - proper informational messages for keyring import under settings/security
+- no warning if no backup available when Lavaboom Sync is being disabled
 
 ## 0.3.6 - 2015-05-19
 ### Fixed

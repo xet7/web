@@ -142,25 +142,29 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 		}
 
 		co (function *(){
-			if (!$scope.settings.isLavaboomSynced) {
-				const confirmed = yield co.def(dialogs.create(
-					'/partials/lsOff.html',
-					'CtrlLsOff'
-				).result, 'cancelled');
-
-				if (confirmed == 'cancelled') {
-					isLavaboomSyncRestored = true;
-					$scope.settings.isLavaboomSynced = true;
-					return;
-				}
-			}
-
 			let LavaboomSyncedKeyring = '';
-			if($scope.settings.isLavaboomSynced){
+
+			if ($scope.settings.isLavaboomSynced) {
 				let keysBackup = cryptoKeys.exportKeys(user.email);
 				$scope.settings.keyring = keysBackup;
-			} else {
-				LavaboomSyncedKeyring = $scope.settings.keyring;
+			}
+			else
+			{
+				let backup = utils.def(() => cryptoKeys.verifyAndReadBackup($scope.settings.keyring), null);
+				if (backup && backup.prv.length > 0) {
+					const confirmed = yield co.def(dialogs.create(
+						'/partials/lsOff.html',
+						'CtrlLsOff'
+					).result, 'cancelled');
+
+					if (confirmed == 'cancelled') {
+						isLavaboomSyncRestored = true;
+						$scope.settings.isLavaboomSynced = true;
+						return;
+					}
+
+					LavaboomSyncedKeyring = $scope.settings.keyring;
+				}
 				$scope.settings.keyring = '';
 			}
 

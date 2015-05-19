@@ -1,12 +1,17 @@
 module.exports = /*@ngInject*/function ($q, $rootScope, $filter, $translate, co, crypto, consts, utils) {
+	const self = this;
+
 	const translations = {
 		BACKUP_WARNING_TEXT: ''
 	};
 
 	$translate.bindAsObject(translations, 'NOTIFICATIONS');
 
-	this.importKeys = (jsonBackup) => {
+	this.verifyAndReadBackup = (jsonBackup) => {
 		let importObj = null;
+		let privateKeys = [];
+		let publicKeys = [];
+
 		try {
 			importObj = JSON.parse(jsonBackup);
 		} catch (error) {
@@ -15,39 +20,32 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, $translate, co,
 			if (keyring.err && keyring.err.length > 0)
 				throw new Error('WRONG_FORMAT');
 
-			for(let key of keyring.keys) {
+			for (let key of keyring.keys) {
 				if (key.primaryKey.tag != 5)
 					throw new Error('PUB_KEY_NOT_SUPPORTED');
-
-				if (!crypto.getPrivateKeyByFingerprint(key.primaryKey.fingerprint))
-					crypto.importPrivateKey(key);
-				else
-					console.log('skip private key import - already existing', key.primaryKey.fingerprint);
+				privateKeys.push(key);
 			}
 
-			return keyring.keys.length;
+			return {
+				prv: privateKeys,
+				pub: publicKeys
+			};
 		}
 
 		let bodyHash = utils.hexify(openpgp.crypto.hash.sha512(JSON.stringify(importObj.body)));
 		if (bodyHash != importObj.bodyHash)
 			throw new Error('CORRUPTED');
 
-		let privateKeysCount = 0;
 		Object.keys(importObj.body.key_pairs).forEach(email => {
 			if (angular.isString(importObj.body.key_pairs[email].prv))
 				importObj.body.key_pairs[email].prv = [importObj.body.key_pairs[email].prv];
 
 			importObj.body.key_pairs[email].prv.forEach(privateKeyArmored => {
-				try {
-					for(let key of openpgp.key.readArmored(privateKeyArmored).keys) {
-						privateKeysCount++;
-						if (!crypto.getPrivateKeyByFingerprint(key.primaryKey.fingerprint))
-							crypto.importPrivateKey(key);
-						else
-							console.log('skip private key import - already existing', key.primaryKey.fingerprint);
-					}
-				} catch (error) {
-					console.warn('cannot import private key', privateKeyArmored, error);
+				for(let key of openpgp.key.readArmored(privateKeyArmored).keys) {
+					if (key.primaryKey.tag != 5)
+						throw new Error('CORRUPTED');
+
+					privateKeys.push(key);
 				}
 			});
 
@@ -55,23 +53,40 @@ module.exports = /*@ngInject*/function ($q, $rootScope, $filter, $translate, co,
 				importObj.body.key_pairs[email].pub = [importObj.body.key_pairs[email].pub];
 
 			importObj.body.key_pairs[email].pub.forEach(publicKeyArmored => {
-				try {
-					for(let key of openpgp.key.readArmored(publicKeyArmored).keys) {
-						if (!crypto.getPublicKeyByFingerprint(key.primaryKey.fingerprint))
-							crypto.importPublicKey(key);
-						else
-							console.log('skip public key import - already existing', key.primaryKey.fingerprint);
-					}
-				} catch (error) {
-					console.warn('cannot import public key', publicKeyArmored, error);
+				for(let key of openpgp.key.readArmored(publicKeyArmored).keys) {
+					if (key.primaryKey.tag != 6)
+						throw new Error('CORRUPTED');
+
+					publicKeys.push(key);
 				}
 			});
 		});
 
+		return {
+			prv: privateKeys,
+			pub: publicKeys
+		};
+	};
+
+	this.importKeys = (jsonBackup) => {
+		let backup = self.verifyAndReadBackup(jsonBackup);
+
+		for(let key of backup.prv)
+			if (!crypto.getPrivateKeyByFingerprint(key.primaryKey.fingerprint))
+				crypto.importPrivateKey(key);
+			else
+				console.log('skip private key import - already existing', key.primaryKey.fingerprint);
+
+		for(let key of backup.pub)
+			if (!crypto.getPublicKeyByFingerprint(key.primaryKey.fingerprint))
+				crypto.importPublicKey(key);
+			else
+				console.log('skip public key import - already existing', key.primaryKey.fingerprint);
+
 		crypto.storeKeyring();
 		crypto.initialize();
 
-		return privateKeysCount;
+		return backup.prv.length;
 	};
 
 	function formatExportFile(body) {
