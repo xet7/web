@@ -2,7 +2,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 							   user, utils, co, inbox, saver, notifications) => {
 
 	$scope.selfEmail = user.email;
-	$scope.labelName = $stateParams.labelName;
+	$scope.labelName = utils.capitalize($state.params.labelName);
 	$scope.selectedTid = $stateParams.threadId ? $stateParams.threadId : null;
 	inbox.selectedTidByLabelName[$scope.labelName] = $scope.selectedTid;
 
@@ -97,7 +97,7 @@ module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParam
 
 				if (!thread || !thread.isLabel($scope.labelName)) {
 					inbox.selectedTidByLabelName[$scope.labelName] = null;
-					yield $state.go('main.inbox.label', {labelName: $scope.labelName, threadId: null});
+					yield $state.go('main.inbox.label', {labelName: $scope.labelName.toLowerCase(), threadId: null});
 					return;
 				}
 

@@ -18,6 +18,8 @@ module.exports = /*@ngInject*/function($injector, $rootScope, $templateCache, co
 
 	this.hexify = (binaryString) => openpgp.util.hexstrdump(binaryString);
 
+	this.capitalize = (name) => name.substr(0, 1).toUpperCase() + name.substr(1);
+
 	this.getBrowser = () => {
 		if (browser)
 			return browser;

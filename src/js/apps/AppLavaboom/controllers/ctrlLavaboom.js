@@ -96,7 +96,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 				description: 'HOTKEY.GOTO_INBOX',
 				callback: (event, key) => {
 					event.preventDefault();
-					$state.go('main.inbox.label', {labelName: 'Inbox'});
+					$state.go('main.inbox.label', {labelName: 'inbox'});
 				}
 			},
 			{
@@ -107,7 +107,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 				description: 'HOTKEY.GOTO_SENT',
 				callback: (event, key) => {
 					event.preventDefault();
-					$state.go('main.inbox.label', {labelName: 'Sent'});
+					$state.go('main.inbox.label', {labelName: 'sent'});
 				}
 			},
 			{
@@ -118,7 +118,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 				description: 'HOTKEY.GOTO_SPAM',
 				callback: (event, key) => {
 					event.preventDefault();
-					$state.go('main.inbox.label', {labelName: 'Spam'});
+					$state.go('main.inbox.label', {labelName: 'spam'});
 				}
 			},
 			{
@@ -129,7 +129,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 				description: 'HOTKEY.GOTO_STARRED',
 				callback: (event, key) => {
 					event.preventDefault();
-					$state.go('main.inbox.label', {labelName: 'Starred'});
+					$state.go('main.inbox.label', {labelName: 'starred'});
 				}
 			},
 			{
@@ -140,7 +140,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 				description: 'HOTKEY.GOTO_TRASH',
 				callback: (event, key) => {
 					event.preventDefault();
-					$state.go('main.inbox.label', {labelName: 'Trash'});
+					$state.go('main.inbox.label', {labelName: 'trash'});
 				}
 			},
 			{
@@ -234,7 +234,7 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 			yield tests.performCompatibilityChecks();
 
 			if ($state.current.name == 'empty')
-				yield $state.go('main.inbox.label', {labelName: 'Inbox', threadId: null}, {reload: true});
+				yield $state.go('main.inbox.label', {labelName: 'inbox', threadId: null}, {reload: true});
 
 			registerGlobalHotkeys();
 

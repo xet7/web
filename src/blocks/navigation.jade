@@ -1,7 +1,7 @@
 div#left-panel.ng-cloak
 	nav#navigation
 		div#brand
-			a(ui-sref="main.inbox.label({labelName: 'Inbox', threadId: null})")
+			a(href="https://lavaboom.com", target="_blank")
 				img(src="#{resolveAsset('/img/Lavaboom-logo-no-shadow.svg')}")
 				img(src="#{resolveAsset('/img/Lavaboom-logo-wordmark-min.svg')}")
 		ul.list-unstyled
@@ -9,8 +9,8 @@ div#left-panel.ng-cloak
 				a(ng-click="showPopup('compose')", tooltip-placement="right", tooltip="{{'MAIN.NAV.LB_COMPOSE' | translate}}")
 					span.icon-compose
 					span#compose-action.action {{'MAIN.NAV.LB_COMPOSE' | translate}}
-			li(ng-class="{ active: $state.includes('main.inbox.label', {labelName: label.name}) }", ng-repeat="label in labels track by label.id")
-				a(ui-sref="main.inbox.label({labelName: label.name, threadId: getThreadForLabel(label.name)})", tooltip="{{label.name}}", tooltip-placement="right")
+			li(ng-class="{ active: $state.includes('main.inbox.label', {labelName: label.lname}) }", ng-repeat="label in labels track by label.id")
+				a(ui-sref="main.inbox.label({labelName: label.lname, threadId: getThreadForLabel(label.name)})", tooltip="{{label.name}}", tooltip-placement="right")
 					span(ng-class="label.iconClass")
 					span.action(ng-bind="label.name")
 					span.badge(ng-bind="label.threadsUnread | unread")
