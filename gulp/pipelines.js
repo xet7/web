@@ -124,19 +124,51 @@ function Pipelines(manifest, plumber, isWatching) {
 			.pipe(plg.jshint.reporter('fail'));
 	};
 
-	this.browserifyBundle = (base, filename, sectionName, sharedEnvironment, codePath = '', preBundleAction = null, postBundleAction = null) => {
+	this.browserifyBundle = (base, filename, sectionName, sharedEnvironment, preBundleAction = null, postBundleAction = null) => {
 		if (!preBundleAction)
 			preBundleAction = bundler => bundler;
 		if (!postBundleAction)
 			postBundleAction = bundler => bundler;
 
-		let config = require(path.resolve(base, filename));
-		let application = config[sectionName];
+		let applicationConfig = require(path.resolve(base, filename));
+		let application = applicationConfig[sectionName];
 
-		let isApplicationBundle = filename.endsWith('.toml');
-		let inputApplication = isApplicationBundle ? paths.scripts.inputApplication : filename;
-		let outputFile = isApplicationBundle ? '' : path.basename(filename);
-		let applicationPath = path.resolve(path.dirname(filename), codePath);
+		if (!application)
+			throw new Error(`section "${sectionName}" required!`);
+
+		if (sectionName == 'PLUGIN') {
+			if (!application.belongsTo)
+				throw new Error(
+					`unexpected empty value ${sectionName}.belongsTo! ` +
+					`define ${sectionName}.belongsTo`
+				);
+
+			if (!config.coreAppNames.includes(application.belongsTo))
+				throw new Error(
+					`unknown core application name "${application.belongsTo}" found! ` +
+					`make sure ${sectionName}.belongsTo resolves to one of core application names`
+				);
+		}
+
+		if (sectionName == 'APPLICATION'){
+			if (application.belongsTo)
+				throw new Error(
+					`unexpected value ${sectionName}.belongsTo! supported only for plugins`+
+					`define ${sectionName}.belongsTo`
+				);
+		}
+
+		if (application.type == 'angular') {
+			if (!application.moduleName)
+				throw new Error(
+					`unexpected empty value "${sectionName}.moduleName" found! ` +
+					`make sure ${sectionName}.moduleName is defined`
+				);
+		}
+
+		let browserifyEntryFile = application.type == 'angular' ? paths.scripts.inputApplication : path.resolve(base, path.dirname(filename), application.entry);
+		let outputName = utils.lowerise(application.name);
+		let applicationPath = path.dirname(filename);
 
 		let environment = {};
 		for(let k of Object.keys(sharedEnvironment))
@@ -145,9 +177,9 @@ function Pipelines(manifest, plumber, isWatching) {
 		let bundler = browserify({
 			cache: {},
 			packageCache: {},
-			entries: inputApplication,
+			entries: browserifyEntryFile,
 			basedir: base,
-			debug: config.isDebugable
+			debug: applicationConfig.isDebugable
 		});
 
 		function addRequire(path, name) {
@@ -169,15 +201,14 @@ function Pipelines(manifest, plumber, isWatching) {
 			let lintStatus = {};
 
 			let bundleStream = postBundleAction(
-				preBundleAction(bundler.bundle(), environment.applicationConfig, outputFile)
-					.pipe(source(inputApplication))
+				preBundleAction(bundler.bundle(), application)
+					.pipe(source(browserifyEntryFile))
 					.pipe(plg.rename({
 						dirname: '',
-						basename: outputFile.replace('.js', '')
+						basename: outputName
 					}))
 					.pipe(plg.buffer()),
-				environment.applicationConfig,
-				outputFile
+				application
 			);
 
 			if (changedFiles) {
@@ -199,22 +230,22 @@ function Pipelines(manifest, plumber, isWatching) {
 		bundler
 			.transform(ownCodebaseTransform(babelify), {externalHelpers: true})
 			.transform(ownCodebaseTransform(envify(environment)))
-			.transform(ownCodebaseTransform(bulkify))
 			.transform(ownCodebaseTransform(lessify))
 			.transform(ownCodebaseTransform(jadeify))
+			.transform(ownCodebaseTransform(bulkify))
 			.transform(ownCodebaseTransform(brfs));
 
-		if (!config.isLogs)
+		if (!applicationConfig.isLogs)
 			bundler
 				.transform(stripify);
 
-		if (config.isProduction)
+		if (applicationConfig.isProduction)
 			bundler
 				.transform(ownCodebaseTransform(browserifyNgAnnotate))
 				.transform(uglifyify);
 
 
-		if (isApplicationBundle) {
+		if (application.type == 'angular') {
 			environment.applicationConfig = {
 				name: application.moduleName,
 				dependencies: application.dependencies,
@@ -222,8 +253,6 @@ function Pipelines(manifest, plumber, isWatching) {
 				isPlugin: sectionName == 'PLUGIN'
 			};
 			environment.applicationPath = applicationPath;
-
-			outputFile = application.name;
 
 			addRequire('./src/js/helpers/angularApplication.js', 'AngularApplication');
 		}

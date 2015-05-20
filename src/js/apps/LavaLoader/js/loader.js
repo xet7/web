@@ -2,13 +2,12 @@ module.exports = (assets) => {
 	const Promise = require('./../../../helpers/promise-polyfill');
 
 	const
-		SRC_APP_LAVABOOM_MAIN_VENDOR = '/js/appLavaboom-vendor.js',
+		SRC_APP_LAVABOOM_MAIN_VENDOR = '/js/lavaMail-vendor.js',
 		SRC_OPENPGP = '/vendor/openpgp.js',
-		SRC_APP_LAVABOOM_LOGIN = '/js/appLavaboomLogin.js',
-		SRC_APP_LAVABOOM_MAIN = '/js/appLavaboom.js',
-		SRC_UTILS = '/js/utils.js',
-		SRC_PLUGINS = '/js/plugins.js',
-		SRC_UTILS_VENDOR = '/js/utils-vendor.js',
+		SRC_APP_LAVABOOM_LOGIN = '/js/lavaLogin.js',
+		SRC_APP_LAVABOOM_MAIN = '/js/lavaMail.js',
+		SRC_UTILS = '/js/lavaUtils.js',
+		SRC_UTILS_VENDOR = '/js/lavaUtils-vendor.js',
 		SRC_TEMPLATE_CACHE = '/js/templates.js';
 
 	const
@@ -24,7 +23,7 @@ module.exports = (assets) => {
 
 	const
 		CHECKER = {
-			appName: 'utils',
+			appName: 'LavaUtils',
 			container: checkerAppContainer,
 			afterProgressText: 'Checking...',
 			afterProgressValue: 30,
@@ -37,10 +36,6 @@ module.exports = (assets) => {
 				{
 					src: SRC_UTILS,
 					progressText: 'Loading Lavaboom utils(2)...'
-				},
-				{
-					src: SRC_PLUGINS,
-					progressText: 'Loading Lavaboom plugins...'
 				}
 			]
 		},
@@ -48,7 +43,7 @@ module.exports = (assets) => {
 			container: loaderContainer
 		},
 		APP_LAVABOOM_LOGIN = {
-			appName: 'appLavaboomLogin',
+			appName: 'LavaLogin',
 			container: loginAppContainer,
 			afterProgressText: 'Please wait...',
 			afterProgressValue: 90,
@@ -68,7 +63,7 @@ module.exports = (assets) => {
 			]
 		},
 		APP_LAVABOOM_MAIN = {
-			appName: 'appLavaboom',
+			appName: 'LavaMail',
 			container: mainAppContainer,
 			afterProgressText: 'Please wait...',
 			afterProgressValue: 50,

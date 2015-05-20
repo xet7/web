@@ -140,7 +140,7 @@ gulp.task('build:scripts:vendor:normal', () =>
 				dependencies.push(resolvedFile);
 			}
 
-			let newName = path.dirname(file.relative) + '../../' + appConfig.APPLICATION.name + '-vendor.js';
+			let newName = path.dirname(file.relative) + '../../' + utils.lowerise(appConfig.APPLICATION.name) + '-vendor.js';
 
 			return gulp.src(dependencies)
 				.pipe(plumber())
@@ -292,6 +292,7 @@ gulp.task('serve', cb => {
 /**
  * Task Runners
  */
+let coreAppBundles = {};
 
 const compileSteps = [
 	'build:partials-jade',
@@ -303,26 +304,39 @@ const compileSteps = [
 	'build:scripts:vendor'
 ];
 
-let exorcist = require('exorcist');
-const scriptCompileSteps = config.coreAppNames.map(coreAppName => {
-	let taskName = 'build:scripts:' + coreAppName;
-	gulp.task(taskName, () => pipelines.browserifyBundle(__dirname, appScript, 'APPLICATION', sharedEnvironment, '',
-		bundler => {
-			return bundler
-				.pipe(plg.tap(file => {
-					pluginsByApp[]
-					console.log(file.toString());
-				}))
-				.pipe(exorcist(paths.scripts.output + path.basename(appScript) + '.js.map'));
-		},
-		bundler => {
-			return bundler
-				.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())
-				.pipe(plg.stream())
-				.pipe(gulp.dest(paths.scripts.output))
-				.pipe(pipelines.livereloadPipeline()());
-		}
-	));
+const scriptBuildSteps = config.coreAppNames.map(coreAppName => {
+	let taskName = 'scripts:build:' + coreAppName;
+	gulp.task(taskName, () =>
+		pipelines.browserifyBundle(
+			__dirname, paths.scripts.inputAppsFolder + coreAppName + '/index.toml', 'APPLICATION', sharedEnvironment, null,
+			bundler => {
+				return bundler
+					.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())
+					.pipe(plg.tap(file => {
+						coreAppBundles[coreAppName] = {
+							name: coreAppName,
+							content: file.contents.toString()
+						};
+					}));
+			}
+		)
+	);
+	return taskName;
+});
+
+const scriptConcatSteps = config.coreAppNames.map(coreAppName => {
+	let taskName = 'scripts:concat:' + coreAppName;
+	gulp.task(taskName, () => {
+		let input = [coreAppBundles[coreAppName]].concat(pluginsByApp[coreAppName]);
+		console.log('concat', pluginsByApp[coreAppName]);
+		return utils.createFiles(input)
+			.pipe(plg.buffer())
+			.pipe(plg.sourcemaps.init())
+			.pipe(plg.concat(utils.lowerise(coreAppName) + '.js'))
+			.pipe(plg.sourcemaps.write('.'))
+			.pipe(gulp.dest(paths.scripts.output))
+			.pipe(pipelines.livereloadPipeline()());
+	});
 	return taskName;
 });
 
@@ -337,7 +351,7 @@ gulp.task('compile:finished', gulp.series(
 	'persists:paths', 'build:jade', 'copy:vendor', 'serve'
 ));
 
-gulp.task('compile:scripts', gulp.parallel(scriptCompileSteps));
+gulp.task('compile:scripts', gulp.series(gulp.parallel(scriptBuildSteps), gulp.parallel(scriptConcatSteps)));
 
 // Compile files
 gulp.task('compile', gulp.series(

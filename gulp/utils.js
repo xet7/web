@@ -13,6 +13,10 @@ function Utils() {
 		return stream;
 	};
 
+	this.lowerise = function (str) {
+		return str[0].toLowerCase() + str.substr(1);
+	};
+
 	this.createFiles = function (list) {
 		return merge(list.map(e => self.createFile(e.name, e.content)));
 	};

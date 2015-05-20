@@ -63,4 +63,4 @@ html(lang="en")
 
 		if globs.IS_PRODUCTION
 			script!= 'window.assets = ' + JSON.stringify(assets) + ';'
-		script!= fs.readFileSync('./dist' + resolveAsset('/js/loader.js'), 'utf8')
+		script!= fs.readFileSync('./dist' + resolveAsset('/js/lavaLoader.js'), 'utf8')

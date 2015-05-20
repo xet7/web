@@ -3,9 +3,14 @@
 
 [APPLICATION]
 	name = "LavaMail"
+	version = "1.0"
+	description = "Lava Mail application"
+	type = "angular"
+
+	moduleName = "LavaMail"
 
 	dependencies = [
-		"utils",
+		"LavaUtils",
 		"lavaboom.api",
 		"ngSanitize",
 		"ui.router",

@@ -3,6 +3,11 @@
 
 [APPLICATION]
 	name = "LavaUtils"
+	version = "1.0"
+	description = "Lava utils core application with generic logic shared across plugins/applications"
+	type = "angular"
+
+	moduleName = "LavaUtils"
 
 	dependencies = [
 		"lavaboom.api",

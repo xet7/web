@@ -55,35 +55,44 @@ module.exports = function (pluginsByApp) {
 	});
 
 	function createBuildTasks() {
-		for (let plugin of plugins) {
+		return plugins.map(plugin => {
 			console.log(`creating build task for plugin "${plugin.url}"...`);
-
 			let taskName = 'plugins:build:' + plugin.name;
+
 			gulp.task(taskName, () => {
-				return pipelines.browserifyBundle(base, plugin.path, 'PLUGIN', sharedEnvironment, 'js', null, (bundler, config) => {
+				return pipelines.browserifyBundle(base, plugin.path, 'PLUGIN', sharedEnvironment, null, (bundler, config) => {
 					plugin.config = config;
 					if (!pluginsByApp[config.belongsTo])
 						pluginsByApp[config.belongsTo] = [];
-					pluginsByApp[config.belongsTo].push(plugin);
+
+					let entry = {
+						name: plugin.name,
+						content: plugin.content
+					};
+					pluginsByApp[config.belongsTo].push(entry);
 
 					return bundler
 						.pipe(plg.tap(file => {
-							plugin.content = file.contents.toString();
+							entry.content = file.contents.toString();
+							console.log(`build for "${plugin.name}" is ready`, entry.content);
 						}));
 				});
 			});
-			pluginsBuildTasks.push(taskName);
-		}
+
+			return taskName;
+		});
 	}
 
 	function createConcatTasks() {
-		for(let coreAppName of config.coreAppNames) {
+		return config.coreAppNames.map(coreAppName => {
 			console.log(`creating concatenation task for "${coreAppName}" application's plugins...`);
-
 			let taskName = 'plugins:concat:' + coreAppName;
+
 			gulp.task(taskName, (cb) => {
-				if (!pluginsByApp[coreAppName] || pluginsByApp[coreAppName].length < 1)
+				if (!pluginsByApp[coreAppName] || pluginsByApp[coreAppName].length < 1) {
+					pluginsByApp[coreAppName] = [];
 					return cb();
+				}
 
 				return utils.createFiles(pluginsByApp[coreAppName])
 					.pipe(plg.buffer())
@@ -94,12 +103,13 @@ module.exports = function (pluginsByApp) {
 						pluginsByApp[coreAppName].content = file.contents.toString();
 					}));
 			});
-			pluginsConcatTasks.push(taskName);
-		}
+
+			return taskName;
+		});
 	}
 
-	createBuildTasks();
-	createConcatTasks();
+	pluginsBuildTasks = createBuildTasks();
+	pluginsConcatTasks = createConcatTasks();
 
 	return gulp.series('plugins:update', gulp.parallel(pluginsBuildTasks), gulp.parallel(pluginsConcatTasks));
 };

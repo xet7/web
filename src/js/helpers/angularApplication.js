@@ -80,8 +80,10 @@ function AngularApplication ({name, dependencies, productionOnlyDependencies, is
 			applicationModule.controller(declarativeControllerName, controller);
 		}
 
-		for (let controllerName of Object.keys(bulks.controllers))
-			declareController(controllerName, bulks.controllers[controllerName]);
+		if (bulks.controllers) {
+			for (let controllerName of Object.keys(bulks.controllers))
+				declareController(controllerName, bulks.controllers[controllerName]);
+		}
 
 		if (bulks.blocks) {
 			for (let blockName of Object.keys(bulks.blocks)) {
@@ -117,7 +119,13 @@ function AngularApplication ({name, dependencies, productionOnlyDependencies, is
 	}
 
 	registerBulks(
-		bulkRequire(process.env.applicationPath, ['**/*.js', '**/*.jade', '**/*.less'])
+		bulkRequire(process.env.applicationPath, '**/*.js')
+	);
+	registerBulks(
+		bulkRequire(process.env.applicationPath,  '**/*.jade')
+	);
+	registerBulks(
+		bulkRequire(process.env.applicationPath, '**/*.less')
 	);
 }
 
