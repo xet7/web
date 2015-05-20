@@ -12,6 +12,10 @@ function AngularApplication ({name, dependencies, productionOnlyDependencies, is
 
 	let templates = {};
 
+	this.getDynamicTemplate = (blockName, name) => {
+		return templates[`${blockName}/${name}`];
+	};
+
 	this.registerAngular = function (bulks) {
 		if (bulks.runs) {
 			for (let runName of Object.keys(bulks.runs)) {
@@ -156,3 +160,5 @@ application.registerTemplates(
 application.registerStyles(
 	bulkRequire(process.env.applicationPath, '**/*.less')
 );
+
+module.exports = application;
