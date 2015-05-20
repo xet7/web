@@ -1,0 +1,19 @@
+[MANIFEST]
+	version = "1.0"
+
+[APPLICATION]
+	name = "LavaLogin"
+
+	dependencies = [
+		"utils",
+		"lavaboom.api",
+		"ui.router",
+		"pascalprecht.translate",
+		"ngMessages",
+		"angular-co",
+		"ngAutodisable"
+	]
+
+	productionOnlyDependencies = [
+		"templates"
+	]

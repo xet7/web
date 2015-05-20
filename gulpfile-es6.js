@@ -56,8 +56,9 @@ const Pipelines = require('./gulp/pipelines');
 const pipelines = new Pipelines(manifest, plumber, isWatching);
 global.pipelines = pipelines;
 
+let pluginsByApp = {};
 const plugins = require('./gulp/plugins');
-plugins();
+gulp.task('build:plugins', plugins(pluginsByApp));
 
 
 /**
@@ -302,19 +303,16 @@ const compileSteps = [
 	'build:scripts:vendor'
 ];
 
-function fileFromVariable(name, content) {
-	var stream = source(name);
-	stream.write(content);
-	process.nextTick(() => stream.end());
-
-	return stream;
-}
 let exorcist = require('exorcist');
-const scriptCompileSteps = paths.scripts.inputApps.map((appScript, i) => {
-	let name = 'build:scripts-' + (i + 1);
-	gulp.task(name, () => pipelines.browserifyBundle(__dirname, appScript, 'APPLICATION', sharedEnvironment, '',
+const scriptCompileSteps = config.coreAppNames.map(coreAppName => {
+	let taskName = 'build:scripts:' + coreAppName;
+	gulp.task(taskName, () => pipelines.browserifyBundle(__dirname, appScript, 'APPLICATION', sharedEnvironment, '',
 		bundler => {
 			return bundler
+				.pipe(plg.tap(file => {
+					pluginsByApp[]
+					console.log(file.toString());
+				}))
 				.pipe(exorcist(paths.scripts.output + path.basename(appScript) + '.js.map'));
 		},
 		bundler => {
@@ -325,7 +323,7 @@ const scriptCompileSteps = paths.scripts.inputApps.map((appScript, i) => {
 				.pipe(pipelines.livereloadPipeline()());
 		}
 	));
-	return name;
+	return taskName;
 });
 
 // Write manifest paths into external file(assets translation see revTap)

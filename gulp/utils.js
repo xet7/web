@@ -5,8 +5,6 @@ const merge = require('merge-stream');
 function Utils() {
 	const self = this;
 
-	this.angularApplicationTemplate = fs.readFileSync('./gulp/angularApplicationTemplate.js', 'utf-8');
-
 	this.createFile = function (name, content) {
 		var stream = source(name);
 		stream.write(content);

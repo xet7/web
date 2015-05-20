@@ -1,13 +1,12 @@
 const gulp = global.gulp;
 const plg = global.plg;
-const bluebird = require('bluebird');
+
 const co = require('co');
 const fs = require('fs');
 const path = require('path');
-const merge = require('merge-stream');
-const source = require('vinyl-source-stream');
 const url = require('url');
 
+const bluebird = require('bluebird');
 const git = bluebird.promisifyAll(plg.git);
 
 const utils = require('./utils');
@@ -17,7 +16,7 @@ const paths = require('./paths');
 const pipelines = global.pipelines;
 let sharedEnvironment = global.sharedEnvironment;
 
-module.exports = function () {
+module.exports = function (pluginsByApp) {
 	const base = path.resolve(__dirname, '..');
 	let pluginsBuildTasks = [];
 	let pluginsConcatTasks = [];
@@ -26,16 +25,16 @@ module.exports = function () {
 		let uri = url.parse(u);
 
 		if (!uri.host)
-			uri = url.resolve(config.contribPluginsBaseUrl, u);
+			uri = url.parse(url.resolve(config.contribPluginsBaseUrl, u));
 
-		let name = uri.path.split('/').splice(-2).join('-');
+		let name = uri.path.split('/').splice(-1)[0];
 		return {
 			name: name,
-			path: './' + paths.plugins + '/' + name + '/index.toml',
+			path: path.resolve('./', paths.plugins, name, 'index.toml'),
 			url: uri.href
 		};
 	});
-	let pluginsByApp = {};
+
 
 	gulp.task('plugins:update', (cb) => {
 		if (plugins.length < 1)
@@ -78,18 +77,21 @@ module.exports = function () {
 	}
 
 	function createConcatTasks() {
-		for(let app of Object.keys(pluginsByApp)) {
-			console.log(`creating concatenation task for "${app}" application's plugins...`);
+		for(let coreAppName of config.coreAppNames) {
+			console.log(`creating concatenation task for "${coreAppName}" application's plugins...`);
 
-			let taskName = 'plugins:concat:' + app;
+			let taskName = 'plugins:concat:' + coreAppName;
 			gulp.task(taskName, (cb) => {
-				return utils.createFiles(pluginsByApp[app])
+				if (!pluginsByApp[coreAppName] || pluginsByApp[coreAppName].length < 1)
+					return cb();
+
+				return utils.createFiles(pluginsByApp[coreAppName])
 					.pipe(plg.buffer())
 					.pipe(plg.sourcemaps.init())
 					.pipe(plg.concat('plugins.js'))
 					.pipe(plg.sourcemaps.write())
 					.pipe(plg.tap(file => {
-						pluginsByApp[app].content = file.contents.toString();
+						pluginsByApp[coreAppName].content = file.contents.toString();
 					}));
 			});
 			pluginsConcatTasks.push(taskName);
@@ -98,5 +100,6 @@ module.exports = function () {
 
 	createBuildTasks();
 	createConcatTasks();
-	gulp.task('build:plugins', gulp.series('plugins:update', gulp.parallel(pluginsBuildTasks), gulp.parallel(pluginsConcatTasks)));
+
+	return gulp.series('plugins:update', gulp.parallel(pluginsBuildTasks), gulp.parallel(pluginsConcatTasks));
 };

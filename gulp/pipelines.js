@@ -13,6 +13,7 @@ const utils = require('./utils');
 const config = require('./config');
 const paths = require('./paths');
 const filterTransform = require('filter-transform');
+const toml = require('toml');
 
 // Browserify the mighty one
 const browserify = require('browserify'),
@@ -23,6 +24,8 @@ const browserify = require('browserify'),
 	stripify = require('stripify'),
 	envify = require('envify/custom'),
 	watchify = require('watchify'),
+	lessify = require('lessify'),
+	jadeify = require('jadeify'),
 	brfs = require('brfs');
 
 function Pipelines(manifest, plumber, isWatching) {
@@ -127,6 +130,9 @@ function Pipelines(manifest, plumber, isWatching) {
 		if (!postBundleAction)
 			postBundleAction = bundler => bundler;
 
+		let config = require(path.resolve(base, filename));
+		let application = config[sectionName];
+
 		let isApplicationBundle = filename.endsWith('.toml');
 		let inputApplication = isApplicationBundle ? paths.scripts.inputApplication : filename;
 		let outputFile = isApplicationBundle ? '' : path.basename(filename);
@@ -144,10 +150,8 @@ function Pipelines(manifest, plumber, isWatching) {
 			debug: config.isDebugable
 		});
 
-		function addRequire(content, name) {
-			bundler.require(new File({
-				contents: new Buffer(content)
-			}), {expose: name});
+		function addRequire(path, name) {
+			bundler.require(path, {expose: name});
 			bundler.exclude(name);
 		}
 
@@ -196,6 +200,8 @@ function Pipelines(manifest, plumber, isWatching) {
 			.transform(ownCodebaseTransform(babelify), {externalHelpers: true})
 			.transform(ownCodebaseTransform(envify(environment)))
 			.transform(ownCodebaseTransform(bulkify))
+			.transform(ownCodebaseTransform(lessify))
+			.transform(ownCodebaseTransform(jadeify))
 			.transform(ownCodebaseTransform(brfs));
 
 		if (!config.isLogs)
@@ -207,10 +213,10 @@ function Pipelines(manifest, plumber, isWatching) {
 				.transform(ownCodebaseTransform(browserifyNgAnnotate))
 				.transform(uglifyify);
 
+
 		if (isApplicationBundle) {
-			let application = require('../' + filename)[sectionName];
 			environment.applicationConfig = {
-				name: sectionName == 'PLUGIN' ? 'utils' : application.name,
+				name: application.moduleName,
 				dependencies: application.dependencies,
 				productionOnlyDependencies: application.productionOnlyDependencies,
 				isPlugin: sectionName == 'PLUGIN'
@@ -219,7 +225,7 @@ function Pipelines(manifest, plumber, isWatching) {
 
 			outputFile = application.name;
 
-			addRequire(utils.angularApplicationTemplate, 'AngularApplication');
+			addRequire('./src/js/helpers/angularApplication.js', 'AngularApplication');
 		}
 
 		if (isWatching)

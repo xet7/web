@@ -1,4 +1,5 @@
-var output = 'dist/';
+const config = require('./config');
+const output = 'dist/';
 
 module.exports = {
 	input: 'src/**/*',
@@ -10,12 +11,8 @@ module.exports = {
 		input: 'src/js/*.js',
 		inputFolder: 'src/js/',
 		inputAll: 'src/js/**/*.js',
-		inputApps: [
-			'./src/js/apps/Utils/index.toml',
-			'./src/js/apps/AppLavaboom/index.toml',
-			'./src/js/apps/AppLavaboomLogin/index.toml',
-			'./src/js/loader.js'
-		],
+		inputApps: config.coreAppNames
+			.map(coreAppName => `./src/js/apps/${coreAppName}/index.toml`),
 		inputApplication: './src/js/apps/app.js',
 		inputDeps: 'src/js/apps/**/*.toml',
 		inputAppsFolder: 'src/js/apps/',

@@ -1,0 +1,10 @@
+[MANIFEST]
+	version = "1.0"
+
+[APPLICATION]
+	name = "LavaLoader"
+	type = "custom"
+	version = "1.0"
+	description = "Lava core application performs loading and bootstrapping of the web"
+
+	entry = "./js/index.js"
