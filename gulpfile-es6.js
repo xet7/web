@@ -56,7 +56,9 @@ const Pipelines = require('./gulp/pipelines');
 const pipelines = new Pipelines(manifest, plumber, isWatching);
 global.pipelines = pipelines;
 
-require('./gulp/plugins');
+const plugins = require('./gulp/plugins');
+plugins();
+
 
 /**
  * Gulp Taks

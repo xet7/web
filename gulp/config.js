@@ -3,6 +3,7 @@ module.exports = {
 	isDebugable: true,
 	isLogs: true,
 	defaultApiUri: 'https://api.lavaboom.com',
+	contribPluginsBaseUrl: 'https://github.com/lavab-plugins',
 	defaultRootDomain: 'lavaboom.com',
 	livereloadListenAddress: '0.0.0.0',
 	livereloadListenPort: 35729,

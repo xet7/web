@@ -121,11 +121,11 @@ function Pipelines(manifest, plumber, isWatching) {
 			.pipe(plg.jshint.reporter('fail'));
 	};
 
-	this.browserifyBundle = (base, filename, sectionName, sharedEnvironment, codePath = '', pre = null, post = null) => {
-		if (!pre)
-			pre = bundler => bundler;
-		if (!post)
-			post = bundler => bundler;
+	this.browserifyBundle = (base, filename, sectionName, sharedEnvironment, codePath = '', preBundleAction = null, postBundleAction = null) => {
+		if (!preBundleAction)
+			preBundleAction = bundler => bundler;
+		if (!postBundleAction)
+			postBundleAction = bundler => bundler;
 
 		let isApplicationBundle = filename.endsWith('.toml');
 		let inputApplication = isApplicationBundle ? paths.scripts.inputApplication : filename;
@@ -164,14 +164,15 @@ function Pipelines(manifest, plumber, isWatching) {
 		function bundle(changedFiles) {
 			let lintStatus = {};
 
-			let bundleStream = post(
-				pre(bundler.bundle(), outputFile)
+			let bundleStream = postBundleAction(
+				preBundleAction(bundler.bundle(), environment.applicationConfig, outputFile)
 					.pipe(source(inputApplication))
 					.pipe(plg.rename({
 						dirname: '',
 						basename: outputFile.replace('.js', '')
 					}))
 					.pipe(plg.buffer()),
+				environment.applicationConfig,
 				outputFile
 			);
 
