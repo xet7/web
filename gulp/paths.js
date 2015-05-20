@@ -9,15 +9,12 @@ module.exports = {
 	scripts: {
 		cacheOutput: './cache/',
 		input: 'src/js/*.js',
-		inputFolder: 'src/js/',
+		inputFolders: ['src/js/', 'src/apps/'],
 		inputAll: 'src/js/**/*.js',
-		inputApps: config.coreAppNames
-			.map(coreAppName => `./src/js/apps/${coreAppName}/index.toml`),
-		inputApplication: './src/js/apps/app.js',
-		inputDeps: 'src/js/apps/**/*.toml',
-		inputAppsFolder: 'src/js/apps/',
-		output: output + 'js/',
-		pluginsOutput: output + 'js/plugins.js'
+		inputApplication: './src/apps/app.js',
+		inputDeps: 'src/apps/**/*.toml',
+		inputAppsFolder: 'src/apps/',
+		output: output + 'js/'
 	},
 	styles: {
 		input: 'src/less/lavaboom.less',

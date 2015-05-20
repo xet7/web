@@ -74,7 +74,6 @@ module.exports = function (pluginsByApp) {
 					return bundler
 						.pipe(plg.tap(file => {
 							entry.content = file.contents.toString();
-							console.log(`build for "${plugin.name}" is ready`, entry.content);
 						}));
 				});
 			});

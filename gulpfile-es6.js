@@ -327,8 +327,8 @@ const scriptBuildSteps = config.coreAppNames.map(coreAppName => {
 const scriptConcatSteps = config.coreAppNames.map(coreAppName => {
 	let taskName = 'scripts:concat:' + coreAppName;
 	gulp.task(taskName, () => {
-		let input = [coreAppBundles[coreAppName]].concat(pluginsByApp[coreAppName]);
-		console.log('concat', pluginsByApp[coreAppName]);
+		let input = [coreAppBundles[coreAppName]].concat(pluginsByApp[coreAppName] ? pluginsByApp[coreAppName] : []);
+
 		return utils.createFiles(input)
 			.pipe(plg.buffer())
 			.pipe(plg.sourcemaps.init())
@@ -351,14 +351,14 @@ gulp.task('compile:finished', gulp.series(
 	'persists:paths', 'build:jade', 'copy:vendor', 'serve'
 ));
 
-gulp.task('compile:scripts', gulp.series(gulp.parallel(scriptBuildSteps), gulp.parallel(scriptConcatSteps)));
+gulp.task('scripts:build', gulp.series(gulp.parallel(scriptBuildSteps), gulp.parallel(scriptConcatSteps)));
 
 // Compile files
 gulp.task('compile', gulp.series(
 	gulp.parallel('lint:scripts'),
 	'tests',
 	gulp.parallel(compileSteps),
-	'compile:scripts',
+	'scripts:build',
 	'compile:finished'
 ));
 

@@ -28,7 +28,7 @@ module.exports = /*@ngInject*/($rootScope, $translate, $injector, translate, con
 
 	$rootScope.notificationsInfo = $rootScope.notificationsWarning = {};
 	$rootScope.manifest = JSON.parse(consts.stripBOM(
-		fs.readFileSync(__dirname + '/../../../../../manifest.json', 'utf8')
+		fs.readFileSync(__dirname + '/../../../../manifest.json', 'utf8')
 	));
 	$rootScope.servedBy = {
 		text: '',

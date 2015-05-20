@@ -1,5 +1,5 @@
 module.exports = (assets) => {
-	const Promise = require('./../../../helpers/promise-polyfill');
+	const Promise = require('./../../../js/helpers/promise-polyfill');
 
 	const
 		SRC_APP_LAVABOOM_MAIN_VENDOR = '/js/lavaMail-vendor.js',

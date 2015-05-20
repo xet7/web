@@ -11,7 +11,7 @@ function AngularApplication ({name, dependencies, productionOnlyDependencies, is
 	console.debug(`module ${name}: declaring, isPlugin:`, isPlugin, 'depends on:', moduleDependencies);
 	const applicationModule = angular.module(name, moduleDependencies);
 
-	function registerBulks (bulks) {
+	this.registerBulks = function (bulks) {
 		if (bulks.runs) {
 			for (let runName of Object.keys(bulks.runs)) {
 				console.debug(`module ${name}: declare a run...`, runName);
@@ -116,17 +116,19 @@ function AngularApplication ({name, dependencies, productionOnlyDependencies, is
 		console.debug(`module ${name}: bulks loaded`);
 
 		return this;
-	}
-
-	registerBulks(
-		bulkRequire(process.env.applicationPath, '**/*.js')
-	);
-	registerBulks(
-		bulkRequire(process.env.applicationPath,  '**/*.jade')
-	);
-	registerBulks(
-		bulkRequire(process.env.applicationPath, '**/*.less')
-	);
+	};
 }
 
-module.exports = AngularApplication;
+let application = new AngularApplication(process.env.applicationConfig);
+
+application.registerBulks(
+	bulkRequire(process.env.applicationPath, '**/*.js')
+);
+
+//application.registerBulks(
+//	bulkRequire(process.env.applicationPath,  '**/*.jade')
+//);
+
+//application.registerBulks(
+//	bulkRequire(process.env.applicationPath, '**/*.less')
+//);

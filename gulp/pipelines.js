@@ -166,7 +166,7 @@ function Pipelines(manifest, plumber, isWatching) {
 				);
 		}
 
-		let browserifyEntryFile = application.type == 'angular' ? paths.scripts.inputApplication : path.resolve(base, path.dirname(filename), application.entry);
+		let browserifyEntryFile = application.type == 'angular' ? path.resolve(base, paths.scripts.inputApplication) : path.resolve(base, path.dirname(filename), application.entry);
 		let outputName = utils.lowerise(application.name);
 		let applicationPath = path.dirname(filename);
 
@@ -179,7 +179,7 @@ function Pipelines(manifest, plumber, isWatching) {
 			packageCache: {},
 			entries: browserifyEntryFile,
 			basedir: base,
-			debug: applicationConfig.isDebugable
+			debug: config.isDebugable
 		});
 
 		function addRequire(path, name) {
@@ -190,9 +190,10 @@ function Pipelines(manifest, plumber, isWatching) {
 		function ownCodebaseTransform (transform) {
 			return filterTransform(
 					file => {
-						return file.includes('_stream_') ||
-							file.includes(path.resolve(base, paths.scripts.inputFolder)) ||
+						let r  = file.includes('_stream_') ||
+							paths.scripts.inputFolders.map(e => path.resolve(base, e)).some(e => file.includes(e)) ||
 							file.includes(applicationPath);
+						return r;
 					},
 				transform);
 		}
@@ -235,11 +236,11 @@ function Pipelines(manifest, plumber, isWatching) {
 			.transform(ownCodebaseTransform(bulkify))
 			.transform(ownCodebaseTransform(brfs));
 
-		if (!applicationConfig.isLogs)
+		if (!config.isLogs)
 			bundler
 				.transform(stripify);
 
-		if (applicationConfig.isProduction)
+		if (config.isProduction)
 			bundler
 				.transform(ownCodebaseTransform(browserifyNgAnnotate))
 				.transform(uglifyify);
@@ -253,7 +254,6 @@ function Pipelines(manifest, plumber, isWatching) {
 				isPlugin: sectionName == 'PLUGIN'
 			};
 			environment.applicationPath = applicationPath;
-
 			addRequire('./src/js/helpers/angularApplication.js', 'AngularApplication');
 		}
 
