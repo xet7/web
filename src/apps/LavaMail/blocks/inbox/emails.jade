@@ -24,7 +24,7 @@ div.pane-status(ng-if="selectedTid === null")
 				li(ng-show="selectedTid && labelName == 'Trash'")
 					button.btn.btn-default(ng-click="restoreFromTrash(selectedTid)", tooltip="{{'INBOX.PUT_BACK' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-put-back
-	include ../_notifications.jade
+	include ../misc/_notifications
 
 .global-mail-actions(ng-hide="isLoading")
 	div.btn-group
@@ -69,9 +69,9 @@ div(ng-if="selectedTid").main-view
 					download-email="downloadEmail",
 					original-email-name="email.id",
 					email-body="email.body.data",
-					snap-template-url="partials/directives/snap.html",
-					no-image-template-url="partials/directives/noImage.html",
-					loading-template-url="partials/directives/loading.html")
+					snap-template-url="LavaMail/directives/snap.html",
+					no-image-template-url="LavaMail/directives/noImage.html",
+					loading-template-url="LavaMail/directives/loading.html")
 				.col-xs-22(ng-show="email.body.state == 'no_private_key'") {{'INBOX.LB_NO_PRIVATE_KEY_FOUND1' | translate}}
 					div {{'INBOX.LB_NO_PRIVATE_KEY_FOUND2' | translate}}
 						a(ui-sref="main.settings.security") {{'INBOX.LB_SETTINGS' | translate}}
@@ -79,7 +79,7 @@ div(ng-if="selectedTid").main-view
 			footer.attachments(ng-show="email.files.length")
 				.row.no-gutter
 					.col-xs-12(ng-repeat="file in email.files")
-						include _attachment.jade
+						include ./_attachment
 			//- ul.nav.navbar-nav.navbar-right.navbar-right-buttons
 			//- 	li(ng-show="selectedTid")
 			//- 		button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")

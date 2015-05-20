@@ -156,7 +156,7 @@ module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
 				let backup = utils.def(() => cryptoKeys.verifyAndReadBackup($scope.settings.keyring), null);
 				if (backup && backup.prv.length > 0) {
 					const confirmed = yield co.def(dialogs.create(
-						'/partials/lsOff.html',
+						'LavaMail/misc/lsOff.html',
 						'CtrlLsOff'
 					).result, 'cancelled');
 

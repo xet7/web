@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProvider) => {
-	$locationProvider.html5Mode(true);
+	$locationProvider5Mode(true);
 
 	// small hack - both routers(login && main app) work at the same time, so we need to troubleshot this
 	$urlRouterProvider.otherwise(($injector, $location) => {
@@ -12,93 +12,93 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 	$stateProvider
 		.state('login', {
 			url: '/',
-			templateUrl: 'partials/login/login-signup.html'
+			templateUrl: 'LavaLogin/login/loginOrSignup'
 		})
 
 		.state('decrypting', {
 			url: '/decrypting',
-			templateUrl: 'partials/login/decrypting.html'
+			templateUrl: 'LavaLogin/login/decrypting'
 		})
 
 		.state('auth', {
 			url: '/auth',
-			templateUrl: 'partials/login/auth.html',
+			templateUrl: 'LavaLogin/login/auth',
 			controller:'CtrlAuth'
 		})
 
 		.state('invite', {
 			url: '/invite',
-			templateUrl: 'partials/login/invite.html'
+			templateUrl: 'LavaLogin/login/invite'
 		})
 
 		.state('secureUsername', {
 			url: '/secure',
-			templateUrl: 'partials/login/secureUsername.html',
+			templateUrl: 'LavaLogin/login/secureUsername',
 			controller:'CtrlSecureUsername'
 		})
 
 		.state('reservedUsername', {
 			url: '/reserved',
-			templateUrl: 'partials/login/reservedUsername.html',
+			templateUrl: 'LavaLogin/login/reservedUsername',
 			controller:'CtrlReservedUsername'
 		})
 
 		.state('verifyInvite', {
 			url: '/verify',
-			templateUrl: 'partials/login/verifyInvite.html',
+			templateUrl: 'LavaLogin/login/verifyInvite',
 			controller:'CtrlVerify'
 		})
 
 		.state('verifyInviteConfigured', {
 			url: '/verify/{userName}/{inviteCode}',
-			templateUrl: 'partials/login/verifyInvite.html',
+			templateUrl: 'LavaLogin/login/verifyInvite',
 			controller:'CtrlVerify'
 		})
 
 		.state('plan', {
 			url: '/plan',
-			templateUrl: 'partials/login/plan.html',
+			templateUrl: 'LavaLogin/login/plan',
 			controller:'CtrlSelectPlan'
 		})
 
 		.state('details', {
 			url: '/details',
-			templateUrl: 'partials/login/details.html',
+			templateUrl: 'LavaLogin/login/details',
 			controller:'CtrlDetails'
 		})
 
 		.state('choosePassword', {
 			url: '/password',
-			templateUrl: 'partials/login/choosePassword.html',
+			templateUrl: 'LavaLogin/login/choosePassword',
 			controller:'CtrlPassword'
 		})
 
 		.state('choosePasswordIntro', {
 			url: '/password/intro',
-			templateUrl: 'partials/login/choosePasswordIntro.html',
+			templateUrl: 'LavaLogin/login/choosePasswordIntro',
 			controller:'CtrlPassword'
 		})
 
 		.state('generateKeys', {
 			url: '/keys/intro',
-			templateUrl: 'partials/login/generateKeys.html',
+			templateUrl: 'LavaLogin/login/generateKeys',
 			controller: 'CtrlGenerateKeys'
 		})
 
 		.state('generatingKeys', {
 			url: '/keys',
-			templateUrl: 'partials/login/generatingKeys.html',
+			templateUrl: 'LavaLogin/login/generatingKeys',
 			controller: 'CtrlGeneratingKeys'
 		})
 
 		.state('backupKeys', {
 			url: '/keys/backup',
-			templateUrl: 'partials/login/backupKey.html',
+			templateUrl: 'LavaLogin/login/backupKey',
 			controller: 'CtrlBackup'
 		})
 
 		.state('importKeys', {
 			url: '/keys/import',
-			templateUrl: 'partials/login/importKey.html'
+			templateUrl: 'LavaLogin/login/importKey'
 		});
 };

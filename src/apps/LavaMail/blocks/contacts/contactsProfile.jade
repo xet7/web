@@ -12,7 +12,7 @@
 					button.btn.btn-default(type="button", ng-click="openEditMode()", tooltip="{{'MAIN.CONTACTS.BTN_EDIT_CONTACT' | translate}}", tooltip-placement="bottom")
 						span.icon-edit
 					//- | {{'MAIN.CONTACTS.BTN_EDIT_CONTACT' | translate}}
-	include ../_notifications.jade
+	include ../misc/_notifications
 .main-view
 	.row.main-panel
 		section.pane-status(ng-show="!details") {{'MAIN.CONTACTS.LB_NOTHING_FOUND' | translate}}
@@ -53,7 +53,7 @@
 			div
 				h4(ng-show="details.privateEmails.length || isEditMode") {{'MAIN.CONTACTS.TITLE_PRIVATE_EMAIL' | translate}}
 				ul.list-group(ng-repeat="currentEmail in details.privateEmails", ng-controller="CtrlContactProfileEmail", ng-init="emails = 'privateEmails'")
-					include ./_contacts.profile.email.jade
+					include ./_contactsProfileEmail
 				ul.list-group(ng-show="isEditMode")
 					li.list-group-item.pack
 						button.btn.btn-default.btn-block.btn-icon(type="button", ng-click="addNewPrivateEmail()")
@@ -62,7 +62,7 @@
 			div
 				h4(ng-show="details.businessEmails.length || isEditMode") {{'MAIN.CONTACTS.TITLE_BUSINESS_EMAIL' | translate}}
 				ul.list-group(ng-repeat="currentEmail in details.businessEmails", ng-controller="CtrlContactProfileEmail", ng-init="emails = 'businessEmails'")
-					include ./_contacts.profile.email.jade
+					include ./_contactsProfileEmail
 				ul.list-group(ng-show="isEditMode")
 					li.list-group-item.pack
 						button.btn.btn-default.btn-block.btn-icon(type="button", ng-click="addNewBusinessEmail()")

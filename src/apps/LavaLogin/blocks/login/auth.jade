@@ -6,11 +6,11 @@ form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-subm
 
 	div.form-group
 		input.form-control.input-lg(type='text', auto-focus="true", name="username", ng-model='form.username', placeholder="{{'GLOBAL.PLC_USERNAME_OR_EMAIL' | translate}}", required)
-		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.username.$error", ng-messages-include="partials/validationMessages.html")
+		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.username.$error", ng-messages-include="LavaLogin/misc/validationMessages")
 
 	div.form-group
 		input.form-control.input-lg(type='password', name="password", ng-model='form.password', placeholder="{{'GLOBAL.PLC_PASSWORD' | translate}}", required)
-		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.password.$error", ng-messages-include="partials/validationMessages.html")
+		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.password.$error", ng-messages-include="LavaLogin/misc/validationMessages")
 
 	.checkbox
 		input#check2(type='checkbox', name="check2", ng-model="form.isPrivateComputer")

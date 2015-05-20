@@ -11,12 +11,12 @@ form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-subm
 			input.form-control.input-lg(type='text', name="username", ng-model='form.username', placeholder="{{'GLOBAL.USERNAME' | translate}}",
 				focus="true", required, minlength="2", pattern="^[a-zA-Z0-9\\.]+$")
 			span.input-group-addon @lavaboom.com
-			span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.username.$error", ng-messages-include="partials/validationMessages.html")
+			span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.username.$error", ng-messages-include="LavaLogin/misc/validationMessages")
 				span(ng-message="pattern") {{'VALIDATION.LB_USERNAME_PATTERN' | translate}}
 
 	div.form-group.clearfix
 		input.form-control.input-lg(type='email', name="email", ng-model='form.email', placeholder="{{'GLOBAL.CURRENT_EMAIL' | translate}}", required, minlength="4")
-		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.email.$error", ng-messages-include="partials/validationMessages.html")
+		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.email.$error", ng-messages-include="LavaLogin/misc/validationMessages")
 
 	footer
 		button.btn.btn-block.btn-lg.btn-primary(type="submit") {{'LOGIN.SECURE_USERNAME.BTN_SECURE' | translate}}

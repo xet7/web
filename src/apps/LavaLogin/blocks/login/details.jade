@@ -18,14 +18,14 @@ form.steps-form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage
 	div.form-group
 		input.form-control.input-lg(type='text', name="firstName", ng-model='form.firstName', placeholder="{{'GLOBAL.PLC_FIRST_NAME' | translate}}",
 			focus="true", requared, minlength=2)
-		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.firstName.$error", ng-messages-include="partials/validationMessages.html")
+		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.firstName.$error", ng-messages-include="LavaLogin/misc/validationMessages")
 	div.form-group
 		input.form-control.input-lg(type='text', name="lastName", ng-model='form.lastName', placeholder="{{'GLOBAL.PLC_LAST_NAME' | translate}}", requared, minlength=2)
-		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.lastName.$error", ng-messages-include="partials/validationMessages.html")
+		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.lastName.$error", ng-messages-include="LavaLogin/misc/validationMessages")
 	br
 	div.form-group
 		input.form-control.input-lg(type='text', name="displayName", ng-model='form.displayName', placeholder="{{'GLOBAL.PLC_DISPLAY_NAME' | translate}}", required, minlength=4)
-		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.displayName.$error", ng-messages-include="partials/validationMessages.html")
+		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.displayName.$error", ng-messages-include="LavaLogin/misc/validationMessages")
 
 	p.text-center {{'GLOBAL.LB_DISPLAY_NAME' | translate}}
 

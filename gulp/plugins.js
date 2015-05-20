@@ -103,10 +103,14 @@ module.exports = function () {
 			gulp.task(taskName, gulp.series('plugins:install:' + plugin.name, () => {
 				return pipelines.browserifyBundle(base, plugin.path, sectionName, sharedEnvironment, null, (bundler, config) => {
 					plugin.config = config;
-					if (!pluginsByApp[config.belongsTo])
-						pluginsByApp[config.belongsTo] = [];
 
-					pluginsByApp[config.belongsTo].push(plugin);
+					let coreAppName = sectionName == 'APPLICATION' ? plugin.name : config.belongsTo;
+
+					if (sectionName == 'PLUGIN') {
+						if (!pluginsByApp[coreAppName])
+							pluginsByApp[coreAppName] = [];
+						pluginsByApp[coreAppName].push(plugin);
+					}
 
 					return bundler
 						.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())

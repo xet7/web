@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProvider) => {
-	$locationProvider.html5Mode(true);
+	$locationProvider5Mode(true);
 
 	// small hack - both routers(login && main app) work at the same time, so we need to troubleshot this
 	$urlRouterProvider.otherwise(($injector, $location) => {
@@ -23,7 +23,7 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 
 			views: {
 				'left-view': {
-					templateUrl: 'partials/navigation.html',
+					templateUrl: 'LavaMail/navigation/navigation',
 					controller: 'CtrlNavigation'
 				}
 			}
@@ -33,10 +33,10 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 			url: '/label/:labelName',
 			views: {
 				'main-view@': {
-					templateUrl: 'partials/inbox.html'
+					templateUrl: 'LavaMail/inbox/inbox'
 				},
 				'threads@main.inbox': {
-					templateUrl: 'partials/inbox/threads.html',
+					templateUrl: 'LavaMail/inbox/threads',
 					controller: 'CtrlThreadList'
 				}
 			}
@@ -47,7 +47,7 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 
 			views: {
 				'emails@main.inbox': {
-					templateUrl: 'partials/inbox/emails.html',
+					templateUrl: 'LavaMail/inbox/emails',
 					controller: 'CtrlEmailList'
 				}
 			}
@@ -57,14 +57,14 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 			url: '/contacts',
 			views: {
 				'main-view@': {
-					templateUrl: 'partials/contacts.html'
+					templateUrl: 'LavaMail/contacts/contacts'
 				}
 			}
 		},
 
 		'main.contacts.profile': {
 			url: '/profile/:contactId?email',
-			templateUrl: 'partials/contacts/contacts.profile.html',
+			templateUrl: 'LavaMail/contacts/contactsProfile',
 			controller: 'CtrlContactProfile'
 		},
 
@@ -72,29 +72,29 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 			url: '/settings',
 			views: {
 				'main-view@': {
-					templateUrl: 'partials/settings.html'
+					templateUrl: 'LavaMail/settings/settings'
 				}
 			}
 		},
 
 		'main.settings.general': {
 			url: '/general',
-			templateUrl: 'partials/settings/settings.general.html'
+			templateUrl: 'LavaMail/settings/settingsGeneral'
 		},
 
 		'main.settings.profile': {
 			url: '/profile',
-			templateUrl: 'partials/settings/settings.profile.html'
+			templateUrl: 'LavaMail/settings/settingsProfile'
 		},
 
 		'main.settings.security': {
 			url: '/security',
-			templateUrl: 'partials/settings/settings.security.html'
+			templateUrl: 'LavaMail/settings/settingsSecurity'
 		},
 
 		'main.settings.plan': {
 			url: '/plan',
-			templateUrl: 'partials/settings/settings.plan.html'
+			templateUrl: 'LavaMail/settings/settingsPlan'
 		}
 	};
 
@@ -109,7 +109,7 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 			// @ngInject
 			this.onEnter = (router) => {
 				router.createPopup({
-					templateUrl: 'partials/compose.html',
+					templateUrl: 'LavaMail/compose/compose',
 					controller: 'CtrlCompose',
 					backdrop: 'static',
 					size: 'lg'
@@ -122,7 +122,7 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 			// @ngInject
 			this.onEnter = (router) => {
 				router.createPopup({
-					templateUrl: 'partials/hotkeys.html',
+					templateUrl: 'LavaMail/misc/hotkeys',
 					controller: 'CtrlHotkeys',
 					backdrop: 'static',
 					size: 'lg'
@@ -135,7 +135,7 @@ module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProv
 			// @ngInject
 			this.onEnter = (router) => {
 				router.createPopup({
-					templateUrl: 'partials/download.html',
+					templateUrl: 'LavaMail/inbox/download',
 					controller: 'CtrlDownload',
 					backdrop: 'static',
 					size: 'lg'

@@ -154,9 +154,6 @@ gulp.task('build:translations', () =>
 // Build primary markup jade files
 gulp.task('build:jade', () => pipelines.createJadePipeline(paths.markup.input, paths.markup.output, false));
 
-// Build partials markup jade files
-gulp.task('build:partials-jade', () => pipelines.createJadePipeline(paths.partials.input, paths.partials.output, true));
-
 // Remove pre-existing content from output and test folders
 gulp.task('clean', cb => {
 	utils.def(() =>
@@ -203,7 +200,6 @@ gulp.task('serve', cb => {
 let coreAppBundles = {};
 
 const compileSteps = [
-	'build:partials-jade',
 	'build:translations',
 	'copy:images',
 	'copy:fonts',
@@ -243,7 +239,6 @@ gulp.task('default', gulp.series(
 		gulp.watch(paths.fonts.inputWatch, gulp.series('copy:fonts'));
 		gulp.watch(paths.styles.inputAll, gulp.series('build:styles'));
 		gulp.watch(paths.markup.input, gulp.series('build:jade'));
-		gulp.watch(paths.partials.input, gulp.series('build:partials-jade'));
 		gulp.watch(paths.translations.input, gulp.series('build:translations'));
 
 		// start livereload server

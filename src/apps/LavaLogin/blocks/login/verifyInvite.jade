@@ -15,11 +15,11 @@ form.steps-form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage
 	div.form-group
 		input.form-control.input-lg(type='text', name="username", ng-model='form.username', placeholder="{{'GLOBAL.USERNAME' | translate}}",
 			focus="!isUsernameDefined", minlength=2, required)
-		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.username.$error", ng-messages-include="partials/validationMessages.html")
+		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.username.$error", ng-messages-include="LavaLogin/misc/validationMessages")
 	div.form-group
 		input.form-control.input-lg(type='text', name="token", ng-model='form.token', placeholder="{{'LOGIN.VERIFY_INVITE.PLC_INVITE_CODE' | translate}}",
 			focus="isUsernameDefined", minlength=8, required)
-		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.token.$error", ng-messages-include="partials/validationMessages.html")
+		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.token.$error", ng-messages-include="LavaLogin/misc/validationMessages")
 
 	hr.spacer
 
