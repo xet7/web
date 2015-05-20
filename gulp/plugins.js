@@ -19,9 +19,10 @@ const paths = require('./paths');
 const pipelines = global.pipelines;
 let sharedEnvironment = global.sharedEnvironment;
 
-module.exports = function (pluginsByApp) {
+module.exports = function () {
 	const base = path.resolve(__dirname, '..');
 
+	let pluginsByApp = {};
 	let plugins = (process.env.PLUGINS ? process.env.PLUGINS.split(',') : []).map(u => {
 		let uri = url.parse(u);
 
@@ -37,6 +38,14 @@ module.exports = function (pluginsByApp) {
 		};
 	});
 
+	let coreApps = config.coreAppNames.map(coreAppName => {
+		return {
+			name: coreAppName,
+			directory: path.resolve('./', paths.scripts.inputAppsFolder, coreAppName),
+			path: path.resolve('./', paths.scripts.inputAppsFolder, coreAppName, 'index.toml'),
+			url: `core/${coreAppName}`
+		};
+	});
 
 	gulp.task('plugins:update', (cb) => {
 		if (plugins.length < 1)
@@ -56,39 +65,43 @@ module.exports = function (pluginsByApp) {
 		});
 	});
 
-	function createInstallTasks() {
+	gulp.task('plugins:finish', (cb) => {
+		cb();
+	});
+
+	function createInstallTasks(plugins) {
 		return plugins.map(plugin => {
 			console.log(`creating install task for plugin "${plugin.url}"...`);
 			let taskName = 'plugins:install:' + plugin.name;
 
-			gulp.task(taskName, () => {
-				let options = {
+			gulp.task(taskName, (cb) => {
+				return cb();
+
+				/*let options = {
 					cwd: plugin.directory
 				};
-				console.log(options);
+
 				return co(function *() {
 					try {
 						let r = yield exec('bower install', options);
-						console.log('bower install', r);
 					} catch (err) {}
 					try {
 						let r = yield exec('npm install', options);
-						console.log('npm install', r);
 					} catch (err) {}
-				});
+				});*/
 			});
 
 			return taskName;
 		});
 	}
 
-	function createBuildTasks() {
+	function createBuildTasks(plugins, sectionName) {
 		return plugins.map(plugin => {
 			console.log(`creating build task for plugin "${plugin.url}"...`);
 			let taskName = 'plugins:build:' + plugin.name;
 
 			gulp.task(taskName, gulp.series('plugins:install:' + plugin.name, () => {
-				return pipelines.browserifyBundle(base, plugin.path, 'PLUGIN', sharedEnvironment, null, (bundler, config) => {
+				return pipelines.browserifyBundle(base, plugin.path, sectionName, sharedEnvironment, null, (bundler, config) => {
 					plugin.config = config;
 					if (!pluginsByApp[config.belongsTo])
 						pluginsByApp[config.belongsTo] = [];
@@ -96,6 +109,7 @@ module.exports = function (pluginsByApp) {
 					pluginsByApp[config.belongsTo].push(plugin);
 
 					return bundler
+						.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())
 						.pipe(plg.tap(file => {
 							plugin.content = file.contents.toString();
 						}));
@@ -112,28 +126,31 @@ module.exports = function (pluginsByApp) {
 			let taskName = 'plugins:concat:' + coreAppName;
 
 			gulp.task(taskName, (cb) => {
-				if (!pluginsByApp[coreAppName] || pluginsByApp[coreAppName].length < 1) {
+				if (!pluginsByApp[coreAppName] || pluginsByApp[coreAppName].length < 1)
 					pluginsByApp[coreAppName] = [];
-					return cb();
-				}
 
-				return utils.createFiles(pluginsByApp[coreAppName])
+				let coreAppContent = coreApps.find(a => a.name == coreAppName).content;
+				return utils.createFiles([{
+					name: coreAppName,
+					content: coreAppContent
+				}].concat(pluginsByApp[coreAppName]))
 					.pipe(plg.buffer())
 					.pipe(plg.sourcemaps.init())
-					.pipe(plg.concat('plugins.js'))
-					.pipe(plg.sourcemaps.write())
-					.pipe(plg.tap(file => {
-						pluginsByApp[coreAppName].content = file.contents.toString();
-					}));
+					.pipe(plg.concat(utils.lowerise(coreAppName) + '.js'))
+					.pipe(plg.sourcemaps.write('.'))
+					.pipe(gulp.dest(paths.scripts.output))
+					.pipe(pipelines.livereloadPipeline()());
 			});
 
 			return taskName;
 		});
 	}
 
-	createInstallTasks();
-	let pluginsBuildTasks = createBuildTasks();
+	createInstallTasks(plugins);
+	createInstallTasks(coreApps);
+	let pluginsBuildTasks = createBuildTasks(plugins, 'PLUGIN');
+	let coreBuildTasks = createBuildTasks(coreApps, 'APPLICATION');
 	let pluginsConcatTasks = createConcatTasks();
 
-	return gulp.series('plugins:update', gulp.parallel(pluginsBuildTasks), gulp.parallel(pluginsConcatTasks));
+	return gulp.series('plugins:update', gulp.parallel(pluginsBuildTasks), gulp.parallel(coreBuildTasks), gulp.parallel(pluginsConcatTasks), 'plugins:finish');
 };

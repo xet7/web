@@ -1,6 +1,8 @@
 const bulkRequire = require('bulk-require');
 
 function AngularApplication ({name, dependencies, productionOnlyDependencies, isPlugin}) {
+	const self = this;
+
 	if (!productionOnlyDependencies)
 		productionOnlyDependencies = [];
 
@@ -16,88 +18,116 @@ function AngularApplication ({name, dependencies, productionOnlyDependencies, is
 		return templates[`${blockName}/${name}`];
 	};
 
-	this.registerAngular = function (bulks) {
-		if (bulks.runs) {
-			for (let runName of Object.keys(bulks.runs)) {
+	this.registerAngularRuns = function (runs) {
+		if (runs) {
+			for (let runName of Object.keys(runs)) {
 				console.debug(`module ${name}: declare a run...`, runName);
-				applicationModule.run(bulks.runs[runName]);
+				applicationModule.run(runs[runName]);
 			}
 		}
+		return this;
+	};
 
-		if (bulks.configs) {
-			for (let configName of Object.keys(bulks.configs)) {
+	this.registerAngularConfigs = function (configs) {
+		if (configs) {
+			for (let configName of Object.keys(configs)) {
 				console.debug(`module ${name}: declare a config...`, configName);
-				applicationModule.config(bulks.configs[configName]);
+				applicationModule.config(configs[configName]);
 			}
 		}
+		return this;
+	};
 
-		if (bulks.constants) {
-			for (let constsName of Object.keys(bulks.constants)) {
+	this.registerAngularConstants = function (constants) {
+		if (constants) {
+			for (let constsName of Object.keys(constants)) {
 				console.debug(`module ${name}: declare a constant...`, constsName);
-				applicationModule.constant(constsName, bulks.constants[constsName]);
+				applicationModule.constant(constsName, constants[constsName]);
 			}
 		}
+		return this;
+	};
 
-		if (bulks.decorators) {
-			for (let decoratorName of Object.keys(bulks.decorators)) {
+	this.registerAngularDecorators = function (decorators) {
+		if (decorators) {
+			for (let decoratorName of Object.keys(decorators)) {
 				console.debug(`module ${name}: declare a decorator...`, decoratorName);
 				// @ngInject
 				let provider = ($provide) => {
-					$provide.decorator(decoratorName, bulks.decorators[decoratorName]);
+					$provide.decorator(decoratorName, decorators[decoratorName]);
 				};
 				applicationModule.config(provider);
 			}
 		}
+		return this;
+	};
 
-		if (bulks.filters) {
-			for (let filterName of Object.keys(bulks.filters)) {
+	this.registerAngularFilters = function (filters) {
+		if (filters) {
+			for (let filterName of Object.keys(filters)) {
 				console.debug(`module ${name}: declare a filter...`, filterName);
-				applicationModule.filter(filterName, bulks.filters[filterName]);
+				applicationModule.filter(filterName, filters[filterName]);
 			}
 		}
+		return this;
+	};
 
-		if (bulks.directives) {
-			for (let directiveName of Object.keys(bulks.directives)) {
+	this.registerAngularDirectives = function (directives) {
+		if (directives) {
+			for (let directiveName of Object.keys(directives)) {
 				console.debug(`module ${name}: declare a directive...`, directiveName);
-				applicationModule.directive(directiveName, bulks.directives[directiveName]);
+				applicationModule.directive(directiveName, directives[directiveName]);
 			}
 		}
+		return this;
+	};
 
-		if (bulks.factories) {
-			for (let factoryName of Object.keys(bulks.factories)) {
+	this.registerAngularFactories = function (factories) {
+		if (factories) {
+			for (let factoryName of Object.keys(factories)) {
 				let declarativeFactoryName = capitalize(factoryName);
 				console.debug(`module ${name}: declare a factory...`, declarativeFactoryName);
-				applicationModule.factory(declarativeFactoryName, bulks.factories[factoryName]);
+				applicationModule.factory(declarativeFactoryName, factories[factoryName]);
 			}
 		}
+		return this;
+	};
 
-		if (bulks.services) {
-			for (let serviceName of Object.keys(bulks.services)) {
+	this.registerAngularServices = function (services) {
+		if (services) {
+			for (let serviceName of Object.keys(services)) {
 				console.debug(`module ${name}: declare a service...`, serviceName);
-				applicationModule.service(serviceName, bulks.services[serviceName]);
+				applicationModule.service(serviceName, services[serviceName]);
 			}
 		}
+		return this;
+	};
 
-		function declareController (controllerName, controller) {
-			let declarativeControllerName = capitalize(controllerName);
-			console.debug(`module ${name}: declare a controller...`, declarativeControllerName);
+	this.registerAngularController = function (controllerName, controller) {
+		let declarativeControllerName = capitalize(controllerName);
+		console.debug(`module ${name}: declare a controller...`, declarativeControllerName);
 
-			applicationModule.controller(declarativeControllerName, controller);
+		applicationModule.controller(declarativeControllerName, controller);
+		return this;
+	};
+
+	this.registerAngularControllers = function (controllers) {
+		if (controllers) {
+			for (let controllerName of Object.keys(controllers))
+				self.registerAngularController(controllerName, controllers[controllerName]);
 		}
+		return this;
+	};
 
-		if (bulks.controllers) {
-			for (let controllerName of Object.keys(bulks.controllers))
-				declareController(controllerName, bulks.controllers[controllerName]);
-		}
-
-		if (bulks.blocks) {
-			for (let blockName of Object.keys(bulks.blocks)) {
+	this.registerAngularBlockControllers = function (blocks) {
+		if (blocks) {
+			for (let blockName of Object.keys(blocks)) {
 				console.debug(`module ${name}: declare a block...`, blockName);
 
-				let entries = bulks.blocks[blockName];
+				let entries = blocks[blockName];
 				for (let entryName of Object.keys(entries)) {
 					if (entryName.startsWith('ctrl')) {
-						declareController(entryName, entries[entryName]);
+						self.registerAngularController(entryName, entries[entryName]);
 						continue;
 					}
 
@@ -105,9 +135,6 @@ function AngularApplication ({name, dependencies, productionOnlyDependencies, is
 				}
 			}
 		}
-
-		console.debug(`module ${name}: angular.js declarations loaded`);
-
 		return this;
 	};
 
@@ -140,25 +167,33 @@ function AngularApplication ({name, dependencies, productionOnlyDependencies, is
 				$templateCache.put(name, templateCache[name]);
 			}
 		});
+		return this;
 	};
 
 	this.registerStyles = (styles) => {
 		console.debug(`module ${name}: registering styles`, styles);
+		return this;
 	};
 }
 
 let application = new AngularApplication(process.env.applicationConfig);
 
-application.registerAngular(
-	bulkRequire(process.env.applicationPath, '**/*.js')
-);
+application
+	// register angular.js blocks
+	.registerAngularRuns(bulkRequire(process.env.applicationPath, 'runs/**/*.js'))
+	.registerAngularConfigs(bulkRequire(process.env.applicationPath, 'configs/**/*.js'))
+	.registerAngularConstants(bulkRequire(process.env.applicationPath, 'constants/**/*.js'))
+	.registerAngularDecorators(bulkRequire(process.env.applicationPath, 'decorators/**/*.js'))
+	.registerAngularFilters(bulkRequire(process.env.applicationPath, 'filters/**/*.js'))
+	.registerAngularDirectives(bulkRequire(process.env.applicationPath, 'directives/**/*.js'))
+	.registerAngularFactories(bulkRequire(process.env.applicationPath, 'factories/**/*.js'))
+	.registerAngularServices(bulkRequire(process.env.applicationPath, 'services/**/*.js'))
+	.registerAngularControllers(bulkRequire(process.env.applicationPath, 'controllers/**/*.js'))
+	.registerAngularBlockControllers(bulkRequire(process.env.applicationPath, 'blocks/**/*.js'))
 
-application.registerTemplates(
-	bulkRequire(process.env.applicationPath, '**/*.jade')
-);
-
-application.registerStyles(
-	bulkRequire(process.env.applicationPath, '**/*.less')
-);
+	// register templates && styles
+	.registerTemplates(bulkRequire(process.env.applicationPath, 'blocks/**/*.jade'))
+	.registerStyles(bulkRequire(process.env.applicationPath, 'blocks/**/*.less'))
+	.registerStyles(bulkRequire(process.env.applicationPath, 'less/**/*.less'));
 
 module.exports = application;

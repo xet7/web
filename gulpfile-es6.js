@@ -56,9 +56,8 @@ const Pipelines = require('./gulp/pipelines');
 const pipelines = new Pipelines(manifest, plumber, isWatching);
 global.pipelines = pipelines;
 
-let pluginsByApp = {};
 const plugins = require('./gulp/plugins');
-gulp.task('build:plugins', plugins(pluginsByApp));
+gulp.task('build:plugins', plugins());
 
 
 /**
@@ -208,45 +207,8 @@ const compileSteps = [
 	'build:translations',
 	'copy:images',
 	'copy:fonts',
-	'build:styles',
-	'build:translations'
+	'build:styles'
 ];
-
-const scriptBuildSteps = config.coreAppNames.map(coreAppName => {
-	let taskName = 'scripts:build:' + coreAppName;
-	gulp.task(taskName, () =>
-		pipelines.browserifyBundle(
-			__dirname, paths.scripts.inputAppsFolder + coreAppName + '/index.toml', 'APPLICATION', sharedEnvironment, null,
-			bundler => {
-				return bundler
-					.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())
-					.pipe(plg.tap(file => {
-						coreAppBundles[coreAppName] = {
-							name: coreAppName,
-							content: file.contents.toString()
-						};
-					}));
-			}
-		)
-	);
-	return taskName;
-});
-
-const scriptConcatSteps = config.coreAppNames.map(coreAppName => {
-	let taskName = 'scripts:concat:' + coreAppName;
-	gulp.task(taskName, () => {
-		let input = [coreAppBundles[coreAppName]].concat(pluginsByApp[coreAppName] ? pluginsByApp[coreAppName] : []);
-
-		return utils.createFiles(input)
-			.pipe(plg.buffer())
-			.pipe(plg.sourcemaps.init())
-			.pipe(plg.concat(utils.lowerise(coreAppName) + '.js'))
-			.pipe(plg.sourcemaps.write('.'))
-			.pipe(gulp.dest(paths.scripts.output))
-			.pipe(pipelines.livereloadPipeline()());
-	});
-	return taskName;
-});
 
 // Write manifest paths into external file(assets translation see revTap)
 gulp.task('persists:paths', cb => {
@@ -259,18 +221,15 @@ gulp.task('compile:finished', gulp.series(
 	'persists:paths', 'build:jade', 'copy:vendor', 'serve'
 ));
 
-gulp.task('scripts:build', gulp.series(gulp.parallel(scriptBuildSteps), gulp.parallel(scriptConcatSteps)));
-
 // Compile files
 gulp.task('compile', gulp.series(
 	gulp.parallel('lint:scripts'),
 	'tests',
 	gulp.parallel(compileSteps),
-	'scripts:build',
 	'compile:finished'
 ));
 
-let startingTasks = gulp.series(gulp.parallel('clean','bower'), 'build:plugins', 'compile');
+let startingTasks = gulp.series(gulp.parallel('clean','bower'), 'build:translations', 'build:plugins', 'compile');
 /*
 	Gulp primary tasks
  */

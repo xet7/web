@@ -32,8 +32,6 @@
 	]
 
 	vendorDependencies = [
-		"vendor@html-css-sanitizer.min.js",
-		"vendor@html-sanitizer.min.js",
 		"bower@angular-bootstrap/ui-bootstrap.js",
 		"bower@angular-bootstrap/ui-bootstrap-tpls.js",
 		"bower@angular-ui-select/dist/select.js",

@@ -22,6 +22,8 @@
 
 	vendorDependencies = [
 		"vendor@blob.js",
+		"vendor@html-css-sanitizer.min.js",
+        "vendor@html-sanitizer.min.js",
 
 		"bower@angular/angular.js",
 
