@@ -1,5 +1,5 @@
 module.exports = /*@ngInject*/($stateProvider, $urlRouterProvider, $locationProvider) => {
-	$locationProvider5Mode(true);
+	$locationProvider.html5Mode(true);
 
 	// small hack - both routers(login && main app) work at the same time, so we need to troubleshot this
 	$urlRouterProvider.otherwise(($injector, $location) => {
