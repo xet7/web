@@ -230,9 +230,9 @@ function Pipelines(manifest, plumber, isWatching) {
 
 		bundler
 			.transform(ownCodebaseTransform(babelify), {externalHelpers: true})
-			.transform(ownCodebaseTransform(envify(environment)))
 			.transform(ownCodebaseTransform(lessify))
 			.transform(ownCodebaseTransform(jadeify))
+			.transform(ownCodebaseTransform(envify(environment)))
 			.transform(ownCodebaseTransform(bulkify))
 			.transform(ownCodebaseTransform(brfs));
 

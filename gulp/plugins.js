@@ -7,6 +7,9 @@ const path = require('path');
 const url = require('url');
 
 const bluebird = require('bluebird');
+
+const childProcess = bluebird.promisifyAll(require('child_process'));
+const exec = childProcess.execAsync;
 const git = bluebird.promisifyAll(plg.git);
 
 const utils = require('./utils');
@@ -28,6 +31,7 @@ module.exports = function (pluginsByApp) {
 		let name = uri.path.split('/').splice(-1)[0];
 		return {
 			name: name,
+			directory: path.resolve('./', paths.plugins, name),
 			path: path.resolve('./', paths.plugins, name, 'index.toml'),
 			url: uri.href
 		};
@@ -52,12 +56,38 @@ module.exports = function (pluginsByApp) {
 		});
 	});
 
+	function createInstallTasks() {
+		return plugins.map(plugin => {
+			console.log(`creating install task for plugin "${plugin.url}"...`);
+			let taskName = 'plugins:install:' + plugin.name;
+
+			gulp.task(taskName, () => {
+				let options = {
+					cwd: plugin.directory
+				};
+				console.log(options);
+				return co(function *() {
+					try {
+						let r = yield exec('bower install', options);
+						console.log('bower install', r);
+					} catch (err) {}
+					try {
+						let r = yield exec('npm install', options);
+						console.log('npm install', r);
+					} catch (err) {}
+				});
+			});
+
+			return taskName;
+		});
+	}
+
 	function createBuildTasks() {
 		return plugins.map(plugin => {
 			console.log(`creating build task for plugin "${plugin.url}"...`);
 			let taskName = 'plugins:build:' + plugin.name;
 
-			gulp.task(taskName, () => {
+			gulp.task(taskName, gulp.series('plugins:install:' + plugin.name, () => {
 				return pipelines.browserifyBundle(base, plugin.path, 'PLUGIN', sharedEnvironment, null, (bundler, config) => {
 					plugin.config = config;
 					if (!pluginsByApp[config.belongsTo])
@@ -70,7 +100,7 @@ module.exports = function (pluginsByApp) {
 							plugin.content = file.contents.toString();
 						}));
 				});
-			});
+			}));
 
 			return taskName;
 		});
@@ -101,6 +131,7 @@ module.exports = function (pluginsByApp) {
 		});
 	}
 
+	createInstallTasks();
 	let pluginsBuildTasks = createBuildTasks();
 	let pluginsConcatTasks = createConcatTasks();
 

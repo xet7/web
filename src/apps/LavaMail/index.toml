@@ -32,9 +32,8 @@
 	]
 
 	vendorDependencies = [
-		{name: "vendor@html-css-sanitizer.min.js", prefix: "css"},
-		{name: "vendor@html-sanitizer.min.js", prefix: "no_css"},
-
+		"vendor@html-css-sanitizer.min.js",
+		"vendor@html-sanitizer.min.js",
 		"bower@angular-bootstrap/ui-bootstrap.js",
 		"bower@angular-bootstrap/ui-bootstrap-tpls.js",
 		"bower@angular-ui-select/dist/select.js",

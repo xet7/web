@@ -65,97 +65,6 @@ gulp.task('build:plugins', plugins(pluginsByApp));
  * Gulp Taks
  */
 
-// Build minified version of vendor libraries defined in *.toml(some libs may not have pre-bundled minified versions)
-gulp.task('build:scripts:vendor:min', () =>
-	gulp.src(paths.scripts.inputDeps)
-		.pipe(plumber())
-		.pipe(plg.tap((file, t) => {
-			let appConfig = toml.parse(file.contents);
-			if (!appConfig.APPLICATION.vendorDependencies)
-				appConfig.APPLICATION.vendorDependencies = [];
-
-			let dependencies = [];
-
-			for(let i = 0; i < appConfig.APPLICATION.vendorDependencies.length; i++) {
-				let resolvedFileOriginal = paths.scripts.inputAppsFolder + appConfig.APPLICATION.vendorDependencies[i];
-
-				if (fs.existsSync(resolvedFileOriginal)) {
-					let resolvedFile = resolvedFileOriginal.replace('.js', '.min.js');
-
-					if (!fs.existsSync(resolvedFile) && !fs.existsSync(path.resolve(__dirname, paths.scripts.cacheOutput, path.basename(resolvedFileOriginal)))) {
-						dependencies.push(resolvedFileOriginal);
-					}
-				}
-			}
-
-			return gulp.src(dependencies)
-				.pipe(plumber())
-				.pipe(plg.sourcemaps.init())
-				.pipe(plg.ngAnnotate())
-				.pipe(plg.uglify())
-				.pipe(plg.sourcemaps.write('.'))
-				.pipe(gulp.dest(paths.scripts.cacheOutput));
-		}))
-		.pipe(gulp.dest(paths.scripts.output))
-);
-
-// Build vendor libraries into a single vendor file(fancy concatenation)
-gulp.task('build:scripts:vendor:normal', () =>
-	gulp.src(paths.scripts.inputDeps)
-		.pipe(plumber())
-		.pipe(plg.tap((file, t) => {
-			let appConfig = toml.parse(file.contents);
-			if (!appConfig.APPLICATION.vendorDependencies)
-				appConfig.APPLICATION.vendorDependencies = [];
-
-			let dependencies = [];
-
-			for(let i = 0; i < appConfig.APPLICATION.vendorDependencies.length; i++) {
-				let resolvedFileOriginal = paths.scripts.inputAppsFolder + appConfig.APPLICATION.vendorDependencies[i];
-
-				let resolvedFile = '';
-
-				if (config.isProduction && resolvedFileOriginal.indexOf('browser-polyfill.js') < 0 && !resolvedFileOriginal.endsWith('min.js')) {
-					resolvedFile = resolvedFileOriginal.replace('.js', '.min.js');
-
-					if (!fs.existsSync(resolvedFile)) {
-						resolvedFile = path.resolve(__dirname, paths.scripts.cacheOutput, path.basename(resolvedFileOriginal));
-
-						if (fs.existsSync(resolvedFile)) {
-							console.log('Took minified version for vendor library from cache: ', resolvedFile);
-						}
-					}
-
-					if (!fs.existsSync(resolvedFile)) {
-						console.log('Cannot find minified version for vendor library: ', appConfig.APPLICATION.vendorDependencies[i]);
-						resolvedFile = resolvedFileOriginal;
-					}
-				} else resolvedFile = resolvedFileOriginal;
-
-				if (!fs.existsSync(resolvedFile)) {
-					console.log(resolvedFile);
-					throw new Error('Cannot find vendor library: "' + appConfig.APPLICATION.vendorDependencies[i] + '"');
-				}
-
-				dependencies.push(resolvedFile);
-			}
-
-			let newName = path.dirname(file.relative) + '../../' + utils.lowerise(appConfig.APPLICATION.name) + '-vendor.js';
-
-			return gulp.src(dependencies)
-				.pipe(plumber())
-				.pipe(plg.sourcemaps.init())
-				.pipe(plg.concat(newName))
-				.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())
-				.pipe(plg.sourcemaps.write('.'))
-				.pipe(gulp.dest(paths.scripts.output));
-		}))
-		.pipe(gulp.dest(paths.scripts.output))
-);
-
-// Build vendor libraries composite task
-gulp.task('build:scripts:vendor', gulp.series('build:scripts:vendor:min', 'build:scripts:vendor:normal'));
-
 let caches = {};
 
 // Lint scripts
@@ -300,8 +209,7 @@ const compileSteps = [
 	'copy:images',
 	'copy:fonts',
 	'build:styles',
-	'build:translations',
-	'build:scripts:vendor'
+	'build:translations'
 ];
 
 const scriptBuildSteps = config.coreAppNames.map(coreAppName => {

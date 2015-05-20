@@ -154,7 +154,7 @@ application.registerAngular(
 );
 
 application.registerTemplates(
-	bulkRequire(process.env.applicationPath,  '**/*.jade')
+	bulkRequire(process.env.applicationPath, '**/*.jade')
 );
 
 application.registerStyles(
