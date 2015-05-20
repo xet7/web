@@ -21,27 +21,24 @@
 	]
 
 	vendorDependencies = [
-		"../../node_modules/babel-core/browser-polyfill.js",
-		"../../node_modules/babel-core/external-helpers.js",
-		"../../node_modules/setimmediate/setImmediate.js",
-		"../vendor/blob.js",
+		"vendor@blob.js",
 
-		"../bower_components/sockjs-client/dist/sockjs.js",
+		"bower@angular/angular.js",
 
-		"../bower_components/lavaboom/dist/lavaboom-api.js",
+		"bower@sockjs-client/dist/sockjs.js",
+		"bower@lavaboom/dist/lavaboom-api.js",
+		"bower@lavaboom/dist/lavaboom-angular.js",
 
-		"../bower_components/angular/angular.js",
+		"bower@angular-ui-router/release/angular-ui-router.js",
+		"bower@angular-translate/angular-translate.js",
+		"bower@angular-translate-loader-static-files/angular-translate-loader-static-files.js",
+		"bower@angular-messages/angular-messages.js",
+		"bower@angular-autodisable/angular-autodisable.js",
 
-		"../bower_components/angular-ui-router/release/angular-ui-router.js",
-		"../bower_components/angular-translate/angular-translate.js",
-		"../bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.js",
-		"../bower_components/angular-messages/angular-messages.js",
-		"../bower_components/angular-autodisable/angular-autodisable.js",
+		"bower@angular-co/dist/co.js",
+		"bower@file-saver/FileSaver.js",
 
-		"../bower_components/lavaboom/dist/lavaboom-angular.js",
-		"../bower_components/angular-co/dist/co.js",
-
-		"../bower_components/textAngular/dist/textAngular-sanitize.min.js",
-
-		"../bower_components/file-saver/FileSaver.js"
+		"npm@babel-core/browser-polyfill.js",
+		"npm@babel-core/external-helpers.js",
+		"npm@setimmediate/setImmediate.js",
 	]

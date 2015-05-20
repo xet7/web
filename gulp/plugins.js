@@ -18,8 +18,6 @@ let sharedEnvironment = global.sharedEnvironment;
 
 module.exports = function (pluginsByApp) {
 	const base = path.resolve(__dirname, '..');
-	let pluginsBuildTasks = [];
-	let pluginsConcatTasks = [];
 
 	let plugins = (process.env.PLUGINS ? process.env.PLUGINS.split(',') : []).map(u => {
 		let uri = url.parse(u);
@@ -65,15 +63,11 @@ module.exports = function (pluginsByApp) {
 					if (!pluginsByApp[config.belongsTo])
 						pluginsByApp[config.belongsTo] = [];
 
-					let entry = {
-						name: plugin.name,
-						content: plugin.content
-					};
-					pluginsByApp[config.belongsTo].push(entry);
+					pluginsByApp[config.belongsTo].push(plugin);
 
 					return bundler
 						.pipe(plg.tap(file => {
-							entry.content = file.contents.toString();
+							plugin.content = file.contents.toString();
 						}));
 				});
 			});
@@ -107,8 +101,8 @@ module.exports = function (pluginsByApp) {
 		});
 	}
 
-	pluginsBuildTasks = createBuildTasks();
-	pluginsConcatTasks = createConcatTasks();
+	let pluginsBuildTasks = createBuildTasks();
+	let pluginsConcatTasks = createConcatTasks();
 
 	return gulp.series('plugins:update', gulp.parallel(pluginsBuildTasks), gulp.parallel(pluginsConcatTasks));
 };

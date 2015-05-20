@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($delegate, $injector) => {
+module.exports = /*@ngInject*/($injector) => {
 	function sanitizer (html) {
 		const user = $injector.get('user');
 
@@ -11,12 +11,12 @@ module.exports = /*@ngInject*/($delegate, $injector) => {
 		}
 
 		if (user.settings.styles == 'none')
-			return window.html_sanitize(html, urlX, idX);
+			return window.no_css_html_sanitize(html, urlX, idX);
 
 		if (user.settings.styles == 'all')
-			return window.html_css_sanitize(html, urlX, idX);
+			return window.css_html_sanitize(html, urlX, idX);
 
-		return window.html_sanitize(html, urlX, idX);
+		return window.no_css_html_sanitize(html, urlX, idX);
 	}
 
 	return sanitizer;
