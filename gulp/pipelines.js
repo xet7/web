@@ -272,4 +272,3 @@ function Pipelines(manifest, plumber, isWatching) {
 }
 
 module.exports = Pipelines;
-

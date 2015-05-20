@@ -5,13 +5,14 @@ function AngularApplication ({name, dependencies, productionOnlyDependencies, is
 		productionOnlyDependencies = [];
 
 	const capitalize = (name) => name.substr(0, 1).toUpperCase() + name.substr(1);
-
 	const moduleDependencies = isPlugin ? undefined : (process.env.IS_PRODUCTION ? productionOnlyDependencies :[]).concat(dependencies);
 
 	console.debug(`module ${name}: declaring, isPlugin:`, isPlugin, 'depends on:', moduleDependencies);
 	const applicationModule = angular.module(name, moduleDependencies);
 
-	this.registerBulks = function (bulks) {
+	let templates = {};
+
+	this.registerAngular = function (bulks) {
 		if (bulks.runs) {
 			for (let runName of Object.keys(bulks.runs)) {
 				console.debug(`module ${name}: declare a run...`, runName);
@@ -91,20 +92,8 @@ function AngularApplication ({name, dependencies, productionOnlyDependencies, is
 
 				let entries = bulks.blocks[blockName];
 				for (let entryName of Object.keys(entries)) {
-					if (entryName.endsWith('.js')) {
-						if (entryName.startsWith('ctrl')) {
-							declareController(entryName, entries[entryName]);
-							continue;
-						}
-					}
-					else
-					if (entryName.endsWith('.jade')) {
-						console.log('JADE', entries[entryName]);
-						continue;
-					}
-					else
-					if (entryName.endsWith('.less')) {
-						console.log('LESS', entries[entryName]);
+					if (entryName.startsWith('ctrl')) {
+						declareController(entryName, entries[entryName]);
 						continue;
 					}
 
@@ -113,22 +102,57 @@ function AngularApplication ({name, dependencies, productionOnlyDependencies, is
 			}
 		}
 
-		console.debug(`module ${name}: bulks loaded`);
+		console.debug(`module ${name}: angular.js declarations loaded`);
 
 		return this;
+	};
+
+	this.registerTemplates = (templates) => {
+		console.debug(`module ${name}: registering templates`, templates);
+
+		let templateCache = {};
+
+		if (templates.blocks) {
+			for (let blockName of Object.keys(templates.blocks)) {
+				let blockTemplates = templates.blocks[blockName];
+				for (let templateName of Object.keys(blockTemplates)) {
+					let templateFullName = blockName + '/' + templateName;
+
+					if (templateName.startsWith('_')) {
+						console.debug(`module ${name}: registering dynamic template`, templateFullName);
+						templates[templateFullName] = blockTemplates[templateName];
+					}
+					else {
+						console.debug(`module ${name}: registering static template`, templateFullName);
+						templateCache[templateFullName] = blockTemplates[templateName]();
+					}
+				}
+			}
+		}
+
+		applicationModule.run(/* @ngInject */($templateCache) => {
+			for(let name of Object.keys(templateCache)) {
+				console.debug(`module ${name}: registering static template in $templateCache`, name);
+				$templateCache.put(name, templateCache[name]);
+			}
+		});
+	};
+
+	this.registerStyles = (styles) => {
+		console.debug(`module ${name}: registering styles`, styles);
 	};
 }
 
 let application = new AngularApplication(process.env.applicationConfig);
 
-application.registerBulks(
+application.registerAngular(
 	bulkRequire(process.env.applicationPath, '**/*.js')
 );
 
-//application.registerBulks(
-//	bulkRequire(process.env.applicationPath,  '**/*.jade')
-//);
+application.registerTemplates(
+	bulkRequire(process.env.applicationPath,  '**/*.jade')
+);
 
-//application.registerBulks(
-//	bulkRequire(process.env.applicationPath, '**/*.less')
-//);
+application.registerStyles(
+	bulkRequire(process.env.applicationPath, '**/*.less')
+);
