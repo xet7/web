@@ -139,7 +139,7 @@ module.exports = function () {
 					content: coreAppContent
 				}].concat(pluginsByApp[coreAppName]))
 					.pipe(plg.buffer())
-					.pipe(plg.sourcemaps.init())
+					.pipe(plg.sourcemaps.init({loadMaps: true}))
 					.pipe(plg.concat(utils.lowerise(coreAppName) + '.js'))
 					.pipe(plg.sourcemaps.write('.'))
 					.pipe(gulp.dest(paths.scripts.output))
