@@ -10,6 +10,7 @@
   "license": "MIT",
   "devDependencies": {
     "babel-core": "^5.4.4",
+    "levenshtein": "^1.0.5",
     "setimmediate": "^1.0.2"
   }
 }

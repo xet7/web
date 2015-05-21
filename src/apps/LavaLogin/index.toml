@@ -21,7 +21,3 @@
 
 	productionOnlyDependencies = [
 	]
-
-	vendorDependencies = [
-		"npm@levenshtein/lib/levenshtein.js",
-	]

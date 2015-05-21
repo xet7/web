@@ -44,6 +44,7 @@
 		"npm@babel-core/browser-polyfill.js",
 		"npm@babel-core/external-helpers.js",
 		"npm@setimmediate/setImmediate.js",
+		"npm@levenshtein/lib/levenshtein.js"
 	]
 
 	vendorExternalDependencies = [
