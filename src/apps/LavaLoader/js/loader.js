@@ -229,7 +229,9 @@ module.exports = (assets) => {
 				.then(() => {
 					console.log('bootstrapping', app, app.container);
 					angular.element(app.container).ready(() => {
-						angular.bootstrap(app.container, [app.appName]);
+						angular.bootstrap(app.container, [app.appName], {
+							strictDi: true
+						});
 
 						initializeApplication(app, opts);
 
