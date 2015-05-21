@@ -27,7 +27,6 @@
 	]
 
 	productionOnlyDependencies = [
-		"templates"
 	]
 
 	vendorDependencies = [

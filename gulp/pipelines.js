@@ -67,6 +67,7 @@ function Pipelines(manifest, plumber, isWatching) {
 			.pipe(plg.livereload);
 
 	this.createJadePipeline = (input, output, isTemplateCache) => {
+		console.log('assets', manifest);
 		let pipeline = gulp.src(input)
 			.pipe(plumber())
 			.pipe(config.isProduction ? plg.ignore.exclude(/.*\.test.*/) : plg.util.noop())
@@ -75,12 +76,7 @@ function Pipelines(manifest, plumber, isWatching) {
 				locals: {
 					fs: fs,
 					resolveAsset: (name) => manifest[name] ? manifest[name] : name,
-					assets: manifest,
-					globs: {
-						IS_PRODUCTION: process.env.IS_PRODUCTION,
-						API_URI: process.env.API_URI,
-						ROOT_DOMAIN: process.env.ROOT_DOMAIN
-					}
+					assets: manifest
 				}
 			}))
 			.pipe(gulp.dest(output))

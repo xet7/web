@@ -61,6 +61,5 @@ html(lang="en")
 					a#hide-details.btn.btn-clear(type="button", ng-click="toggleShowDetails()", tooltip="{{'MAIN.CONTACTS.BTN_DISCARD_CHANGES' | translate}}", tooltip-placement="bottom")
 						span.icon-arrow-left
 
-		if globs.IS_PRODUCTION
-			script!= 'window.assets = ' + JSON.stringify(assets) + ';'
+		script!= 'window.assets = ' + JSON.stringify(assets) + ';'
 		script!= fs.readFileSync('./dist' + resolveAsset('/js/lavaLoader.js'), 'utf8')

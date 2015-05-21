@@ -21,8 +21,6 @@ let pipelines = global.pipelines;
 let sharedEnvironment = global.sharedEnvironment;
 let plumber = global.plumber;
 
-let isProduction = config.isProduction;
-
 module.exports = function () {
 	const base = path.resolve(__dirname, '..');
 
@@ -127,7 +125,7 @@ module.exports = function () {
 				return sha.digest().toString('hex');
 			});
 
-			if (!isProduction || libraryPath.endsWith('.min.js')) {
+			if (!config.isProduction || libraryPath.endsWith('.min.js')) {
 				vendorLib.fileName = libraryPath;
 				vendorLib.hash = yield calcHash(libraryPath);
 			} else {
@@ -191,7 +189,6 @@ module.exports = function () {
 					}
 
 					return bundler
-						.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())
 						.pipe(plg.tap(file => {
 							plugin.content = file.contents.toString();
 						}));
@@ -219,6 +216,7 @@ module.exports = function () {
 					.pipe(plg.sourcemaps.init({loadMaps: true}))
 					.pipe(plg.concat(utils.lowerise(coreAppName) + '-vendor.js'))
 					.pipe(plg.sourcemaps.write('.'))
+					.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())
 					.pipe(gulp.dest(paths.scripts.output))
 					.pipe(pipelines.livereloadPipeline()());
 			});
@@ -286,6 +284,7 @@ module.exports = function () {
 					.pipe(plg.sourcemaps.init({loadMaps: true}))
 					.pipe(plg.concat(utils.lowerise(coreAppName) + '.js'))
 					.pipe(plg.sourcemaps.write('.'))
+					.pipe(config.isProduction ? plg.tap(pipelines.revTap(paths.scripts.output)) : plg.util.noop())
 					.pipe(gulp.dest(paths.scripts.output))
 					.pipe(pipelines.livereloadPipeline()());
 			});
