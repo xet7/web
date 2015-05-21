@@ -324,6 +324,10 @@ module.exports = function () {
 	let pluginsVendorCopyTasks = createVendorCopyTasks();
 	let pluginsConcatTasks = createConcatTasks();
 
+
+	if (pluginsBuildTasks.length < 1)
+		pluginsBuildTasks.push(cb => cb());
+
 	return gulp.series(
 		'plugins:update',
 		gulp.parallel(pluginsTranslationTasks),
