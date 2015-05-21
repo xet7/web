@@ -27,6 +27,7 @@ module.exports = function () {
 	const base = path.resolve(__dirname, '..');
 
 	let vendorLibs = {};
+	let vendorExternalLibs = {};
 	let pluginsByApp = {};
 	let plugins = (process.env.PLUGINS ? process.env.PLUGINS.split(',') : []).map(u => {
 		let uri = url.parse(u);
@@ -100,7 +101,7 @@ module.exports = function () {
 		});
 	}
 
-	function buildVendorDependency(type, name, directory, coreAppName) {
+	function buildVendorDependency(type, name, directory, coreAppName, vendorLibs) {
 		return co(function *(){
 			let componentDirectory = '';
 			if (type == 'bower')
@@ -161,7 +162,17 @@ module.exports = function () {
 							if (!type || !name)
 								throw new Error(`vendor dependency supposed to have format [npm/bower/vendor]@name`);
 
-							buildVendorDependency(type, name, plugin.directory, coreAppName);
+							buildVendorDependency(type, name, plugin.directory, coreAppName, vendorLibs);
+						}
+					}
+
+					if (config.vendorExternalDependencies) {
+						for (let d of config.vendorExternalDependencies) {
+							let [type, name] = d.split('@');
+							if (!type || !name)
+								throw new Error(`vendor dependency supposed to have format [npm/bower/vendor]@name`);
+
+							buildVendorDependency(type, name, plugin.directory, coreAppName, vendorExternalLibs);
 						}
 					}
 
@@ -183,17 +194,17 @@ module.exports = function () {
 		});
 	}
 
-	function createVendorTasks() {
+	function createVendorBundleTasks() {
 		return config.coreAppNames.map(coreAppName => {
-			console.log(`creating vendor task for "${coreAppName}"...`);
-			let taskName = 'plugins:vendor:' + coreAppName;
+			console.log(`creating vendor bundle task for "${coreAppName}"...`);
+			let taskName = 'plugins:vendor-embed:' + coreAppName;
 
 			gulp.task(taskName, (cb) => {
 				if (!vendorLibs[coreAppName] || vendorLibs[coreAppName].length < 1)
 					return cb();
 				let list = [...vendorLibs[coreAppName].values()]
 					.map(vendorLib => vendorLib.fileName);
-				console.log('vendor libs for ', coreAppName, list);
+				console.log('embed vendor libs for ', coreAppName, list);
 				return gulp.src(list)
 					.pipe(plg.buffer())
 					.pipe(plg.sourcemaps.init({loadMaps: true}))
@@ -201,6 +212,25 @@ module.exports = function () {
 					.pipe(plg.sourcemaps.write('.'))
 					.pipe(gulp.dest(paths.scripts.output))
 					.pipe(pipelines.livereloadPipeline()());
+			});
+
+			return taskName;
+		});
+	}
+
+	function createVendorCopyTasks() {
+		return config.coreAppNames.map(coreAppName => {
+			console.log(`creating vendor copy task for "${coreAppName}"...`);
+			let taskName = 'plugins:vendor-copy:' + coreAppName;
+
+			gulp.task(taskName, (cb) => {
+				if (!vendorExternalLibs[coreAppName] || vendorExternalLibs[coreAppName].length < 1)
+					return cb();
+				let list = [...vendorExternalLibs[coreAppName].values()]
+					.map(vendorLib => vendorLib.fileName);
+				console.log('copy vendor libs for ', coreAppName, list);
+				return gulp.src(list)
+					.pipe(gulp.dest(paths.scripts.output + '/vendor/' + coreAppName));
 			});
 
 			return taskName;
@@ -238,13 +268,15 @@ module.exports = function () {
 	let pluginsBuildTasks = createBuildTasks(plugins, 'PLUGIN');
 	let coreBuildTasks = createBuildTasks(coreApps, 'APPLICATION');
 	let pluginsConcatTasks = createConcatTasks();
-	let pluginsVendorTasks = createVendorTasks();
+	let pluginsVendorBundleTasks = createVendorBundleTasks();
+	let pluginsVendorCopyTasks = createVendorCopyTasks();
 
 	return gulp.series(
 		'plugins:update',
 		gulp.parallel(pluginsBuildTasks),
 		gulp.parallel(coreBuildTasks),
-		gulp.parallel(pluginsVendorTasks),
+		gulp.parallel(pluginsVendorBundleTasks),
+		gulp.parallel(pluginsVendorCopyTasks),
 		gulp.parallel(pluginsConcatTasks),
 		'plugins:finish'
 	);

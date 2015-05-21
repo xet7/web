@@ -185,7 +185,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $injector, consts, co, ut
 			const threadsCount = navigator.hardwareConcurrency ? navigator.hardwareConcurrency : consts.CRYPTO_DEFAULT_THREAD_POOL_SIZE;
 
 			console.log('Initialize openpgp in multi-threading mode, workers count: ', threadsCount);
-			openpgp.initWorker('/vendor/openpgp.worker.js', {threadsCount: threadsCount});
+			openpgp.initWorker('/js/vendor/LavaUtils/openpgp.worker.js', {threadsCount: threadsCount});
 			isInitialized = true;
 		}
 

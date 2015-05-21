@@ -107,26 +107,6 @@ gulp.task('build:styles', () => {
 		.pipe(pipelines.livereloadPipeline()());
 });
 
-// Copy static files into output folder
-gulp.task('copy:vendor', () =>
-	gulp.src(paths.vendor.input, {read: false})
-		.pipe(plumber())
-		.pipe(plg.tap((file, t) => {
-			if (!file.path.includes('min.js')) {
-				if (config.isProduction) {
-					try {
-						let minifiedVersion = file.path.replace('.js', '.min.js');
-						file.contents = fs.readFileSync(minifiedVersion);
-					} catch (err) {
-						file.contents = fs.readFileSync(file.path);
-					}
-				} else
-					file.contents = fs.readFileSync(file.path);
-			}
-		}))
-		.pipe(gulp.dest(paths.vendor.output))
-);
-
 // Copy images into output folder
 gulp.task('copy:images', () =>
 	gulp.src(paths.img.input)
@@ -215,7 +195,7 @@ gulp.task('persists:paths', cb => {
 
 // Got run when primary compilation finished
 gulp.task('compile:finished', gulp.series(
-	'persists:paths', 'build:jade', 'copy:vendor', 'serve'
+	'persists:paths', 'build:jade', 'serve'
 ));
 
 // Compile files

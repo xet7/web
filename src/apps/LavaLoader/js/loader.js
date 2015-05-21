@@ -3,7 +3,7 @@ module.exports = (assets) => {
 
 	const
 		SRC_APP_LAVABOOM_MAIL_VENDOR = '/js/lavaMail-vendor.js',
-		SRC_OPENPGP = '/vendor/openpgp.js',
+		SRC_OPENPGP = '/js/vendor/LavaUtils/openpgp.js',
 		SRC_APP_LAVABOOM_LOGIN = '/js/lavaLogin.js',
 		SRC_APP_LAVABOOM_MAIL = '/js/lavaMail.js',
 		SRC_UTILS = '/js/lavaUtils.js',

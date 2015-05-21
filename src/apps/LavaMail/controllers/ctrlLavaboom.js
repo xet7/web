@@ -250,24 +250,22 @@ module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
 
 			yield tests.initialize();
 
-			console.log('!1');
 			loader.incProgress(translations.LB_AUTHENTICATING, 5);
 			yield user.gatherUserInformation();
-			console.log('!2');
+
 			loader.incProgress(translations.LB_LOADING, 5);
 			yield [inbox.initialize(), contacts.initialize()];
-			console.log('!3');
+
 			yield tests.performCompatibilityChecks();
-			console.log('!4');
+
 			if ($state.current.name == 'empty')
 				yield $state.go('main.inbox.label', {labelName: 'inbox', threadId: null}, {reload: true});
-			console.log('!5');
+
 			registerGlobalHotkeys();
-			console.log('!6');
+
 			$rootScope.isInitialized = true;
 
 			hotkey.initialize(user.settings.isHotkeyEnabled);
-			console.log('!7');
 			return {lbDone: translations.LB_SUCCESS};
 		} catch (error) {
 			throw {message: translations.LB_INITIALIZATION_FAILED, error: error};

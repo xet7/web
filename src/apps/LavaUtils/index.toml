@@ -46,3 +46,8 @@
 		"npm@babel-core/external-helpers.js",
 		"npm@setimmediate/setImmediate.js",
 	]
+
+	vendorExternalDependencies = [
+		"bower@openpgp/dist/openpgp.js",
+		"bower@openpgp/dist/openpgp.worker.js"
+	]
