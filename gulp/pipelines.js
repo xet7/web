@@ -173,7 +173,7 @@ function Pipelines(manifest, plumber, isWatching) {
 		let environment = {};
 		for(let k of Object.keys(sharedEnvironment))
 			environment[k] = sharedEnvironment[k];
-
+		environment.base = base;
 		environment.jadeLocals = {
 			fs: fs,
 			assets: manifest,

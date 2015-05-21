@@ -1,4 +1,5 @@
 const bulkRequire = require('bulk-require');
+const fs = require('fs');
 
 function AngularApplication ({name, dependencies, productionOnlyDependencies, isPlugin}) {
 	const self = this;
@@ -18,9 +19,8 @@ function AngularApplication ({name, dependencies, productionOnlyDependencies, is
 	let jadeLocals = angular.copy(process.env.jadeLocals);
 	jadeLocals.resolveAsset = (name) => jadeLocals.assets[name] ? jadeLocals.assets[name] : name;
 
-	this.getDynamicTemplate = (blockName, name) => {
-		return dynamicTemplates[`${appName}/${blockName}/${name}`];
-	};
+	this.getName = () => name;
+	this.getDynamicTemplate = (blockName, name) => dynamicTemplates[`${appName}/${blockName}/${name}`];
 
 	this.registerAngularRuns = function (runs) {
 		if (runs) {
@@ -180,7 +180,31 @@ function AngularApplication ({name, dependencies, productionOnlyDependencies, is
 	};
 }
 
-let application = new AngularApplication(process.env.applicationConfig);
+let config = process.env.applicationConfig;
+let application = new AngularApplication(config);
+
+if (process.env.translations) {
+	let translationConfig = /*@ngInject*/($translateProvider, consts) => {
+		const setDefaultTranslation = (translation) =>
+			$translateProvider.translations(consts.DEFAULT_LANG, translation);
+		$translateProvider.useSanitizeValueStrategy('escaped');
+
+		setDefaultTranslation(
+			JSON.parse(consts.stripBOM(process.env.translations[consts.DEFAULT_LANG]))
+		)
+			.fallbackLanguage(consts.DEFAULT_LANG)
+			.preferredLanguage(localStorage.lang ? localStorage.lang : consts.DEFAULT_LANG)
+			.useStaticFilesLoader({
+				prefix: '/translations/' + config.name + '/',
+				suffix: '.json'
+			});
+	};
+
+	application
+		.registerAngularConfigs({
+			translation: translationConfig
+		});
+}
 
 application
 	// register angular.js blocks

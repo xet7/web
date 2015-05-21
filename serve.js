@@ -25,7 +25,7 @@ module.exports = function () {
 	}));
 
 	// serve content, search for pre-compiled gzip with gracefully fallback to plaintext
-	['css', 'img', 'js', 'translations'].forEach(function (folder) {
+	['css', 'img', 'js'].forEach(function (folder) {
 		app.use(staticGzip(paths.output + '/' + folder));
 	});
 

@@ -26,6 +26,7 @@ let isProduction = config.isProduction;
 module.exports = function () {
 	const base = path.resolve(__dirname, '..');
 
+	let translationsByApp = {};
 	let vendorLibs = {};
 	let vendorExternalLibs = {};
 	let pluginsByApp = {};
@@ -151,8 +152,15 @@ module.exports = function () {
 			console.log(`creating build task for plugin "${plugin.url}"...`);
 			let taskName = 'plugins:build:' + plugin.name;
 
+			let env = {};
+			for(let k of Object.keys(sharedEnvironment))
+				env[k] = sharedEnvironment[k];
+
 			gulp.task(taskName, gulp.series('plugins:install:' + plugin.name, () => {
-				return pipelines.browserifyBundle(base, plugin.path, sectionName, sharedEnvironment, null, (bundler, config) => {
+				if (translationsByApp[plugin.name])
+					env.translations = translationsByApp[plugin.name];
+
+				return pipelines.browserifyBundle(base, plugin.path, sectionName, env, null, (bundler, config) => {
 					let coreAppName = sectionName == 'APPLICATION' ? plugin.name : config.belongsTo;
 
 					plugin.config = config;
@@ -218,6 +226,28 @@ module.exports = function () {
 		});
 	}
 
+	function createTranslationsBuildTasks() {
+		return config.coreAppNames.map(coreAppName => {
+			console.log(`creating translations build task for "${coreAppName}"...`);
+			let taskName = 'plugins:translations:' + coreAppName;
+
+			gulp.task(taskName, (cb) => {
+				return gulp.src(paths.scripts.inputAppsFolder + coreAppName + '/translations/*.toml')
+					.pipe(plumber())
+					.pipe(plg.buffer())
+					.pipe(plg.toml({to: JSON.stringify, ext: '.json'}))
+					.pipe(plg.tap(file => {
+						if (!translationsByApp[coreAppName])
+							translationsByApp[coreAppName] = {};
+						translationsByApp[coreAppName][path.basename(file.path, path.extname(file.path))] = file.contents.toString();
+					}))
+					.pipe(gulp.dest(paths.translations.outputForPlugin(coreAppName)));
+			});
+
+			return taskName;
+		});
+	}
+
 	function createVendorCopyTasks() {
 		return config.coreAppNames.map(coreAppName => {
 			console.log(`creating vendor copy task for "${coreAppName}"...`);
@@ -270,9 +300,11 @@ module.exports = function () {
 	let pluginsConcatTasks = createConcatTasks();
 	let pluginsVendorBundleTasks = createVendorBundleTasks();
 	let pluginsVendorCopyTasks = createVendorCopyTasks();
+	let pluginsTranslationTasks = createTranslationsBuildTasks();
 
 	return gulp.series(
 		'plugins:update',
+		gulp.parallel(pluginsTranslationTasks),
 		gulp.parallel(pluginsBuildTasks),
 		gulp.parallel(coreBuildTasks),
 		gulp.parallel(pluginsVendorBundleTasks),

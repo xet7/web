@@ -123,29 +123,18 @@ gulp.task('copy:fonts', () =>
 		.pipe(pipelines.livereloadIndexPipeline()())
 );
 
-// Build translation files(toml -> json)
-gulp.task('build:translations', () =>
-	gulp.src(paths.translations.input)
-		.pipe(plumber())
-		.pipe(plg.toml({to: JSON.stringify, ext: '.json'}))
-		.pipe(gulp.dest(paths.translations.output))
-		.pipe(pipelines.livereloadIndexPipeline()())
-);
-
 // Build primary markup jade files
 gulp.task('build:jade', () => pipelines.createJadePipeline(paths.markup.input, paths.markup.output, false));
 
 // Remove pre-existing content from output and test folders
 gulp.task('clean', cb => {
-	utils.def(() =>
-		del.sync([
-			'./' + paths.output + '**/*',
-			'./' + paths.cache + '**/*'
-		])
-	);
+	utils.def(() => del.sync([
+		'./' + paths.output + '**/*',
+		'./' + paths.cache + '**/*'
+	]));
 
-	// yea...
 	utils.def(() => fs.mkdirSync('./' + paths.output));
+	utils.def(() => fs.mkdirSync('./' + paths.translations.output));
 	utils.def(() => fs.mkdirSync('./' + paths.plugins));
 	utils.def(() => fs.mkdirSync('./' + paths.cache));
 	utils.def(() => fs.mkdirSync('./' + paths.scripts.output));
@@ -181,7 +170,6 @@ gulp.task('serve', cb => {
 let coreAppBundles = {};
 
 const compileSteps = [
-	'build:translations',
 	'copy:images',
 	'copy:fonts',
 	'build:styles'
@@ -206,7 +194,7 @@ gulp.task('compile', gulp.series(
 	'compile:finished'
 ));
 
-let startingTasks = gulp.series(gulp.parallel('clean','bower'), 'build:translations', 'build:plugins', 'compile');
+let startingTasks = gulp.series(gulp.parallel('clean','bower'), 'build:plugins', 'compile');
 /*
 	Gulp primary tasks
  */
@@ -220,7 +208,7 @@ gulp.task('default', gulp.series(
 		gulp.watch(paths.fonts.inputWatch, gulp.series('copy:fonts'));
 		gulp.watch(paths.styles.inputAll, gulp.series('build:styles'));
 		gulp.watch(paths.markup.input, gulp.series('build:jade'));
-		gulp.watch(paths.translations.input, gulp.series('build:translations'));
+		//gulp.watch(paths.translations.input, gulp.series('build:translations'));
 
 		// start livereload server
 		plg.livereload.listen({
