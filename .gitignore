@@ -1,7 +1,9 @@
+
+/plugins
 /dist
 /cache
-/node_modules
-src/bower_components
+node_modules/
+bower_components/
 *.map
 .DS_Store
 *.codekit
