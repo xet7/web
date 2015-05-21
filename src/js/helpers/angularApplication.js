@@ -56,8 +56,7 @@ function AngularApplication ({name, dependencies, productionOnlyDependencies, is
 		if (decorators) {
 			for (let decoratorName of Object.keys(decorators)) {
 				console.debug(`module ${appName}: declare a decorator...`, decoratorName);
-				// @ngInject
-				let provider = ($provide) => {
+				let provider = /* @ngInject */($provide) => {
 					$provide.decorator(decoratorName, decorators[decoratorName]);
 				};
 				applicationModule.config(provider);

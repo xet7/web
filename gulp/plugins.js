@@ -255,11 +255,16 @@ module.exports = function () {
 			gulp.task(taskName, (cb) => {
 				if (!vendorExternalLibs[coreAppName] || vendorExternalLibs[coreAppName].length < 1)
 					return cb();
+
 				let list = [...vendorExternalLibs[coreAppName].values()]
 					.map(vendorLib => vendorLib.fileName);
 				console.log('copy vendor libs for ', coreAppName, list);
 				return gulp.src(list)
-					.pipe(gulp.dest(paths.scripts.output + '/vendor/' + coreAppName));
+					.pipe(plg.tap(f => {
+						f.base = '.';
+						f.path = path.basename(f.path).replace('.min.js', '.js');
+					}))
+					.pipe(gulp.dest(paths.scripts.output + '/vendor/' + coreAppName + '/'));
 			});
 
 			return taskName;

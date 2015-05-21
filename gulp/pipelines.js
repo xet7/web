@@ -14,6 +14,7 @@ const config = require('./config');
 const paths = require('./paths');
 const filterTransform = require('filter-transform');
 const toml = require('toml');
+const browserifyNgAnnotateHelper = require('./browserifyNgAnnotateHelper');
 
 // Browserify the mighty one
 const browserify = require('browserify'),
@@ -248,6 +249,9 @@ function Pipelines(manifest, plumber, isWatching) {
 
 		if (config.isProduction)
 			bundler
+				.transform(ownCodebaseTransform(browserifyNgAnnotateHelper), {mustInclude: [
+					'/blocks/', '/configs/', '/constants/', '/controllers/', '/decorators/', '/directives/', '/factories/', '/runs/', '/services/'
+				]})
 				.transform(ownCodebaseTransform(browserifyNgAnnotate))
 				.transform(uglifyify);
 
