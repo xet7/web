@@ -210,6 +210,7 @@ module.exports = function () {
 			gulp.task(taskName, (cb) => {
 				if (!vendorLibs[coreAppName] || vendorLibs[coreAppName].length < 1)
 					return cb();
+
 				let list = [...vendorLibs[coreAppName].values()]
 					.map(vendorLib => vendorLib.fileName);
 				console.log('embed vendor libs for ', coreAppName, list);
@@ -295,13 +296,18 @@ module.exports = function () {
 
 	createInstallTasks(plugins);
 	createInstallTasks(coreApps);
+
+	let pluginNames = plugins.map(p => p.name);
+
+	let pluginsTranslationTasks = createTranslationsBuildTasks(paths.scripts.inputAppsFolder, config.coreAppNames)
+		.concat(createTranslationsBuildTasks(paths.plugins, pluginNames));
+
 	let pluginsBuildTasks = createBuildTasks(plugins, 'PLUGIN');
 	let coreBuildTasks = createBuildTasks(coreApps, 'APPLICATION');
-	let pluginsConcatTasks = createConcatTasks();
 	let pluginsVendorBundleTasks = createVendorBundleTasks();
+
 	let pluginsVendorCopyTasks = createVendorCopyTasks();
-	let pluginsTranslationTasks = createTranslationsBuildTasks(paths.scripts.inputAppsFolder, config.coreAppNames)
-		.concat(createTranslationsBuildTasks(paths.plugins, plugins.map(p => p.name)));
+	let pluginsConcatTasks = createConcatTasks();
 
 	return gulp.series(
 		'plugins:update',
