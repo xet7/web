@@ -1,33 +1,25 @@
 const gulp = global.gulp;
 const plg = global.plg;
 
-let bluebird = require('bluebird');
-let co = require('co');
-let crypto = require('crypto');
-let os = require('os');
-let fs = require('fs');
-let del = require('del');
-let path = require('path');
-let toml = require('toml');
-let source = require('vinyl-source-stream');
-let merge = require('merge-stream');
-let lazypipe = require('lazypipe');
-let domain = require('domain');
+const os = require('os');
+const fs = require('fs');
+const del = require('del');
+const lazypipe = require('lazypipe');
 
 // Global variables
-let args = process.argv.slice(2);
+const args = process.argv.slice(2);
 let plumber = null;
 let isServe = false;
 let isWatching = args.length < 1;
 let manifest = {};
 
 // Modules
-let serve = require('./serve');
-let utils = require('./gulp/utils');
+const serve = require('./serve');
+const utils = require('./gulp/utils');
 
 // Configuration
-let config = require('./gulp/config');
-let paths = require('./gulp/paths');
+const config = require('./gulp/config');
+const paths = require('./gulp/paths');
 let sharedEnvironment = {
 	_: 'purge',
 	API_URI: process.env.API_URI ? process.env.API_URI : config.defaultApiUri,
@@ -64,8 +56,6 @@ gulp.task('build:plugins', plugins());
 /**
  * Gulp Taks
  */
-
-let caches = {};
 
 // Lint scripts
 gulp.task('lint:scripts',  gulp.series(
@@ -150,9 +140,6 @@ gulp.task('tests', () =>
 		.pipe(gulp.dest(os.tmpdir()))
 		.pipe(plg.jasmine())
 );
-// Automatically install all bower dependencies
-gulp.task('bower', (cb) => process.env.NO_BOWER_UPDATE ? cb() : plg.bower());
-gulp.task('bower-update', () => plg.bower({cmd: 'update'}));
 
 // Serve it, baby!
 gulp.task('serve', cb => {
@@ -194,7 +181,7 @@ gulp.task('compile', gulp.series(
 	'compile:finished'
 ));
 
-let startingTasks = gulp.series(gulp.parallel('clean','bower'), 'build:plugins', 'compile');
+let startingTasks = gulp.series(gulp.parallel('clean'), 'build:plugins', 'compile');
 /*
 	Gulp primary tasks
  */
@@ -203,7 +190,6 @@ gulp.task('default', gulp.series(
 	startingTasks,
 	cb => {
 		// live reload for everything except browserify(as we use watchify)
-		gulp.watch('./bower.json', gulp.series('bower-update', 'compile'));
 		gulp.watch(paths.img.input, gulp.series('copy:images'));
 		gulp.watch(paths.fonts.inputWatch, gulp.series('copy:fonts'));
 		gulp.watch(paths.styles.inputAll, gulp.series('build:styles'));

@@ -1,5 +1,5 @@
 module.exports = ($http, $q) => {
-	const Levenshtein = require('levenshtein');
+	const Levenshtein = window.Levenshtein;
 	const words = {};
 
 	return {
