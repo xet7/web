@@ -44,7 +44,7 @@ module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window
 
 	function setupSettings (settings) {
 		return co(function *(){
-			self.defaultSettings.signatureHtml = yield utils.fetchAndCompile('LavaMail/inbox/defaultSignature.html');
+			self.defaultSettings.signatureHtml = yield utils.fetchAndCompile('LavaMail/inbox/defaultSignature');
 
 			console.warn(self.defaultSettings.signatureHtml);
 

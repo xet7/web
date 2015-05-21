@@ -2,10 +2,10 @@ module.exports = (assets) => {
 	const Promise = require('./../../../js/helpers/promise-polyfill');
 
 	const
-		SRC_APP_LAVABOOM_MAIN_VENDOR = '/js/lavaMail-vendor.js',
+		SRC_APP_LAVABOOM_MAIL_VENDOR = '/js/lavaMail-vendor.js',
 		SRC_OPENPGP = '/vendor/openpgp.js',
 		SRC_APP_LAVABOOM_LOGIN = '/js/lavaLogin.js',
-		SRC_APP_LAVABOOM_MAIN = '/js/lavaMail.js',
+		SRC_APP_LAVABOOM_MAIL = '/js/lavaMail.js',
 		SRC_UTILS = '/js/lavaUtils.js',
 		SRC_UTILS_VENDOR = '/js/lavaUtils-vendor.js',
 		SRC_TEMPLATE_CACHE = '/js/templates.js';
@@ -18,8 +18,8 @@ module.exports = (assets) => {
 		loaderContainer = document.getElementById('loader-container'),
 		checkerAppContainer = document.getElementById('checker-app-container'),
 		loginAppContainer = document.getElementById('login-app-container'),
-		mainAppContainer = document.getElementById('main-app-container'),
-		containers = [loaderContainer, loginAppContainer, mainAppContainer];
+		mailAppContainer = document.getElementById('mail-app-container'),
+		containers = [loaderContainer, loginAppContainer, mailAppContainer];
 
 	const
 		CHECKER = {
@@ -62,14 +62,14 @@ module.exports = (assets) => {
 				}
 			]
 		},
-		APP_LAVABOOM_MAIN = {
+		APP_LAVABOOM_MAIL = {
 			appName: 'LavaMail',
-			container: mainAppContainer,
+			container: mailAppContainer,
 			afterProgressText: 'Please wait...',
 			afterProgressValue: 50,
 			scripts: [
 				{
-					src: SRC_APP_LAVABOOM_MAIN_VENDOR,
+					src: SRC_APP_LAVABOOM_MAIL_VENDOR,
 					progressText: 'Loading system libraries...'
 				},
 				{
@@ -81,7 +81,7 @@ module.exports = (assets) => {
 					progressText: 'Loading templates...'
 				} : null,
 				{
-					src: SRC_APP_LAVABOOM_MAIN,
+					src: SRC_APP_LAVABOOM_MAIL,
 					progressText: 'Loading Lavaboom...'
 				}
 			]
@@ -192,7 +192,7 @@ module.exports = (assets) => {
 		const initializeApplication = (app, opts) => {
 			console.log('loader: initializing application', app.appName, opts);
 
-			isMainApp = app.container == APP_LAVABOOM_MAIN.container;
+			isMainApp = app.container == APP_LAVABOOM_MAIL.container;
 
 			if (!opts)
 				opts = {};
@@ -223,10 +223,11 @@ module.exports = (assets) => {
 
 		const loadApplication = (app, opts) => new Promise((resolve, reject) => {
 			console.log('loader: loading application', app.appName, opts);
-			isMainApp = app.container == APP_LAVABOOM_MAIN.container;
+			isMainApp = app.container == APP_LAVABOOM_MAIL.container;
 
 			loadScripts(app)
 				.then(() => {
+					console.log('bootstrapping', app, app.container);
 					angular.element(app.container).ready(() => {
 						angular.bootstrap(app.container, [app.appName]);
 
@@ -303,11 +304,11 @@ module.exports = (assets) => {
 
 			isError = false;
 			if (isMainAppLoaded) {
-				initializeApplication(APP_LAVABOOM_MAIN, opts);
+				initializeApplication(APP_LAVABOOM_MAIL, opts);
 				return;
 			}
 
-			loadApplication(APP_LAVABOOM_MAIN, opts)
+			loadApplication(APP_LAVABOOM_MAIL, opts)
 				.then(() => {
 					isMainAppLoaded = true;
 				});

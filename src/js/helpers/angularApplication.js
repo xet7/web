@@ -13,10 +13,13 @@ function AngularApplication ({name, dependencies, productionOnlyDependencies, is
 	console.debug(`module ${appName}: declaring, isPlugin:`, isPlugin, 'depends on:', moduleDependencies);
 	const applicationModule = angular.module(appName, moduleDependencies);
 
-	let templates = {};
+	let dynamicTemplates = {};
+
+	let jadeLocals = angular.copy(process.env.jadeLocals);
+	jadeLocals.resolveAsset = (name) => jadeLocals.assets[name] ? jadeLocals.assets[name] : name;
 
 	this.getDynamicTemplate = (blockName, name) => {
-		return templates[`${appName}/${blockName}/${name}`];
+		return dynamicTemplates[`${appName}/${blockName}/${name}`];
 	};
 
 	this.registerAngularRuns = function (runs) {
@@ -139,24 +142,24 @@ function AngularApplication ({name, dependencies, productionOnlyDependencies, is
 		return this;
 	};
 
-	this.registerTemplates = (templates) => {
-		console.debug(`module ${appName}: registering templates`, templates);
+	this.registerTemplates = (blocks) => {
+		console.debug(`module ${appName}: registering templates`, blocks);
 
 		let templateCache = {};
 
-		if (templates.blocks) {
-			for (let blockName of Object.keys(templates.blocks)) {
-				let blockTemplates = templates.blocks[blockName];
+		if (blocks) {
+			for (let blockName of Object.keys(blocks)) {
+				let blockTemplates = blocks[blockName];
 				for (let templateName of Object.keys(blockTemplates)) {
 					let templateFullName = appName + '/' + blockName + '/' + templateName;
 
 					if (templateName.startsWith('__')) {
 						console.debug(`module ${appName}: registering dynamic template`, templateFullName);
-						templates[templateFullName] = blockTemplates[templateName];
+						dynamicTemplates[templateFullName] = blockTemplates[templateName];
 					}
-					else {
-						console.debug(`module ${appName}: registering static template`, templateFullName);
-						templateCache[templateFullName] = blockTemplates[templateName]();
+					else if (!templateName.startsWith('_')) {
+						console.debug(`module ${appName}: registering static template`, templateFullName, jadeLocals);
+						templateCache[templateFullName] = blockTemplates[templateName](jadeLocals);
 					}
 				}
 			}
@@ -181,20 +184,20 @@ let application = new AngularApplication(process.env.applicationConfig);
 
 application
 	// register angular.js blocks
-	.registerAngularRuns(bulkRequire(process.env.applicationPath, 'runs/**/*.js'))
-	.registerAngularConfigs(bulkRequire(process.env.applicationPath, 'configs/**/*.js'))
-	.registerAngularConstants(bulkRequire(process.env.applicationPath, 'constants/**/*.js'))
-	.registerAngularDecorators(bulkRequire(process.env.applicationPath, 'decorators/**/*.js'))
-	.registerAngularFilters(bulkRequire(process.env.applicationPath, 'filters/**/*.js'))
-	.registerAngularDirectives(bulkRequire(process.env.applicationPath, 'directives/**/*.js'))
-	.registerAngularFactories(bulkRequire(process.env.applicationPath, 'factories/**/*.js'))
-	.registerAngularServices(bulkRequire(process.env.applicationPath, 'services/**/*.js'))
-	.registerAngularControllers(bulkRequire(process.env.applicationPath, 'controllers/**/*.js'))
-	.registerAngularBlockControllers(bulkRequire(process.env.applicationPath, 'blocks/**/*.js'))
+	.registerAngularRuns(bulkRequire(process.env.applicationPath, 'runs/**/*.js').runs)
+	.registerAngularConfigs(bulkRequire(process.env.applicationPath, 'configs/**/*.js').configs)
+	.registerAngularConstants(bulkRequire(process.env.applicationPath, 'constants/**/*.js').constants)
+	.registerAngularDecorators(bulkRequire(process.env.applicationPath, 'decorators/**/*.js').decorators)
+	.registerAngularFilters(bulkRequire(process.env.applicationPath, 'filters/**/*.js').filters)
+	.registerAngularDirectives(bulkRequire(process.env.applicationPath, 'directives/**/*.js').directives)
+	.registerAngularFactories(bulkRequire(process.env.applicationPath, 'factories/**/*.js').factories)
+	.registerAngularServices(bulkRequire(process.env.applicationPath, 'services/**/*.js').services)
+	.registerAngularControllers(bulkRequire(process.env.applicationPath, 'controllers/**/*.js').controllers)
+	.registerAngularBlockControllers(bulkRequire(process.env.applicationPath, 'blocks/**/*.js').blocks)
 
 	// register templates && styles
-	.registerTemplates(bulkRequire(process.env.applicationPath, 'blocks/**/*.jade'))
-	.registerStyles(bulkRequire(process.env.applicationPath, 'blocks/**/*.less'))
-	.registerStyles(bulkRequire(process.env.applicationPath, 'less/**/*.less'));
+	.registerTemplates(bulkRequire(process.env.applicationPath, 'blocks/**/*.jade').blocks)
+	.registerStyles(bulkRequire(process.env.applicationPath, 'blocks/**/*.less').blocks)
+	.registerStyles(bulkRequire(process.env.applicationPath, 'less/**/*.less').less);
 
 module.exports = application;

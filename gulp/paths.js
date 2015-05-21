@@ -42,7 +42,7 @@ module.exports = {
 		output: output + 'partials/'
 	},
 	vendor: {
-		input: ['src/vendor/*', 'src/bower_components/openpgp/dist/*'],
+		input: ['src/vendor/*', 'src/apps/LavaUtils/bower_components/openpgp/dist/*'],
 		output: output + 'vendor/'
 	},
 	translations : {

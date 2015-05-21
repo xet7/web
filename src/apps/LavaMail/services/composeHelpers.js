@@ -1,6 +1,6 @@
 module.exports = /*@ngInject*/function ($rootScope, $templateCache, $compile, co, utils) {
 	this.buildForwardedTemplate = (body, signature, forwardEmails) => co(function *(){
-		return yield utils.fetchAndCompile('LavaMail/inbox/forwardedEmail.html', {
+		return yield utils.fetchAndCompile('LavaMail/inbox/forwardedEmail', {
 			body,
 			signature,
 			forwardEmails
@@ -8,7 +8,7 @@ module.exports = /*@ngInject*/function ($rootScope, $templateCache, $compile, co
 	});
 
 	this.buildRepliedTemplate = (body, signature, replies) => co(function *(){
-		return yield utils.fetchAndCompile('LavaMail/inbox/repliedEmail.html', {
+		return yield utils.fetchAndCompile('LavaMail/inbox/repliedEmail', {
 			body,
 			signature,
 			replies
@@ -16,7 +16,7 @@ module.exports = /*@ngInject*/function ($rootScope, $templateCache, $compile, co
 	});
 
 	this.buildDirectTemplate = (body, signature) => co(function *(){
-		return yield utils.fetchAndCompile('LavaMail/inbox/directEmail.html', {
+		return yield utils.fetchAndCompile('LavaMail/inbox/directEmail', {
 			body,
 			signature
 		});

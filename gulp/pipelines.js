@@ -174,6 +174,16 @@ function Pipelines(manifest, plumber, isWatching) {
 		for(let k of Object.keys(sharedEnvironment))
 			environment[k] = sharedEnvironment[k];
 
+		environment.jadeLocals = {
+			fs: fs,
+			assets: manifest,
+			globs: {
+				IS_PRODUCTION: process.env.IS_PRODUCTION,
+				API_URI: process.env.API_URI,
+				ROOT_DOMAIN: process.env.ROOT_DOMAIN
+			}
+		};
+
 		let bundler = browserify({
 			cache: {},
 			packageCache: {},

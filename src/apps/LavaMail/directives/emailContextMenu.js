@@ -6,7 +6,7 @@ module.exports = /*@ngInject*/($templateCache, $compile, co, contacts) => ({
 	},
 	link  : (scope, el, attrs) => {
 		co(function *(){
-			const template = yield $templateCache.fetch('LavaMail/directives/emailContextMenu.html');
+			const template = yield $templateCache.fetch('LavaMail/directives/emailContextMenu');
 			const contact = contacts.getContactByEmail(scope.email);
 			scope.isExistingContact = !!contact;
 

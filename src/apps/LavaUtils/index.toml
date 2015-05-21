@@ -10,6 +10,7 @@
 	moduleName = "LavaUtils"
 
 	dependencies = [
+		"ngSanitize",
 		"lavaboom.api",
 		"ui.router",
 		"pascalprecht.translate",
@@ -26,6 +27,7 @@
         "vendor@html-sanitizer.min.js",
 
 		"bower@angular/angular.js",
+		"bower@angular-sanitize/angular-sanitize.js",
 
 		"bower@sockjs-client/dist/sockjs.js",
 		"bower@lavaboom/dist/lavaboom-api.js",

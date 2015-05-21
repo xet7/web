@@ -69,9 +69,9 @@ div(ng-if="selectedTid").main-view
 					download-email="downloadEmail",
 					original-email-name="email.id",
 					email-body="email.body.data",
-					snap-template-url="LavaMail/directives/snap.html",
-					no-image-template-url="LavaMail/directives/noImage.html",
-					loading-template-url="LavaMail/directives/loading.html")
+					snap-template-url="LavaMail/directives/snap",
+					no-image-template-url="LavaMail/directives/noImage",
+					loading-template-url="LavaMail/directives/loading")
 				.col-xs-22(ng-show="email.body.state == 'no_private_key'") {{'INBOX.LB_NO_PRIVATE_KEY_FOUND1' | translate}}
 					div {{'INBOX.LB_NO_PRIVATE_KEY_FOUND2' | translate}}
 						a(ui-sref="main.settings.security") {{'INBOX.LB_SETTINGS' | translate}}

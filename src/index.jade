@@ -49,7 +49,7 @@ html(lang="en")
 						.row
 							.main-content.col-md-8.col-xs-22.col-md-offset-8.col-xs-offset-1(ui-view="", autoscroll="false")
 
-		#main-app-container.hidden(ng-controller="CtrlLavaboom", ng-class="{'show-details': showDetails}")
+		#mail-app-container.hidden(ng-controller="CtrlLavaboom", ng-class="{'show-details': showDetails}")
 			div(ng-if="isInitialized && isShown", custom-drop-zone, event-filter="ddEventFilter(name, event)")
 				#left-panel(ui-view="left-view", autoscroll="false", ng-class="{'show-left-panel': showLeftPanel}")
 				#content(ui-view="main-view", autoscroll="false")
