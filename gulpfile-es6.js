@@ -51,6 +51,7 @@ if (!isWatching) {
 	isServe = true;
 }
 
+global.plumber = plumber;
 global.sharedEnvironment = sharedEnvironment;
 const Pipelines = require('./gulp/pipelines');
 const pipelines = new Pipelines(manifest, plumber, isWatching);

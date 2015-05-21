@@ -2,11 +2,12 @@ const gulp = global.gulp;
 const plg = global.plg;
 
 const co = require('co');
-const fs = require('fs');
+const bluebird = require('bluebird');
+
+const crypto = require('crypto');
+const fs = bluebird.promisifyAll(require('fs'));
 const path = require('path');
 const url = require('url');
-
-const bluebird = require('bluebird');
 
 const childProcess = bluebird.promisifyAll(require('child_process'));
 const exec = childProcess.execAsync;
@@ -16,12 +17,16 @@ const utils = require('./utils');
 const config = require('./config');
 const paths = require('./paths');
 
-const pipelines = global.pipelines;
+let pipelines = global.pipelines;
 let sharedEnvironment = global.sharedEnvironment;
+let plumber = global.plumber;
+
+let isProduction = config.isProduction;
 
 module.exports = function () {
 	const base = path.resolve(__dirname, '..');
 
+	let vendorLibs = {};
 	let pluginsByApp = {};
 	let plugins = (process.env.PLUGINS ? process.env.PLUGINS.split(',') : []).map(u => {
 		let uri = url.parse(u);
@@ -95,6 +100,51 @@ module.exports = function () {
 		});
 	}
 
+	function buildVendorDependency(type, name, directory, coreAppName) {
+		return co(function *(){
+			let componentDirectory = '';
+			if (type == 'bower')
+				componentDirectory = 'bower_components';
+			else if (type == 'npm')
+				componentDirectory = 'node_modules';
+			else if (type == 'vendor')
+				componentDirectory = 'vendor';
+			else throw new Error(`unsupported vendor dependency! expected to see [npm/bower/vendor]@name`);
+
+			let libraryPath = path.resolve(directory, componentDirectory, name);
+
+			let vendorLib = {
+				name: name,
+				isMinRequired: false
+			};
+
+			const calcHash = (fileName) => co(function *(){
+				let content = yield fs.readFileAsync(fileName, 'utf8');
+				let sha = crypto.createHash('sha256');
+				sha.update(content, 'utf8');
+				return sha.digest().toString('hex');
+			});
+
+			if (!isProduction || libraryPath.endsWith('.min.js')) {
+				vendorLib.fileName = libraryPath;
+				vendorLib.hash = yield calcHash(libraryPath);
+			} else {
+				let libraryMinPath = libraryPath.replace('.js', '.min.js');
+				try {
+					vendorLib.fileName = libraryMinPath;
+					vendorLib.hash = yield calcHash(libraryMinPath);
+				} catch (err) {
+					vendorLib.fileName = libraryPath;
+					vendorLib.hash = yield calcHash(libraryPath);
+				}
+			}
+
+			if (!vendorLibs[coreAppName])
+				vendorLibs[coreAppName] = new Map();
+			vendorLibs[coreAppName].set(vendorLib.hash, vendorLib);
+		});
+	}
+
 	function createBuildTasks(plugins, sectionName) {
 		return plugins.map(plugin => {
 			console.log(`creating build task for plugin "${plugin.url}"...`);
@@ -102,9 +152,18 @@ module.exports = function () {
 
 			gulp.task(taskName, gulp.series('plugins:install:' + plugin.name, () => {
 				return pipelines.browserifyBundle(base, plugin.path, sectionName, sharedEnvironment, null, (bundler, config) => {
-					plugin.config = config;
-
 					let coreAppName = sectionName == 'APPLICATION' ? plugin.name : config.belongsTo;
+
+					plugin.config = config;
+					if (config.vendorDependencies) {
+						for (let d of config.vendorDependencies) {
+							let [type, name] = d.split('@');
+							if (!type || !name)
+								throw new Error(`vendor dependency supposed to have format [npm/bower/vendor]@name`);
+
+							buildVendorDependency(type, name, plugin.directory, coreAppName);
+						}
+					}
 
 					if (sectionName == 'PLUGIN') {
 						if (!pluginsByApp[coreAppName])
@@ -119,6 +178,30 @@ module.exports = function () {
 						}));
 				});
 			}));
+
+			return taskName;
+		});
+	}
+
+	function createVendorTasks() {
+		return config.coreAppNames.map(coreAppName => {
+			console.log(`creating vendor task for "${coreAppName}"...`);
+			let taskName = 'plugins:vendor:' + coreAppName;
+
+			gulp.task(taskName, (cb) => {
+				if (!vendorLibs[coreAppName] || vendorLibs[coreAppName].length < 1)
+					return cb();
+				let list = [...vendorLibs[coreAppName].values()]
+					.map(vendorLib => vendorLib.fileName);
+				console.log('vendor libs for ', coreAppName, list);
+				return gulp.src(list)
+					.pipe(plg.buffer())
+					.pipe(plg.sourcemaps.init({loadMaps: true}))
+					.pipe(plg.concat(utils.lowerise(coreAppName) + '-vendor.js'))
+					.pipe(plg.sourcemaps.write('.'))
+					.pipe(gulp.dest(paths.scripts.output))
+					.pipe(pipelines.livereloadPipeline()());
+			});
 
 			return taskName;
 		});
@@ -155,6 +238,14 @@ module.exports = function () {
 	let pluginsBuildTasks = createBuildTasks(plugins, 'PLUGIN');
 	let coreBuildTasks = createBuildTasks(coreApps, 'APPLICATION');
 	let pluginsConcatTasks = createConcatTasks();
+	let pluginsVendorTasks = createVendorTasks();
 
-	return gulp.series('plugins:update', gulp.parallel(pluginsBuildTasks), gulp.parallel(coreBuildTasks), gulp.parallel(pluginsConcatTasks), 'plugins:finish');
+	return gulp.series(
+		'plugins:update',
+		gulp.parallel(pluginsBuildTasks),
+		gulp.parallel(coreBuildTasks),
+		gulp.parallel(pluginsVendorTasks),
+		gulp.parallel(pluginsConcatTasks),
+		'plugins:finish'
+	);
 };
