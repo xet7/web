@@ -226,22 +226,22 @@ module.exports = function () {
 		});
 	}
 
-	function createTranslationsBuildTasks() {
-		return config.coreAppNames.map(coreAppName => {
-			console.log(`creating translations build task for "${coreAppName}"...`);
-			let taskName = 'plugins:translations:' + coreAppName;
+	function createTranslationsBuildTasks(base, names) {
+		return names.map(name => {
+			console.log(`creating translations build task for "${name}"...`);
+			let taskName = 'plugins:translations:' + name;
 
 			gulp.task(taskName, (cb) => {
-				return gulp.src(paths.scripts.inputAppsFolder + coreAppName + '/translations/*.toml')
+				return gulp.src(base + name + '/translations/*.toml')
 					.pipe(plumber())
 					.pipe(plg.buffer())
 					.pipe(plg.toml({to: JSON.stringify, ext: '.json'}))
 					.pipe(plg.tap(file => {
-						if (!translationsByApp[coreAppName])
-							translationsByApp[coreAppName] = {};
-						translationsByApp[coreAppName][path.basename(file.path, path.extname(file.path))] = file.contents.toString();
+						if (!translationsByApp[name])
+							translationsByApp[name] = {};
+						translationsByApp[name][path.basename(file.path, path.extname(file.path))] = file.contents.toString();
 					}))
-					.pipe(gulp.dest(paths.translations.outputForPlugin(coreAppName)));
+					.pipe(gulp.dest(paths.translations.outputForPlugin(name)));
 			});
 
 			return taskName;
@@ -300,7 +300,8 @@ module.exports = function () {
 	let pluginsConcatTasks = createConcatTasks();
 	let pluginsVendorBundleTasks = createVendorBundleTasks();
 	let pluginsVendorCopyTasks = createVendorCopyTasks();
-	let pluginsTranslationTasks = createTranslationsBuildTasks();
+	let pluginsTranslationTasks = createTranslationsBuildTasks(paths.scripts.inputAppsFolder, config.coreAppNames)
+		.concat(createTranslationsBuildTasks(paths.plugins, plugins.map(p => p.name)));
 
 	return gulp.series(
 		'plugins:update',
