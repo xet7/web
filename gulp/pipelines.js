@@ -241,7 +241,11 @@ function Pipelines(manifest, plumber, isWatching) {
 			.transform(ownCodebaseTransform(jadeify))
 			.transform(ownCodebaseTransform(envify(environment)))
 			.transform(ownCodebaseTransform(bulkify))
-			.transform(ownCodebaseTransform(brfs));
+			.transform(ownCodebaseTransform(brfs))
+			.transform(ownCodebaseTransform(browserifyNgAnnotateHelper), {mustInclude: [
+				'/blocks/', '/configs/', '/constants/', '/controllers/', '/decorators/', '/directives/', '/factories/', '/runs/', '/services/'
+			]})
+			.transform(browserifyNgAnnotate);
 
 		if (!config.isLogs)
 			bundler
@@ -249,10 +253,6 @@ function Pipelines(manifest, plumber, isWatching) {
 
 		if (config.isProduction)
 			bundler
-				.transform(ownCodebaseTransform(browserifyNgAnnotateHelper), {mustInclude: [
-					'/blocks/', '/configs/', '/constants/', '/controllers/', '/decorators/', '/directives/', '/factories/', '/runs/', '/services/'
-				]})
-				.transform(ownCodebaseTransform(browserifyNgAnnotate))
 				.transform(uglifyify);
 
 
