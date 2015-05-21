@@ -1,0 +1,114 @@
+[LANG]
+	CODE = "en"
+	FULL_CODE = "en_US"
+
+[LOGIN.SECURE_USERNAME]
+	TITLE = "Secure your Lavaboom username"
+    LNK_INVITE_QUESTION = "Got an invitation?"
+#	LB_NEWS = "Send me updates to my Lavaboom address." not required.
+	BTN_SECURE = "Secure your username"
+
+[LOGIN.SECURED]
+	TITLE = "Nice one!"
+	SUB_TITLE = "Your username has been reserved."
+	LB_EMAIL_SENT = "We have just sent an email to"
+	LB_COMPLETE = "We are currently in a closed beta and rolling out account invitations gradually. The email you will receive will tell you how long the wait time is."
+	BTN_COMPLETE = "OK"
+	#Should we be giving users link to registration box if they aren't going to receive a registration code?
+
+[LOGIN.INVITE]
+	TITLE = "Have you got an invite already?"
+	BTN_SEND_ME_INVITE = "No, send me an invite"
+	BTN_I_HAVE_INVITE_CODE = "Yes, I've got my invite code"
+
+[LOGIN.VERIFY_INVITE]
+	TITLE = "Verify invite code"
+	PLC_INVITE_CODE = "please paste invite code here"
+	LB_NEWS = "Send me updates to my Lavaboom address."
+	LB_TOS = "By signing up I agree that I've read and understood the " 
+    LNK_TOS = "Terms of Service"
+    AND_THE = " and the "
+    LINK_PRIVACY = "Privacy Policy"
+
+[LOGIN.PLAN]
+	TITLE = "Your Plan"
+    PLAN1_TITLE = "Beta"
+	PLAN1_OPT1_VALUE = "1 GB"
+	PLAN1_OPT2_VALUE = "Two Factor"
+	PLAN1_OPT3_VALUE = "Secure"
+	PLAN1_OPT4_VALUE = "Additional"
+	PLAN1_OPT5_VALUE = "Free"
+	PLAN1_OPT1_KEY = "Secure Email Storage"
+    PLAN1_OPT2_KEY = "Authentication"
+    PLAN1_OPT3_KEY = "Contacts"
+    PLAN1_OPT4_KEY = "500 MB free forever"
+    PLAN1_OPT5_KEY = "forever!"
+	BTN_SELECT = "I'll take this"
+
+[LOGIN.DETAILS]
+	TITLE = "Personal details"
+    SUB_TITLE = "We are legally obliged to ask you for this information. However, we do not use or verify this data."
+
+[LOGIN.CHOOSE_PASSWORD_INTRO]
+	TITLE = "Choose your password"
+	LB_WARNING_TITLE = "Attention"
+	LB_WARNING0 = "You are about to generate a new key pair for your account, but before this you need to select desired password"
+    LB_WARNING1 = "Please note that we do not store your passwords in plain text on our servers. This makes Lavaboom more secure, however if you lose your password we are unable reset it for you."
+    LB_WARNING2 = "When you have chosen a password make sure to write it down on a piece of paper. Losing your password may prevent access to your account."
+    BTN_NEXT = "I understand"
+
+[LOGIN.CHOOSE_PASSWORD]
+	TITLE = "Choose your password"
+	LB_WARNING1 = "We recommend a long password, including numbers and special characters. Though it should still be easy for you to remember."
+	LB_WARNING2 = "Please note that we will not be able to reset your password if you forget it. Only continue once you have memorised your password."
+	BTN_NEXT = "I have memorised it"
+	LB_PRIVATE_PC = "This is private computer"
+
+[LOGIN.GENERATE_KEYS]
+	TITLE = "Key generation"
+	LB_WARNING1 = "Lavaboom encrypts your data client-side, on your computer. To do this we need to store an encryption key pair in your browser. "
+	LB_WARNING2 = "This key is used to encrypt data. Share it with your friends so they can send encrypted messages to you."
+	LB_WARNING3 = "This key is used to decrypt data. Do not share it. Keep it safe and never share it with anyone."
+	BTN_NEXT = "Generate my keys"
+
+[LOGIN.GENERATING_KEYS]
+	LB_GENERATING = "Generating your keys..."
+	LB_UPLOADING = "Uploading Public Key..."
+	LB_READY = "Your keys are ready!"
+	LB_REACHED = "Our hamsters are running extra hard, just a little longer to wait..."
+	LB_ERROR = "Cannot generate keys, make sure you are using an up-to-date version of Firefox, Google Chrome or Safari and try again."
+	LB_PERFORMANCE_TEST = "Testing performance..."
+	LB_DO_NOT_CLOSE_REF = "Please do not close this window"
+	LB_DO_NOT_CLOSE_HAMSTER = "Please be patient, key generation may take few minutes..."
+	LB_DO_NOT_CLOSE_TURTLE = "Please be patient, key generation may take a while..."
+
+[LOGIN.BACKUP_KEY]
+	TITLE = "Back up your key"
+    INFO1 = "We create and store your keychain locally in the cache of the browser you are using right now."
+    INFO2 = "This means that if you want to access your Lavaboom account in a different browser or on a different machine you'll need to import your keychain at login into the new browser."
+    INFO3 = "If you clear your cache from Lavaboom your keys will be deleted and you will lose access to your account."
+    INFO4 = "To prevent this you should back up your keychain to your hard drive to keep it safe."
+    INFO5 = "You can back up your keychain anytime in your Settings, or enable Lavaboom Sync to allow us to manage your keys for you."
+    INFO6 = "Lavaboom Sync works basically backing up your keyring on our servers. Lavaboom Sync can work with or without a sync passphrase (similar to how Chrome works)."
+    BTN_ENABLE_LB_SYNC = "Enable Lavaboom Sync"
+    BTN_BACKUP_NOW = "Back up my key now"
+    BTN_SKIP = "Skip and get back"
+	LB_PRIVATE_PC = "This is private computer"
+
+[LOGIN.IMPORT_KEY]
+	TITLE = "Please Import Key to browser"
+	LB_INFO1 = "We couldn't find your private key in the browser cache."
+	LB_INFO2 = "This happens when you are using Lavaboom for the first time with this browser or if your browser cache has been cleared."
+	LB_INFO3 = "Import the key you saved to your hard drive when you signed up with us and you're good to go."
+	BTN_UPLOAD_KEY = "Import your key"
+
+[LOGIN.SIGNUP]
+	HEADER = "Welcome to Lavaboom"
+ 	LOGIN = "Log In"
+ 	SIGNUP = "Sign Up"
+
+[LOGIN.AUTH]
+	BTN_GO_TO_MY_INBOX = "Go to my Inbox"
+	BTN_NO_ACCOUNT_YET = "No Account Yet? Sign up Here!"
+	LB_KEEP_ME_LOGGED_IN = "Keep me logged in"
+	LB_PRIVATE_PC = "This is a private pc"

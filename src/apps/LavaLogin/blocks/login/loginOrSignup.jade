@@ -1,0 +1,9 @@
+form.ng-cloak(ng-class="{'errors': currentErrorMessage}")
+	img.login-logo(src="img/Lavaboom-logo.svg")
+	p.lead {{'LOGIN.SIGNUP.HEADER' | translate}}
+
+	p
+		a.btn.btn-block.btn-lg.btn-primary(ui-sref="auth") {{'LOGIN.SIGNUP.LOGIN' | translate}}
+		
+	p
+		a.btn.btn-block.btn-lg.btn-default(ui-sref="invite") {{'LOGIN.SIGNUP.SIGNUP' | translate}}

@@ -49,7 +49,7 @@ html(lang="en")
 						.row
 							.main-content.col-md-8.col-xs-22.col-md-offset-8.col-xs-offset-1(ui-view="", autoscroll="false")
 
-		#main-app-container.hidden(ng-controller="CtrlLavaboom", ng-class="{'show-details': showDetails}")
+		#mail-app-container.hidden(ng-controller="CtrlLavaboom", ng-class="{'show-details': showDetails}")
 			div(ng-if="isInitialized && isShown", custom-drop-zone, event-filter="ddEventFilter(name, event)")
 				#left-panel(ui-view="left-view", autoscroll="false", ng-class="{'show-left-panel': showLeftPanel}")
 				#content(ui-view="main-view", autoscroll="false")
@@ -61,6 +61,5 @@ html(lang="en")
 					a#hide-details.btn.btn-clear(type="button", ng-click="toggleShowDetails()", tooltip="{{'MAIN.CONTACTS.BTN_DISCARD_CHANGES' | translate}}", tooltip-placement="bottom")
 						span.icon-arrow-left
 
-		if globs.IS_PRODUCTION
-			script!= 'window.assets = ' + JSON.stringify(assets) + ';'
-		script!= fs.readFileSync('./dist' + resolveAsset('/js/loader.js'), 'utf8')
+		script!= 'window.assets = ' + JSON.stringify(assets) + ';'
+		script!= fs.readFileSync('./dist' + resolveAsset('/js/lavaLoader.js'), 'utf8')

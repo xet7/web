@@ -1,22 +1,19 @@
-var output = 'dist/';
+const config = require('./config');
+const output = 'dist/';
 
 module.exports = {
 	input: 'src/**/*',
 	cache: 'cache/',
 	output: output,
+	plugins: 'plugins/',
 	scripts: {
 		cacheOutput: './cache/',
 		input: 'src/js/*.js',
-		inputFolder: 'src/js/',
+		inputFolders: ['src/js/', 'src/apps/'],
 		inputAll: 'src/js/**/*.js',
-		inputApps: [
-			'./src/js/apps/utils.js',
-			'./src/js/apps/appLavaboom.js',
-			'./src/js/apps/appLavaboomLogin.js',
-			'./src/js/loader.js'
-		],
-		inputDeps: 'src/js/apps/*.toml',
-		inputAppsFolder: 'src/js/apps/',
+		inputApplication: './src/apps/app.js',
+		inputDeps: 'src/apps/**/*.toml',
+		inputAppsFolder: 'src/apps/',
 		output: output + 'js/'
 	},
 	styles: {
@@ -45,13 +42,14 @@ module.exports = {
 		output: output + 'partials/'
 	},
 	vendor: {
-		input: ['src/vendor/*', 'src/bower_components/openpgp/dist/*'],
+		input: ['src/vendor/*', 'src/apps/LavaUtils/bower_components/openpgp/dist/*'],
 		output: output + 'vendor/'
 	},
 	translations : {
 		inputEn: 'src/translations/en.toml',
 		input: 'src/translations/*.toml',
-		output: output + 'translations/'
+		output: `${output}/translations/`,
+		outputForPlugin: (pluginName) => `${output}/translations/${pluginName}/`
 	},
 	tests: {
 		unit: {
