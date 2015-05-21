@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($delegate, $q, $rootScope, utils) => {
+module.exports = ($delegate, $q, $rootScope, utils) => {
 	const translationTablesCache = {};
 
 	$delegate.instantWithPrefix = (name, prefix = '') => {

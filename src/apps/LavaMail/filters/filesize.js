@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/() =>
+module.exports = () =>
 	size => {
 		if (isNaN(size))
 			size = 0;

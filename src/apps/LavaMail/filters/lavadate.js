@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $translate, $filter) => {
+module.exports = ($rootScope, $translate, $filter) => {
 	
 
 	return (input) => {

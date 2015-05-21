@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($delegate, $injector) => {
+module.exports = ($delegate, $injector) => {
 	function sanitizer (html) {
 		const user = $injector.get('user');
 

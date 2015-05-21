@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/(co) => {
+module.exports = (co) => {
 	function Proxy ($delegate) {
 		const self = this;
 

@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $timeout, $scope, $state, $translate,
+module.exports = ($rootScope, $timeout, $scope, $state, $translate,
 							   notifications, tests, utils,
 							   router,
 							   LavaboomAPI, co, translate, crypto, user, inbox, contacts, hotkey, loader, timeAgo) => {

@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $state, co, signUp) => {
+module.exports = ($scope, $state, co, signUp) => {
 	$scope.form = {
 		username: '',
 		email: ''

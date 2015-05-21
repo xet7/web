@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($q, $rootScope, $state, $scope, $translate,
+module.exports = ($q, $rootScope, $state, $scope, $translate,
 							   LavaboomAPI, utils, tests, notifications, translate, co, crypto, loader, user, signUp) => {
 	const translations = {
 		LB_INITIALIZING_I18N: '',

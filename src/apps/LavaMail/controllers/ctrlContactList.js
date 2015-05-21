@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $translate, $state, $stateParams, dialogs, co, contacts, user, hotkey) => {
+module.exports = ($rootScope, $scope, $translate, $state, $stateParams, dialogs, co, contacts, user, hotkey) => {
 	$scope.selectedContactId = null;
 	$scope.searchText = '';
 

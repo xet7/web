@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/function($rootScope, $translate, $timeout) {
+module.exports = function($rootScope, $translate, $timeout) {
 	const self = this;
 
 	let notifications = {};

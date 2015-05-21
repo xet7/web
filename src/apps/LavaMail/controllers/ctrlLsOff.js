@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $modalInstance) => {
+module.exports = ($scope, $modalInstance) => {
 	$scope.no = function(){
 		$modalInstance.dismiss('no');
 	};

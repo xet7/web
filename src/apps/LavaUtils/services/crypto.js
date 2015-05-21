@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/function($q, $rootScope, $injector, consts, co, utils, CryptoKeysStorage) {
+module.exports = function($q, $rootScope, $injector, consts, co, utils, CryptoKeysStorage) {
 	const self = this;
 
 	let storage = null;

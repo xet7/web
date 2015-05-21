@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($parse) => ({
+module.exports = ($parse) => ({
 	link: (scope, element, attrs) => {
 		const getFile = $parse(attrs.getFile);
 		element.bind('change', (e) => {

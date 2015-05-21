@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($translate, co, user, crypto, ContactEmail) => {
+module.exports = ($translate, co, user, crypto, ContactEmail) => {
 	const translations = {
 		LB_UNNAMED_CONTACT: ''
 	};

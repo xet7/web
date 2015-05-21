@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/function($translate, utils, notifications, co) {
+module.exports = function($translate, utils, notifications, co) {
 	const notifications18n = {
 		BAD_BROWSER_TITLE: '',
 		BAD_BROWSER_TEXT: ''

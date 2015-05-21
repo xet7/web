@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $interval, $timeout, $translate, consts, co, inbox, router, saver) => {
+module.exports = ($rootScope, $scope, $stateParams, $interval, $timeout, $translate, consts, co, inbox, router, saver) => {
 	let [emailId, fileId] = [$stateParams.emailId, $stateParams.fileId];
 
 	let timePassed = 0;

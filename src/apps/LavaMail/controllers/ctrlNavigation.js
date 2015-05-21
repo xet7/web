@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $state, co, inbox, user, hotkey) => {
+module.exports = ($rootScope, $scope, $state, co, inbox, user, hotkey) => {
 	$scope.$state = $state;
 	$scope.name = user.styledName;
 

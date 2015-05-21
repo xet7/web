@@ -1,3 +1,3 @@
-module.exports = /*@ngInject*/(hotkeysProvider) => {
+module.exports = (hotkeysProvider) => {
 	hotkeysProvider.includeCheatSheet = false;
 };

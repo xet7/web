@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($delegate) => {
+module.exports = ($delegate) => {
 	$delegate.h1.iconclass = 'icon-H1';
 	delete $delegate.h1.buttontext;
 

@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $state, $stateParams, co, user, signUp) => {
+module.exports = ($scope, $state, $stateParams, co, user, signUp) => {
 	const userName = $stateParams.userName;
 	const inviteCode = $stateParams.inviteCode;
 

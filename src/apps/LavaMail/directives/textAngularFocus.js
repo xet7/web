@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/ ($parse, $timeout, textAngularManager) => {
+module.exports =  ($parse, $timeout, textAngularManager) => {
 	return {
 		link: (scope, element, attributes) => {
 			$timeout(() => {

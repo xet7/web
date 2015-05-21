@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($delegate, $rootScope, $translate, co, consts, utils, LavaboomAPI, Cache, Proxy) => {
+module.exports = ($delegate, $rootScope, $translate, co, consts, utils, LavaboomAPI, Cache, Proxy) => {
 	const self = $delegate;
 
 	const proxy = new Proxy($delegate);

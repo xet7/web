@@ -80,9 +80,7 @@ module.exports = function () {
 			let taskName = 'plugins:install:' + plugin.name;
 
 			gulp.task(taskName, (cb) => {
-				return cb();
-
-				/*let options = {
+				let options = {
 					cwd: plugin.directory
 				};
 
@@ -93,7 +91,7 @@ module.exports = function () {
 					try {
 						let r = yield exec('npm install', options);
 					} catch (err) {}
-				});*/
+				});
 			});
 
 			return taskName;

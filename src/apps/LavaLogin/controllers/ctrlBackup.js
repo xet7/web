@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $state, $window, co, user, signUp, crypto, cryptoKeys, loader, saver) => {
+module.exports = ($scope, $state, $window, co, user, signUp, crypto, cryptoKeys, loader, saver) => {
 	if (!user.isAuthenticated())
 		$state.go('login');
 

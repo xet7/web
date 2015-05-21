@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/function (utils, taSelection) {
+module.exports = function (utils, taSelection) {
 	const self = this;
 	const newLineRegex = /(\r\n|\r|\n)/g;
 	const tagRegex = /<[a-z][\s\S]*>/gi;

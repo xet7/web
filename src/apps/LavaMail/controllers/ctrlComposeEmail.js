@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope) => {
+module.exports = ($scope) => {
 	$scope.status = {
 		isDropdownOpened: false
 	};

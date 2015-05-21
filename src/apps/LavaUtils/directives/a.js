@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/() => ({
+module.exports = () => ({
 	restrict: 'E',
 	link: (scope, elem, attrs) => {
 		if(attrs.ngClick || attrs.href === '' || attrs.href === '#'){

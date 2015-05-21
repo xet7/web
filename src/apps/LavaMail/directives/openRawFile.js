@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($compile, fileReader) => ({
+module.exports = ($compile, fileReader) => ({
 	restrict : 'A',
 	scope: {
 		openRawFile: '&',

@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $state, signUp, co, crypto, user) => {
+module.exports = ($scope, $state, signUp, co, crypto, user) => {
 	if (!signUp.isPartiallyFlow && (!signUp.tokenSignup || !signUp.details))
 		$state.go('login');
 

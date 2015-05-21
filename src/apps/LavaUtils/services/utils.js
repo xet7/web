@@ -2,7 +2,7 @@ const sleep = require('co-sleep');
 const fs = require('fs');
 const mimelib = require('mimelib');
 
-module.exports = /*@ngInject*/function($injector, $rootScope, $templateCache, co, consts) {
+module.exports = function($injector, $rootScope, $templateCache, co, consts) {
 	const self = this;
 
 	let detectIsMobile;

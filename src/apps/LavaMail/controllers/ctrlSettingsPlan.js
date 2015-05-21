@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $translate, $interval, consts, user, $sce) => {
+module.exports = ($scope, $translate, $interval, consts, user, $sce) => {
 	$scope.currentPlanName = user.accountType;
 
 	$scope.planList = consts.PLAN_LIST.filter(plan => {

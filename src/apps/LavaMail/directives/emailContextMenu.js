@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($templateCache, $compile, co, contacts) => ({
+module.exports = ($templateCache, $compile, co, contacts) => ({
 	restrict : 'E',
 	scope: {
 		isOpen: '=',

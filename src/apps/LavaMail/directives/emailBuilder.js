@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($timeout, $state, $compile, $sanitize, $templateCache, co, user, consts) => {
+module.exports = ($timeout, $state, $compile, $sanitize, $templateCache, co, user, consts) => {
 	/*function getBase64Image(img) {
 		// Create an empty canvas element
 		var canvas = document.createElement('canvas');

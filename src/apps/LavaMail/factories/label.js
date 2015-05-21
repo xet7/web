@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/() => {
+module.exports = () => {
 	const classes = {
 		'Drafts': 'draft',
 		'Spam': 'ban',

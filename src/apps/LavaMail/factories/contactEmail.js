@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $translate, $timeout, $injector, co, consts, crypto, Key) => {
+module.exports = ($rootScope, $translate, $timeout, $injector, co, consts, crypto, Key) => {
 	const translations = {
 		LB_NEW : '',
 		LB_PRIVATE : '',

@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($delegate, $q, $http) => {
+module.exports = ($delegate, $q, $http) => {
 	$delegate.fetch = (url) => {
 		let deferred = $q.defer();
 

@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/(co) => {
+module.exports = (co) => {
 	function Cache (name, opts = {}) {
 		let cacheByKey = {};
 		let cacheById = {};

@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/(co, user, crypto, utils, fileReader, Email) => {
+module.exports = (co, user, crypto, utils, fileReader, Email) => {
 	function Attachment(file) {
 		const self = this;
 

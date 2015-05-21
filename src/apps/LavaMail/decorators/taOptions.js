@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($delegate, taRegisterTool, textAngularHelpers) => {
+module.exports = ($delegate, taRegisterTool, textAngularHelpers) => {
 	taRegisterTool('submit', {
 		iconclass: 'fa fa-bold',
 		tooltiptext: 'submit',

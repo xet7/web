@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/function ($rootScope, $translate, $state, $timeout, hotkeys, router, utils, consts) {
+module.exports = function ($rootScope, $translate, $state, $timeout, hotkeys, router, utils, consts) {
 	const self = this;
 
 	let isActive = true;

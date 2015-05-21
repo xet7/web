@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($http, $q) => {
+module.exports = ($http, $q) => {
 	const Levenshtein = require('levenshtein');
 	const words = {};
 

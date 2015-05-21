@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $timeout, $translate, $state,
+module.exports = ($scope, $timeout, $translate, $state,
 							   Key, dialogs, router,
 							   co, utils, user, crypto, cryptoKeys, LavaboomAPI, fileReader, inbox, saver, notifications) => {
 	$scope.email = user.email;

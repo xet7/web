@@ -7,7 +7,6 @@ module.exports = function (fileName, options) {
 	if (!fileName.endsWith('.js') || !options.mustInclude.some(e => fileName.includes(e))) {
 		return through();
 	}
-	console.log('filename', fileName);
 
 	var inputString = '';
 	return through(
@@ -20,6 +19,8 @@ module.exports = function (fileName, options) {
 			let r = inputString
 				.replace(r1, 'module.exports = /*@ngInject*/ (')
 				.replace(r2, 'module.exports = /*@ngInject*/ function(');
+
+			console.log('ngInject added to', fileName);
 
 			self.queue(r);
 			self.queue(null);

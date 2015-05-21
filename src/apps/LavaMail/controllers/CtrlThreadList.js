@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $state, $timeout, $interval, $translate,
+module.exports = ($rootScope, $scope, $state, $timeout, $interval, $translate,
 							   co, utils, consts, hotkey, user, inbox) => {
 
 	$scope.labelName = utils.capitalize($state.params.labelName);

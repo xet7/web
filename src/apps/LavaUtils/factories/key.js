@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($injector, $translate, $timeout, co, crypto, utils, consts, dateFilter) => {
+module.exports = ($injector, $translate, $timeout, co, crypto, utils, consts, dateFilter) => {
 	const translations = {
 		TP_KEY_IS_ENCRYPTED: '',
 		TP_KEY_IS_DECRYPTED: '',

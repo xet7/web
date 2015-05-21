@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/function ($rootScope, $q) {
+module.exports = function ($rootScope, $q) {
 	const getReader = (deferred, opts) => {
 		let reader = new FileReader();
 

@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($timeout, $state) => ({
+module.exports = ($timeout, $state) => ({
 	restrict : 'A',
 	scope: {
 		eventFilter: '&'

@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/(co, utils) => {
+module.exports = (co, utils) => {
 	const prefix = 'lava-openpgp-';
 	const publicKeysItem = 'public-keys';
 	const privateKeysItem = 'private-keys';

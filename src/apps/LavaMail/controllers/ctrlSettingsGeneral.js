@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $interval, $translate, $timeout, translate, user, hotkey, co, notifications) => {
+module.exports = ($rootScope, $scope, $interval, $translate, $timeout, translate, user, hotkey, co, notifications) => {
 	$scope.form = {
 		selectedLanguage: null,
 		contactsSortBy: null

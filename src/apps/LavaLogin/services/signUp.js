@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/function (LavaboomAPI, co, user, consts, $http) {
+module.exports = function (LavaboomAPI, co, user, consts, $http) {
 	const self = this;
 
 	this.reserve = null;

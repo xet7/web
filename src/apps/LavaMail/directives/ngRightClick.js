@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($parse) =>
+module.exports = ($parse) =>
 	(scope, element, attrs) => {
 		const fn = $parse(attrs.ngRightClick);
 		element.bind('contextmenu', event => {

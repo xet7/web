@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/ ($timeout) => ({
+module.exports =  ($timeout) => ({
 	link: ( scope, element, attrs ) => {
 		scope.$watch( attrs.focus, val => {
 			if ( angular.isDefined( val ) && val ) {

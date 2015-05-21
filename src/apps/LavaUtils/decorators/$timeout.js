@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($delegate, $q) => {
+module.exports = ($delegate, $q) => {
 	$delegate.schedule = (timeoutVariable, action, timeout, invokeApply) => {
 		if (timeoutVariable)
 			$delegate.cancel(timeoutVariable);

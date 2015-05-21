@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/() => ({
+module.exports = () => ({
 	require: 'ngModel',
 	link: (scope, elem, attrs, ngModel) => {
 		const r = attrs.maxRepeating;

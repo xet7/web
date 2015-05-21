@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $timeout, $translate, co, consts, crypto, notifications) => {
+module.exports = ($scope, $timeout, $translate, co, consts, crypto, notifications) => {
 	console.log('CtrlSettingsSecurityKey instantiated with key', $scope.key);
 
 	const translations = {

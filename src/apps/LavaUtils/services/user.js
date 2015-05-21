@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/function($q, $rootScope, $state, $timeout, $window, $translate, $templateCache, $interpolate,
+module.exports = function($q, $rootScope, $state, $timeout, $window, $translate, $templateCache, $interpolate,
 									   consts, LavaboomAPI, LavaboomHttpAPI, co, crypto, cryptoKeys, loader, utils, Key) {
 	const self = this;
 

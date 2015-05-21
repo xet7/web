@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($scope, $rootScope, $window, $interval, co, user, loader, utils) => {
+module.exports = ($scope, $rootScope, $window, $interval, co, user, loader, utils) => {
 	let signInSettings = utils.def(() => JSON.parse(localStorage['sign-in-settings']), null);
 
 	$scope.form = {

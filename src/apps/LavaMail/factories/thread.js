@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($injector, $translate, co, utils, crypto, user, Email, Manifest) => {
+module.exports = ($injector, $translate, co, utils, crypto, user, Email, Manifest) => {
 	const translations = {
 		LB_EMAIL_TO_YOURSELF: ''
 	};

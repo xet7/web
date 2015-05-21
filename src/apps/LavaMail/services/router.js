@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/function ($rootScope, $state, $modal, $timeout) {
+module.exports = function ($rootScope, $state, $modal, $timeout) {
 	const self = this;
 
 	let isInitialized = false;

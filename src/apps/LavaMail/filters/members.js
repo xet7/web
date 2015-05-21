@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $translate, contacts) => {
+module.exports = ($rootScope, $translate, contacts) => {
 	const translations = {
 		LB_AND_ONE_OTHER : '',
 		LB_AND_TWO_OTHERS : '',

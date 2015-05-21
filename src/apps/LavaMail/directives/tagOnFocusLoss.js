@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/ ($parse, $timeout) => {
+module.exports =  ($parse, $timeout) => {
 	return {
 		restrict: 'A',
 		require: 'ngModel',

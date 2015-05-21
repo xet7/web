@@ -1,6 +1,6 @@
 const mimelib = require('mimelib');
 
-module.exports = /*@ngInject*/($translate, contacts, utils, crypto) => {
+module.exports = ($translate, contacts, utils, crypto) => {
 	const translations = {
 		LB_NO_SUBJECT: ''
 	};

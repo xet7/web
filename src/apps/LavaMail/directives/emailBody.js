@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($translate, $timeout, $state, $compile, $sanitize, $templateCache,
+module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCache,
 							   co, user, consts, utils, crypto, notifications) => {
 	const emailRegex = /([-A-Z0-9_.]*[A-Z0-9]@[-A-Z0-9_.]*[A-Z0-9])/ig;
 	const urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;

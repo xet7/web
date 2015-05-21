@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/() =>
+module.exports = () =>
 	number => {
 		if (!number || number < 1)
 			return '';

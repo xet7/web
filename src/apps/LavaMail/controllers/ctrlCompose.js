@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $stateParams, $translate,
+module.exports = ($rootScope, $scope, $stateParams, $translate,
 							   utils, consts, co, router, composeHelpers, textAngularHelpers, crypto,
 							   user, contacts, inbox, Manifest, Contact, hotkey, ContactEmail, Email, Attachment) => {
 	$scope.toolbar = [

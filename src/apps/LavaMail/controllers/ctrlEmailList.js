@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $timeout, $state, $stateParams, $translate, $sanitize,
+module.exports = ($rootScope, $scope, $timeout, $state, $stateParams, $translate, $sanitize,
 							   user, utils, co, inbox, saver, notifications) => {
 
 	$scope.selfEmail = user.email;

@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/() => ({
+module.exports = () => ({
 	require: 'ngModel',
 	scope: {
 		otherModelValue: '=match'

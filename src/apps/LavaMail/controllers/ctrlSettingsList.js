@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($rootScope, $scope, $state, router, hotkey) => {
+module.exports = ($rootScope, $scope, $state, router, hotkey) => {
 	const settingsList = ['main.settings.general', 'main.settings.profile', 'main.settings.security', 'main.settings.plan'];
 
 	{

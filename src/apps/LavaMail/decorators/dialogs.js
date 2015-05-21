@@ -1,4 +1,4 @@
-module.exports = /*@ngInject*/($delegate, router) => {
+module.exports = ($delegate, router) => {
 	let confirm = $delegate.confirm;
 	let create = $delegate.create;
 
