@@ -2,6 +2,7 @@ const gulp = global.gulp;
 const plg = global.plg;
 
 const co = require('co');
+const chan = require('chan');
 const bluebird = require('bluebird');
 
 const crypto = require('crypto');
@@ -9,8 +10,8 @@ const fs = bluebird.promisifyAll(require('fs'));
 const path = require('path');
 const url = require('url');
 
-const childProcess = bluebird.promisifyAll(require('child_process'));
-const exec = childProcess.execAsync;
+const childProcess = require('child_process');
+const spawn = childProcess.spawn;
 const git = bluebird.promisifyAll(plg.git);
 
 const utils = require('./utils');
@@ -74,6 +75,19 @@ module.exports = function () {
 		cb();
 	});
 
+	function execute(cmd, args, opts) {
+		return co(function *(){
+			let p = spawn(cmd, args, opts);
+			let ch = chan();
+
+			p.on('exit', function (code) {
+				ch(code);
+			});
+
+			return yield ch;
+		});
+	}
+
 	function createInstallTasks(plugins) {
 		return plugins.map(plugin => {
 			console.log(`creating install task for plugin "${plugin.url}"...`);
@@ -81,16 +95,15 @@ module.exports = function () {
 
 			gulp.task(taskName, (cb) => {
 				let options = {
-					cwd: plugin.directory
+					cwd: plugin.directory,
+					stdio: 'inherit'
 				};
 
 				return co(function *() {
-					try {
-						let r = yield exec('bower install', options);
-					} catch (err) {}
-					try {
-						let r = yield exec('npm install', options);
-					} catch (err) {}
+					yield [
+						execute('bower', ['install'], options),
+						execute('npm', ['install'], options)
+					];
 				});
 			});
 
