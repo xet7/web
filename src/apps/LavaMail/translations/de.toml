@@ -1,0 +1,5 @@
+[LANG]
+	CODE = "de"
+
+[MAIN.NAV]
+   	LB_COMPOSE = "Compose(test)"

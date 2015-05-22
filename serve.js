@@ -25,7 +25,7 @@ module.exports = function () {
 	}));
 
 	// serve content, search for pre-compiled gzip with gracefully fallback to plaintext
-	['css', 'img', 'js', 'partials', 'translations', 'vendor'].forEach(function (folder) {
+	['css', 'img', 'js'].forEach(function (folder) {
 		app.use(staticGzip(paths.output + '/' + folder));
 	});
 
@@ -34,6 +34,12 @@ module.exports = function () {
 
 	// html5 support
 	app.all('/*', function(req, res, next) {
+		if (req.url.endsWith('.html')) {
+			res.status(404)
+				.send('Not found');
+			return;
+		}
+
 		req.url = '/index.html';
 
 		staticGzip(paths.output)(req, res, next);

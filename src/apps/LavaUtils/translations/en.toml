@@ -1,0 +1,108 @@
+# dialogs
+DIALOGS_ERROR = "Error"
+DIALOGS_ERROR_MSG = "An unknown error has occurred."
+DIALOGS_CLOSE = "Close"
+DIALOGS_PLEASE_WAIT = "Please Wait"
+DIALOGS_PLEASE_WAIT_ELIPS = "Please Wait..."
+DIALOGS_PLEASE_WAIT_MSG = "Waiting on operation to complete."
+DIALOGS_PERCENT_COMPLETE = "% Complete"
+DIALOGS_NOTIFICATION = "Notification"
+DIALOGS_NOTIFICATION_MSG = "Unknown application notification."
+DIALOGS_CONFIRMATION = "Confirmation"
+DIALOGS_CONFIRMATION_MSG = "Confirmation required."
+DIALOGS_OK = "OK"
+DIALOGS_YES = "Yes"
+DIALOGS_NO = "No"
+
+[LANG]
+	CODE = "en"
+	FULL_CODE = "en_US"
+
+# timeago i18n data, " " means default
+[DATES.TIMEAGO]
+	PREFIX_AGO = " "
+	PREFIX_FROM_NOW = " "
+	SUFFIX_AGO = " "
+	SUFFIX_FROM_NOW = " "
+	SECONDS = " "
+	MINUTE = " "
+	MINUTES = " "
+	HOUR = " "
+	HOURS = " "
+	DAY = " "
+	DAYS = " "
+	MONTH = " "
+	MONTHS = " "
+	YEAR = " "
+	YEARS = " "
+
+[DATES]
+	TODAY = "Today"
+    YESTERDAY = "Yesterday"
+
+[NOTIFICATIONS]
+	WEB_CRYPTO_IS_NOT_AVAILABLE_TITLE="Please update your browser."
+	WEB_CRYPTO_IS_NOT_AVAILABLE_TEXT="Looks like this browser is too slow for Lavaboom, please upgrade your browser or switch to an up-to-date version of Google Chrome, Firefox or Safari."
+	WEB_WORKERS_IS_NOT_AVAILABLE_TITLE="Please update your browser."
+    WEB_WORKERS_IS_NOT_AVAILABLE_TEXT="Looks like this browser is too slow for Lavaboom, please upgrade your browser or switch to an up-to-date version of Google Chrome, Firefox or Safari"
+    SERVED_BY_TITLE = "Welcome back"
+    SERVED_BY_TEXT = "served by {{servedBy}}"
+    SERVED_BY_UNKNOWN_TITLE = "served by Unknown server"
+    SERVED_BY_UNKNOWN_TEXT = "We do not know which server served you Lavaboom. Please contact hello@lavaboom.com."
+    NO_KEY_TITLE = "No private key found"
+    NO_KEY_TEXT = "You don't have a decrypted private key, please go to settings/security and import or decrypt one"
+    BAD_BROWSER_TITLE = "Please use a modern browser"
+    BAD_BROWSER_TEXT = "Your browser might have problems with downloading, please consider using Chrome, Firefox, Opera or I.E >= 10"
+    MOBILE_BROWSER_TITLE = "Please use desktop PC"
+    MOBILE_BROWSER_TEXT = "Our mobile platform is in the early alpha stage. Please let us know if you experience any bugs."
+    BACKUP_WARNING_TEXT = "If you see this file just opens in your browser please select save as and save it to a safe location"
+
+[GLOBAL]
+	USERNAME = "username"
+	CURRENT_EMAIL = "your current email address"
+	NEXT_STEP = "Next Step"
+	PLC_USERNAME_OR_EMAIL = "username or email address"
+	PLC_PASSWORD = "password"
+	PLC_FIRST_NAME = "First Name"
+	PLC_LAST_NAME = "Last Name"
+	PLC_DISPLAY_NAME = "Display Name"
+	PLC_COMPANY_NAME = "Company Name"
+	LB_DISPLAY_NAME = "This is the name under which you will appear when sending emails. You can use your real name or a pseudonym to stay anonymous."
+	PLC_CHOOSE_PASSWORD = "Choose password"
+	PLC_RETYPE_PASSWORD = "Retype password"
+	LB_PRIVATE_KEY = "Private Key"
+    LB_PUBLIC_KEY = "Public Key"
+    LB_NOT_IMPLEMENTED = "Not yet implemented"
+    BTN_REMOVE_NOTIFICATION = "Ok"
+
+[VALIDATION]
+	LB_REQUIRED = "This field is required"
+	LB_MIN = "Too short"
+	LB_EMAIL = "Enter a Valid Email"
+	LB_MATCH = "Both passwords should match"
+	LB_TOO_MANY_REPEATING_CHARACTERS = "Too many repeating characters"
+	LB_TOO_SIMPLE = "Your password is too simple"
+	LB_USERNAME_PATTERN = "Username can contain only a-z, 0-9 characters and optional dots(.) to separate parts"
+
+[LOADER]
+	LB_INITIALIZATION_FAILED = "Initialization failed..."
+	LB_INITIALIZING_I18N = "Loading internationalization support..."
+	LB_INITIALIZING_OPENPGP = "Initializing openpgp.js..."
+	LB_AUTHENTICATING = "Authenticating..."
+	LB_LOADING = "Loading emails & contacts..."
+	LB_DECRYPTING = "Decrypting your inbox..."
+	LB_SUCCESS = "Done!"
+	LB_BYE = "We miss you already!"
+
+# Generic error messages for Lavaboom REST API
+[LAVABOOM.API.ERROR]
+	UNKNOWN = "Unknown error, sorry about that."
+	DOWN = "We are experiencing a server issue, please try again later."
+	403 = "Wrong username or password."
+
+# Specific error message for Lavaboom REST API
+[LAVABOOM.API.ERROR.ACCOUNTS.UPDATE]
+	403 = "Incorrect old password specified"
+
+[LAVABOOM.API.ERROR.ACCOUNTS.CREATE.SETUP]
+	403 = "Weak password specified"

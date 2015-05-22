@@ -8,14 +8,16 @@ module.exports = function (config) {
 		frameworks: ['browserify', 'jasmine'],
 
 		files: [
-			'dist/js/utils-vendor.js',
-			'dist/js/appLavaboom-vendor.js',
+			'dist/js/lavaUtils-vendor.js',
+			'dist/js/lavaUtils.js',
 
-			'dist/js/appLavaboom.js',
-			'dist/js/appLavaboomLogin.js',
-			'dist/js/utils.js',
-			'dist/vendor/openpgp.js',
-			{pattern: 'dist/vendor/openpgp.worker.js', included: false},
+			'dist/js/lavaMail-vendor.js',
+			'dist/js/lavaMail.js',
+
+			'dist/js/lavaLogin.js',
+
+			'dist/js/vendor/LavaUtils/openpgp.js',
+			{pattern: 'dist/js/vendor/LavaUtils/openpgp.worker.js', included: false},
 
 			//we should have angular before mock it
 			'node_modules/angular-mocks/angular-mocks.js',
@@ -28,7 +30,7 @@ module.exports = function (config) {
 		],
 
 		proxies: {
-			'/vendor': 'http://localhost:9876/base/dist/vendor'
+			'js/vendor': 'http://localhost:9876/base/dist/js/vendor'
 		},
 
 		exclude: [],
