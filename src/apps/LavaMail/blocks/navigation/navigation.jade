@@ -1,7 +1,7 @@
 div.ng-cloak
 	nav#navigation
 		div#brand
-			a(href="https://lavaboom.com", target="_blank")
+			a(ui-sref="main.inbox.label({labelName: 'Inbox', threadId: null})")
 				img(src="#{resolveAsset('/img/Lavaboom-logo-no-shadow.svg')}")
 				img(src="#{resolveAsset('/img/Lavaboom-logo-wordmark-min.svg')}")
 		ul.list-unstyled
@@ -21,8 +21,13 @@ div.ng-cloak
 					span.icon-contacts
 					span.action {{'MAIN.NAV.LB_CONTACTS' | translate}}
 					span.combo(ng-show="isActive('g')") ({{getMultiComboPrettified('g', 'Contacts')}})
-			li(ng-class="{ active: $state.includes('main.settings') }")
+			li(ng-class="{ active: $state.includes('main.settings') }", class="hidden-xs hidden-sm")
 				a(ng-click="toggleLeftPanel('main.settings.general')", ui-sref="main.settings.general", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_SETTINGS' | translate}}")
+					span.icon-cog
+					span.action {{'MAIN.NAV.LB_SETTINGS' | translate}}
+					span.combo(ng-show="isActive('g')") ({{getMultiComboPrettified('g', 'Settings')}})
+			li(ng-class="{ active: $state.includes('main.settings') }", class="hidden-md hidden-lg")
+				a(ng-click="toggleLeftPanel('main.settings')", ui-sref="main.settings", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_SETTINGS' | translate}}")
 					span.icon-cog
 					span.action {{'MAIN.NAV.LB_SETTINGS' | translate}}
 					span.combo(ng-show="isActive('g')") ({{getMultiComboPrettified('g', 'Settings')}})
