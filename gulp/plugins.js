@@ -1,7 +1,6 @@
 const gulp = global.gulp;
 const plg = global.plg;
 
-const sort = require('sort-stream');
 const co = require('co');
 const chan = require('chan');
 const bluebird = require('bluebird');
