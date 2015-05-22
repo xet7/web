@@ -1,0 +1,76 @@
+body{
+	.lava-font();
+	-webkit-font-smoothing: antialiased;
+}
+
+.line-clamp(@lines){
+	display: -webkit-box;
+	-webkit-line-clamp: @lines;
+	-webkit-box-orient: vertical;
+	position: relative;
+	height: 0em + (@line-height-base * @lines);
+	overflow: hidden;
+}
+
+.lava-font{
+	font-weight: @base-font-weight !important;
+	.medium{
+		.lava-font-medium();
+	}
+	strong, .strong{
+		.lava-font-strong();
+	}
+	// @media (-webkit-min-device-pixel-ratio: 2), 
+	// 	(min-resolution: 192dpi) { 
+	// 	font-weight: @light-font-weight !important;
+	// 	.medium{
+	// 		font-weight: 300;
+	// 	}
+	// 	strong, .strong{
+	// 		font-weight: 400;
+	// 	}
+	// }
+}
+
+.lava-font-strong{
+	font-weight: 500;
+	@media (-webkit-min-device-pixel-ratio: 2), 
+		(min-resolution: 192dpi) {
+		font-weight: 400;
+	}
+}
+
+.lava-font-medium{
+	font-weight: 400;
+	@media (-webkit-min-device-pixel-ratio: 2), 
+		(min-resolution: 192dpi) {
+		font-weight: 300;
+	}
+}
+
+.lava-font-light{
+	font-weight: 100 !important;
+	// @media (-webkit-min-device-pixel-ratio: 2), 
+	// 	(min-resolution: 192dpi) {
+	// 	font-weight: 100 !important;
+	// }
+}
+
+.email-formatting{
+	h1{
+		.h4();
+	}
+	h2{
+		.h5();
+	}
+	h3{
+		.h6();
+	}
+	blockquote{
+		border-left: 3px solid @lava;
+		font-size: 1em;
+	}
+	img {
+		.img-responsive();
+	}
+}
