@@ -1,6 +1,7 @@
 const gulp = global.gulp;
 const plg = global.plg;
 
+const sort = require('sort-stream');
 const co = require('co');
 const chan = require('chan');
 const bluebird = require('bluebird');
@@ -112,6 +113,10 @@ module.exports = function () {
 	}
 
 	function buildVendorDependency(type, name, directory, coreAppName, vendorLibs) {
+		if (!vendorLibs.index)
+			vendorLibs.index = 0;
+		let index = vendorLibs.index++;
+
 		return co(function *(){
 			let componentDirectory = '';
 			if (type == 'bower')
@@ -126,7 +131,8 @@ module.exports = function () {
 
 			let vendorLib = {
 				name: name,
-				isMinRequired: false
+				isMinRequired: false,
+				index: index
 			};
 
 			const calcHash = (fileName) => co(function *(){
@@ -222,7 +228,9 @@ module.exports = function () {
 					return cb();
 
 				let list = [...vendorLibs[coreAppName].values()]
+					.sort((a, b) => a.index - b.index)
 					.map(vendorLib => vendorLib.fileName);
+
 				console.log('embed vendor libs for ', coreAppName, list);
 				return gulp.src(list)
 					.pipe(plg.buffer())
