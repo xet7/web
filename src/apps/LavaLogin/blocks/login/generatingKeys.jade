@@ -1,5 +1,5 @@
 form.ng-cloak(ng-class="{'errors': currentErrorMessage}")
-	img.login-logo(src="img/Lavaboom-logo.svg")
+	img.login-logo(src="#{resolveAsset('/img/Lavaboom-logo-no-shadow.svg')}")
 
 	.progress
 		.progress-bar(role='progressbar', aria-valuenow='{{progress}}', aria-valuemin='0', aria-valuemax='100', style='width: {{progress}}%;')
