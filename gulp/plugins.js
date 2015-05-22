@@ -156,6 +156,8 @@ module.exports = function () {
 		});
 	}
 
+	let waitForPromises = [];
+
 	function createBuildTasks(plugins, sectionName) {
 		return plugins.map(plugin => {
 			console.log(`creating build task for plugin "${plugin.url}"...`);
@@ -179,7 +181,7 @@ module.exports = function () {
 							if (!type || !name)
 								throw new Error(`vendor dependency supposed to have format [npm/bower/vendor]@name`);
 
-							buildVendorDependency(type, name, plugin.directory, coreAppName, vendorLibs);
+							waitForPromises.push(buildVendorDependency(type, name, plugin.directory, coreAppName, vendorLibs));
 						}
 					}
 
@@ -189,7 +191,7 @@ module.exports = function () {
 							if (!type || !name)
 								throw new Error(`vendor dependency supposed to have format [npm/bower/vendor]@name`);
 
-							buildVendorDependency(type, name, plugin.directory, coreAppName, vendorExternalLibs);
+							waitForPromises.push(buildVendorDependency(type, name, plugin.directory, coreAppName, vendorExternalLibs));
 						}
 					}
 
@@ -333,6 +335,11 @@ module.exports = function () {
 		gulp.parallel(pluginsTranslationTasks),
 		gulp.parallel(pluginsBuildTasks),
 		gulp.parallel(coreBuildTasks),
+		() => {
+			return co(function *(){
+				yield waitForPromises;
+			});
+		},
 		gulp.parallel(pluginsVendorBundleTasks),
 		gulp.parallel(pluginsVendorCopyTasks),
 		gulp.parallel(pluginsConcatTasks),
