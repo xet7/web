@@ -30,7 +30,7 @@ module.exports = function (config) {
 		],
 
 		proxies: {
-			'js/vendor': 'http://localhost:9876/base/dist/js/vendor'
+			'/js/vendor': 'http://localhost:9876/base/dist/js/vendor'
 		},
 
 		exclude: [],

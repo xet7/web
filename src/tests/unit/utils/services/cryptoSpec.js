@@ -5,7 +5,7 @@ describe('Crypto Service', () => {
 	let service,
 		$rootScope;
 
-	beforeEach(angular.mock.module('utils'));
+	beforeEach(angular.mock.module('LavaUtils'));
 
 	beforeEach(inject((crypto, _$rootScope_) => {
 		service = crypto;
@@ -13,8 +13,7 @@ describe('Crypto Service', () => {
 	}));
 
 	beforeEach(inject(($httpBackend) => {
-		//GET /translations/en.json
-		$httpBackend.whenGET('/translations/en.json').respond();
+		$httpBackend.whenGET('/translations/LavaUtils/en.json').respond();
 	}));
 
 	describe('keys generating', () => {
