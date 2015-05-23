@@ -2,14 +2,6 @@ var gulp = require('gulp');
 var args = process.argv.slice(2);
 var target = process.env.TARGET;
 
-var gutil = require('gulp-util');
-gutil.log('Hello world!');
-gutil.log('target', target);
-
-//<<<<<<< HEAD
-//require('babel/register');
-//require('./gulpfile-es6.js');
-//=======
 if (target == 'run' || args.length > 0) {
 	global.gulp = gulp;
 	global.plg = require('gulp-load-plugins')({
@@ -42,4 +34,3 @@ else
 		});
 	});
 }
-//>>>>>>> develop
