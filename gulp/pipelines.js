@@ -209,14 +209,15 @@ function Pipelines(manifest, plumber, isWatching) {
 			let lintStatus = {};
 
 			let bundleStream = postBundleAction(
-				preBundleAction(bundler.bundle(), application)
+				preBundleAction(bundler.bundle(), application, !!changedFiles)
 					.pipe(source(browserifyEntryFile))
 					.pipe(plg.rename({
 						dirname: '',
 						basename: outputName
 					}))
 					.pipe(plg.buffer()),
-				application
+				application,
+				!!changedFiles
 			);
 
 			if (changedFiles) {

@@ -76,6 +76,7 @@ module.exports = function () {
 
 	gulp.task('dependencies:wait', () => co(function *(){
 		yield vendorDependenciesResolutionPromises;
+		vendorDependenciesResolutionPromises = [];
 	}));
 
 	function createInstallTasks(plugins) {
@@ -101,21 +102,23 @@ module.exports = function () {
 		});
 	}
 
-	function buildVendorDependency(type, name, directory, coreAppName, vendorLibs) {
+	function fetchVendorDependency(plugin, coreAppName, isApplication, type, name, vendorLibs) {
 		if (!vendorLibs.index)
 			vendorLibs.index = 0;
 		let index = vendorLibs.index++;
+		if (!isApplication)
+			index += 1000000;
 
 		return co(function *(){
 			let componentDirectory = dependencyDirectories[type];
 			if (!componentDirectory)
 				throw new Error(`unsupported vendor dependency! expected to see [npm/bower/vendor]@name`);
 
-			let libraryPath = path.resolve(directory, componentDirectory, name);
+			let libraryPath = path.resolve(plugin.directory, componentDirectory, name);
 
 			let vendorLib = {
+				pluginName: plugin.name,
 				name: name,
-				isMinRequired: false,
 				index: index
 			};
 
@@ -139,6 +142,25 @@ module.exports = function () {
 		});
 	}
 
+	function fetchVendorDependencies (plugin, coreAppName, isApplication, dependencies, libs) {
+		if (!dependencies)
+			return;
+
+		if (libs[coreAppName]) {
+			for (let lib of [...libs[coreAppName].values()])
+				if (lib.pluginName == plugin.name)
+					libs[coreAppName].delete(lib.hash);
+		}
+
+		for (let d of dependencies) {
+			let [type, name] = d.split('@');
+			if (!type || !name)
+				throw new Error(`vendor dependency supposed to have format [npm/bower/vendor]@name`);
+
+			vendorDependenciesResolutionPromises.push(fetchVendorDependency(plugin, coreAppName, isApplication, type, name, libs));
+		}
+	}
+
 	function createBuildTasks(plugins, sectionName) {
 		return plugins.map(plugin => {
 			console.log(`creating build task for plugin "${plugin.url}"...`);
@@ -152,26 +174,15 @@ module.exports = function () {
 				if (translationsByApp[plugin.name])
 					env.translations = translationsByApp[plugin.name];
 
-				return pipelines.browserifyBundle(base, plugin.path, sectionName, env, null, (bundler, config) => {
-					let coreAppName = sectionName == 'APPLICATION' ? plugin.name : config.belongsTo;
+				return pipelines.browserifyBundle(base, plugin.path, sectionName, env, null, (bundler, config, isUpdate) => {
+					let isApplication = sectionName == 'APPLICATION';
+					let coreAppName = isApplication ? plugin.name : config.belongsTo;
 
-					let fetchVendorDependencies = (dependencies, libs) => {
-						if (dependencies) {
-							for (let d of dependencies) {
-								let [type, name] = d.split('@');
-								if (!type || !name)
-									throw new Error(`vendor dependency supposed to have format [npm/bower/vendor]@name`);
-
-								vendorDependenciesResolutionPromises.push(buildVendorDependency(type, name, plugin.directory, coreAppName, libs));
-							}
-						}
-					};
-
-					fetchVendorDependencies(config.vendorDependencies, vendorLibs);
-					fetchVendorDependencies(config.vendorExternalDependencies, vendorExternalLibs);
+					fetchVendorDependencies(plugin, coreAppName, isApplication, config.vendorDependencies, vendorLibs);
+					fetchVendorDependencies(plugin, coreAppName, isApplication, config.vendorExternalDependencies, vendorExternalLibs);
 
 					plugin.config = config;
-					if (sectionName == 'PLUGIN') {
+					if (!isUpdate && sectionName == 'PLUGIN') {
 						if (!pluginsByApp[coreAppName])
 							pluginsByApp[coreAppName] = [];
 						pluginsByApp[coreAppName].push(plugin);
@@ -180,6 +191,12 @@ module.exports = function () {
 					return bundler
 						.pipe(plg.tap(file => {
 							plugin.content = file.contents.toString();
+
+							if (isUpdate)
+								gulp.series(
+									'dependencies:wait',
+									'plugins:concat:' + coreAppName
+								)();
 						}));
 				});
 			}));
