@@ -40,7 +40,7 @@ please check `web/gulp/config.js` for available configuration options
 - `listenAddress` - web server's listen address for development(when running `gulp` default target)
 - `listenPort` - web server's listen port for development(when running `gulp` default target)
 
-## How to report a issue?
+## How to report an issue?
 
 You've found something that looks weird, you suppose this is a bug?
 In order to speed up issue processing, please include the following information:
