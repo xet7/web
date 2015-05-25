@@ -1,6 +1,7 @@
 const gulp = global.gulp;
 const plg = global.plg;
 
+const karma = require('karma').server;
 const os = require('os');
 const fs = require('fs');
 const del = require('del');
@@ -132,15 +133,6 @@ gulp.task('clean', cb => {
 	cb(null);
 });
 
-// Run some unit tests to check key logic
-gulp.task('tests', () =>
-	gulp.src(paths.tests.unit.input)
-		.pipe(plumber())
-		.pipe(plg.babel())
-		.pipe(gulp.dest(os.tmpdir()))
-		.pipe(plg.jasmine())
-);
-
 // Serve it, baby!
 gulp.task('serve', cb => {
 	if (isServe) {
@@ -173,15 +165,36 @@ gulp.task('compile:finished', gulp.series(
 	'persists:paths', 'build:jade', 'serve'
 ));
 
+//gulp.task('compile:script', gulp.parallel(
+//	'build:plugins', 'copy:vendor', 'build:scripts:vendor'
+//));
+
 // Compile files
 gulp.task('compile', gulp.series(
 	gulp.parallel('lint:scripts'),
-	'tests',
+	//'tests',
 	gulp.parallel(compileSteps),
 	'compile:finished'
 ));
 
+gulp.task('tests:integration', (cb) =>
+	karma.start({
+		configFile: __dirname + '/karma-integration.conf.js',
+		singleRun: true
+	}, cb)
+);
+
+gulp.task('tests:unit', (cb) =>
+	karma.start({
+		configFile: __dirname + '/karma-unit.conf.js',
+		singleRun: true
+	}, cb)
+);
+
+gulp.task('tests:all', gulp.parallel('lint:scripts', 'tests:integration', 'tests:unit'));
+
 let startingTasks = gulp.series(gulp.parallel('clean'), 'build:plugins', 'compile');
+
 /*
 	Gulp primary tasks
  */
@@ -191,7 +204,7 @@ gulp.task('default', gulp.series(
 	cb => {
 		// live reload for everything except browserify(as we use watchify)
 		gulp.watch(paths.img.input, gulp.series('copy:images'));
-		gulp.watch(paths.fonts.inputWatch, gulp.series('copy:fonts'));
+		gulp.watch(paths.fonts.input, gulp.series('copy:fonts'));
 		gulp.watch(paths.styles.inputAll, gulp.series('build:styles'));
 		gulp.watch(paths.markup.input, gulp.series('build:jade'));
 		//gulp.watch(paths.translations.input, gulp.series('build:translations'));
@@ -209,5 +222,8 @@ gulp.task('default', gulp.series(
 gulp.task('develop', startingTasks);
 
 gulp.task('production', startingTasks);
+
+//should build translation as well because they are injected direct to sources
+gulp.task('tests', gulp.series('build:plugins', 'tests:all'));
 
 // woa!
