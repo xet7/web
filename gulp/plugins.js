@@ -2,28 +2,30 @@ const gulp = global.gulp;
 const plg = global.plg;
 
 const co = require('co');
-const chan = require('chan');
 const bluebird = require('bluebird');
 
-const crypto = require('crypto');
 const fs = bluebird.promisifyAll(require('fs'));
 const path = require('path');
 const url = require('url');
 
-const childProcess = require('child_process');
-const spawn = childProcess.spawn;
 const git = bluebird.promisifyAll(plg.git);
 
 const utils = require('./utils');
 const config = require('./config');
 const paths = require('./paths');
 
-let pipelines = global.pipelines;
 let sharedEnvironment = global.sharedEnvironment;
+let pipelines = global.pipelines;
 let plumber = global.plumber;
 
 module.exports = function () {
 	const base = path.resolve(__dirname, '..');
+
+	const dependencyDirectories = {
+		'bower':'bower_components',
+		'npm':'node_modules',
+		'vendor': 'vendor'
+	};
 
 	let translationsByApp = {};
 	let vendorLibs = {};
@@ -71,23 +73,6 @@ module.exports = function () {
 		});
 	});
 
-	gulp.task('plugins:finish', (cb) => {
-		cb();
-	});
-
-	function execute(cmd, args, opts) {
-		return co(function *(){
-			let p = spawn(cmd, args, opts);
-			let ch = chan();
-
-			p.on('exit', function (code) {
-				ch(code);
-			});
-
-			return yield ch;
-		});
-	}
-
 	function createInstallTasks(plugins) {
 		return plugins.map(plugin => {
 			console.log(`creating install task for plugin "${plugin.url}"...`);
@@ -101,8 +86,8 @@ module.exports = function () {
 
 				return co(function *() {
 					yield [
-						execute('bower', ['install'], options),
-						execute('npm', ['install'], options)
+						utils.execute('bower', ['install'], options),
+						utils.execute('npm', ['install'], options)
 					];
 				});
 			});
@@ -117,14 +102,9 @@ module.exports = function () {
 		let index = vendorLibs.index++;
 
 		return co(function *(){
-			let componentDirectory = '';
-			if (type == 'bower')
-				componentDirectory = 'bower_components';
-			else if (type == 'npm')
-				componentDirectory = 'node_modules';
-			else if (type == 'vendor')
-				componentDirectory = 'vendor';
-			else throw new Error(`unsupported vendor dependency! expected to see [npm/bower/vendor]@name`);
+			let componentDirectory = dependencyDirectories[type];
+			if (!componentDirectory)
+				throw new Error(`unsupported vendor dependency! expected to see [npm/bower/vendor]@name`);
 
 			let libraryPath = path.resolve(directory, componentDirectory, name);
 
@@ -134,24 +114,17 @@ module.exports = function () {
 				index: index
 			};
 
-			const calcHash = (fileName) => co(function *(){
-				let content = yield fs.readFileAsync(fileName, 'utf8');
-				let sha = crypto.createHash('sha256');
-				sha.update(content, 'utf8');
-				return sha.digest().toString('hex');
-			});
-
 			if (!config.isProduction || libraryPath.endsWith('.min.js')) {
 				vendorLib.fileName = libraryPath;
-				vendorLib.hash = yield calcHash(libraryPath);
+				vendorLib.hash = yield utils.calcHash(libraryPath);
 			} else {
 				let libraryMinPath = libraryPath.replace('.js', '.min.js');
 				try {
 					vendorLib.fileName = libraryMinPath;
-					vendorLib.hash = yield calcHash(libraryMinPath);
+					vendorLib.hash = yield utils.calcHash(libraryMinPath);
 				} catch (err) {
 					vendorLib.fileName = libraryPath;
-					vendorLib.hash = yield calcHash(libraryPath);
+					vendorLib.hash = yield utils.calcHash(libraryPath);
 				}
 			}
 
@@ -349,7 +322,6 @@ module.exports = function () {
 		},
 		gulp.parallel(pluginsVendorBundleTasks),
 		gulp.parallel(pluginsVendorCopyTasks),
-		gulp.parallel(pluginsConcatTasks),
-		'plugins:finish'
+		gulp.parallel(pluginsConcatTasks)
 	);
 };
