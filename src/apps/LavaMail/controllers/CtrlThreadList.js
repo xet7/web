@@ -242,7 +242,6 @@ module.exports = ($rootScope, $scope, $state, $timeout, $interval, $translate,
 
 				description: 'HOTKEY.DELETE_EMAIL',
 				callback: (event, key) => {
-					console.log('d');
 					event.preventDefault();
 					$scope.deleteThread($scope.selectedTid);
 				}
@@ -252,7 +251,6 @@ module.exports = ($rootScope, $scope, $state, $timeout, $interval, $translate,
 				combo: 'r',
 				description: 'HOTKEY.REPLY_EMAIL',
 				callback: (event, key) => {
-					console.log('к');
 					event.preventDefault();
 					$scope.replyThread(event, $scope.selectedTid);
 				}

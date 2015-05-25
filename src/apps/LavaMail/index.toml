@@ -38,5 +38,6 @@
 		"bower@ngInfiniteScroll/build/ng-infinite-scroll.js",
 		"bower@angular-hotkeys/build/hotkeys.js",
 		"bower@angular-timeago/src/timeAgo.js",
-		"bower@angular-dialog-service/dist/dialogs.min.js"
+		"bower@angular-dialog-service/dist/dialogs.min.js",
+		"npm@q-encoding/q.js",
 	]

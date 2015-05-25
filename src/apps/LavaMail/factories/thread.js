@@ -1,3 +1,5 @@
+const utf8 = require('utf8');
+
 module.exports = ($injector, $translate, co, utils, crypto, user, Email, Manifest) => {
 	const translations = {
 		LB_EMAIL_TO_YOURSELF: ''
