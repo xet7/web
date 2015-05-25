@@ -105,7 +105,7 @@ module.exports = function($injector, $rootScope, $templateCache, co, consts) {
 
 	this.Uint8Array2str = (array) => openpgp.util.Uint8Array2str(array);
 
-	this.getRandomString = (size) => openpgp.util.hexstrdump(openpgp.crypto.random.getRandomBytes(size));
+	this.getRandomString = (size = 16) => openpgp.util.hexstrdump(openpgp.crypto.random.getRandomBytes(size));
 
 	this.uniq = (array, key = null) => {
 		if (!key)

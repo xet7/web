@@ -307,6 +307,8 @@ module.exports = ($rootScope, $scope, $stateParams, $translate,
 			subject: $scope.form.subject
 		});
 
+		console.log('sending a candy', $scope.form.body);
+
 		manifest.setBody($scope.form.body, 'text/html');
 		for(let attachmentStatus of $scope.attachments)
 			manifest.addAttachment(attachmentStatus.attachment.id,
