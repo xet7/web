@@ -13,8 +13,10 @@ module.exports = ($injector, $translate, co, utils, crypto, user, Email, Manifes
 				.map(e => e.address == user.email ? '' : e.prettyName)
 				.filter(e => !!e);
 
-			if (r.length < 1)
+			if (r.length < 1) {
 				r = [translations.LB_EMAIL_TO_YOURSELF];
+				self.isToYourself = true;
+			}
 
 			return r;
 		};
@@ -40,6 +42,7 @@ module.exports = ($injector, $translate, co, utils, crypto, user, Email, Manifes
 		self.id = opt.id;
 		self.created = opt.date_created;
 		self.modified = opt.date_modified;
+		self.isToYourself = false;
 
 		self.members = opt.members && opt.members.length > 0 ? filterMembers(Manifest.parseAddresses(opt.members)) : [];
 		self.membersPretty = prettify(self.members);

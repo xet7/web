@@ -28,9 +28,9 @@ div.pane-status(ng-if="selectedTid === null")
 
 .global-mail-actions(ng-hide="isLoading")
 	div.btn-group
-		button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: emails[emails.length - 1].id})")
+		button.btn.btn-default(ng-show="selectedTid && !threads[selectedTid].isToYourself", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: emails[emails.length - 1].id})")
 			span.icon-reply
-		button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: emails[emails.length - 1].id, isReplyAll: true})")
+		button.btn.btn-default(ng-show="selectedTid && !threads[selectedTid].isToYourself", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: emails[emails.length - 1].id, isReplyAll: true})")
 			span.icon-reply-all
 		button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {forwardThreadId: selectedTid})")
 			span.icon-arrow-right
@@ -80,22 +80,12 @@ div(ng-if="selectedTid").main-view
 				.row.no-gutter
 					.col-xs-12(ng-repeat="file in email.files")
 						include ./_attachment
-			//- ul.nav.navbar-nav.navbar-right.navbar-right-buttons
-			//- 	li(ng-show="selectedTid")
-			//- 		button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
-			//- 			span.icon-reply
-			//- 	li(ng-show="selectedTid")
-			//- 		button.btn.btn-default(ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
-			//- 			span.icon-reply-all
-			//- 	li(ng-show="selectedTid")
-			//- 		button.btn.btn-default(ng-click="showPopup('compose', {forwardEmailId: email.id})")
-			//- 			span.icon-arrow-right
 			div.btn-group.navbar-right-buttons
 				button.btn.btn-default(ng-show="selectedTid", ng-click="downloadEmail(email.originalBodyData, email.id, email.isHtml)", tooltip="{{'MAIN.COMPOSE.TOOLTIP_DOWNLOAD_ORIGINAL' | translate}}", tooltip-append-to-body="true")
 					span.icon-download
-				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
+				button.btn.btn-default(ng-show="selectedTid && !threads[selectedTid].isToYourself", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
 					span.icon-reply
-				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id, isReplyAll: true})")
+				button.btn.btn-default(ng-show="selectedTid && !threads[selectedTid].isToYourself", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id, isReplyAll: true})")
 					span.icon-reply-all
 				button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {forwardEmailId: email.id})")
 					span.icon-arrow-right
