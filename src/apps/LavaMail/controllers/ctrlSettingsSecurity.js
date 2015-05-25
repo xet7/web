@@ -24,6 +24,7 @@ module.exports = ($scope, $timeout, $translate, $state,
 		LB_CANNOT_IMPORT_CORRUPTED: '',
 		LB_CANNOT_IMPORT_PUB_KEY_NOT_SUPPORTED: '',
 		LB_CANNOT_IMPORT_NO_PRIVATE_KEYS_FOUND: '',
+		LB_CANNOT_IMPORT_UNEXPECTED_KEY_TYPE_FOUND: '',
 		LB_IMPORTED: '%'
 	};
 	$translate.bindAsObject(translations, 'MAIN.SETTINGS.SECURITY');

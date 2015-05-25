@@ -235,6 +235,7 @@
 	LB_CANNOT_IMPORT_WRONG_FORMAT = "Cannot import keys, json or armored key expected"
 	LB_CANNOT_IMPORT_CORRUPTED = "Cannot import keys, backup is corrupted or has wrong format"
 	LB_CANNOT_IMPORT_PUB_KEY_NOT_SUPPORTED = "Expected to see a private key..."
+	LB_CANNOT_IMPORT_UNEXPECTED_KEY_TYPE_FOUND = "Cannot import keys, unexpected key type"
 
 	TITLE_CONFIRM = "Please confirm"
 	LB_CONFIRM_PASSWORD_CHANGE = "Do you really want to change password?"
