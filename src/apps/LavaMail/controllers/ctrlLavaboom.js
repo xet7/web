@@ -1,4 +1,4 @@
-module.exports = ($rootScope, $timeout, $scope, $state, $translate,
+module.exports = ($rootScope, $timeout, $scope, $state, $translate, $sanitize,
 							   notifications, tests, utils,
 							   router,
 							   LavaboomAPI, co, translate, crypto, user, inbox, contacts, hotkey, loader, timeAgo) => {
@@ -257,6 +257,9 @@ module.exports = ($rootScope, $timeout, $scope, $state, $translate,
 			yield [inbox.initialize(), contacts.initialize()];
 
 			yield tests.performCompatibilityChecks();
+
+			if (user.settings.styles == 'all')
+				yield $sanitize.enableCss();
 
 			if ($state.current.name == 'empty')
 				yield $state.go('main.inbox.label', {labelName: 'inbox', threadId: null}, {reload: true});

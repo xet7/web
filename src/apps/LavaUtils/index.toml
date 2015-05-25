@@ -22,8 +22,7 @@
 
 	vendorDependencies = [
 		"vendor@blob.js",
-		"vendor@html-css-sanitizer.min.js",
-        "vendor@html-sanitizer.min.js",
+		"vendor@html-sanitizer.min.js",
 
 		"bower@angular/angular.js",
 		"bower@angular-sanitize/angular-sanitize.js",
@@ -49,5 +48,6 @@
 
 	vendorExternalDependencies = [
 		"bower@openpgp/dist/openpgp.js",
-		"bower@openpgp/dist/openpgp.worker.js"
+		"bower@openpgp/dist/openpgp.worker.js",
+		"vendor@html-css-sanitizer.min.js"
 	]

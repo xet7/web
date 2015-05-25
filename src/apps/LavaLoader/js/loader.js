@@ -91,39 +91,12 @@ module.exports = (assets) => {
 		DEBUG_DELAY = 0,
 		APP_TRANSITION_DELAY = 500;
 
-	const loadedScripts = {};
-
-	const loadJS = (src) => new Promise((resolve, reject) => {
-		if (loadedScripts[src])
-			return resolve();
-
-		const ref = window.document.getElementsByTagName('script')[ 0 ];
-		const script = window.document.createElement('script');
-		script.src = src;
-		script.async = true;
-		script.onload = (e) => {
-			console.log(`loader loaded '${src}'`, e);
-			loadedScripts[src] = true;
-
-			if (DEBUG_DELAY)
-				setTimeout(() => {
-					resolve(e);
-				}, DEBUG_DELAY);
-			else
-				resolve(e);
-		};
-		script.onerror = (e) => {
-			console.log(`loader: error during loading '${src}'`, e);
-			reject();
-		};
-
-		ref.parentNode.insertBefore(script, ref);
-	});
-
 	function Loader () {
 		console.log('Initialize loader...');
 
 		const self = this;
+
+		const loadedScripts = {};
 
 		const
 		// loader elements
@@ -138,6 +111,35 @@ module.exports = (assets) => {
 			isMainApp = false,
 			currentProgress = 0,
 			progress = 0;
+
+
+		this.loadJS = (src, isReload = false) => new Promise((resolve, reject) => {
+			if (loadedScripts[src] && !isReload)
+				return resolve();
+
+			const ref = window.document.getElementsByTagName('script')[ 0 ];
+			const script = window.document.createElement('script');
+			script.src = src;
+			script.async = true;
+			script.onload = (e) => {
+				console.log(`loader loaded '${src}'`, e);
+				loadedScripts[src] = true;
+
+				if (DEBUG_DELAY)
+					setTimeout(() => {
+						resolve(e);
+					}, DEBUG_DELAY);
+				else
+					resolve(e);
+			};
+			script.onerror = (e) => {
+				console.log(`loader: error during loading '${src}'`, e);
+				reject();
+			};
+
+			ref.parentNode.insertBefore(script, ref);
+		});
+
 
 		const showContainer = (e, lbDone, isImmediate = false) => new Promise((resolve) => {
 			if (e.container != LOADER.container)
@@ -170,7 +172,7 @@ module.exports = (assets) => {
 
 				self.setProgress(script.progressText, Math.ceil(progress + (opts.afterProgressValue - progress) * loaded / total));
 
-				loadJS(process.env.IS_PRODUCTION && assets[script.src] ? assets[script.src] : script.src)
+				self.loadJS(process.env.IS_PRODUCTION && assets[script.src] ? assets[script.src] : script.src)
 					.then(() => {
 						if (opts.scripts.length > 0)
 							load(loaded + 1);

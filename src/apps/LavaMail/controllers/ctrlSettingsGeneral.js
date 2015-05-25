@@ -1,4 +1,4 @@
-module.exports = ($rootScope, $scope, $interval, $translate, $timeout, translate, user, hotkey, co, notifications) => {
+module.exports = ($rootScope, $scope, $interval, $translate, $timeout, $sanitize, translate, user, hotkey, co, notifications, inbox) => {
 	$scope.form = {
 		selectedLanguage: null,
 		contactsSortBy: null
@@ -109,6 +109,10 @@ module.exports = ($rootScope, $scope, $interval, $translate, $timeout, translate
 						timeout: 3000,
 						namespace: 'settings'
 					});
+
+					if (o.styles != n.styles) {
+						location.reload();
+					}
 				} catch (err) {
 					notifications.set('profile-save-fail', {
 						text: translations.LB_PROFILE_CANNOT_BE_SAVED,

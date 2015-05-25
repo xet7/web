@@ -1,5 +1,9 @@
-module.exports = function() {
+module.exports = function($q) {
 	let loader = window.loader;
+
+	this.loadJS = (src, isReload = false) => {
+		return $q.when(loader.loadJS(src, isReload));
+	};
 
 	this.loadMainApplication = (opts) => {
 		loader.loadMainApplication(opts);
