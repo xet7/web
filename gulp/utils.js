@@ -21,6 +21,10 @@ function Utils() {
 		});
 	};
 
+	this.createEmptyTask = function () {
+		return cb => cb();
+	};
+
 	this.createFile = function (name, content) {
 		var stream = source(name);
 		stream.write(content);

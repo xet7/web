@@ -27,6 +27,7 @@ module.exports = function () {
 		'vendor': 'vendor'
 	};
 
+	let vendorDependenciesResolutionPromises = [];
 	let translationsByApp = {};
 	let vendorLibs = {};
 	let vendorExternalLibs = {};
@@ -72,6 +73,10 @@ module.exports = function () {
 			}));
 		});
 	});
+
+	gulp.task('dependencies:wait', () => co(function *(){
+		yield vendorDependenciesResolutionPromises;
+	}));
 
 	function createInstallTasks(plugins) {
 		return plugins.map(plugin => {
@@ -134,8 +139,6 @@ module.exports = function () {
 		});
 	}
 
-	let waitForPromises = [];
-
 	function createBuildTasks(plugins, sectionName) {
 		return plugins.map(plugin => {
 			console.log(`creating build task for plugin "${plugin.url}"...`);
@@ -152,27 +155,22 @@ module.exports = function () {
 				return pipelines.browserifyBundle(base, plugin.path, sectionName, env, null, (bundler, config) => {
 					let coreAppName = sectionName == 'APPLICATION' ? plugin.name : config.belongsTo;
 
+					let fetchVendorDependencies = (dependencies, libs) => {
+						if (dependencies) {
+							for (let d of dependencies) {
+								let [type, name] = d.split('@');
+								if (!type || !name)
+									throw new Error(`vendor dependency supposed to have format [npm/bower/vendor]@name`);
+
+								vendorDependenciesResolutionPromises.push(buildVendorDependency(type, name, plugin.directory, coreAppName, libs));
+							}
+						}
+					};
+
+					fetchVendorDependencies(config.vendorDependencies, vendorLibs);
+					fetchVendorDependencies(config.vendorExternalDependencies, vendorExternalLibs);
+
 					plugin.config = config;
-					if (config.vendorDependencies) {
-						for (let d of config.vendorDependencies) {
-							let [type, name] = d.split('@');
-							if (!type || !name)
-								throw new Error(`vendor dependency supposed to have format [npm/bower/vendor]@name`);
-
-							waitForPromises.push(buildVendorDependency(type, name, plugin.directory, coreAppName, vendorLibs));
-						}
-					}
-
-					if (config.vendorExternalDependencies) {
-						for (let d of config.vendorExternalDependencies) {
-							let [type, name] = d.split('@');
-							if (!type || !name)
-								throw new Error(`vendor dependency supposed to have format [npm/bower/vendor]@name`);
-
-							waitForPromises.push(buildVendorDependency(type, name, plugin.directory, coreAppName, vendorExternalLibs));
-						}
-					}
-
 					if (sectionName == 'PLUGIN') {
 						if (!pluginsByApp[coreAppName])
 							pluginsByApp[coreAppName] = [];
@@ -306,20 +304,15 @@ module.exports = function () {
 	let pluginsVendorCopyTasks = createVendorCopyTasks();
 	let pluginsConcatTasks = createConcatTasks();
 
-
 	if (pluginsBuildTasks.length < 1)
-		pluginsBuildTasks.push(cb => cb());
+		pluginsBuildTasks.push(utils.createEmptyTask());
 
 	return gulp.series(
 		'plugins:update',
 		gulp.parallel(pluginsTranslationTasks),
 		gulp.parallel(pluginsBuildTasks),
 		gulp.parallel(coreBuildTasks),
-		() => {
-			return co(function *(){
-				yield waitForPromises;
-			});
-		},
+		'dependencies:wait',
 		gulp.parallel(pluginsVendorBundleTasks),
 		gulp.parallel(pluginsVendorCopyTasks),
 		gulp.parallel(pluginsConcatTasks)
