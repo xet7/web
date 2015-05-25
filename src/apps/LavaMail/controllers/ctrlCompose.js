@@ -294,17 +294,13 @@ module.exports = ($rootScope, $scope, $stateParams, $translate,
 			a[e.email] = co.transform(co.def(e.loadKey(), null), e => e ? e.armor() : null);
 			return a;
 		}, {}));
-		console.log('compose: loaded keys for encryption', keys);
-		console.log('to', $scope.form.selected.to);
-		console.log('to', $scope.form.selected.cc);
-		console.log('to', $scope.form.selected.bcc);
 
 		const isSecured = Email.isSecuredKeys(keys);
 
 		yield $scope.attachments.map(attachmentStatus => $scope.uploadAttachment(attachmentStatus, keys));
 
 		manifest = Manifest.create({
-			fromEmail: user.email,
+			fromEmail: user.styledEmail,
 			to,
 			cc,
 			bcc,
