@@ -182,14 +182,17 @@ function AngularApplication ({name, dependencies, productionOnlyDependencies, is
 let config = process.env.applicationConfig;
 let application = new AngularApplication(config);
 
-if (process.env.translations) {
+if (process.env.translationPath) {
 	let translationConfig = /*@ngInject*/($translateProvider, consts) => {
 		const setDefaultTranslation = (translation) =>
 			$translateProvider.translations(consts.DEFAULT_LANG, translation);
-		$translateProvider.useSanitizeValueStrategy('escaped');
+
+		let defaultTranslation = consts.stripBOM(fs.readFileSync(process.env.translationPath, 'utf8'));
+
+		console.log('default translate loaded from', process.env.translationPath, defaultTranslation);
 
 		setDefaultTranslation(
-			JSON.parse(consts.stripBOM(process.env.translations[consts.DEFAULT_LANG]))
+			JSON.parse(defaultTranslation)
 		)
 			.fallbackLanguage(consts.DEFAULT_LANG)
 			.preferredLanguage(localStorage.lang ? localStorage.lang : consts.DEFAULT_LANG)
@@ -197,6 +200,8 @@ if (process.env.translations) {
 				prefix: '/translations/' + config.name + '/',
 				suffix: '.json'
 			});
+
+		$translateProvider.useSanitizeValueStrategy('escaped');
 	};
 
 	application
