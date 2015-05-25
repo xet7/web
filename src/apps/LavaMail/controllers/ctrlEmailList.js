@@ -78,7 +78,7 @@ module.exports = ($rootScope, $scope, $timeout, $state, $stateParams, $translate
 	};
 
 	$scope.$on('inbox-new', (e, threadId) => {
-		if (threadId == $scope.selectedTid)
+		if (threadId == $scope.selectedTid && $scope.emails.every(e => e.body.state == 'ok'))
 			inbox.setThreadReadStatus($scope.selectedTid);
 	});
 
@@ -108,7 +108,8 @@ module.exports = ($rootScope, $scope, $timeout, $state, $stateParams, $translate
 					return e;
 				});
 
-				inbox.setThreadReadStatus($scope.selectedTid);
+				if ($scope.emails.every(e => e.body.state == 'ok'))
+					inbox.setThreadReadStatus($scope.selectedTid);
 			} finally {
 				$scope.isLoading = false;
 			}
