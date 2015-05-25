@@ -28,7 +28,6 @@ module.exports = function () {
 	};
 
 	let vendorDependenciesResolutionPromises = [];
-	let translationsByApp = {};
 	let vendorLibs = {};
 	let vendorExternalLibs = {};
 	let pluginsByApp = {};
@@ -170,10 +169,11 @@ module.exports = function () {
 			for(let k of Object.keys(sharedEnvironment))
 				env[k] = sharedEnvironment[k];
 
-			gulp.task(taskName, gulp.series('plugins:install:' + plugin.name, () => {
-				if (translationsByApp[plugin.name])
-					env.translations = translationsByApp[plugin.name];
+			let path = paths.translations.outputForPlugin(plugin.name) + config.defaultLanguageCode + '.json';
+			if (fs.existsSync(path))
+				env.translationPath = path;
 
+			gulp.task(taskName, gulp.series('plugins:install:' + plugin.name, () => {
 				return pipelines.browserifyBundle(base, plugin.path, sectionName, env, null, (bundler, config, isUpdate) => {
 					let isApplication = sectionName == 'APPLICATION';
 					let coreAppName = isApplication ? plugin.name : config.belongsTo;
@@ -236,20 +236,19 @@ module.exports = function () {
 	function createTranslationsBuildTasks(base, names) {
 		return names.map(name => {
 			console.log(`creating translations build task for "${name}"...`);
+
 			let taskName = 'plugins:translations:' + name;
+			let path = base + name + '/translations/*.toml';
 
 			gulp.task(taskName, (cb) => {
-				return gulp.src(base + name + '/translations/*.toml')
+				return gulp.src(path)
 					.pipe(plumber())
 					.pipe(plg.buffer())
 					.pipe(plg.toml({to: JSON.stringify, ext: '.json'}))
-					.pipe(plg.tap(file => {
-						if (!translationsByApp[name])
-							translationsByApp[name] = {};
-						translationsByApp[name][path.basename(file.path, path.extname(file.path))] = file.contents.toString();
-					}))
 					.pipe(gulp.dest(paths.translations.outputForPlugin(name)));
 			});
+
+			gulp.watch(path, gulp.series(taskName));
 
 			return taskName;
 		});

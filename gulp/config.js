@@ -5,6 +5,7 @@ module.exports = {
 	defaultApiUri: 'https://api.lavaboom.com',
 	contribPluginsBaseUrl: 'https://github.com/lavab-plugins/',
 	coreAppNames: ['LavaLoader', 'LavaUtils', 'LavaLogin', 'LavaMail'],
+	defaultLanguageCode: 'en',
 	defaultRootDomain: 'lavaboom.com',
 	livereloadListenAddress: '0.0.0.0',
 	livereloadListenPort: 35729,
