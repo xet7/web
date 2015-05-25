@@ -83,12 +83,20 @@ module.exports = ($translate, contacts, utils, crypto) => {
 			return [];
 
 		return (angular.isArray(src) ? src : [src])
-			.map(e => Manifest.formatAddress(e));
+			.filter(e => !!e)
+			.map(e => Manifest.formatAddress(e))
+			.filter(e => !!e);
 	};
 
 	Manifest.formatAddress = (fromAddress) => {
+		if (!fromAddress)
+			return null;
+
 		if (!fromAddress.address)
 			fromAddress = mimelib.parseAddresses(fromAddress)[0];
+
+		if (!fromAddress)
+			return null;
 
 		const address = fromAddress.address ? fromAddress.address : fromAddress;
 		const fromContact = contacts.getContactByEmail(address);
