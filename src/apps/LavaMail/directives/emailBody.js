@@ -133,20 +133,22 @@ module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCa
 				if (imagesSetting == 'none') {
 					node.parentNode.replaceChild(noImageTemplateDOM, node);
 				} else if (imagesSetting == 'proxy') {
-					const proxifiedImageUri = `${consts.IMAGES_PROXY_URI}/i/${src.replace(/http[s]*:\/\//i, '')}`;
-					node.setAttribute('src', proxifiedImageUri);
+					if (!src.startsWith(consts.IMAGES_PROXY_URI)) {
+						const proxifiedImageUri = `${consts.IMAGES_PROXY_URI}/i/${src.replace(/http[s]*:\/\//i, '')}`;
+						node.setAttribute('src', proxifiedImageUri);
 
-					const parent = node.parentNode;
-					if (parent.nodeName != 'A')
-						return;
+						const parent = node.parentNode;
+						if (parent.nodeName != 'A')
+							return;
 
-					let href = parent.getAttribute('href');
-					if (!href)
-						return;
+						let href = parent.getAttribute('href');
+						if (!href)
+							return;
 
-					href = href.trim();
-					if (href == src)
-						parent.setAttribute('href', proxifiedImageUri);
+						href = href.trim();
+						if (href == src)
+							parent.setAttribute('href', proxifiedImageUri);
+					}
 				} else if (imagesSetting == 'directHttps') {
 					if (!src.startsWith('https://'))
 						node.parentNode.replaceChild(noImageTemplateDOM, node);
