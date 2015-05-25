@@ -33,7 +33,9 @@ div.ng-cloak
 					span.combo(ng-show="isActive('g')") ({{getMultiComboPrettified('g', 'Settings')}})
 			li.logout
 				small {{manifest.name}} 2015
-				small(title="{{servedBy.title}}") {{manifest.version}} {{servedBy.text}}
+				small(title="{{servedBy.title}}")
+					a(href="https://github.com/lavab/web/blob/master/CHANGELOG.md", target="_blank") {{manifest.version}}
+					|&nbsp;{{servedBy.text}}
 				button(ng-click="logout()", tooltip-placement="right", tooltip = "{{'MAIN.NAV.LB_LOGOUT' | translate}}")
 					span.icon-power
 					span.action {{'MAIN.NAV.LB_LOGOUT' | translate}} ({{name}})
