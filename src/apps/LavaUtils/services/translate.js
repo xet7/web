@@ -1,10 +1,12 @@
+const fs = require('fs');
+
 module.exports = function($rootScope, $http, $translate, co, consts) {
 	const self = this;
 
 	this.settings = {};
 
 	this.initialize = () => co(function *(){
-		let index = process.env.translations ? process.env.translations.index : '';
+		let index = process.env.translationIndexPath ? fs.readFileSync(process.env.translationIndexPath, 'utf8') : '';
 		if (!index)
 			return;
 

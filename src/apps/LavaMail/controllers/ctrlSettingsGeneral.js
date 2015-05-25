@@ -67,13 +67,13 @@ module.exports = ($rootScope, $scope, $interval, $translate, $timeout, translate
 			$scope.form.contactsSortBy = $scope.sortBy[user.settings.contactsSortBy ? user.settings.contactsSortBy : 0];
 	});
 
-	$scope.languages = Object.keys(translate.settings.TRANSLATIONS).reduce((a, langCode) => {
+	$scope.languages = translate.settings.TRANSLATIONS ? Object.keys(translate.settings.TRANSLATIONS).reduce((a, langCode) => {
 		a.push({
 			name: translate.settings.TRANSLATIONS[langCode],
 			langCode: langCode
 		});
 		return a;
-	}, []);
+	}, []) : [];
 	$scope.form.selectedLanguage = $scope.languages.find(e => e.langCode == translate.getCurrentLangCode());
 
 	console.log('initialize CtrlSettingsGeneral', $scope.languages);

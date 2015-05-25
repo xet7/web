@@ -169,9 +169,12 @@ module.exports = function () {
 			for(let k of Object.keys(sharedEnvironment))
 				env[k] = sharedEnvironment[k];
 
-			let path = paths.translations.outputForPlugin(plugin.name) + config.defaultLanguageCode + '.json';
-			if (fs.existsSync(path))
-				env.translationPath = path;
+			let defaultTranslationPath = paths.translations.outputForPlugin(plugin.name) + config.defaultLanguageCode + '.json';
+			let indexPath = paths.translations.outputForPlugin(plugin.name) + 'index' + '.json';
+			if (fs.existsSync(defaultTranslationPath) && fs.existsSync(indexPath)) {
+				env.translationPath = defaultTranslationPath;
+				env.translationIndexPath = indexPath;
+			}
 
 			gulp.task(taskName, gulp.series('plugins:install:' + plugin.name, () => {
 				return pipelines.browserifyBundle(base, plugin.path, sectionName, env, null, (bundler, config, isUpdate) => {
