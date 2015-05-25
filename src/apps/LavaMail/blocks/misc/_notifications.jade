@@ -5,7 +5,7 @@ nav#notifications.navbar.navbar-inverse.notifications(
 		ul.nav.navbar-nav
 			li
 				p.navbar-text
-					span(title="{{notification.title}}") {{notification.text}}
+					span(title="{{notification.title}}", ng-bind-html="notification.text")
 		ul.nav.navbar-nav.navbar-right(ng-hide="notification.timeout")
 			li
 				button.btn.btn-default(ng-click="unSetNotification(name, notification.namespace)")
@@ -16,7 +16,7 @@ nav#notifications.navbar.navbar-inverse.notifications(
 		ul.nav.navbar-nav
 			li
 				p.navbar-text
-					span(title="{{notification.title}}") {{notification.text}}
+					span(title="{{notification.title}}", ng-bind-html="notification.text")
 		ul.nav.navbar-nav.navbar-right(ng-hide="notification.timeout")
 			li
 				button.btn.btn-default(ng-click="unSetNotification(name, notification.namespace)")
