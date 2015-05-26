@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Modified
 - it's now possible to use html inside i18n notifications
+- removed aggressive text pre processing on editor paste
+- subject and addresses now utilize q-encoding(https://tools.ietf.org/html/rfc2047#section-4.2)
 
 ### Fixed
 - mark thread as read only if all emails have been decrypted
