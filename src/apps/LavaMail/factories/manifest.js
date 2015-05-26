@@ -154,7 +154,6 @@ module.exports = ($translate, contacts, utils, crypto) => {
 				: s.includes('=') ? utf8.decode(qEncoding.decode(s.replace(/=\?utf-8\?Q\?([^?]+)\?=/, '$1'))) : s;
 		}
 
-
 		let rawManifest;
 		try {
 			rawManifest = JSON.parse(manifest);

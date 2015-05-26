@@ -6,7 +6,7 @@
 		tagging="tagTransform", tagging-tokens="{{taggingTokens}}", reset-search-input="true", ng-model="#{defs.model}",
 		tag-on-focus-loss="$select.search")
 		ui-select-match(placeholder="{{'MAIN.COMPOSE.PLC_SELECT_PERSON' | translate}}", ng-class="$item.name")
-			email-context-menu(email="$item.email", is-open="status.isDropdownOpened")
+			email-context-menu(email="$item.email", is-open="status.isDropdownOpened", no-reply="true")
 				span.icon-star(ng-show="$item.isStar")
 				span(ng-click="tagClicked($select, $item, #{defs.model})", ng-right-click="switchContextMenu()")
 					| {{$item.getDisplayName()}} &#60;{{$item.email}}&#62;
