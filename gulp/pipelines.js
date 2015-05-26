@@ -119,7 +119,8 @@ function Pipelines(manifest, plumber, isWatching) {
 					delete plg.cached.caches['lint:scripts'];
 				}
 			}))
-			.pipe(plg.jshint.reporter('fail'));
+			.pipe(plg.jshint.reporter('fail'))
+			.pipe(plg.filter.restore());
 	};
 
 	this.browserifyBundle = (base, filename, sectionName, sharedEnvironment, preBundleAction = null, postBundleAction = null) => {
