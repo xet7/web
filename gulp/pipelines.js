@@ -104,6 +104,7 @@ function Pipelines(manifest, plumber, isWatching) {
 
 		return gulp.src(src)
 			.pipe(plumber())
+			.pipe(plg.filter('*.js'))
 			.pipe(plg.cached('lint:scripts'))
 			.pipe(plg.tap((file, t) =>
 					console.log('Linting: "' + file.relative + '" ...')
