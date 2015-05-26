@@ -1,4 +1,6 @@
 const mimelib = require('mimelib');
+const utf8 = require('utf8');
+const qEncoding = require('q-encoding');
 
 module.exports = ($translate, contacts, utils, crypto) => {
 	const translations = {
@@ -114,32 +116,52 @@ module.exports = ($translate, contacts, utils, crypto) => {
 	Manifest.defaultVersion = '1.0.0';
 
 	Manifest.create = ({fromEmail, to, cc, bcc, subject}) => {
+		function encode (s) {
+			return angular.isArray(s)
+				? s.map(e => encode(e))
+				: qEncoding.encode(utf8.encode(s));
+		}
+
 		const manifest = {
 			version: Manifest.defaultVersion,
 			headers: {
-				from: fromEmail,
-				to,
-				subject: subject
+				from: encode(fromEmail),
+				to: encode(to),
+				subject: encode(subject)
 			},
 			parts: []
 		};
 
 		if (cc && cc.length > 0)
-			manifest.headers.cc = cc;
+			manifest.headers.cc = encode(cc);
 
 		if (bcc && bcc.length > 0)
-			manifest.headers.bcc = bcc;
+			manifest.headers.bcc = encode(bcc);
+
+		console.log('creating email manifest', manifest);
 
 		return new Manifest(manifest);
 	};
 
 	Manifest.createFromJson = (manifest) => {
+		function decode (s) {
+			return angular.isArray(s)
+				? s.map(e => decode(e))
+				: s.includes('=') ? utf8.decode(qEncoding.decode(s)) : s;
+		}
+
 		let rawManifest;
 		try {
 			rawManifest = JSON.parse(manifest);
 		} catch (error) {
 			throw new Error('invalid manifest format!');
 		}
+
+		if (rawManifest.headers) {
+			if (rawManifest.headers.subject)
+				rawManifest.headers.subject = decode(rawManifest.headers.subject);
+		}
+
 		return new Manifest(rawManifest);
 	};
 
