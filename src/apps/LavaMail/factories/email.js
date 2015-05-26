@@ -88,7 +88,7 @@ module.exports = (co, crypto, user, Manifest) => {
 
 		return {
 			kind: 'raw',
-			content_type: 'text/html',
+			content_type: 'text/html;charset=utf-8',
 
 			to: manifest.to.map(e => e.address),
 			cc: manifest.cc.map(e => e.address),
