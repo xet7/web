@@ -102,9 +102,11 @@ function Pipelines(manifest, plumber, isWatching) {
 		if (status)
 			status.isError = false;
 
+		let filter = plg.filter('*.js');
+
 		return gulp.src(src)
 			.pipe(plumber())
-			.pipe(plg.filter('*.js'))
+			.pipe(filter)
 			.pipe(plg.cached('lint:scripts'))
 			.pipe(plg.tap((file, t) =>
 					console.log('Linting: "' + file.relative + '" ...')
@@ -120,7 +122,7 @@ function Pipelines(manifest, plumber, isWatching) {
 				}
 			}))
 			.pipe(plg.jshint.reporter('fail'))
-			.pipe(plg.filter.restore());
+			.pipe(filter.restore());
 	};
 
 	this.browserifyBundle = (base, filename, sectionName, sharedEnvironment, preBundleAction = null, postBundleAction = null) => {
