@@ -145,6 +145,9 @@ module.exports = ($translate, contacts, utils, crypto) => {
 
 	Manifest.createFromJson = (manifest) => {
 		function decode (s) {
+			if (!s)
+				return s;
+
 			return angular.isArray(s)
 				? s.map(e => decode(e))
 				: s.includes('=') ? utf8.decode(qEncoding.decode(s)) : s;
@@ -158,8 +161,11 @@ module.exports = ($translate, contacts, utils, crypto) => {
 		}
 
 		if (rawManifest.headers) {
-			if (rawManifest.headers.subject)
-				rawManifest.headers.subject = decode(rawManifest.headers.subject);
+			rawManifest.headers.cc = decode(rawManifest.headers.cc);
+			rawManifest.headers.bcc = decode(rawManifest.headers.bcc);
+			rawManifest.headers.from = decode(rawManifest.headers.from);
+			rawManifest.headers.to = decode(rawManifest.headers.to);
+			rawManifest.headers.subject = decode(rawManifest.headers.subject);
 		}
 
 		return new Manifest(rawManifest);
