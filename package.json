@@ -46,6 +46,7 @@
     "gulp-cached": "^1.0.1",
     "gulp-concat": "^2.5.2",
     "gulp-file": "^0.2.0",
+    "gulp-filter": "^2.0.2",
     "gulp-git": "^1.2.3",
     "gulp-gzip": "0.0.8",
     "gulp-ignore": "^1.2.1",

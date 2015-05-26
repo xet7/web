@@ -52,12 +52,8 @@ module.exports = function (utils, taSelection) {
 			let dom = utils.getDOM(paste);
 			formatted = htmlToText(dom);
 		} else {
-			if (tagRegex.test(paste))
+			if (!tagRegex.test(paste))
 				formatted = textToHtml(paste);
-			else {
-				let dom = utils.getDOM(paste);
-				formatted = htmlToText(dom);
-			}
 		}
 
 		return formatted;
