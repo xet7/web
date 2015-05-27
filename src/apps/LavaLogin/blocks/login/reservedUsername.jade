@@ -1,0 +1,14 @@
+form.ng-cloak(ng-class="{'errors': currentErrorMessage}")
+	h1 {{'LOGIN.SECURED.TITLE' | translate}}<br>{{'LOGIN.SECURED.SUB_TITLE' | translate}}
+
+	hr.spacer
+
+	p.text-center.big {{'LOGIN.SECURED.LB_EMAIL_SENT' | translate}}
+	p.big.highlight.text-center(ng-bind="email")
+
+	hr.spacer.large
+		
+	p.text-center {{'LOGIN.SECURED.LB_COMPLETE' | translate}}
+	
+	footer
+		button.btn.btn-block.btn-lg.btn-primary(ui-sref="verifyInvite") {{'LOGIN.SECURED.BTN_COMPLETE' | translate}}

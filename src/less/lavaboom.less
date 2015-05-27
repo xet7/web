@@ -1,7 +1,7 @@
-@bootstrap-folder: '../bower_components/bootstrap/less/';
+@bootstrap-folder: '../apps/LavaMail/bower_components/bootstrap/less/';
 
-@import (less) "../bower_components/angular-ui-select/dist/select.css";
-@import (less) "../bower_components/angular/angular-csp.css";
+@import (less) "../apps/LavaMail/bower_components/angular-ui-select/dist/select.css";
+@import (less) "../apps/LavaUtils/bower_components/angular/angular-csp.css";
 // @import (less) "../bower_components/angular-hotkeys/build/hotkeys.css";
 
 // Core variables and mixins
@@ -56,6 +56,7 @@
 @import "@{bootstrap-folder}responsive-utilities.less";
 
 //LAVABOOM STUFF
+@import "type.less";
 @import "login.less";
 @import "main.less";
 @import "left-panel.less";
@@ -73,4 +74,5 @@
 @import "hotkeys.less";
 @import "remixins.less";
 @import "radial-progress.less";
+@import "responsive.less";
 @import "print.less";

@@ -1,0 +1,15 @@
+{
+  "name": "LavaMail",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "q-encoding": "^0.1.1",
+    "utf8": "^2.1.0"
+  }
+}

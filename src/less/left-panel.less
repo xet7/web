@@ -10,6 +10,8 @@
 
 	transition: .5s width;
 
+	.lava-font-medium();
+
 	#brand{
 		// padding: @left-panel-padding;
 		// .h3();
@@ -71,7 +73,7 @@
 					display: inline-block;
 					.lava-icon-22();
 					position: relative;
-					color: @lava-left-panel-icon-hover;
+					color: @lava-gray-light;
 					padding-left: 0;
 					padding-right: 1.7rem;
 					left: -.3rem;
@@ -141,15 +143,9 @@
 					}
 				}
 
-				.help-us{
-					margin-bottom: 1em;
-					a {
-						white-space: normal;
-						text-align: center;
-						top: 1.1rem;
-						padding: 0 1.1rem;
-						height: auto;
-					}
+				a {
+					display: inline;
+					padding: 0;
 				}
 			}
 			&.active a, &.active button{
@@ -161,7 +157,7 @@
 		}
 	}
 
-	@media (max-width: @screen-md-max) {
+	@media (min-width: @screen-md-min) and (max-width: @screen-md-max) {
 		width: @left-panel-width-sm;
 
 		#brand{

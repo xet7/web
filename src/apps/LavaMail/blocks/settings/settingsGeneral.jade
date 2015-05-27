@@ -1,0 +1,117 @@
+.row.settings-panel.ng-cloak(ng-controller="CtrlSettingsGeneral")
+	form.settings.col-xs-22.col-xs-offset-1.col-sm-20.col-sm-offset-2.col-md-12.col-md-offset-6.col-xs-22.col-xs-offset-1
+		//- h4 Storage Space
+		//- ul.list-group.suppress-borders
+			li.list-group-item
+				label Total Storage
+				.control
+			li.list-group-item
+				label Total Storage
+				.control 53.7MB (53%)
+			li.list-group-item
+				.progress.clearfix
+					.progress-bar.progress-bar-info(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
+						span.sr-only 60% Complete
+		//- h4 Date / Time
+		//- ul.list-group
+			li.list-group-item
+				.dropdown-control
+					label Time Zone
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match {{$select.selected.name}}
+						ui-select-choices(repeat='item in [{name: "UTC+1"}, {name:"UTC+2"}, {name:"UTC+3"}, {name:"UTC+4"}]')
+							span(ng-click='item.selected=item', ng-bind='item.name')
+			li.list-group-item
+				.dropdown-control
+					label Date / Time
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match {{$select.selected.name}}
+						ui-select-choices(repeat='item in [{name: "day/month/year"}, {name:"month/date/year"}, {name:"year/month/date"}]')
+							span(ng-click='item.selected=item', ng-bind='item.name')
+			li.list-group-item
+				.dropdown-control
+					label Time Format
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match {{$select.selected.name}}
+						ui-select-choices(repeat='item in [{name: "24-hours"}, {name:"12-hours"}]')
+							span(ng-click='item.selected=item', ng-bind='item.name')
+		h4 {{'MAIN.SETTINGS.GENERAL.TITLE_USER_INTERFACE' | translate}}
+		ul.list-group
+			li.list-group-item
+				.dropdown-control
+					label {{'MAIN.SETTINGS.GENERAL.LB_LANGUAGE' | translate}}
+					ui-select(ng-model='form.selectedLanguage', search-enabled='false')
+						ui-select-match(placeholder="{{'MAIN.SETTINGS.GENERAL.PLC_SELECT_LANGUAGE' | translate}}") {{$select.selected.name}}
+						ui-select-choices(repeat='item in languages')
+							span(ng-bind='item.name')
+			//- li.list-group-item
+				.dropdown-control
+					label {{'MAIN.SETTINGS.GENERAL.LB_FONT_SIZE' | translate}}
+					ui-select(ng-model='items.selected', search-enabled='false')
+						ui-select-match {{$select.selected.name}}
+						ui-select-choices(repeat='item.name as item in notImplemented')
+							span(ng-bind='item.name')
+		h4 {{'MAIN.SETTINGS.GENERAL.TITLE_MAIL_BEHAVIOUR' | translate}}
+		ul.list-group
+			//- li.list-group-item
+				.dropdown-control
+					label {{'MAIN.SETTINGS.GENERAL.LB_COMPOSED_MAILS' | translate}}
+					ui-select(ng-model='settings.mailComposedAction', search-enabled='false')
+						ui-select-match {{$select.selected.description}}
+							span(ng-class='item.icon')
+						ui-select-choices(repeat='item.name as item in notImplemented')
+							span(ng-bind='item.description')
+							span.dropdown-icon(ng-class='item.icon')
+			//- li.list-group-item
+				.dropdown-control
+					label {{'MAIN.SETTINGS.GENERAL.LB_MARKED_AS_SPAM' | translate}}
+					ui-select(ng-model='settings.mailSpamAction', search-enabled='false')
+						ui-select-match {{$select.selected.description}}
+						ui-select-choices(repeat='item.name as item in notImplemented')
+							span(ng-bind='item.description')
+			//- li.list-group-item
+				.dropdown-control
+					label {{'MAIN.SETTINGS.GENERAL.LB_DELETED_EMAILS' | translate}}
+					ui-select(ng-model='settings.mailDeletedAction', search-enabled='false')
+						ui-select-match {{$select.selected.description}}
+						ui-select-choices(repeat='item.name as item in notImplemented')
+							span(ng-bind='item.description')
+			li.list-group-item
+				.dropdown-control
+					label {{'MAIN.SETTINGS.GENERAL.LB_SECURED_IMAGES' | translate}}
+					ui-select(ng-model='settings.images', search-enabled='false')
+						ui-select-match {{$select.selected.description}}
+						ui-select-choices(repeat='item.name as item in imageSettings')
+							span(ng-bind="item.description", title="{{item.title}}")
+			li.list-group-item
+				.dropdown-control
+					label {{'MAIN.SETTINGS.GENERAL.LB_SECURED_STYLES' | translate}}
+					ui-select(ng-model='settings.styles', search-enabled='false')
+						ui-select-match {{$select.selected.description}}
+						ui-select-choices(repeat='item.name as item in styleSettings')
+							span(ng-bind="item.description", title="{{item.title}}")
+			li.list-group-item
+				label {{'MAIN.SETTINGS.GENERAL.LB_EMAIL_AUTO_COMPLETE' | translate}}
+				.control
+					label.switch
+						input(type='checkbox', ng-model="settings.isUnknownContactsAutoComplete")
+						i
+		h4 {{'MAIN.SETTINGS.GENERAL.TITLE_KEYBOARD_SHORTCUTS' | translate}}
+		ul.list-group
+			li.list-group-item
+				label {{'MAIN.SETTINGS.GENERAL.LB_KEYBOARD_SHORTCUTS' | translate}}
+				.control
+					label.switch
+						input(type='checkbox', ng-model="settings.isHotkeyEnabled")
+						i
+		h4 {{'MAIN.SETTINGS.GENERAL.TITLE_CONTACTS' | translate}}
+		ul.list-group
+			li.list-group-item
+				.dropdown-control
+					label {{'MAIN.SETTINGS.GENERAL.LB_SORT_BY' | translate}}
+					ui-select(ng-model='form.contactsSortBy', search-enabled='false')
+						ui-select-match {{$select.selected.name}}
+							span(ng-class='item.icon')
+						ui-select-choices(repeat='item in sortBy')
+							span(ng-click='item.selected=item', ng-bind='item.name')
+							span.dropdown-icon(ng-class='item.icon')

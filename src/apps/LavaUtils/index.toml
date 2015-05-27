@@ -1,0 +1,53 @@
+[MANIFEST]
+	version = "1.0"
+
+[APPLICATION]
+	name = "LavaUtils"
+	version = "1.0"
+	description = "Lava utils core application with generic logic shared across plugins/applications"
+	type = "angular"
+
+	moduleName = "LavaUtils"
+
+	dependencies = [
+		"ngSanitize",
+		"lavaboom.api",
+		"ui.router",
+		"pascalprecht.translate",
+		"angular-co"
+	]
+
+	productionOnlyDependencies = [
+	]
+
+	vendorDependencies = [
+		"vendor@blob.js",
+		"vendor@html-sanitizer.min.js",
+
+		"bower@angular/angular.js",
+		"bower@angular-sanitize/angular-sanitize.js",
+
+		"bower@sockjs-client/dist/sockjs.js",
+		"bower@lavaboom/dist/lavaboom-api.js",
+		"bower@lavaboom/dist/lavaboom-angular.js",
+
+		"bower@angular-ui-router/release/angular-ui-router.js",
+		"bower@angular-translate/angular-translate.js",
+		"bower@angular-translate-loader-static-files/angular-translate-loader-static-files.js",
+		"bower@angular-messages/angular-messages.js",
+		"bower@angular-autodisable/angular-autodisable.js",
+
+		"bower@angular-co/dist/co.js",
+		"bower@file-saver/FileSaver.js",
+
+		"npm@babel-core/browser-polyfill.js",
+		"npm@babel-core/external-helpers.js",
+		"npm@setimmediate/setImmediate.js",
+		"npm@levenshtein/lib/levenshtein.js"
+	]
+
+	vendorExternalDependencies = [
+		"bower@openpgp/dist/openpgp.js",
+		"bower@openpgp/dist/openpgp.worker.js",
+		"vendor@html-css-sanitizer.min.js"
+	]

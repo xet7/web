@@ -9,15 +9,15 @@ branch = os.getenv('DRONE_BRANCH', '')
 if branch == "master":
 	env.hosts = ["marge.lavaboom.io:36104"]
 	api_uri = "https://api.lavaboom.com"
-	tld = "lavaboom.com"
+	root_domain = "lavaboom.com"
 elif branch == "staging":
 	env.hosts = ["lisa.lavaboom.io:36412"]
 	api_uri = "https://api.lavaboom.io"
-	tld = "lavaboom.io"
+	root_domain = "lavaboom.io"
 elif branch == "develop":
 	env.hosts = ["bart.lavaboom.io:36467"]
 	api_uri = "https://api.lavaboom.co"
-	tld = "lavaboom.co"
+	root_domain = "lavaboom.co"
 
 # build
 def build():
@@ -25,10 +25,10 @@ def build():
 	local("npm install --fetch-retries 3 -g gulp || npm install --fetch-retries 3 --registry http://registry.npmjs.eu -g gulp")
 	local("npm install --fetch-retries 3 || npm install --fetch-retries 3 --registry http://registry.npmjs.eu")
 	if branch == "master" or branch == "staging":
-		with shell_env(API_URI=api_uri, TLD=tld):
+		with shell_env(API_URI=api_uri, ROOT_DOMAIN=root_domain):
 			local("gulp production")
 	elif branch == "develop":
-		with shell_env(API_URI=api_uri, TLD=tld):
+		with shell_env(API_URI=api_uri, ROOT_DOMAIN=root_domain):
 			local("gulp develop")
 	else:
 		local("gulp develop")

@@ -1,0 +1,49 @@
+.row.settings-panel.ng-cloak(ng-controller="CtrlSettingsPersonal")
+	form.settings.col-xs-22.col-xs-offset-1.col-sm-20.col-sm-offset-2.col-md-12.col-md-offset-6.col-xs-22.col-xs-offset-1
+		//- h4 Picture
+		//- .row.settings-row
+		//- 	.col-xs-7
+		//- 		img.img-responsive(src='img/avatar.svg')
+		//- 	.col-xs-17
+		//- 		p.profile-description.text-muted
+		//- 			| Your picture is only shown in mails to recipents in your contacts. It‘s only purpose is to make your messages more personal. It is not used for anything else.
+		h4 {{'MAIN.SETTINGS.PROFILE.TITLE_NAME' | translate}}
+		ul.list-group
+			li.list-group-item
+				.text-control
+					label {{'MAIN.SETTINGS.PROFILE.LB_USERNAME' | translate}}
+					input.form-control(disabled='', ng-model="name")
+					span
+			li.list-group-item
+				.text-control
+					label {{'MAIN.SETTINGS.PROFILE.LB_FIRST_NAME' | translate}}
+					input.form-control(ng-model="settings.firstName")
+			li.list-group-item
+				.text-control
+					label {{'MAIN.SETTINGS.PROFILE.LB_LAST_NAME' | translate}}
+					input.form-control(ng-model="settings.lastName")
+			li.list-group-item
+				.text-control
+					label {{'MAIN.SETTINGS.PROFILE.LB_DISPLAY_NAME' | translate}}
+					input.form-control(ng-model="settings.displayName")
+		h4 {{'MAIN.SETTINGS.PROFILE.TITLE_SIGNATURE' | translate}}
+		ul.list-group
+			li.list-group-item
+				label {{'MAIN.SETTINGS.PROFILE.LB_SIGNATURE_ENABLED' | translate}}
+				.control
+					label.switch
+						input(type='checkbox', ng-model="settings.isSignatureEnabled")
+						i
+			li.list-group-item(collapse="!settings.isSignatureEnabled")
+				.text-control
+					.signature
+						div(text-angular="", ta-toolbar="[]", ng-model="settings.signatureHtml")
+					
+		//- h4 {{'MAIN.SETTINGS.PROFILE.TITLE_NEWSLETTER' | translate}}
+		//- ul.list-group
+			li.list-group-item
+				label {{'MAIN.SETTINGS.PROFILE.LB_SEND_ME_NEWS' | translate}}
+				.control
+					label.switch
+						input(type='checkbox', ng-model="settings.isSubscribedToNews")
+						i
