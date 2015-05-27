@@ -17,6 +17,7 @@ const paths = require('./paths');
 let sharedEnvironment = global.sharedEnvironment;
 let pipelines = global.pipelines;
 let plumber = global.plumber;
+let isWatching = global.isWatching;
 
 module.exports = function () {
 	const base = path.resolve(__dirname, '..');
@@ -251,7 +252,8 @@ module.exports = function () {
 					.pipe(gulp.dest(paths.translations.outputForPlugin(name)));
 			});
 
-			gulp.watch(path, gulp.series(taskName));
+			if (isWatching)
+				gulp.watch(path, gulp.series(taskName));
 
 			return taskName;
 		});

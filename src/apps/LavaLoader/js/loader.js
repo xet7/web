@@ -7,8 +7,7 @@ module.exports = (assets) => {
 		SRC_APP_LAVABOOM_LOGIN = '/js/lavaLogin.js',
 		SRC_APP_LAVABOOM_MAIL = '/js/lavaMail.js',
 		SRC_UTILS = '/js/lavaUtils.js',
-		SRC_UTILS_VENDOR = '/js/lavaUtils-vendor.js',
-		SRC_TEMPLATE_CACHE = '/js/templates.js';
+		SRC_UTILS_VENDOR = '/js/lavaUtils-vendor.js';
 
 	const
 		LB_DONE = 'Done!',
@@ -52,10 +51,6 @@ module.exports = (assets) => {
 					src: SRC_OPENPGP,
 					progressText: 'Loading openpgp.js...'
 				},
-				process.env.IS_PRODUCTION ? {
-					src: SRC_TEMPLATE_CACHE,
-					progressText: 'Loading templates...'
-				} : null,
 				{
 					src: SRC_APP_LAVABOOM_LOGIN,
 					progressText: 'Loading Lavaboom...'
@@ -76,10 +71,6 @@ module.exports = (assets) => {
 					src: SRC_OPENPGP,
 					progressText: 'Loading openpgp.js...'
 				},
-				process.env.IS_PRODUCTION ? {
-					src: SRC_TEMPLATE_CACHE,
-					progressText: 'Loading templates...'
-				} : null,
 				{
 					src: SRC_APP_LAVABOOM_MAIL,
 					progressText: 'Loading Lavaboom...'

@@ -27,6 +27,7 @@ let sharedEnvironment = {
 	ROOT_DOMAIN: process.env.ROOT_DOMAIN ? process.env.ROOT_DOMAIN : config.defaultRootDomain
 };
 
+global.isWatching = isWatching;
 if (!isWatching) {
 	plumber = plg.util.noop;
 	if (args[0] === 'production') {
