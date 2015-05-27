@@ -91,7 +91,7 @@ module.exports = function () {
 
 				return co(function *() {
 					yield [
-						utils.execute('bower', ['install'], options),
+						utils.execute('bower', ['--allow-root', 'install'], options),
 						utils.execute('npm', ['install'], options)
 					];
 				});
