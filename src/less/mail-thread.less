@@ -48,8 +48,8 @@
 	
 
 	header{
-		padding-bottom: 18px;
-		margin-bottom: 17px !important;
+		padding-bottom: 2.2rem;
+		margin-bottom: 2.2rem !important;
 		border-bottom: @border-site-wide;
 		.when span{
 			display: block;
@@ -57,16 +57,23 @@
 			// .small();
 			.text-muted();
 			padding-right: 1em;
-			padding-top: .6em;
+			
 		}
 		.secure{
-			padding-top: .5em;
+			
 			font-size: 1.5em;
 			padding-left: 3px;
 			.icon-unlock{
 				color: @lava-warning;
 			}
 		}
+
+		.to{
+			text-transform: lowercase;
+			display: inline-block;
+			padding-right: .55rem;
+		}
+
 	}
 
 	.mail-content{
@@ -75,6 +82,13 @@
 		.email-formatting();
 	}
 
+	.email-left, .secure{
+		width: 6.6rem;
+		.text-center();
+		> span {
+			.lava-icon-22();
+		}
+	}
 	
 
 	footer{

@@ -67,8 +67,8 @@
 @font-family-monospace:     Menlo, Monaco, Consolas, "Courier New", monospace;
 @font-family-base:                @font-family-sans-serif;
 
-@light-font-weight: 100;
-@base-font-weight: 300;
+@light-font-weight: 300;
+@base-font-weight: 400;
 
 @compose-font-size: 1.3rem;
 @compose-cross-hover-color: #DAD9D9;
@@ -115,7 +115,7 @@
 
 @mail-thread-width: 100% - @mail-list-width;
 @mail-thread-width-sm: 100% - @mail-list-width-sm;
-@mail-thread-padding: 2.2rem 0 1.1rem 0;
+@mail-thread-padding: 2.2rem 0 4.4rem;
 @mail-thread-fg: @lava-gray;
 @mail-thread-muted: @lava-gray-lighter;
 @mail-thread-attachment-border: @lava-gray-lightest; 
@@ -231,6 +231,12 @@ body{
 		display: table-cell;
 	}
 }
+.table{
+	display: table;
+	> *{
+		display: table-cell;
+	}
+}
 .ellipsis {
 	text-overflow: ellipsis;
 
@@ -289,49 +295,6 @@ body{
 	overflow: hidden;
 }
 
-.lava-font{
-	font-weight: @base-font-weight !important;
-	.medium{
-		font-weight: 400;
-	}
-	strong, .strong{
-		font-weight: 500;
-	}
-	// @media (-webkit-min-device-pixel-ratio: 2), 
-	// 	(min-resolution: 192dpi) { 
-	// 	font-weight: @light-font-weight !important;
-	// 	.medium{
-	// 		font-weight: 300;
-	// 	}
-	// 	strong, .strong{
-	// 		font-weight: 400;
-	// 	}
-	// }
-}
-
-.lava-font-strong{
-	font-weight: 500;
-	@media (-webkit-min-device-pixel-ratio: 2), 
-		(min-resolution: 192dpi) {
-		font-weight: 400;
-	}
-}
-
-.lava-font-medium{
-	font-weight: 400;
-	@media (-webkit-min-device-pixel-ratio: 2), 
-		(min-resolution: 192dpi) {
-		font-weight: 300;
-	}
-}
-
-.lava-font-light{
-	font-weight: 100 !important;
-	// @media (-webkit-min-device-pixel-ratio: 2), 
-	// 	(min-resolution: 192dpi) {
-	// 	font-weight: 100 !important;
-	// }
-}
 //non-essential styles imported from another pen
 .aspect-ratio(@width, @height) {
 	position: relative;

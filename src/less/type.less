@@ -20,16 +20,10 @@ body{
 	strong, .strong{
 		.lava-font-strong();
 	}
-	// @media (-webkit-min-device-pixel-ratio: 2), 
-	// 	(min-resolution: 192dpi) { 
-	// 	font-weight: @light-font-weight !important;
-	// 	.medium{
-	// 		font-weight: 300;
-	// 	}
-	// 	strong, .strong{
-	// 		font-weight: 400;
-	// 	}
-	// }
+	@media (-webkit-min-device-pixel-ratio: 2), 
+		(min-resolution: 192dpi) { 
+		font-weight: @light-font-weight !important;
+	}
 }
 
 .lava-font-strong{
@@ -57,6 +51,10 @@ body{
 }
 
 .email-formatting{
+	line-height: 1.46em;
+	> * {
+		margin-bottom: .67rem;
+	}
 	h1{
 		.h4();
 	}
