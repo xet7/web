@@ -2,15 +2,17 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## UNRELEASED
+## 0.4.0 - 2015-05-27
 ### Added
 - plugins based architecture
 - unit/integration tests for crypto operations
+- initial support for responsiveness
 
 ### Modified
 - it's now possible to use html inside i18n notifications
 - removed aggressive text pre processing on editor paste
 - subject and addresses now utilize q-encoding(https://tools.ietf.org/html/rfc2047#section-4.2)
+- small improvements in compose screen(email context menu)
 
 ### Fixed
 - mark thread as read only if all emails have been decrypted

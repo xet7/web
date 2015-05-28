@@ -57,6 +57,10 @@ DIALOGS_NO = "No"
     MOBILE_BROWSER_TEXT = "Our mobile platform is in the early alpha stage. Please let us know if you experience any bugs."
     BACKUP_WARNING_TEXT = "If you see this file just opens in your browser please select save as and save it to a safe location"
 
+[USER]
+	LB_SIGNATURE_LN1 = "Sent with Lavaboom - your secure email provider."
+    LB_SIGNATURE_LN2 = "Get your own address at lavaboom.com"
+
 [GLOBAL]
 	USERNAME = "username"
 	CURRENT_EMAIL = "your current email address"

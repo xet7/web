@@ -17,6 +17,7 @@ const paths = require('./paths');
 let sharedEnvironment = global.sharedEnvironment;
 let pipelines = global.pipelines;
 let plumber = global.plumber;
+let isWatching = global.isWatching;
 
 module.exports = function () {
 	const base = path.resolve(__dirname, '..');
@@ -91,7 +92,7 @@ module.exports = function () {
 
 				return co(function *() {
 					yield [
-						utils.execute('bower', ['install'], options),
+						utils.execute('bower', ['--allow-root', 'install'], options),
 						utils.execute('npm', ['install'], options)
 					];
 				});
@@ -251,7 +252,8 @@ module.exports = function () {
 					.pipe(gulp.dest(paths.translations.outputForPlugin(name)));
 			});
 
-			gulp.watch(path, gulp.series(taskName));
+			if (isWatching)
+				gulp.watch(path, gulp.series(taskName));
 
 			return taskName;
 		});

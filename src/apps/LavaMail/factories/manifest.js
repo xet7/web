@@ -117,9 +117,10 @@ module.exports = ($translate, contacts, utils, crypto) => {
 
 	Manifest.create = ({fromEmail, to, cc, bcc, subject}) => {
 		function encode (s) {
-			return angular.isArray(s)
+			return s;
+			/*return angular.isArray(s)
 				? s.map(e => encode(e))
-				: qEncoding.encode(utf8.encode(s));
+				: qEncoding.encode(utf8.encode(s));*/
 		}
 
 		const manifest = {
@@ -150,7 +151,7 @@ module.exports = ($translate, contacts, utils, crypto) => {
 
 			return angular.isArray(s)
 				? s.map(e => decode(e))
-				: s.includes('=') ? utf8.decode(qEncoding.decode(s)) : s;
+				: s.includes('=') ? utf8.decode(qEncoding.decode(s.replace(/=\?utf-8\?Q\?([^?]+)\?=/, '$1'))) : s;
 		}
 
 		let rawManifest;
