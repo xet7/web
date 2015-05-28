@@ -10,15 +10,23 @@ Contains the whole web interface and client-side logic. Consists from 2 applicat
 
 Should be globally installed
 
-- node.js 0.10.35
-- gulp
+- node.js 0.12.x
+- gulp 4.x
+
+if `nvm` isn't installed yet:
+`curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.3/install.sh | bash`
+
+to install `node` and `gulp`:
+`nvm install 0.12.2`
+`npm uninstall gulp -g`
+`npm install gulpjs/gulp-cli#4.0 -g`
 
 ## Installation
-
-    git clone https://github.com/lavab/web.git
-    cd web 
-    npm install
-    gulp
+    
+    `git clone https://github.com/lavab/web.git`
+    `cd web`
+    `npm install`
+    `gulp`
 
 _or_ in one command:
     `git clone https://github.com/lavab/web.git && cd web && npm install && gulp`
@@ -39,6 +47,12 @@ please check `web/gulp/config.js` for available configuration options
 - `livereloadListenPort` - livereload listen port for development(when running `gulp` default target)
 - `listenAddress` - web server's listen address for development(when running `gulp` default target)
 - `listenPort` - web server's listen port for development(when running `gulp` default target)
+ 
+## building with plugins
+
+`PLUGINS=[plugin1],[plugin2] gulp` to perform build with plugins, for example
+
+`PLUGINS=sample gulp` will build `web` with a sample plugin from https://github.com/lavab-plugins/sample 
 
 ## How to report an issue?
 
