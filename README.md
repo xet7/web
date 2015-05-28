@@ -14,19 +14,19 @@ Should be globally installed
 - gulp 4.x
 
 if `nvm` isn't installed yet:
-`curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.3/install.sh | bash`
+    `curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.3/install.sh | bash`
 
 to install `node` and `gulp`:
-`nvm install 0.12.2`
-`npm uninstall gulp -g`
-`npm install gulpjs/gulp-cli#4.0 -g`
+    nvm install 0.12.2
+    npm uninstall gulp -g
+    npm install gulpjs/gulp-cli#4.0 -g
 
 ## Installation
     
-    `git clone https://github.com/lavab/web.git`
-    `cd web`
-    `npm install`
-    `gulp`
+    git clone https://github.com/lavab/web.git
+    cd web
+    npm install
+    gulp
 
 _or_ in one command:
     `git clone https://github.com/lavab/web.git && cd web && npm install && gulp`
