@@ -17,6 +17,7 @@ if `nvm` isn't installed yet:
     `curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.25.3/install.sh | bash`
 
 to install `node` and `gulp`:
+
     nvm install 0.12.2
     npm uninstall gulp -g
     npm install gulpjs/gulp-cli#4.0 -g
