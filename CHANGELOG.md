@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.4.1 - 2015-05-28
+### Added
+- Email formatting standardized between compose screen & email display
+- Email *.less files are using .rem units completely
+- compose screen responsive updates: modal window takes full screen, more space for email addresses
+- compose: email addresses are run though a filter so emails are now displayed twice per tag
+
 ## 0.4.0 - 2015-05-27
 ### Added
 - plugins based architecture

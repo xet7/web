@@ -35,6 +35,8 @@ module.exports = ($rootScope, $timeout, $scope, $state, $translate, $sanitize,
 		console.log(url);
 		console.log(params);
 		console.log('showDetails triggered');
+		$scope.isAnySelectedThread = () => $state.params.selectedTid;
+		console.log($state.params.selectedTid);
 	};
 
 	$scope.resetDetails = () => {
