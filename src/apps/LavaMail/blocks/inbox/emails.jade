@@ -51,7 +51,8 @@ div(ng-if="selectedTid").main-view
 								email-context-menu(email="from.address", is-open="from.isContextMenuOpened")
 									a(ui-sref=".popup.compose({to: from.address})", ng-right-click="from.isContextMenuOpened = true") {{from.prettyName}}
 									| {{$last ? '' : ', '}}
-						div.to {{'MAIN.COMPOSE.LB_TO' | translate}}
+						div
+							.to{{'MAIN.COMPOSE.LB_TO' | translate}}
 							span.medium(ng-repeat="to in email.to")
 								email-context-menu(ng-if="to.address != selfEmail", email="to.address", is-open="to.isContextMenuOpened")
 									a(ui-sref=".popup.compose({to: to.address})", ng-right-click="to.isContextMenuOpened = true") {{to.prettyName}}
@@ -91,6 +92,6 @@ div(ng-if="selectedTid").main-view
 						span.icon-reply-all
 					button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {forwardEmailId: email.id})")
 						span.icon-arrow-right
-			.secure(ng-hide="true")_
+			.secure(ng-hide="true")
 				span.icon-lock(ng-if="email.isSecuredKeys")
 			
