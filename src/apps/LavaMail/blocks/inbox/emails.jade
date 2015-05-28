@@ -41,8 +41,8 @@ div(ng-if="selectedTid").main-view
 		img(src="/img/Lavaboom-logo-gray.svg")
 	.row.no-gutter.mail(ng-repeat="email in emails")
 		.col-xs-24.table
-			div.email-left(ng-hide="true")
-				span.icon-star.lava
+			div.email-left
+				span.icon-star.lava(ng-hide="true")
 			div.meta
 				header.table
 					div
@@ -92,6 +92,6 @@ div(ng-if="selectedTid").main-view
 						span.icon-reply-all
 					button.btn.btn-default(ng-show="selectedTid", ng-click="showPopup('compose', {forwardEmailId: email.id})")
 						span.icon-arrow-right
-			.secure(ng-hide="true")
-				span.icon-lock(ng-if="email.isSecuredKeys")
+			.secure
+				span.icon-lock(ng-if="email.isSecuredKeys", ng-hide="true")
 			
