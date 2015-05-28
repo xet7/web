@@ -48,7 +48,7 @@ please check `web/gulp/config.js` for available configuration options
 - `listenAddress` - web server's listen address for development(when running `gulp` default target)
 - `listenPort` - web server's listen port for development(when running `gulp` default target)
  
-## building with plugins
+## Building with plugins
 
 `PLUGINS=[plugin1],[plugin2] gulp` to perform build with plugins, for example
 
