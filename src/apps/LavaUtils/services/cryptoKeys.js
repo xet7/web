@@ -100,6 +100,7 @@ module.exports = function ($q, $rootScope, $filter, $translate, co, crypto, cons
 			readme: consts.KEYS_BACKUP_README,
 			warning: translations.BACKUP_WARNING_TEXT,
 			body: body,
+			exported: $filter('date')(Date.now(), 'yyyy-MM-dd HH:mm:ss Z'),
 			bodyHash: bodyHash
 		}, null, 4);
 	}
@@ -116,8 +117,7 @@ module.exports = function ($q, $rootScope, $filter, $translate, co, crypto, cons
 		}, {});
 
 		return formatExportFile({
-			key_pairs: keyPairs,
-			exported: $filter('date')(Date.now(), 'yyyy-MM-dd HH:mm:ss Z')
+			key_pairs: keyPairs
 		});
 	};
 
@@ -127,16 +127,13 @@ module.exports = function ($q, $rootScope, $filter, $translate, co, crypto, cons
 		const privateKey = keyring.privateKeys.findByFingerprint(fingerprint);
 		const publicKey = keyring.publicKeys.findByFingerprint(fingerprint);
 
-		console.log(privateKey, publicKey);
-
 		return formatExportFile({
 			key_pairs: {
 				[privateKey.users[0].userId.userid]: {
 					prv: [privateKey.armor()],
 					pub: [publicKey.armor()]
 				}
-			},
-			exported: $filter('date')(Date.now(), 'yyyy-MM-dd HH:mm:ss Z')
+			}
 		});
 	};
 
