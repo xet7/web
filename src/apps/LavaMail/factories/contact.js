@@ -31,11 +31,18 @@ module.exports = ($translate, co, user, crypto, ContactEmail) => {
 			(self.businessEmails && self.businessEmails.some(e => e.email == email));
 
 		this.getSortingField = (id) => {
+			let field = '';
+
 			if (id === 1)
-				return self.firstName;
+				field = self.firstName;
+			else
 			if (id === 2)
-				return self.lastName;
-			return self.name;
+				field = self.lastName;
+			field = self.name;
+
+			if (!field)
+				field = '';
+			return field.trim();
 		};
 
 		this.setFromAnotherContact = (contact) => {
