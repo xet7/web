@@ -2,10 +2,18 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.4.2 - 2015-05-29
+### Fixed
+- private key should not be empty after key backup export when Lavaboom Sync is active
+- keys export: export file name shouldn't change when exporting the same key
+- contacts: delete should not trigger auto-save
+- contacts: crash if there is empty contact
+- i18n: fixed some strings, added Deutsch support
+- gulpfile: added linting for i18n files
+
 ## 0.4.1 - 2015-05-28
 ### Added
-- Email formatting standardized between compose screen & email display
-- Email *.less files are using .rem units completely
+- email formatting standardized between compose screen & email display
 - compose screen responsive updates: modal window takes full screen, more space for email addresses
 - compose: email addresses are run though a filter so emails are now displayed twice per tag
 
