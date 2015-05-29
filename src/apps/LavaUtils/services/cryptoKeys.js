@@ -76,16 +76,10 @@ module.exports = function ($q, $rootScope, $filter, $translate, co, crypto, cons
 		let backup = self.verifyAndReadBackup(jsonBackup);
 
 		for(let key of backup.prv)
-			if (!crypto.getPrivateKeyByFingerprint(key.primaryKey.fingerprint))
-				crypto.importPrivateKey(key);
-			else
-				console.log('skip private key import - already existing', key.primaryKey.fingerprint);
+			crypto.importPrivateKey(key);
 
 		for(let key of backup.pub)
-			if (!crypto.getPublicKeyByFingerprint(key.primaryKey.fingerprint))
-				crypto.importPublicKey(key);
-			else
-				console.log('skip public key import - already existing', key.primaryKey.fingerprint);
+			crypto.importPublicKey(key);
 
 		crypto.storeKeyring();
 		crypto.initialize();

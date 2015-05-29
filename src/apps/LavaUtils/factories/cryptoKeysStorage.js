@@ -1,15 +1,14 @@
+const prefix = 'lava-openpgp-';
+const publicKeysItem = 'public-keys';
+const privateKeysItem = 'private-keys';
+
+const publicName = prefix + publicKeysItem;
+const privateName = prefix + privateKeysItem;
+const privateSecureName = prefix + 'secure-' + privateKeysItem;
+
+const memoryStorage = [];
+
 module.exports = (co, utils) => {
-	const prefix = 'lava-openpgp-';
-	const publicKeysItem = 'public-keys';
-	const privateKeysItem = 'private-keys';
-
-	const publicName = prefix + publicKeysItem;
-	const privateName = prefix + privateKeysItem;
-	const privateSecureName = prefix + 'secure-' + privateKeysItem;
-
-
-	const memoryStorage = [];
-
 	/*
 	There are 3 storages for private key possible:
 		- memory variable (exists just during application live-cycle)
