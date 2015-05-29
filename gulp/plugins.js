@@ -237,23 +237,89 @@ module.exports = function () {
 		});
 	}
 
+	function verifyTranslations(name, translations) {
+		function plainify(o, names, r) {
+			for(let k of Object.keys(o)) {
+				if (typeof o[k] == 'string')
+					r.push(names.concat(k));
+				else plainify(o[k], names.concat(k), r);
+			}
+		}
+
+		function checkKeys(keys, a) {
+			let o = a;
+			for(let key of keys) {
+				o = o[key];
+				if (!o)
+					return false;
+			}
+
+			return true;
+		}
+
+		let keys = [];
+		plainify(translations.en, [], keys);
+		delete translations.en;
+
+		for(let langName of Object.keys(translations)) {
+			for(let key of keys) {
+				if (!checkKeys(key, translations[langName])) {
+					console.error(`Plugin '${name}': language file '${langName}' should have key ${key.join('.')}`);
+				}
+			}
+		}
+	}
+
 	function createTranslationsBuildTasks(base, names) {
 		return names.map(name => {
 			console.log(`creating translations build task for "${name}"...`);
 
 			let taskName = 'plugins:translations:' + name;
-			let path = base + name + '/translations/*.toml';
+			let translationsPath = base + name + '/translations/*.toml';
 
-			gulp.task(taskName, (cb) => {
-				return gulp.src(path)
+			let translations = {};
+
+			gulp.task(taskName, gulp.series((cb) => {
+				return gulp.src(translationsPath)
 					.pipe(plumber())
 					.pipe(plg.buffer())
 					.pipe(plg.toml({to: JSON.stringify, ext: '.json'}))
+					.pipe(plg.tap(file => {
+						translations[path.basename(file.relative, path.extname(file.relative))] = JSON.parse(file.contents);
+					}))
 					.pipe(gulp.dest(paths.translations.outputForPlugin(name)));
-			});
+			}, (cb) => {
+				if (Object.keys(translations).length < 1)
+					return cb();
+
+				let index = translations.index;
+				if (!index)
+					throw new Error(`Plugin '${name}': translation index file not found!`);
+				let indexTranslations = index.TRANSLATIONS;
+				if (!indexTranslations)
+					throw new Error(`Plugin '${name}': translation header section not found!`);
+
+				delete translations.index;
+
+				for(let langName of Object.keys(translations)) {
+					let lang = translations[langName];
+
+					if (!lang.LANG)
+						throw new Error(`Plugin '${name}': language file '${langName}' should have root LANG section`);
+
+					if (!lang.LANG.CODE || !lang.LANG.FULL_CODE)
+						throw new Error(`Plugin '${name}': language file '${langName}' should have root LANG.CODE and LANG.FULL_CODE defined`);
+
+					delete lang.LANG;
+				}
+
+				verifyTranslations(name, translations);
+
+				cb();
+			}));
 
 			if (isWatching)
-				gulp.watch(path, gulp.series(taskName));
+				gulp.watch(translationsPath, gulp.series(taskName));
 
 			return taskName;
 		});
