@@ -1,5 +1,111 @@
 [LANG]
 	CODE = "de"
+	FULL_CODE= "de_DE"
 
-[MAIN.NAV]
-   	LB_COMPOSE = "Compose(test)"
+[LOGIN.SECURE_USERNAME]
+	TITLE = "Sichern Sie Ihren Lavaboom Nutzernamen"
+    LNK_INVITE_QUESTION = "Haben Sie eine Einladung?"
+#	LB_NEWS = "Send me updates to my Lavaboom address." not required.
+	BTN_SECURE = "Absenden"
+
+[LOGIN.SECURED]
+	TITLE = "Super!"
+	SUB_TITLE = "Ihr Nutzername wurde reserviert."
+	LB_EMAIL_SENT = "Wir haben Sie auf unserer Warteliste und senden Ihnen die Einladung zu sobald Sie an der Reihe sind. An "
+	LB_COMPLETE = "Wir befinden uns derzeit noch in der Beta-Phase."
+	BTN_COMPLETE = "OK"
+
+[LOGIN.INVITE]
+	TITLE = "Wurdest du bereits eingeladen?"
+	BTN_SEND_ME_INVITE = "Nein, sende mir einen Code"
+	BTN_I_HAVE_INVITE_CODE = "Ja, ich habe meinen Code"
+
+[LOGIN.VERIFY_INVITE]
+	TITLE = "Validierung des Codes"
+	PLC_INVITE_CODE = "bitte fügen Sie den Code hier ein"
+	LB_NEWS = "Senden Sie mir Updates zu meiner Lavaboom Email."
+	LB_TOS = "Mit dem drücken des Buttons versichere ich, die " 
+    LNK_TOS = "Allgemeinen Geschäftsbedingungen"
+    AND_THE = " gelesen und verstanden zu haben. Ebenso die "
+    LINK_PRIVACY = "Datenschutz Richtlinien"
+
+[LOGIN.PLAN]
+	TITLE = "Ihr Plan"
+    PLAN1_TITLE = "Beta"
+	PLAN1_OPT1_VALUE = "1 GB"
+	PLAN1_OPT2_VALUE = "Zwei Faktor"
+	PLAN1_OPT3_VALUE = "Sicher"
+	PLAN1_OPT4_VALUE = "Zusätzliches"
+	PLAN1_OPT5_VALUE = "Frei"
+	PLAN1_OPT1_KEY = "Sicherer Email Speicher"
+    PLAN1_OPT2_KEY = "Authentifizierung"
+    PLAN1_OPT3_KEY = "Kontakte"
+    PLAN1_OPT4_KEY = "500 MB gratis"
+    PLAN1_OPT5_KEY = "für immer!"
+	BTN_SELECT = "Das nehme ich"
+
+[LOGIN.DETAILS]
+	TITLE = "Persönliches"
+    SUB_TITLE = "Wir sind durch die deutsche Gesetzgebung daran gebunden nach diesen Informationen zu fragen, validieren sie jedoch nicht und nutzen sie auch nicht."
+        
+[LOGIN.CHOOSE_PASSWORD_INTRO]
+	TITLE = "Wählen Sie Ihr Passwort"
+	LB_WARNING_TITLE = "Vorsicht!"
+	LB_WARNING0 = "Sie sind dabei einen neues Schlüsselpaar für Ihren Nutzer zu generieren, aber vorher müssen Sie noch Ihr Passwort auswählen."
+    LB_WARNING1 = "Lavaboom speichert Ihre Passwörter nicht als Text-Datei ab, darum sind wir so sicher. Wir haben dadurch aber leider keine Möglichkeit Ihr Passwort für Sie im Falle des Verlustes zurück zu setzen."
+    LB_WARNING2 = "Wenn sie sich ein starkes Passwort überlegt haben, notieren Sie es handschriftlich. Wenn Sie Ihr Passwort verlieren, verlieren Sie eventuell ihren Account."
+    BTN_NEXT = "Ich verstehe"
+
+[LOGIN.CHOOSE_PASSWORD]
+	TITLE = "Wählen Sie Ihr Passwort"
+	LB_WARNING1 = "Wir empfehlen Ihnen ein langes Passwort mit Nummern und Zeichen. Aber es sollte dennoch gut in Erinnerung bleiben."
+	LB_WARNING2 = "Bitte seien Sie sich bewusst dass wir Ihr Passwort nicht zurück setzen können, ohne Ihr Konto zu zerstören. Fahren Sie erst fort sobald Sie Ihr Passwort notiert haben."
+	BTN_NEXT = "Ich habe es notiert"
+	LB_PRIVATE_PC = "Dies ist ein privater Computer"
+
+[LOGIN.GENERATE_KEYS]
+	TITLE = "Schlüssel generieren"
+	LB_WARNING1 = "Lavaboom verschlüsselt alle Ihre Daten auf Ihrem Computer. Um dies zu tun müssen ihre Schlüssel in den Cache Ihres Browsers. "
+	LB_WARNING2 = "Dieser Schlüssel wird dazu verwendet Daten und Emails an Sie zu chiffrieren. Teile ihn mit Freunden und Verwandten die Ihnen verschlüsselte Emails zusenden wollen."
+	LB_WARNING3 = "Dieser Schlüssel wird dazu verwendet Daten und Emails an Sie zu dechiffrieren. Teilen Sie Ihn niemals, und machen Sie ein Backup des Schlüssels."
+	BTN_NEXT = "Generiere meine Schlüssel"
+
+[LOGIN.GENERATING_KEYS]
+	LB_GENERATING = "Ihre Schlüssel werden generiert..."
+	LB_UPLOADING = "Ihr Öffentlicher Schlüssel wird in unserer Datenbank hinterlegt..."
+	LB_READY = "Ihre Schlüssel sind fertig!"
+	LB_REACHED = "Zeit für einen Kaffee? Je nach Browser kann dieser Schritt bis zu 10 Minuten dauern..."
+	LB_ERROR = "Wir können leider keine Schlüssel für Sie generieren. Bringen Sie Ihren Browser auf den neuesten Stand. Wir empfehlen die neuesten Versionen von Firefox, IE 10+, Google Chrome oder Safari."
+	LB_PERFORMANCE_TEST = "Performance wird getestet..."
+	LB_DO_NOT_CLOSE_REF = "Bitte schließen Sie dieses Fenster nicht"
+	LB_DO_NOT_CLOSE_HAMSTER = "Bitte haben Sie Geduld, Schlüssel zu generieren kann eine lange Zeit dauern..."
+	LB_DO_NOT_CLOSE_TURTLE = "Bitte haben Sie Geduld, Schlüssel zu generieren kann eine lange Zeit dauern..."
+
+[LOGIN.BACKUP_KEY]
+	TITLE = "Schlüssel Backup"
+    INFO1 = "Wir kreieren und verwalten Ihre Schlüssel in dem Cache Ihres aktuell verwendeten Browsers."
+    INFO2 = "Das bedeutet wenn Sie Lavaboom in einem anderen Browser oder auf einem anderen Gerät verwenden wollen, müssen Sie Ihren Schlüssel beim Login importieren."
+    INFO3 = "Wenn Sie Ihre Internetdaten beim schliessen des Browsers löschen und kein Backup des Schlüssels haben, verlieren Sie Ihre Schlüssel und somit auch die Möglichkeit Ihre Emails zu dechiffrieren."
+    INFO4 = "Zur Vorbeugung sollten Sie Ihren Schlüssel auf Ihrem Computer sichern."
+    INFO5 = "Sie können jederzeit in den Einstellungen Ihren Schlüssel herunter laden oder aber die Option Lavaboom sync aktivieren, die es uns erlaubt, Ihre Schlüssel für Sie zu verwerten."
+    INFO6 = "Lavabot transportiert den schon chiffrierten Keyring zu einem Verliess in unserem Server, wo er dann aufbewahrt wird solange bis Sie ihn wieder anfordern."
+    BTN_ENABLE_LB_SYNC = "Lavaboom Sync erlauben"
+    BTN_BACKUP_NOW = "Schlüssel Backup"
+    BTN_SKIP = "Zurück"
+
+[LOGIN.IMPORT_KEY]
+	TITLE = "Bitte Schlüssel importieren"
+	LB_INFO1 = "Wir konnten Ihren Schlüssel nicht in Ihrem Browsercache erkennen."
+	LB_INFO2 = "Dies passiert bei der ersten Benutzung dieses Browsers mit Lavaboom oder falls Ihr Cache geleert wurde."
+	LB_INFO3 = "Importieren Sie den gespeicherten Schlüssel und Sie sind startklar."
+	BTN_UPLOAD_KEY = "Schlüssel Importieren"
+
+[LOGIN.SIGNUP]
+	HEADER = "Willkommen bei Lavaboom"
+ 	LOGIN = "Login"
+ 	SIGNUP = "Anmelden"
+
+[LOGIN.AUTH]
+	BTN_GO_TO_MY_INBOX = "Geh zu meinem Postfach"
+	BTN_NO_ACCOUNT_YET = "Keinen Account? Melde dich an!"
+	LB_KEEP_ME_LOGGED_IN = "Angemeldet bleiben"
