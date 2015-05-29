@@ -111,7 +111,7 @@ module.exports = ($rootScope, $scope, $translate, $state, $stateParams,
 	});
 
 	$scope.$on('$stateChangeStart', () => {
-		if ($scope.isEditMode)
+		if (!$state.current.name.includes('main.contacts') && $scope.isEditMode)
 			$scope.saveThisContact();
 	});
 };
