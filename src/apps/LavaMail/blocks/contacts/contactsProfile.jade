@@ -70,7 +70,12 @@
 							| {{'LAVAMAIL.CONTACTS.BTN_ADD_BUSINESS_EMAIL' | translate}}
 
 			footer(ng-show="isEditMode")
-				
+				button.btn.btn-lg.btn-danger.btn-block.btn-icon.text-center(type="button", ng-click="deleteThisContact()")
+					span.icon-trash
+					| {{'LAVAMAIL.CONTACTS.BTN_DELETE_CONTACT' | translate}}
+		form.settings.col-xs-22.col-xs-offset-1.col-sm-20.col-sm-offset-2.col-md-12.col-md-offset-6.col-xs-22.col-xs-offset-1(
+			ng-show="details && !details.isDecrypted && !details.isNew")
+			footer(ng-show="isEditMode")
 				button.btn.btn-lg.btn-danger.btn-block.btn-icon.text-center(type="button", ng-click="deleteThisContact()")
 					span.icon-trash
 					| {{'LAVAMAIL.CONTACTS.BTN_DELETE_CONTACT' | translate}}
