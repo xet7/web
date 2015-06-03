@@ -11,7 +11,7 @@ div.pane-status(ng-if="selectedTid === null")
 				li(ng-show="(selectedTid && labelName == 'Trash') || (selectedTid && labelName == 'Spam')")
 					button.btn.btn-default(ng-click="deleteThread(selectedTid)", tooltip="{{'LAVAMAIL.INBOX.BTN_DELETE_PERMANENTLY' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-empty-trash
-				li(ng-show="selectedTid && labelName != 'Spam'")
+				li(ng-show="(selectedTid && labelName != 'Spam') && (selectedTid && labelName != 'Sent')")
 					button.btn.btn-default(ng-click="spamThread(selectedTid)", tooltip="{{'LAVAMAIL.INBOX.MARK_AS_SPAM' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-ban
 				li(ng-show="selectedTid && labelName != 'Spam' && labelName != 'Trash'")
@@ -52,7 +52,7 @@ div(ng-if="selectedTid").main-view
 									a(ui-sref=".popup.compose({to: from.address})", ng-right-click="from.isContextMenuOpened = true") {{from.prettyName}}
 									| {{$last ? '' : ', '}}
 						div
-							.to{{'LAVAMAIL.COMPOSE.LB_TO' | translate}}
+							.to {{'LAVAMAIL.COMPOSE.LB_TO' | translate}}
 							span.medium(ng-repeat="to in email.to")
 								email-context-menu(ng-if="to.address != selfEmail", email="to.address", is-open="to.isContextMenuOpened")
 									a(ui-sref=".popup.compose({to: to.address})", ng-right-click="to.isContextMenuOpened = true") {{to.prettyName}}

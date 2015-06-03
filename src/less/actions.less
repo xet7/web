@@ -1,12 +1,18 @@
 // padding-top: @filter-height + 2;
 .filters, .actions{
 	background-color: @lava-gray;
-	
 	position: absolute;
 	right: 0;
 	left: 0;
+	height: @filter-height;
+	color: @lava-gray-light;
+	
 
 	.no-gutter();
+
+	.search{
+		padding-left: 0;
+	}
 	
 	.search-icon {
 		// width: @mail-list-block-buttons-width;
@@ -20,12 +26,16 @@
 			// padding-top: 3px;
 		}
 	}
-	height: @filter-height;
+	label.search-icon .icon-search{
+		line-height: 4.4rem;
+		padding: 0 0.53rem 0 .3rem;
+	}
+
+	
 	> *{
 		display: block;
 	}
 
-	color: @lava-gray-light;
 
 	button, label{
 		color: @lava-gray-light;
