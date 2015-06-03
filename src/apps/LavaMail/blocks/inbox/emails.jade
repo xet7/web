@@ -11,7 +11,7 @@ div.pane-status(ng-if="selectedTid === null")
 				li(ng-show="(selectedTid && labelName == 'Trash') || (selectedTid && labelName == 'Spam')")
 					button.btn.btn-default(ng-click="deleteThread(selectedTid)", tooltip="{{'INBOX.BTN_DELETE_PERMANENTLY' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-empty-trash
-				li(ng-show="selectedTid && labelName != 'Spam'")
+				li(ng-show="(selectedTid && labelName != 'Spam') && (selectedTid && labelName != 'Sent')")
 					button.btn.btn-default(ng-click="spamThread(selectedTid)", tooltip="{{'INBOX.MARK_AS_SPAM' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-ban
 				li(ng-show="selectedTid && labelName != 'Spam' && labelName != 'Trash'")
