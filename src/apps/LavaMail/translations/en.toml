@@ -33,7 +33,7 @@
 	PLC_SEARCH = "Search Emails"
 	REPLY_HEADER = "On {{date | date}}, {{name}} {{address}} wrote"
 	LB_NO_IMAGE = "External images blocked"
-	BTN_DELETE_PERMANENTLY = "delete permanently"
+	BTN_DELETE_PERMANENTLY = "Delete Permanently"
 
 	FORWARD_HEADER = "---------- Forwarded message ----------"
 	FORWARD_FROM = "From"
