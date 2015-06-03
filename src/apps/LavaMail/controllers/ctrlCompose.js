@@ -468,7 +468,7 @@ module.exports = ($rootScope, $scope, $stateParams, $translate,
 	hotkey.registerCustomHotkeys($scope, [
 		{
 			combo: ['ctrl+enter', 'command+enter'],
-			description: 'HOTKEY.SEND_EMAIL',
+			description: 'LAVAMAIL.HOTKEY.SEND_EMAIL',
 			callback: (event, key) => {
 				event.preventDefault();
 				$scope.send();

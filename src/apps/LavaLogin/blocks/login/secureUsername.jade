@@ -1,10 +1,10 @@
 form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-submit="__form.$valid && requestSecure()", novalidate, ng-autodisable)
-	h1 {{'LOGIN.SECURE_USERNAME.TITLE' | translate}}
+	h1 {{'LAVALOGIN.SECURE_USERNAME.TITLE' | translate}}
 
 	div.alert.alert-danger(ng-show="currentErrorMessage", ng-bind="currentErrorMessage")
 
 	p.text-center
-		a(ui-sref="verifyInvite") {{'LOGIN.SECURE_USERNAME.LNK_INVITE_QUESTION' | translate}}
+		a(ui-sref="verifyInvite") {{'LAVALOGIN.SECURE_USERNAME.LNK_INVITE_QUESTION' | translate}}
 
 	div.form-group
 		div.input-group.suffix.clearfix
@@ -19,4 +19,4 @@ form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-subm
 		span.alert.alert-danger(ng-show="__form.$submitted", ng-messages="__form.email.$error", ng-messages-include="LavaLogin/misc/validationMessages")
 
 	footer
-		button.btn.btn-block.btn-lg.btn-primary(type="submit") {{'LOGIN.SECURE_USERNAME.BTN_SECURE' | translate}}
+		button.btn.btn-block.btn-lg.btn-primary(type="submit") {{'LAVALOGIN.SECURE_USERNAME.BTN_SECURE' | translate}}

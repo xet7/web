@@ -19,12 +19,12 @@ module.exports = ($rootScope, $scope, $state, router, hotkey) => {
 		hotkey.registerCustomHotkeys($scope, [
 			{
 				combo: ['h', 'k', 'left', 'up'],
-				description: 'HOTKEY.MOVE_UP',
+				description: 'LAVAMAIL.HOTKEY.MOVE_UP',
 				callback: (event, key) => goSettings(event, -1)
 			},
 			{
 				combo: ['j', 'l', 'right', 'down'],
-				description: 'HOTKEY.MOVE_DOWN',
+				description: 'LAVAMAIL.HOTKEY.MOVE_DOWN',
 				callback: (event, key) => goSettings(event, +1)
 			}
 		], {scope: 'ctrlSettingsList', addedFromState: 'main.settings'});

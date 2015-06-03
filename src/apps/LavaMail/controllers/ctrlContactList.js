@@ -150,12 +150,12 @@ module.exports = ($rootScope, $scope, $translate, $state, $stateParams, dialogs,
 		hotkey.registerCustomHotkeys($scope, [
 			{
 				combo: ['h', 'k', 'left', 'up'],
-				description: 'HOTKEY.MOVE_UP',
+				description: 'LAVAMAIL.HOTKEY.MOVE_UP',
 				callback: moveUp
 			},
 			{
 				combo: ['j', 'l', 'right', 'down'],
-				description: 'HOTKEY.MOVE_DOWN',
+				description: 'LAVAMAIL.HOTKEY.MOVE_DOWN',
 				callback: moveDown
 			}
 		], {scope: 'ctrlContactList'});

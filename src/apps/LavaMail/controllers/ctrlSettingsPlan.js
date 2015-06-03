@@ -15,7 +15,7 @@ module.exports = ($scope, $translate, $interval, consts, user, $sce) => {
 		LB_GET_ON_IGG_TITLE: ''
 	};
 	const translationsForPlans = {};
-	$translate.bindAsObject(translations, 'MAIN.SETTINGS.PLAN');
+	$translate.bindAsObject(translations, 'LAVAMAIL.SETTINGS.PLAN');
 
 	$scope.planList.forEach(name => {
 		translationsForPlans[name] = {
@@ -24,7 +24,7 @@ module.exports = ($scope, $translate, $interval, consts, user, $sce) => {
 			LB_ITEMS: ''
 		};
 		((name) => {
-			$translate.bindAsObject(translationsForPlans[name], 'MAIN.SETTINGS.PLAN.' + name.toUpperCase(), t => {
+			$translate.bindAsObject(translationsForPlans[name], 'LAVAMAIL.SETTINGS.PLAN.' + name.toUpperCase(), t => {
 				let plan = {
 					title: t.TITLE,
 					tag: t.LB_TAG,

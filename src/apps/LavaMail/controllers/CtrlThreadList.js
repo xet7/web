@@ -212,7 +212,7 @@ module.exports = ($rootScope, $scope, $state, $timeout, $interval, $translate,
 		hotkey.registerCustomHotkeys($scope, [
 			{
 				combo: ['h', 'k', 'left', 'up'],
-				description: 'HOTKEY.MOVE_UP',
+				description: 'LAVAMAIL.HOTKEY.MOVE_UP',
 				callback: (event, key) => {
 					event.preventDefault();
 					moveThreads(-1);
@@ -221,7 +221,7 @@ module.exports = ($rootScope, $scope, $state, $timeout, $interval, $translate,
 
 			{
 				combo: ['j', 'l', 'right', 'down'],
-				description: 'HOTKEY.MOVE_DOWN',
+				description: 'LAVAMAIL.HOTKEY.MOVE_DOWN',
 				callback: (event, key) => {
 					event.preventDefault();
 					moveThreads(1);
@@ -230,7 +230,7 @@ module.exports = ($rootScope, $scope, $state, $timeout, $interval, $translate,
 
 			{
 				combo: 'a',
-				description: 'HOTKEY.ARCHIVE_EMAIL',
+				description: 'LAVAMAIL.HOTKEY.ARCHIVE_EMAIL',
 				callback: (event, key) => {
 					event.preventDefault();
 					//$scope.archive($scope.selectedTid);
@@ -240,7 +240,7 @@ module.exports = ($rootScope, $scope, $state, $timeout, $interval, $translate,
 			{
 				combo: ['d', 'backspace'],
 
-				description: 'HOTKEY.DELETE_EMAIL',
+				description: 'LAVAMAIL.HOTKEY.DELETE_EMAIL',
 				callback: (event, key) => {
 					event.preventDefault();
 					$scope.deleteThread($scope.selectedTid);
@@ -249,7 +249,7 @@ module.exports = ($rootScope, $scope, $state, $timeout, $interval, $translate,
 
 			{
 				combo: 'r',
-				description: 'HOTKEY.REPLY_EMAIL',
+				description: 'LAVAMAIL.HOTKEY.REPLY_EMAIL',
 				callback: (event, key) => {
 					event.preventDefault();
 					$scope.replyThread(event, $scope.selectedTid);

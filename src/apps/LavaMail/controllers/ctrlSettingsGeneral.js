@@ -17,8 +17,8 @@ module.exports = ($rootScope, $scope, $interval, $translate, $timeout, $sanitize
 		LB_SORT_BY_DISPLAY_NAME : '',
 		LB_SORT_BY_FIRST_NAME : '',
 		LB_SORT_BY_LAST_NAME : '',
-		LB_PROFILE_SAVED: 'MAIN.SETTINGS.PROFILE',
-		LB_PROFILE_CANNOT_BE_SAVED: 'MAIN.SETTINGS.PROFILE'
+		LB_PROFILE_SAVED: 'LAVAMAIL.SETTINGS.PROFILE',
+		LB_PROFILE_CANNOT_BE_SAVED: 'LAVAMAIL.SETTINGS.PROFILE'
 	};
 
 	const translationImages = {
@@ -39,7 +39,7 @@ module.exports = ($rootScope, $scope, $interval, $translate, $timeout, $sanitize
 		LB_STYLES_ALL_TITLE: ''
 	};
 
-	$translate.bindAsObject(translationImages, 'MAIN.SETTINGS.GENERAL', null, () => {
+	$translate.bindAsObject(translationImages, 'LAVAMAIL.SETTINGS.GENERAL', null, () => {
 		$scope.imageSettings = [
 			{name: 'none', description: translationImages.LB_IMAGES_NONE, title: translationImages.LB_IMAGES_NONE_TITLE},
 			{name: 'proxy', description: translationImages.LB_IMAGES_PROXY, title: translationImages.LB_IMAGES_PROXY_TITLE},
@@ -48,14 +48,14 @@ module.exports = ($rootScope, $scope, $interval, $translate, $timeout, $sanitize
 		];
 	});
 
-	$translate.bindAsObject(translationStyles, 'MAIN.SETTINGS.GENERAL', null, () => {
+	$translate.bindAsObject(translationStyles, 'LAVAMAIL.SETTINGS.GENERAL', null, () => {
 		$scope.styleSettings = [
 			{name: 'none', description: translationStyles.LB_STYLES_NONE, title: translationStyles.LB_STYLES_NONE_TITLE},
 			{name: 'all', description: translationStyles.LB_STYLES_ALL, title: translationStyles.LB_STYLES_ALL_TITLE}
 		];
 	});
 
-	$translate.bindAsObject(translations, 'MAIN.SETTINGS.GENERAL', null, () => {
+	$translate.bindAsObject(translations, 'LAVAMAIL.SETTINGS.GENERAL', null, () => {
 		$scope.notImplemented = [{name: 'none', description: translations.LB_NOT_IMPLEMENTED}];
 		$scope.sortBy = [
 			{name: translations.LB_SORT_BY_DISPLAY_NAME},
