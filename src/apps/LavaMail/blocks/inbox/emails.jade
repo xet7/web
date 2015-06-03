@@ -58,9 +58,8 @@ div(ng-if="selectedTid").main-view
 									a(ui-sref=".popup.compose({to: to.address})", ng-right-click="to.isContextMenuOpened = true") {{to.prettyName}}
 									| {{$last ? '' : ', '}}
 								span(ng-if="to.address == selfEmail") {{to.prettyName}} {{$last ? '' : ', '}}
-						br
-						| {{'MAIN.COMPOSE.LB_SUBJECT' | translate}}:
-						span(ng-bind="email.subject")
+						div
+							span(ng-bind="email.subject")
 					.when
 						span(ng-bind="email.date | lavaday")
 						span(ng-bind="email.date | lavatime")

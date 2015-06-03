@@ -146,6 +146,10 @@ module.exports = ($rootScope, $scope, $state, $timeout, $interval, $translate,
 			|| thread.membersPretty.join(',').toLowerCase().includes(searchText);
 	};
 
+	$scope.clearSearch = () => {
+		$scope.searchText = '';
+	};
+
 	$scope.$on('$stateChangeStart', (e, toState, toParams) => {
 		if (toState.name == 'main.inbox.label')
 			$scope.selectedTid = toParams.threadId ? toParams.threadId : null;
