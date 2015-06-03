@@ -7,7 +7,7 @@ module.exports = ($rootScope, $translate, $timeout, $injector, co, consts, crypt
 		LB_EMAIL_NOT_FOUND : 'MAIN.CONTACTS'
 	};
 
-	$translate.bindAsObject(translations, 'MAIN.COMPOSE');
+	$translate.bindAsObject(translations, 'LAVAMAIL.COMPOSE');
 
 	function ContactEmail (contact, opts, kind) {
 		let inbox = $injector.get('inbox');

@@ -9,7 +9,7 @@ module.exports = ($rootScope, $scope, $translate, $state, $stateParams, dialogs,
 		TITLE_CONFIRM_DELETE:''
 	};
 
-	$translate.bindAsObject(translations, 'MAIN.CONTACTS');
+	$translate.bindAsObject(translations, 'LAVAMAIL.CONTACTS');
 
 	const findContact = (cid) => {
 		let letterIndex = 0;

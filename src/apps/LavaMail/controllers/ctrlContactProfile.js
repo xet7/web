@@ -14,7 +14,7 @@ module.exports = ($rootScope, $scope, $translate, $state, $stateParams,
 		LB_CONFIRM: '%',
 		TITLE_CONFIRM_DELETE:''
 	};
-	$translate.bindAsObject(translations, 'MAIN.CONTACTS');
+	$translate.bindAsObject(translations, 'LAVAMAIL.CONTACTS');
 
 	$rootScope.$bind('notifications', () => {
 		$scope.notificationsInfo = notifications.get('info', 'contact.profile');

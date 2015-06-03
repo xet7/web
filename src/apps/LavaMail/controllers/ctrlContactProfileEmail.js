@@ -8,7 +8,7 @@ module.exports = ($scope, $stateParams, $translate, co, consts, crypto, saver, n
 		LB_CANNOT_IMPORT_PUBLIC_KEY: '',
 		LB_PUBLIC_KEY_IMPORTED: '%'
 	};
-	$translate.bindAsObject(translations, 'MAIN.CONTACTS');
+	$translate.bindAsObject(translations, 'LAVAMAIL.CONTACTS');
 
 	$scope.starEmail = () => {
 		if ($scope.isEditMode)

@@ -6,7 +6,7 @@ module.exports = ($translate, contacts, utils, crypto) => {
 	const translations = {
 		LB_NO_SUBJECT: ''
 	};
-	$translate.bindAsObject(translations, 'INBOX');
+	$translate.bindAsObject(translations, 'LAVAMAIL.INBOX');
 
 	function ManifestPart (manifestPart) {
 		const self = this;

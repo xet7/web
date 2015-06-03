@@ -58,7 +58,7 @@ module.exports = ($rootScope, $scope, $state, $timeout, $interval, $translate,
 		LB_SORTED_BY_MODIFICATION_DATE_ASC : ''
 	};
 
-	$translate.bindAsObject(translations, 'INBOX', null, () => {
+	$translate.bindAsObject(translations, 'LAVAMAIL.INBOX', null, () => {
 		$scope.sorts = [
 			{
 				query: '-date_created',

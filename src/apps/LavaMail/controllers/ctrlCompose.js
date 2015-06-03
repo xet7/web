@@ -46,7 +46,7 @@ module.exports = ($rootScope, $scope, $stateParams, $translate,
 		LB_ATTACHMENT_STATUS_UPLOADED: '',
 		LB_NO_SUBJECT: ''
 	};
-	$translate.bindAsObject(translations, 'MAIN.COMPOSE');
+	$translate.bindAsObject(translations, 'LAVAMAIL.COMPOSE');
 
 	const processAttachment = (attachmentStatus) => co(function *() {
 		attachmentStatus.status = translations.LB_ATTACHMENT_STATUS_READING;

@@ -9,7 +9,7 @@ module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCa
 		TITLE_OPENPGP_BLOCK_DECRYPT_ERROR: ''
 	};
 
-	$translate.bindAsObject(translations, 'INBOX');
+	$translate.bindAsObject(translations, 'LAVAMAIL.INBOX');
 
 	let thisLocationPrefix = window.location.protocol + '//' + window.location.host;
 
