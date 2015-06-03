@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Modified
 - unified and merged translation files for core apps for a proper transifex support
+- encrypted contacts can be removed in edit mode
+- use settings firstName + lastName in key during the import
 
 ### Fixed
 - properly switch translation right after logout

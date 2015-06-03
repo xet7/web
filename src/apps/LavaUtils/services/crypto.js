@@ -149,8 +149,7 @@ module.exports = function($q, $rootScope, $injector, consts, co, utils, CryptoKe
 			}
 
 			privateKey.users.splice(1);
-			let name = utils.getNameFromAddressString(privateKey.users[0].userId.userid);
-			privateKey.users[0].userId.userid = `${name} <${user.email}>`;
+			privateKey.users[0].userId.userid = `${user.settings.firstName} ${user.settings.lastName} <${user.email}>`;
 
 			keyring.privateKeys.importKey(privateKey.armor());
 			keyring.store();
