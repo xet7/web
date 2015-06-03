@@ -31,6 +31,8 @@
 	LB_SORTED_BY_MODIFICATION_DATE_DESC = "Sorted by modification date -"
 	LB_SORTED_BY_MODIFICATION_DATE_ASC = "Sorted by modification date +"
 	PLC_SEARCH = "Search Emails"
+	REFRESH_INBOX = "Refresh"
+	CLEAR_SEARCH = "Clear"
 	REPLY_HEADER = "On {{date | date}}, {{name}} {{address}} wrote"
 	LB_NO_IMAGE = "External images blocked"
 	BTN_DELETE_PERMANENTLY = "Delete Permanently"
