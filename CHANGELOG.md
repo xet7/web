@@ -2,6 +2,16 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## UNRELEASED
+### Added
+- auto detect user's language
+
+### Modified
+- unified and merged translation files for core apps for a proper transifex support
+
+### Fixed
+- properly switch translation right after logout
+
 ## 0.4.2 - 2015-05-29
 ### Fixed
 - private key should not be empty after key backup export when Lavaboom Sync is active
