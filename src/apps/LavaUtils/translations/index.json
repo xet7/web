@@ -1,6 +1,10 @@
 {
   "TRANSLATIONS": {
-    "en": "English(US)",
-    "de": "Deutsch"
+    "en_US": {
+      "name": "English(US)"
+    },
+    "de": {
+      "name": "Deutsch"
+    }
   }
 }

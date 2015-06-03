@@ -69,7 +69,7 @@ module.exports = ($rootScope, $scope, $interval, $translate, $timeout, $sanitize
 
 	$scope.languages = translate.settings.TRANSLATIONS ? Object.keys(translate.settings.TRANSLATIONS).reduce((a, langCode) => {
 		a.push({
-			name: translate.settings.TRANSLATIONS[langCode],
+			name: translate.settings.TRANSLATIONS[langCode].name,
 			langCode: langCode
 		});
 		return a;
