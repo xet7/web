@@ -66,6 +66,7 @@ div(ng-if="selectedTid").main-view
 						span(ng-bind="email.date | lavatime")
 				.mail-content
 					div(ng-show="email.body.state == 'ok'",
+						show-loading-sign-after="500",
 						is-html="email.isHtml",
 						thread-id="selectedTid",
 						open-email="openEmail",

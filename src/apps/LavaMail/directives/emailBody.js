@@ -193,11 +193,16 @@ module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCa
 	};
 
 	const process = (scope, el, attrs) => co(function *(){
-		const loadingTemplateUrl = yield $templateCache.fetch(scope.loadingTemplateUrl);
+		const loadingTemplate = yield $templateCache.fetch(scope.loadingTemplateUrl);
 
+		scope.isLoading = false;
 		scope.originalEmail = scope.emailBody;
+		let loadingTimeout = $timeout(() => {
+			scope.isLoading = true;
+		}, scope.showLoadingSignAfter);
+
 		el.empty();
-		el.append(loadingTemplateUrl);
+		el.append($compile(angular.element(loadingTemplate))(scope));
 
 		scope.emails = [];
 		scope.switchContextMenu = index => scope.emails[index].isDropdownOpened = !scope.emails[index].isDropdownOpened;
@@ -240,6 +245,9 @@ module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCa
 			}
 		}
 
+		$timeout.cancel(loadingTimeout);
+		scope.isLoading = false;
+
 		$timeout(() => {
 			scope.emailBody = emailBody.html();
 		}, 100);
@@ -251,6 +259,7 @@ module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCa
 	return {
 		restrict : 'A',
 		scope: {
+			showLoadingSignAfter: '=',
 			isHtml: '=',
 			threadId: '=',
 			emailBody: '=',
