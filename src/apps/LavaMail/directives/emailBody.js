@@ -121,6 +121,10 @@ module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCa
 		}
 
 		const processNode = (node) => {
+			if (node.nodeName == 'BLOCKQUOTE') {
+				node.setAttribute('style', '');
+				node.setAttribute('class', '');
+			} else
 			if (node.nodeName == 'IMG') {
 				let src = node.getAttribute('src');
 
