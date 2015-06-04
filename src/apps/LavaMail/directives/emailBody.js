@@ -182,7 +182,7 @@ module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCa
 					emailContextMenuDOM.appendChild(node);
 
 					linksCounter++;
-				} else if (!href.startsWith(thisLocationPrefix)) {
+				} else if (!href.startsWith(thisLocationPrefix) && (!href.startsWith('/') || href.startsWith('//'))) {
 					node.setAttribute('target', '_blank');
 				}
 			}
