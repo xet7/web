@@ -200,6 +200,8 @@ module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCa
 		const loadingTemplateUrl = yield $templateCache.fetch(scope.loadingTemplateUrl);
 
 		scope.originalEmail = scope.emailBody;
+		scope.emailBody = angular.copy(scope.emailBody);
+
 		el.empty();
 		el.append(loadingTemplateUrl);
 
