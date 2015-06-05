@@ -197,8 +197,7 @@ module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCa
 
 		scope.isLoading = false;
 		scope.originalEmail = scope.emailBody;
-		scope.emailBody = angular.copy(scope.emailBody);
-		
+
 		let loadingTimeout = $timeout(() => {
 			scope.isLoading = true;
 		}, scope.showLoadingSignAfter);
