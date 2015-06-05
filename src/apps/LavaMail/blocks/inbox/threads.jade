@@ -3,7 +3,7 @@
 		div
 			ul.nav.navbar-nav.navbar-right
 				li
-					button.btn.btn-default(ng-hide="searchText", ng-click="", ng-autodisable, tooltip = "{{'LAVAMAIL.INBOX.REFRESH_INBOX' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
+					button.btn.btn-default(ng-hide="searchText", ng-click="refresh()", ng-autodisable, tooltip = "{{'LAVAMAIL.INBOX.TITLE_REFRESH_INBOX' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-refresh
 					button.btn.btn-default(ng-show="searchText", ng-click="clearSearch()", ng-autodisable, tooltip = "{{'LAVAMAIL.INBOX.CLEAR_SEARCH' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-cancel

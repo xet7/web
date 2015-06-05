@@ -67,9 +67,6 @@ module.exports = ($rootScope, $scope, $translate, $state, $stateParams, dialogs,
 		const list = [...contacts.people.values()].filter(c => !c.isHidden());
 		$scope.contacts = contacts.people;
 
-		//[...contacts.people.values()].map(c => contacts.deleteContact(c.id));
-
-		
 		const group = (map, letter, item) => {
 			if (!map[letter])
 				map[letter] = [];

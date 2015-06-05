@@ -252,6 +252,8 @@
   "LAVAMAIL.INBOX.TITLE_CONFIRM": "Confirm action",
   "LAVAMAIL.INBOX.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR": "Something went wrong during decryption of embedded openpgp envelope",
   "LAVAMAIL.INBOX.TITLE_OPENPGP_BLOCK_DECRYPT_ERROR_NO_KEY_FOUND": "Cannot find decrypted private key for this embedded openpgp envelope",
+  "LAVAMAIL.INBOX.TITLE_REFRESH_INBOX": "Check for new emails",
+
   "LAVAMAIL.COMPOSE.BTN_CONFIRM": "Send",
   "LAVAMAIL.COMPOSE.BTN_DELETE": "delete",
   "LAVAMAIL.COMPOSE.BTN_REJECT": "Go back",

@@ -191,6 +191,10 @@ module.exports = ($rootScope, $scope, $state, $timeout, $interval, $translate,
 		}
 	}));
 
+	$scope.refresh = () => co(function *(){
+
+	});
+
 	$scope.scroll = () => {
 		console.log('scroll()', $scope.isLoading, $scope.isDisabledScroll);
 		if ($scope.isLoading || $scope.isDisabledScroll)
