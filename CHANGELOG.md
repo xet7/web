@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## UNRELEASED
 ### Added
 - auto detect user's language
+- translation for labels(Inbox/Sent/...)
 
 ### Modified
 - unified and merged translation files for core apps for a proper transifex support
@@ -13,6 +14,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 - properly switch translation right after logout
+- no blinking loading sign when switching between threads
 
 ## 0.4.2 - 2015-05-29
 ### Fixed
