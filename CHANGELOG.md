@@ -11,10 +11,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - unified and merged translation files for core apps for a proper transifex support
 - encrypted contacts can be removed in edit mode
 - use settings firstName + lastName in key during the import
+- better support for blockquote elements in replied and forwarded emails
 
 ### Fixed
 - properly switch translation right after logout
 - no blinking loading sign when switching between threads
+- no more messed up formatting during reply-to/forward actions
 
 ## 0.4.2 - 2015-05-29
 ### Fixed
