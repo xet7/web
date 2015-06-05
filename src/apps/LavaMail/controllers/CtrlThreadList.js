@@ -192,7 +192,14 @@ module.exports = ($rootScope, $scope, $state, $timeout, $interval, $translate,
 	}));
 
 	$scope.refresh = () => co(function *(){
+		$scope.threads = {};
+		$scope.threadsList = [];
+		$scope.offset = 0;
+		$scope.limit = 15;
 
+		inbox.invalidateThreadCache();
+
+		yield requestList();
 	});
 
 	$scope.scroll = () => {
