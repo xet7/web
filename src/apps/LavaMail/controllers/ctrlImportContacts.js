@@ -87,12 +87,12 @@ module.exports = ($scope, $modalInstance, Contact, ContactEmail, consts, co, con
 	};
 
 
-	$scope.importGmail = (data) => {
+	$scope.importCSV = (data) => {
 		let contactsData = window.Papa.parse(data);
 
-		let nameIndex = contactsData.data.findIndex(e => e == 'Given Name');
-		let firstNameIndex = contactsData.data.findIndex(e => e == 'Given Name');
-		let lastNameIndex = contactsData.data.findIndex(e => e == 'Family Name');
+		let nameIndex = -1;
+		let firstNameIndex = -1;
+		let lastNameIndex = -1;
 		let emailIndexes = [];
 
 		contactsData.data[0].forEach((e, i) => {
@@ -100,10 +100,10 @@ module.exports = ($scope, $modalInstance, Contact, ContactEmail, consts, co, con
 			if (e == 'name')
 				nameIndex = i;
 			else
-			if (e == 'given name')
+			if (e == 'given name' || e == 'first name')
 				firstNameIndex = i;
 			else
-			if (e == 'family name')
+			if (e == 'family name' || e == 'last name')
 				lastNameIndex = i;
 			else
 			if (e.startsWith('e-mail'))
@@ -114,7 +114,7 @@ module.exports = ($scope, $modalInstance, Contact, ContactEmail, consts, co, con
 		for(let i = 1; i < contactsData.data.length; i++) {
 			let cols = contactsData.data[i];
 
-			let definedName = cols[nameIndex];
+			let definedName = nameIndex > -1 ? cols[nameIndex] : '';
 
 			let firstName = (cols[firstNameIndex] ? cols[firstNameIndex] : '').trim();
 			let lastName = (cols[lastNameIndex] ? cols[lastNameIndex] : '').trim();

@@ -335,7 +335,7 @@
   "LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS": "Import contacts",
   "LAVAMAIL.CONTACTS.TITLE_IMPORT_CONTACTS": "Import contacts",
   "LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS_DETAILS": "You can import your contacts from another email provider",
-  "LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS_GMAIL": "Import contacts from gmail(.csv)",
+  "LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS_CSV": "Import contacts from csv",
   "LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS_VCARD": "Import contacts from vCard",
   "LAVAMAIL.CONTACTS.LB_IMPORT_OK": "Get back",
 

@@ -69,6 +69,7 @@ module.exports = ($rootScope, $scope, $translate, $state, $stateParams, dialogs,
 
 		//[...contacts.people.values()].map(c => contacts.deleteContact(c.id));
 
+		
 		const group = (map, letter, item) => {
 			if (!map[letter])
 				map[letter] = [];

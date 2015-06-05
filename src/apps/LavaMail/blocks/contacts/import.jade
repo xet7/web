@@ -17,7 +17,7 @@ div.import-contacts
 					div {{'LAVAMAIL.CONTACTS.LB_DUPLICATES' | translate:translationData }}
 					div {{'LAVAMAIL.CONTACTS.LB_ERRORS' | translate:translationData }}
 				div(ng-show="state == 'select'")
-					button.btn.btn-default(type='button', open-file="importGmail(data)") {{'LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS_GMAIL' | translate}}
+					button.btn.btn-default(type='button', open-file="importCSV(data)") {{'LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS_CSV' | translate}}
 					button.btn.btn-default(type='button', open-file="importVcard(data)") {{'LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS_VCARD' | translate}}
 				div(ng-show="state == 'finished'")
 					button.btn.btn-default(type='button', ng-click='ok()') {{'LAVAMAIL.CONTACTS.LB_IMPORT_OK' | translate}}
