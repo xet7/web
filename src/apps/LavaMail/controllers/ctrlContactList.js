@@ -67,6 +67,8 @@ module.exports = ($rootScope, $scope, $translate, $state, $stateParams, dialogs,
 		const list = [...contacts.people.values()].filter(c => !c.isHidden());
 		$scope.contacts = contacts.people;
 
+		//[...contacts.people.values()].map(c => contacts.deleteContact(c.id));
+
 		const group = (map, letter, item) => {
 			if (!map[letter])
 				map[letter] = [];
@@ -98,6 +100,14 @@ module.exports = ($rootScope, $scope, $translate, $state, $stateParams, dialogs,
 
 		if (oldContactPosition !== null)
 			$state.go('main.contacts.profile', {contactId: nextContactId(oldContactPosition)});
+	});
+
+	$scope.importContacts = () => co(function *(){
+		const confirmed = yield co.def(dialogs.create(
+			'LavaMail/misc/importContacts',
+			'CtrlImportContacts'
+		).result, 'cancelled');
+		console.log('import contacts: ', confirmed);
 	});
 
 	$scope.newContact = () => co(function *(){

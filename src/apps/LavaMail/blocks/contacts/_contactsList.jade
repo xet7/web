@@ -4,6 +4,9 @@
 			div
 				ul.nav.navbar-nav.navbar-right.boogie
 					li
+						button.btn.btn-default(ng-click="importContacts()", ng-autodisable, tooltip = "{{'LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
+							span.icon-add-contact
+					li
 						button.btn.btn-default(ng-click="newContact()", ng-autodisable, tooltip = "{{'LAVAMAIL.CONTACTS.LB_NEW_CONTACT' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 							span.icon-add-contact
 				form.navbar-form-alt

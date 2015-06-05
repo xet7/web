@@ -24,7 +24,8 @@
     "angular-timeago": "~0.1.9",
     "angular-dialog-service": "~5.2.6",
     "angular-bootstrap": "~0.13.0",
-    "textAngular": "~1.4.1"
+    "textAngular": "~1.4.1",
+    "papaparse": "~4.1.1"
   },
   "resolutions": {
     "angular-bootstrap": "~0.13.0"
