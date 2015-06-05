@@ -1,9 +1,12 @@
-module.exports = ($scope, $modalInstance, Contact, ContactEmail, co, contacts) => {
+module.exports = ($scope, $modalInstance, Contact, ContactEmail, consts, co, contacts) => {
 	$scope.state = 'select';
-	$scope.processed = 0;
-	$scope.errors = 0;
-	$scope.total = 0;
-	$scope.duplicates = 0;
+
+	$scope.translationData = {
+		processed: 0,
+		errors: 0,
+		total: 0,
+		duplicates: 0
+	};
 
 	$scope.no = () => {
 		$modalInstance.dismiss('no');
@@ -11,18 +14,18 @@ module.exports = ($scope, $modalInstance, Contact, ContactEmail, co, contacts) =
 
 	let importContacts = (contactsList) => co(function *(){
 		$scope.state = 'importing';
-		$scope.total = contactsList.length;
+		$scope.translationData.total = contactsList.length;
 
 		while (contactsList.length > 0) {
-			let batch = contactsList.splice(0, 5);
+			let batch = contactsList.splice(0, consts.MAX_API_CONCURENCY_FOR_BULK);
 
 			yield batch.map(c => co(function *(){
 				try {
 					yield contacts.createContact(c);
-					$scope.processed++;
+					$scope.translationData.processed++;
 				} catch (err) {
 					console.error('Error during contacts import', c, err);
-					$scope.errors++;
+					$scope.translationData.errors++;
 				}
 			}));
 		}
@@ -82,7 +85,7 @@ module.exports = ($scope, $modalInstance, Contact, ContactEmail, co, contacts) =
 				if (email && email.includes('@')) {
 					if (contacts.getContactByEmail(email))
 					{
-						$scope.duplicates++;
+						$scope.translationData.duplicates++;
 						isFound = true;
 						break;
 					}
