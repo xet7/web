@@ -3,7 +3,7 @@ module.exports = {
 	ROOT_DOMAIN: process.env.ROOT_DOMAIN,
 	ROOT_DOMAIN_LIST: ['lavaboom.com', 'lavaboom.io', 'lavaboom.co'],
 	IMAGES_PROXY_URI: 'https://rr.lavaboom.com',
-	DEFAULT_LANG: 'en',
+	DEFAULT_LANG: 'en_US',
 	DEFAULT_KEY_LENGTH: 4096,
 	ESTIMATED_KEY_GENERATION_TIME_SECONDS: 24,
 	INBOX_REDIRECT_DELAY: 1000,

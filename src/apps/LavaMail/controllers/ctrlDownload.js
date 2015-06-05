@@ -16,7 +16,7 @@ module.exports = ($rootScope, $scope, $stateParams, $interval, $timeout, $transl
 		LB_COMPLETED : ''
 	};
 
-	$translate.bindAsObject(translations, 'INBOX.DOWNLOAD', null, () => {
+	$translate.bindAsObject(translations, 'LAVAMAIL.INBOX.DOWNLOAD', null, () => {
 		$scope.label = translations.LB_ACQUIRING;
 	});
 

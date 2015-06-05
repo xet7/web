@@ -4,23 +4,23 @@
 			div
 				ul.nav.navbar-nav.navbar-right.boogie
 					li
-						button.btn.btn-default(ng-click="newContact()", ng-autodisable, tooltip = "{{'MAIN.CONTACTS.LB_NEW_CONTACT' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
+						button.btn.btn-default(ng-click="newContact()", ng-autodisable, tooltip = "{{'LAVAMAIL.CONTACTS.LB_NEW_CONTACT' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 							span.icon-add-contact
 				form.navbar-form-alt
 					.form-group
 						.input-group
 							label.search-icon.input-group-addon(for="top-search")
 								span.icon-search
-							input#top-search.search.form-control(placeholder="{{'MAIN.CONTACTS.PLC_SEARCH_CONTACTS' | translate}}", ng-model="searchText")
+							input#top-search.search.form-control(placeholder="{{'LAVAMAIL.CONTACTS.PLC_SEARCH_CONTACTS' | translate}}", ng-model="searchText")
 	.list-group-wrapper.scrollable.z1
 		ul.list-group
-			section.pane-status(ng-show="letters.length < 1") {{'MAIN.CONTACTS.LB_NOTHING_FOUND' | translate}}
+			section.pane-status(ng-show="letters.length < 1") {{'LAVAMAIL.CONTACTS.LB_NOTHING_FOUND' | translate}}
 			section(ng-repeat="alpha in letters")
 				li.separator.list-group-item(ng-bind="alpha")
 				li.list-group-item(ng-repeat="contact in people[alpha] | filter: searchText", ng-class="{active: selectedContactId == contact.id}")
 					a(ng-click="toggleShowDetails('main.contacts.profile', {contactId: contact.id})", ng-class="'sec-' + contact.sec", ui-sref="main.contacts.profile({contactId: contact.id})")
-						span(ng-show="contact.isNew", ng-bind="contact.getFullName() | defaultValue:('MAIN.CONTACTS.LB_NEW_CONTACT' | translate)")
-						span(ng-show="!contact.isNew", ng-bind="contact.getFullName() | defaultValue:('MAIN.CONTACTS.LB_CONTACT_NAME' | translate)")
+						span(ng-show="contact.isNew", ng-bind="contact.getFullName() | defaultValue:('LAVAMAIL.CONTACTS.LB_NEW_CONTACT' | translate)")
+						span(ng-show="!contact.isNew", ng-bind="contact.getFullName() | defaultValue:('LAVAMAIL.CONTACTS.LB_CONTACT_NAME' | translate)")
 						span.sec-icon.icon-lock(ng-show="contact.isSecured()")
 						span.sec-icon.icon-unlock(ng-show="!contact.isSecured()")
 						span.sec-icon.icon-star(ng-show="contact.isStar()")

@@ -7,7 +7,7 @@ module.exports = ($scope, $timeout, $translate, user, co, notifications) => {
 		LB_PROFILE_SAVED: '',
 		LB_PROFILE_CANNOT_BE_SAVED: ''
 	};
-	$translate.bindAsObject(translations, 'MAIN.SETTINGS.PROFILE');
+	$translate.bindAsObject(translations, 'LAVAMAIL.SETTINGS.PROFILE');
 
 	$scope.$bind('user-settings', () => {
 		$scope.settings = user.settings;

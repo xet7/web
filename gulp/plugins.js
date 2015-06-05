@@ -238,34 +238,11 @@ module.exports = function () {
 	}
 
 	function verifyTranslations(name, translations) {
-		function plainify(o, names, r) {
-			for(let k of Object.keys(o)) {
-				if (typeof o[k] == 'string')
-					r.push(names.concat(k));
-				else plainify(o[k], names.concat(k), r);
-			}
-		}
-
-		function checkKeys(keys, a) {
-			let o = a;
-			for(let key of keys) {
-				o = o[key];
-				if (!o)
-					return false;
-			}
-
-			return true;
-		}
-
-		let keys = [];
-		plainify(translations.en, [], keys);
-		delete translations.en;
-
+		let keys = Object.keys(translations.en);
 		for(let langName of Object.keys(translations)) {
-			for(let key of keys) {
-				if (!checkKeys(key, translations[langName])) {
-					console.error(`Plugin '${name}': language file '${langName}' should have key ${key.join('.')}`);
-				}
+			for(let enKey of keys) {
+				if (!Object.keys(translations[langName]).includes(enKey))
+					console.error(`Plugin '${name}': language file '${langName}' should have key '${enKey}'`);
 			}
 		}
 	}
@@ -275,7 +252,7 @@ module.exports = function () {
 			console.log(`creating translations build task for "${name}"...`);
 
 			let taskName = 'plugins:translations:' + name;
-			let translationsPath = base + name + '/translations/*.toml';
+			let translationsPath = base + name + '/translations/*.json';
 
 			let translations = {};
 
@@ -283,7 +260,6 @@ module.exports = function () {
 				return gulp.src(translationsPath)
 					.pipe(plumber())
 					.pipe(plg.buffer())
-					.pipe(plg.toml({to: JSON.stringify, ext: '.json'}))
 					.pipe(plg.tap(file => {
 						translations[path.basename(file.relative, path.extname(file.relative))] = JSON.parse(file.contents);
 					}))
@@ -304,13 +280,11 @@ module.exports = function () {
 				for(let langName of Object.keys(translations)) {
 					let lang = translations[langName];
 
-					if (!lang.LANG)
-						throw new Error(`Plugin '${name}': language file '${langName}' should have root LANG section`);
-
-					if (!lang.LANG.CODE || !lang.LANG.FULL_CODE)
+					if (!lang['LANG.CODE'] || !lang['LANG.FULL_CODE'])
 						throw new Error(`Plugin '${name}': language file '${langName}' should have root LANG.CODE and LANG.FULL_CODE defined`);
 
-					delete lang.LANG;
+					delete lang['LANG.CODE'];
+					delete lang['LANG.FULL_CODE'];
 				}
 
 				verifyTranslations(name, translations);

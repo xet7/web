@@ -3,20 +3,20 @@
 		div
 			ul.nav.navbar-nav.navbar-right
 				li
-					button.btn.btn-default(ng-hide="searchText", ng-click="", ng-autodisable, tooltip = "{{'MAIN.INBOX.REFRESH_INBOX' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
+					button.btn.btn-default(ng-hide="searchText", ng-click="", ng-autodisable, tooltip = "{{'LAVAMAIL.INBOX.REFRESH_INBOX' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-refresh
-					button.btn.btn-default(ng-show="searchText", ng-click="clearSearch()", ng-autodisable, tooltip = "{{'MAIN.INBOX.CLEAR_SEARCH' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
+					button.btn.btn-default(ng-show="searchText", ng-click="clearSearch()", ng-autodisable, tooltip = "{{'LAVAMAIL.INBOX.CLEAR_SEARCH' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-cancel
 			form.navbar-form-alt
 				.form-group
 					.input-group
 						label.search-icon.input-group-addon(for="top-search")
 							span.icon-search
-						input#top-search.search.form-control(type="text", placeholder="{{'INBOX.PLC_SEARCH' | translate}}", ng-model="searchText")
+						input#top-search.search.form-control(type="text", placeholder="{{'LAVAMAIL.INBOX.PLC_SEARCH' | translate}}", ng-model="searchText")
 .mail-list-group
 	div.pane-status(ng-show="isLoadingSign && threadsList.length < 1")
 		img(src="/img/loader.svg")
-	div.pane-status(ng-show="!isLoading && threadsList.length < 1") {{'INBOX.LB_NOTHING_FOUND' | translate}}
+	div.pane-status(ng-show="!isLoading && threadsList.length < 1") {{'LAVAMAIL.INBOX.LB_NOTHING_FOUND' | translate}}
 	div(infinite-scroll="scroll()", infinite-scroll-disabled="isLoading || isDisabledScroll", infinite-scroll-parent="true")
 		div.item-wrapper(
 		ng-repeat="thread in threadsList | filter: searchFilter as filteredThreadsList track by thread.id",
@@ -37,7 +37,7 @@
 					.details
 						p.strong.pack.title(ng-bind="thread.membersPretty | members")
 						p.medium.subject(ng-bind="thread.subject")
-						//- p.summary(ng-bind-html="thread.headerEmail.preview ? thread.headerEmail.preview.data.text : 'INBOX.NO_PREVIEW_AVAILABLE' | translate")
+						//- p.summary(ng-bind-html="thread.headerEmail.preview ? thread.headerEmail.preview.data.text : 'LAVAMAIL.INBOX.NO_PREVIEW_AVAILABLE' | translate")
 					.when
 						span.date(ng-bind="thread.created | lavadate", title = "{{thread.created | timeAgo}}")
 						.lava-icon-row

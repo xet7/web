@@ -3,7 +3,7 @@ module.exports = ($translate, co, user, crypto, ContactEmail) => {
 		LB_UNNAMED_CONTACT: ''
 	};
 
-	$translate.bindAsObject(translations, 'MAIN.COMPOSE');
+	$translate.bindAsObject(translations, 'LAVAMAIL.COMPOSE');
 
 	function Contact (opt) {
 		const self = this;

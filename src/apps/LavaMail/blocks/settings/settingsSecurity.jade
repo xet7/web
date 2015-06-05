@@ -1,21 +1,21 @@
 .row.no-gutter.settings-panel.ng-cloak(ng-controller="CtrlSettingsSecurity")
 	form.settings.col-xs-22.col-xs-offset-1.col-sm-20.col-sm-offset-2.col-md-12.col-md-offset-6.col-xs-22.col-xs-offset-1(name="__formChangePassword", ng-submit="__formChangePassword.$valid && changePassword()", novalidate, ng-autodisable)
 		.form-wrap
-			h4 {{'MAIN.SETTINGS.SECURITY.TITLE_CHANGE_PASSWORD' | translate}}
+			h4 {{'LAVAMAIL.SETTINGS.SECURITY.TITLE_CHANGE_PASSWORD' | translate}}
 			ul.list-group
 				li.list-group-item
 					.text-control
-						label {{'MAIN.SETTINGS.SECURITY.LB_CURRENT_PASSWORD' | translate}}
+						label {{'LAVAMAIL.SETTINGS.SECURITY.LB_CURRENT_PASSWORD' | translate}}
 						input.form-control(type='password', name="oldPassword", ng-model="form.oldPassword", required)
 				li.list-group-item
 					.text-control
-						label {{'MAIN.SETTINGS.SECURITY.LB_NEW_PASSWORD' | translate}}
+						label {{'LAVAMAIL.SETTINGS.SECURITY.LB_NEW_PASSWORD' | translate}}
 						input.form-control(type='password', name="password", ng-model="form.password", required)
 					.text-control
-						label {{'MAIN.SETTINGS.SECURITY.LB_CONFIRM_PASSWORD' | translate}}
+						label {{'LAVAMAIL.SETTINGS.SECURITY.LB_CONFIRM_PASSWORD' | translate}}
 						input.form-control(type='password', name="passwordConfirm", ng-model="form.passwordRepeat", required, match="form.password")
 					.text-control.btn-control
-						button.btn.btn-block.btn-primary(type="submit") {{'MAIN.SETTINGS.SECURITY.BTN_CONFIRM' | translate}}
+						button.btn.btn-block.btn-primary(type="submit") {{'LAVAMAIL.SETTINGS.SECURITY.BTN_CONFIRM' | translate}}
 			div(ng-repeat="key in keys")
 				h4(ng-bind="key.user")
 				ul.list-group.padded
@@ -23,7 +23,7 @@
 						div.input-group.with-label.clickable(ng-click="key.switchCollapse(key)")
 							//- button.btn.btn-remove(type="button")
 							//- 	span.icon-delete
-							label {{'MAIN.SETTINGS.SECURITY.LB_KEY_ID' | translate}}: {{key.keyId}}
+							label {{'LAVAMAIL.SETTINGS.SECURITY.LB_KEY_ID' | translate}}: {{key.keyId}}
 							input.form-control.text-right(type='text', disabled, ng-value="key.getTitle()", ng-show="key.isCollapsed()")
 							div.input-group-btn
 								button.btn.btn-default(title="{{key.getEncryptionStatusTooltip()}}")
@@ -32,56 +32,56 @@
 							ul.child-item
 								li.list-group-item
 									.text-control
-										label {{'MAIN.SETTINGS.SECURITY.LB_FINGERPRINT' | translate}}
+										label {{'LAVAMAIL.SETTINGS.SECURITY.LB_FINGERPRINT' | translate}}
 										div.form-control.disable-styles(ng-bind="key.fingerprintPretty")
 								li.list-group-item
 									.text-control
-										label {{'MAIN.CONTACTS.LB_ALGORITHMS' | translate}}
+										label {{'LAVAMAIL.CONTACTS.LB_ALGORITHMS' | translate}}
 										input.form-control(disabled, ng-model="key.algos")
 								li.list-group-item
 									.text-control
-										label {{'MAIN.CONTACTS.LB_LENGTH' | translate}}
+										label {{'LAVAMAIL.CONTACTS.LB_LENGTH' | translate}}
 										input.form-control(disabled, ng-model="key.length")
 								li.list-group-item
 									.text-control
-										label {{'MAIN.SETTINGS.SECURITY.LB_CREATION_DATE' | translate}}	
+										label {{'LAVAMAIL.SETTINGS.SECURITY.LB_CREATION_DATE' | translate}}
 										input.form-control(type='text', disabled, ng-value="key.created | date")
 								li.list-group-item
 									.text-control
-										label {{'MAIN.SETTINGS.SECURITY.LB_EXPIRATION_DATE' | translate}}
+										label {{'LAVAMAIL.SETTINGS.SECURITY.LB_EXPIRATION_DATE' | translate}}
 										input.form-control(type='text', disabled, ng-value="key.expiredAt | date")
 								li.list-group-item
 									.text-control
-										label(ng-show="key.isDecrypted()") {{'MAIN.SETTINGS.SECURITY.LB_DECRYPTED' | translate}}
-										label(ng-show="!key.isDecrypted()") {{'MAIN.SETTINGS.SECURITY.LB_PASSPHRASE' | translate}}
+										label(ng-show="key.isDecrypted()") {{'LAVAMAIL.SETTINGS.SECURITY.LB_DECRYPTED' | translate}}
+										label(ng-show="!key.isDecrypted()") {{'LAVAMAIL.SETTINGS.SECURITY.LB_PASSPHRASE' | translate}}
 										input.form-control(type='password', ng-disabled="key.isDecrypted()", ng-model="key.decryptPassword", ng-controller="CtrlSettingsSecurityKey")
 								li.list-group-item
 									.button-holder
 										button.cell.btn.btn-default(type="button", ng-click="exportPublicKey(key)")
 											span.icon-key-pair-download
-											| {{'MAIN.SETTINGS.SECURITY.EXPORT_PUBLIC_KEY' | translate}}
+											| {{'LAVAMAIL.SETTINGS.SECURITY.EXPORT_PUBLIC_KEY' | translate}}
 										button.cell.btn.btn-default(type="button", ng-click="sendKey(key)")
 											span.icon-public-key-send
-											| {{'MAIN.SETTINGS.SECURITY.SEND_PUBLIC_KEY' | translate}}
+											| {{'LAVAMAIL.SETTINGS.SECURITY.SEND_PUBLIC_KEY' | translate}}
 				//ul.list-group
 					li.list-group-item.pack
 						button.btn.btn-default.btn-block.btn-icon.lava(type="button", ng-click="generateKeys()")
 							span.icon-plus-circle.btn-add-icon
-							| {{'MAIN.SETTINGS.SECURITY.ADD_NEW_KEY_PAIR' | translate}}
+							| {{'LAVAMAIL.SETTINGS.SECURITY.ADD_NEW_KEY_PAIR' | translate}}
 							span(ng-bind="key.email")
-			div(ng-show="isAnyUndecryptedKeys") {{'MAIN.SETTINGS.SECURITY.LB_PASSPHRASE_NOTE' | translate}}
-			div(ng-show="!keys || keys.length < 1") {{'MAIN.SETTINGS.SECURITY.LB_KEY_NOTE' | translate}}
-			h4 {{'MAIN.SETTINGS.SECURITY.TITLE_KEYS_MANAGEMENT' | translate}}
+			div(ng-show="isAnyUndecryptedKeys") {{'LAVAMAIL.SETTINGS.SECURITY.LB_PASSPHRASE_NOTE' | translate}}
+			div(ng-show="!keys || keys.length < 1") {{'LAVAMAIL.SETTINGS.SECURITY.LB_KEY_NOTE' | translate}}
+			h4 {{'LAVAMAIL.SETTINGS.SECURITY.TITLE_KEYS_MANAGEMENT' | translate}}
 			ul.list-group
 				li.list-group-item
 					.text-control.btn-control
-						.btn.btn-block.btn-warning(ng-click="generateKeys()") {{'MAIN.SETTINGS.SECURITY.BTN_GENERATE_KEYS' | translate}}
-						.btn.btn-block.btn-warning(ng-click="removeDecryptedKeys()", ng-disabled="!keys || keys.length < 1") {{'MAIN.SETTINGS.SECURITY.BTN_REMOVE_DECRYPTED_KEYS' | translate}}
-						.btn.btn-block.btn-primary(ng-click="exportKeys()", ng-disabled="!keys || keys.length < 1") {{'MAIN.SETTINGS.SECURITY.BTN_EXPORT_KEYS' | translate}}
-						.btn.btn-block.btn-primary(open-file="importKeys(data)") {{'MAIN.SETTINGS.SECURITY.BTN_IMPORT_KEYS' | translate}}
+						.btn.btn-block.btn-warning(ng-click="generateKeys()") {{'LAVAMAIL.SETTINGS.SECURITY.BTN_GENERATE_KEYS' | translate}}
+						.btn.btn-block.btn-warning(ng-click="removeDecryptedKeys()", ng-disabled="!keys || keys.length < 1") {{'LAVAMAIL.SETTINGS.SECURITY.BTN_REMOVE_DECRYPTED_KEYS' | translate}}
+						.btn.btn-block.btn-primary(ng-click="exportKeys()", ng-disabled="!keys || keys.length < 1") {{'LAVAMAIL.SETTINGS.SECURITY.BTN_EXPORT_KEYS' | translate}}
+						.btn.btn-block.btn-primary(open-file="importKeys(data)") {{'LAVAMAIL.SETTINGS.SECURITY.BTN_IMPORT_KEYS' | translate}}
 			ul.list-group
 				li.list-group-item
-					label {{'MAIN.SETTINGS.SECURITY.LAVABOOM_SYNC' | translate}}
+					label {{'LAVAMAIL.SETTINGS.SECURITY.LAVABOOM_SYNC' | translate}}
 					.control
 						label.switch
 							input(type='checkbox', ng-model="settings.isLavaboomSynced")

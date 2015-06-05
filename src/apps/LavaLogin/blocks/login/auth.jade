@@ -1,6 +1,6 @@
 form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-submit="__form.$valid && logIn()", novalidate, ng-autodisable, form-auto-fill-fix)
 	img.login-logo(src="#{resolveAsset('/img/Lavaboom-logo-no-shadow.svg')}")
-	p.lead {{'LOGIN.SIGNUP.LOGIN' | translate}}
+	p.lead {{'LAVALOGIN.SIGNUP.LOGIN' | translate}}
 
 	div.alert.alert-danger(ng-show="currentErrorMessage", ng-bind="currentErrorMessage")
 
@@ -14,9 +14,9 @@ form.ng-cloak(name="__form", ng-class="{'errors': currentErrorMessage}", ng-subm
 
 	.checkbox
 		input#check2(type='checkbox', name="check2", ng-model="form.isPrivateComputer")
-		label(for='check2') {{'LOGIN.AUTH.LB_PRIVATE_PC' | translate}}
+		label(for='check2') {{'LAVALOGIN.AUTH.LB_PRIVATE_PC' | translate}}
 
 	footer
-		button.btn.btn-block.btn-lg.btn-primary(type="submit") {{'LOGIN.AUTH.BTN_GO_TO_MY_INBOX' | translate}}
+		button.btn.btn-block.btn-lg.btn-primary(type="submit") {{'LAVALOGIN.AUTH.BTN_GO_TO_MY_INBOX' | translate}}
 	p.text-center
-		a(ui-sref="invite") {{'LOGIN.AUTH.BTN_NO_ACCOUNT_YET' | translate}}
+		a(ui-sref="invite") {{'LAVALOGIN.AUTH.BTN_NO_ACCOUNT_YET' | translate}}

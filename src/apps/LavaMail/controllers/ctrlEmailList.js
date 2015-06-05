@@ -38,7 +38,7 @@ module.exports = ($rootScope, $scope, $timeout, $state, $stateParams, $translate
 		TITLE_CONFIRM: '',
 		LB_EMAIL_HAS_EMBEDDED_STYLING: ''
 	};
-	$translate.bindAsObject(translations, 'INBOX');
+	$translate.bindAsObject(translations, 'LAVAMAIL.INBOX');
 
 	$scope.downloadEmail = (email, name, isHtml) => {
 		let contentType = isHtml ? 'text/html' : 'text/plain';
