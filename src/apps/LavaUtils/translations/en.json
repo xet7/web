@@ -331,6 +331,17 @@
   "LAVAMAIL.CONTACTS.TITLE_BUSINESS_EMAIL": "Business Email",
   "LAVAMAIL.CONTACTS.TITLE_CONFIRM_DELETE": "Confirm deletion",
   "LAVAMAIL.CONTACTS.TITLE_PRIVATE_EMAIL": "Private Email",
+
+  "LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS": "Import contacts",
+  "LAVAMAIL.CONTACTS.TITLE_IMPORT_CONTACTS": "Import contacts",
+  "LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS_DETAILS": "You can import your contacts from another email provider",
+  "LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS_GMAIL": "Import contacts from gmail(.csv)",
+  "LAVAMAIL.CONTACTS.LB_IMPORT_OK": "Get back",
+
+  "LAVAMAIL.CONTACTS.LB_PROCESSED_FROM": "{{processed}} from {{total}}",
+  "LAVAMAIL.CONTACTS.LB_DUPLICATES": "{{duplicates}} duplicates",
+  "LAVAMAIL.CONTACTS.LB_ERRORS": "{{errors}} errors",
+
   "LAVAMAIL.NAV.LB_COMPOSE": "Compose",
   "LAVAMAIL.NAV.LB_CONTACTS": "Contacts",
   "LAVAMAIL.NAV.LB_COPYRIGHT": "\u00a9 Lavaboom 2015",

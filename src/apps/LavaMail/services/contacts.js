@@ -52,9 +52,11 @@ module.exports = function($q, $rootScope, co, user, crypto, utils, LavaboomAPI, 
 		let envelope = yield Contact.toEnvelope(contact);
 		let r = yield LavaboomAPI.contacts.create(envelope);
 
+		delete contact.isNew;
+		contact.isDecrypted = true;
+
 		if (contact.id) {
 			if (contact.id == 'new') {
-				delete contact.isNew;
 				emptyContact = null;
 			}
 			deleteLocally(contact.id);
