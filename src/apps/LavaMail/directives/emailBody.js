@@ -263,15 +263,14 @@ module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCa
 			}
 		}
 
-		$timeout.cancel(loadingTimeout);
-		scope.isLoading = false;
-
 		$timeout(() => {
+			el.empty();
+			el.append(emailBody);
 			scope.emailBody = emailBody.html();
-		}, 100);
 
-		el.empty();
-		el.append(emailBody);
+			$timeout.cancel(loadingTimeout);
+			scope.isLoading = false;
+		}, 100);
 	});
 
 	return {
