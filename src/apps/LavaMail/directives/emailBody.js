@@ -197,6 +197,8 @@ module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCa
 
 		scope.isLoading = false;
 		scope.originalEmail = scope.emailBody;
+		scope.emailBody = angular.copy(scope.emailBody);
+		
 		let loadingTimeout = $timeout(() => {
 			scope.isLoading = true;
 		}, scope.showLoadingSignAfter);
@@ -213,7 +215,7 @@ module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCa
 		let emailBody = null;
 		try {
 			let wrapperTag = scope.isHtml ? 'div' : 'pre';
-			let wrappedEmailBody = `<${wrapperTag}>${scope.emailBody}</${wrapperTag}>`;
+			let wrappedEmailBody = `<${wrapperTag} class="email">${scope.emailBody}</${wrapperTag}>`;
 
 			console.log('email before sanitize', wrappedEmailBody);
 			let sanitizedEmailBody = $sanitize(wrappedEmailBody);
