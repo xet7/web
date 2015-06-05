@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - auto detect user's language
 - translation for labels(Inbox/Sent/...)
 - quotes in emails are collapsed by default
-- contacts import(only gmail .csv is supported)
+- contacts import(csv for gmail and outlook formats, vcard)
 
 ### Modified
 - unified and merged translation files for core apps for a proper transifex support
