@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - auto detect user's language
 - translation for labels(Inbox/Sent/...)
+- quotes in emails are collapsed by default
 
 ### Modified
 - unified and merged translation files for core apps for a proper transifex support

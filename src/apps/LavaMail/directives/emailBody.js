@@ -111,7 +111,7 @@ module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCa
 	});
 
 	let linksCounter = 0;
-	const transformEmail = (dom, {imagesSetting, noImageTemplate, emails}, level = 0) => {
+	const transformEmail = (dom, {imagesSetting, noImageTemplate, emails, status}, level = 0) => {
 		const getEmailContextMenuDOM = (i) =>
 			utils.getDOM(`<email-context-menu email="emails[${i}].email" is-open="emails[${i}].isDropdownOpened"></email-context-menu>`);
 		const noImageTemplateDOM = utils.getDOM(noImageTemplate);
@@ -124,6 +124,14 @@ module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCa
 			if (node.nodeName == 'BLOCKQUOTE') {
 				node.setAttribute('style', '');
 				node.setAttribute('class', '');
+
+				if (!status.isTopLevelBlockquoteProcessed) {
+					node.parentNode.insertBefore(utils.getDOM(
+						'<a href="#" class="collapse-blockquote" ng-click="status.isBlockquoteCollapsed = !status.isBlockquoteCollapsed">...</a>'
+					), node);
+					node.setAttribute('collapse', 'status.isBlockquoteCollapsed');
+					status.isTopLevelBlockquoteProcessed = true;
+				}
 			} else
 			if (node.nodeName == 'IMG') {
 				let src = node.getAttribute('src');
@@ -192,7 +200,7 @@ module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCa
 			processNode(node);
 
 			if (node.childNodes)
-				transformEmail(node, {imagesSetting, noImageTemplate, emails}, level + 1);
+				transformEmail(node, {imagesSetting, noImageTemplate, emails, status}, level + 1);
 		}
 	};
 
@@ -210,6 +218,10 @@ module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCa
 		el.append($compile(angular.element(loadingTemplate))(scope));
 
 		scope.emails = [];
+		scope.status = {
+			isBlockquoteCollapsed: true,
+			isTopLevelBlockquoteProcessed: false
+		};
 		scope.switchContextMenu = index => scope.emails[index].isDropdownOpened = !scope.emails[index].isDropdownOpened;
 
 		const noImageTemplate = yield $templateCache.fetch(scope.noImageTemplateUrl);
@@ -231,7 +243,8 @@ module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCa
 			transformEmail(dom, {
 				imagesSetting: user.settings.images,
 				noImageTemplate: noImageTemplate,
-				emails: scope.emails
+				emails: scope.emails,
+				status: scope.status
 			});
 
 			let emailBodyHtml = dom.innerHTML;
