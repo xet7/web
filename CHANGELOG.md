@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## UNRELEASED
 ### Added
 - auto detect user's language
+- translation for labels(Inbox/Sent/...)
 
 ### Modified
 - unified and merged translation files for core apps for a proper transifex support
