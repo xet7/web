@@ -315,7 +315,7 @@ module.exports = ($rootScope, $scope, $stateParams, $translate,
 				attachmentStatus.attachment.getBodyAsBinaryString(), attachmentStatus.attachment.name, attachmentStatus.attachment.type);
 
 		try {
-			let body = $scope.form.body;
+			let body = composeHelpers.cleanupOutboundEmail($scope.form.body);
 
 			let sendStatus = yield inbox.send({
 				body: body,

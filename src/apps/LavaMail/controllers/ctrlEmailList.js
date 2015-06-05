@@ -105,6 +105,7 @@ module.exports = ($rootScope, $scope, $timeout, $state, $stateParams, $translate
 
 				$scope.emails = (yield emailsPromise).map(e => {
 					e.originalBodyData = e.body.data;
+					e.displayBodyData = e.body.data;
 					return e;
 				});
 
@@ -124,8 +125,8 @@ module.exports = ($rootScope, $scope, $timeout, $state, $stateParams, $translate
 			$scope.isLoading = true;
 			try {
 				$scope.emails = (yield inbox.getEmailsByThreadId(threadId)).map(e => {
-					console.log('!', e.body);
 					e.originalBodyData = e.body.data;
+					e.displayBodyData = e.body.data;
 					return e;
 				});
 			} finally {
