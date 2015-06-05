@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - translation for labels(Inbox/Sent/...)
 - quotes in emails are collapsed by default
 - contacts import(csv for gmail and outlook formats, vcard)
+- refresh threads button for checking new threads/emails
 
 ### Modified
 - unified and merged translation files for core apps for a proper transifex support
