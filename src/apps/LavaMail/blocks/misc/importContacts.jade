@@ -8,6 +8,7 @@
 	.modal-body(ng-show="state == 'importing' || state == 'finished'")
 		img(src="/img/loader.svg", ng-show="state != 'finished'")
 		div {{processed}} from {{total}}
+		div {{duplicates}} duplicates
 		div {{errors}} errors
 	.modal-footer(ng-show="state == 'select'")
 		button.btn.btn-default(type='button', open-file="importGmail(data)") {{'LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS_GMAIL' | translate}}

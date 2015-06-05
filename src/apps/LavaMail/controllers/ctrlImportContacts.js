@@ -3,6 +3,7 @@ module.exports = ($scope, $modalInstance, Contact, ContactEmail, co, contacts) =
 	$scope.processed = 0;
 	$scope.errors = 0;
 	$scope.total = 0;
+	$scope.duplicates = 0;
 
 	$scope.no = () => {
 		$modalInstance.dismiss('no');
@@ -56,7 +57,7 @@ module.exports = ($scope, $modalInstance, Contact, ContactEmail, co, contacts) =
 				emailIndexes.push(i);
 		});
 
-		let contacts = [];
+		let contactsList = [];
 		for(let i = 1; i < contactsData.data.length; i++) {
 			let cols = contactsData.data[i];
 
@@ -69,25 +70,37 @@ module.exports = ($scope, $modalInstance, Contact, ContactEmail, co, contacts) =
 				continue;
 
 			let contact = new Contact({
-				isNew: true,
+				isDecrypted: true,
 				firstName: firstName,
 				lastName: lastName,
 				name: name
 			});
 
+			let isFound = false;
 			for(let emailIndex of emailIndexes) {
 				let email = cols[emailIndex];
 				if (email && email.includes('@')) {
+					if (contacts.getContactByEmail(email))
+					{
+						$scope.duplicates++;
+						isFound = true;
+						break;
+					}
+
 					let e = new ContactEmail(contact, {
-						name: email
+						name: email,
+						email
 					}, 'private');
 					contact.privateEmails.push(e);
 				}
 			}
 
-			contacts.push(contact);
+			if (isFound)
+				continue;
+
+			contactsList.push(contact);
 		}
 
-		importContacts(contacts);
+		importContacts(contactsList);
 	};
 };
