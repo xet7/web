@@ -431,5 +431,12 @@
   "LAVAMAIL.SETTINGS.SECURITY.TITLE_CONFIRM": "Please confirm",
   "LAVAMAIL.SETTINGS.SECURITY.TITLE_KEYS_MANAGEMENT": "Manage your keys",
   "LAVAMAIL.SETTINGS.SECURITY.TP_KEY_IS_DECRYPTED": "This key is decrypted and can be used to access your emails/contacts",
-  "LAVAMAIL.SETTINGS.SECURITY.TP_KEY_IS_ENCRYPTED": "This key is still encrypted"
+  "LAVAMAIL.SETTINGS.SECURITY.TP_KEY_IS_ENCRYPTED": "This key is still encrypted",
+
+  "LAVAMAIL.LABEL.INBOX": "Inbox",
+  "LAVAMAIL.LABEL.SENT": "Sent",
+  "LAVAMAIL.LABEL.STARRED": "Starred",
+  "LAVAMAIL.LABEL.SPAM": "Spam",
+  "LAVAMAIL.LABEL.TRASH": "Trash",
+  "LAVAMAIL.LABEL.DRAFTS": "Drafts"
 }
