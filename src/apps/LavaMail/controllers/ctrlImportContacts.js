@@ -37,6 +37,56 @@ module.exports = ($scope, $modalInstance, Contact, ContactEmail, consts, co, con
 		$modalInstance.close('yes');
 	};
 
+	$scope.importVcard = (data) => {
+		let contactsList = [];
+
+		window.VCF.parse(data, function(vcard) {
+			console.log(vcard);
+
+			let firstNameArr = vcard.n['given-name'];
+			let firstName = firstNameArr && firstNameArr.length > 0 ? firstNameArr.join(' ').trim() : '';
+			let lastNameArr = vcard.n['family-name'];
+			let lastName = lastNameArr && lastNameArr.length > 0 ? lastNameArr.join(' ').trim() : '';
+			let name = vcard.fn ? vcard.fn.trim() : `${firstName} ${lastName}`.trim();
+
+			if (!firstName || !lastName || !name)
+				return;
+
+			let contact = new Contact({
+				isDecrypted: true,
+				firstName,
+				lastName,
+				name
+			});
+
+			let isFound = false;
+			for(let email of vcard.email) {
+				if (email && email.value && email.value.includes('@')) {
+					if (contacts.getContactByEmail(email.value))
+					{
+						$scope.translationData.duplicates++;
+						isFound = true;
+						break;
+					}
+
+					let e = new ContactEmail(contact, {
+						name: email.value,
+						email: email.value
+					}, 'private');
+					contact.privateEmails.push(e);
+				}
+			}
+
+			if (isFound)
+				return;
+
+			contactsList.push(contact);
+		});
+
+		importContacts(contactsList);
+	};
+
+
 	$scope.importGmail = (data) => {
 		let contactsData = window.Papa.parse(data);
 
