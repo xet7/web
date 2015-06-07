@@ -7,14 +7,23 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - auto detect user's language
 - translation for labels(Inbox/Sent/...)
 - quotes in emails are collapsed by default
+<<<<<<< HEAD
 - contacts import(csv for gmail and outlook formats, vcard)
 - refresh threads button for checking new threads/emails
+=======
+<<<<<<< HEAD
+- transifex support and french (provided by Cedric Morin) language
+=======
+- transifex support and french language
+>>>>>>> caa9b012abddac2852796581613c10d1f19bf240
+>>>>>>> origin/feature/i18n-tansifex
 
 ### Modified
 - unified and merged translation files for core apps for a proper transifex support
 - encrypted contacts can be removed in edit mode
 - use settings firstName + lastName in key during the import
 - better support for blockquote elements in replied and forwarded emails
+- German language support
 
 ### Fixed
 - properly switch translation right after logout
