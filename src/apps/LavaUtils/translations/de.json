@@ -99,7 +99,7 @@
     "LAVALOGIN.DETAILS.SUB_TITLE": "Wir sind durch die deutsche Gesetzgebung daran gebunden nach diesen Informationen zu fragen, validieren sie jedoch nicht und nutzen sie auch nicht.",
     "LAVALOGIN.DETAILS.TITLE": "Persönliches",
     "LAVALOGIN.GENERATE_KEYS.BTN_NEXT": "Generiere meine Schlüssel",
-    "LAVALOGIN.GENERATE_KEYS.LB_WARNING1": "Lavaboom encrypts your data client-side, on your computer. To do this we need to store an encryption key pair in your browser.",
+    "LAVALOGIN.GENERATE_KEYS.LB_WARNING1": "Lavaboom chieffriert Ihre Daten in Ihrem Browser, auf Ihrem Computer. Um dies zu tun werden wir ein Schlüselpaar in Ihrem Browser hinterlegen.",
     "LAVALOGIN.GENERATE_KEYS.LB_WARNING2": "Dieser Schlüssel wird dazu verwendet Daten und Emails an Sie zu chiffrieren. Teile ihn mit Freunden und Verwandten die Ihnen verschlüsselte Emails zusenden wollen.",
     "LAVALOGIN.GENERATE_KEYS.LB_WARNING3": "Dieser Schlüssel wird dazu verwendet Daten und Emails an Sie zu dechiffrieren. Teilen Sie Ihn niemals, und machen Sie ein Backup des Schlüssels.",
     "LAVALOGIN.GENERATE_KEYS.TITLE": "Schlüssel generieren",
