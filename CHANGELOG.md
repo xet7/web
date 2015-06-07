@@ -7,7 +7,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - auto detect user's language
 - translation for labels(Inbox/Sent/...)
 - quotes in emails are collapsed by default
+<<<<<<< HEAD
 - transifex support and french (provided by Cedric Morin) language
+=======
+- transifex support and french language
+>>>>>>> caa9b012abddac2852796581613c10d1f19bf240
 
 ### Modified
 - unified and merged translation files for core apps for a proper transifex support
