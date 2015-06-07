@@ -7,12 +7,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - auto detect user's language
 - translation for labels(Inbox/Sent/...)
 - quotes in emails are collapsed by default
+- transifex support and french language
 
 ### Modified
 - unified and merged translation files for core apps for a proper transifex support
 - encrypted contacts can be removed in edit mode
 - use settings firstName + lastName in key during the import
 - better support for blockquote elements in replied and forwarded emails
+- German language support
 
 ### Fixed
 - properly switch translation right after logout
