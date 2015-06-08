@@ -127,7 +127,7 @@ module.exports = ($translate, $timeout, $state, $compile, $sanitize, $templateCa
 
 				if (!status.isTopLevelBlockquoteProcessed) {
 					node.parentNode.insertBefore(utils.getDOM(
-						'<a href="#" class="collapse-blockquote" ng-click="status.isBlockquoteCollapsed = !status.isBlockquoteCollapsed">...</a>'
+						'<a href="#" class="collapse-blockquote" ng-click="status.isBlockquoteCollapsed = !status.isBlockquoteCollapsed"><span></span></a>'
 					), node);
 					node.setAttribute('collapse', 'status.isBlockquoteCollapsed');
 					status.isTopLevelBlockquoteProcessed = true;
