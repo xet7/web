@@ -16,4 +16,4 @@ COPY . /tmp/build
 RUN . /root/.nvm/nvm.sh && nvm use 0.12 && cd /tmp/build && npm install && gulp production
 RUN rm -f /var/www && mv /tmp/build/dist /var/www
 
-CMD 'nginx'
+CMD ["nginx", "-g", "daemon off;"]
