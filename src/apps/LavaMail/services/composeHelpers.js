@@ -9,9 +9,6 @@ module.exports = function ($rootScope, $templateCache, $compile, co, utils) {
 				}
 			}
 
-			if (node.nodeName != '#text' && (!node.childNodes || node.childNodes.length < 1))
-				node.parentNode.removeChild(node);
-
 			if (node.childNodes && node.childNodes.length > 0)
 				transformNodes(node, level + 1);
 		}

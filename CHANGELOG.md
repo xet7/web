@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## UNRELEASED
 ### Fixed
 - issue with refresh button and email contents
+- issue with missing email elements(images)
 
 ## 0.4.3 - 2015-06-08
 ### Added
