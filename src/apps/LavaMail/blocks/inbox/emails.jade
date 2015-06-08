@@ -1,28 +1,28 @@
 div.pane-status(ng-if="selectedTid === null")
-	.col-xs-24 {{'INBOX.LB_NOTHING_SELECTED' | translate}}
+	.col-xs-24 {{'LAVAMAIL.INBOX.LB_NOTHING_SELECTED' | translate}}
 
 .actions.row.no-gutter.lava-icon-row(ng-class="'notifications-' + getNotificationsLength(notificationsInfo, notificationsWarning)")
 	nav.navbar.navbar-inverse(role="navigation")
 		div
 			ul.nav.navbar-nav
 				li(ng-show="selectedTid && labelName != 'Spam' && labelName != 'Trash'")
-					button.btn.btn-default(ng-click="deleteThread(selectedTid)", tooltip="{{'INBOX.MOVE_TO_TRASH' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
+					button.btn.btn-default(ng-click="deleteThread(selectedTid)", tooltip="{{'LAVAMAIL.INBOX.MOVE_TO_TRASH' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-trash
 				li(ng-show="(selectedTid && labelName == 'Trash') || (selectedTid && labelName == 'Spam')")
-					button.btn.btn-default(ng-click="deleteThread(selectedTid)", tooltip="{{'INBOX.BTN_DELETE_PERMANENTLY' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
+					button.btn.btn-default(ng-click="deleteThread(selectedTid)", tooltip="{{'LAVAMAIL.INBOX.BTN_DELETE_PERMANENTLY' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-empty-trash
-				li(ng-show="selectedTid && labelName != 'Spam'")
-					button.btn.btn-default(ng-click="spamThread(selectedTid)", tooltip="{{'INBOX.MARK_AS_SPAM' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
+				li(ng-show="(selectedTid && labelName != 'Spam') && (selectedTid && labelName != 'Sent')")
+					button.btn.btn-default(ng-click="spamThread(selectedTid)", tooltip="{{'LAVAMAIL.INBOX.MARK_AS_SPAM' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-ban
 				li(ng-show="selectedTid && labelName != 'Spam' && labelName != 'Trash'")
-					button.btn.btn-default(ng-click="starThread(selectedTid)", tooltip="{{'INBOX.STAR_THIS_CONVERSATION' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
+					button.btn.btn-default(ng-click="starThread(selectedTid)", tooltip="{{'LAVAMAIL.INBOX.STAR_THIS_CONVERSATION' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-star(ng-show="selectedTid && threads[selectedTid].isLabel('Starred')")
 						span.icon-star-outline(ng-show="selectedTid && !threads[selectedTid].isLabel('Starred')")
 				li(ng-show="selectedTid && labelName == 'Spam'")
-					button.btn.btn-default(ng-click="restoreFromSpam(selectedTid)", tooltip="{{'INBOX.NOT_SPAM' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
+					button.btn.btn-default(ng-click="restoreFromSpam(selectedTid)", tooltip="{{'LAVAMAIL.INBOX.NOT_SPAM' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-put-back
 				li(ng-show="selectedTid && labelName == 'Trash'")
-					button.btn.btn-default(ng-click="restoreFromTrash(selectedTid)", tooltip="{{'INBOX.PUT_BACK' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
+					button.btn.btn-default(ng-click="restoreFromTrash(selectedTid)", tooltip="{{'LAVAMAIL.INBOX.PUT_BACK' | translate}}", tooltip-placement="bottom", tooltip-append-to-body="true")
 						span.icon-put-back
 	include ../misc/_notifications
 
@@ -52,39 +52,39 @@ div(ng-if="selectedTid").main-view
 									a(ui-sref=".popup.compose({to: from.address})", ng-right-click="from.isContextMenuOpened = true") {{from.prettyName}}
 									| {{$last ? '' : ', '}}
 						div
-							.to{{'MAIN.COMPOSE.LB_TO' | translate}}
+							.to {{'LAVAMAIL.COMPOSE.LB_TO' | translate}}
 							span.medium(ng-repeat="to in email.to")
 								email-context-menu(ng-if="to.address != selfEmail", email="to.address", is-open="to.isContextMenuOpened")
 									a(ui-sref=".popup.compose({to: to.address})", ng-right-click="to.isContextMenuOpened = true") {{to.prettyName}}
 									| {{$last ? '' : ', '}}
 								span(ng-if="to.address == selfEmail") {{to.prettyName}} {{$last ? '' : ', '}}
-						br
-						| {{'MAIN.COMPOSE.LB_SUBJECT' | translate}}:
-						span(ng-bind="email.subject")
+						div
+							span(ng-bind="email.subject")
 					.when
 						span(ng-bind="email.date | lavaday")
 						span(ng-bind="email.date | lavatime")
 				.mail-content
 					div(ng-show="email.body.state == 'ok'",
+						show-loading-sign-after="500",
 						is-html="email.isHtml",
 						thread-id="selectedTid",
 						open-email="openEmail",
 						download-email="downloadEmail",
 						original-email-name="email.id",
-						email-body="email.body.data",
+						email-body="email.displayBodyData",
 						snap-template-url="LavaMail/directives/snap",
 						no-image-template-url="LavaMail/directives/noImage",
 						loading-template-url="LavaMail/directives/loading")
-					.col-xs-22(ng-show="email.body.state == 'no_private_key'") {{'INBOX.LB_NO_PRIVATE_KEY_FOUND1' | translate}}
-						div {{'INBOX.LB_NO_PRIVATE_KEY_FOUND2' | translate}}
-							a(ui-sref="main.settings.security") {{'INBOX.LB_SETTINGS' | translate}}
-							| {{'INBOX.LB_NO_PRIVATE_KEY_FOUND3' | translate}}
+					.col-xs-22(ng-show="email.body.state == 'no_private_key'") {{'LAVAMAIL.INBOX.LB_NO_PRIVATE_KEY_FOUND1' | translate}}
+						div {{'LAVAMAIL.INBOX.LB_NO_PRIVATE_KEY_FOUND2' | translate}}
+							a(ui-sref="main.settings.security") {{'LAVAMAIL.INBOX.LB_SETTINGS' | translate}}
+							| {{'LAVAMAIL.INBOX.LB_NO_PRIVATE_KEY_FOUND3' | translate}}
 				footer.attachments(ng-show="email.files.length")
 					.row.no-gutter
 						.col-xs-12(ng-repeat="file in email.files")
 							include ./_attachment
 				div.btn-group.navbar-right-buttons
-					button.btn.btn-default(ng-show="selectedTid", ng-click="downloadEmail(email.originalBodyData, email.id, email.isHtml)", tooltip="{{'MAIN.COMPOSE.TOOLTIP_DOWNLOAD_ORIGINAL' | translate}}", tooltip-append-to-body="true")
+					button.btn.btn-default(ng-show="selectedTid", ng-click="downloadEmail(email.originalBodyData, email.id, email.isHtml)", tooltip="{{'LAVAMAIL.COMPOSE.TOOLTIP_DOWNLOAD_ORIGINAL' | translate}}", tooltip-append-to-body="true")
 						span.icon-download
 					button.btn.btn-default(ng-show="selectedTid && !threads[selectedTid].isToYourself", ng-click="showPopup('compose', {replyThreadId: selectedTid, replyEmailId: email.id})")
 						span.icon-reply

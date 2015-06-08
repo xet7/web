@@ -19,7 +19,7 @@ module.exports = ($rootScope, $scope, $state, $interval, $timeout, $translate, c
 		LB_DO_NOT_CLOSE_TURTLE: ''
 	};
 
-	$translate.bindAsObject(translations, 'LOGIN.GENERATING_KEYS');
+	$translate.bindAsObject(translations, 'LAVALOGIN.GENERATING_KEYS');
 
 	let progressBarInterval;
 	progressBarInterval = $interval(() => {

@@ -26,7 +26,7 @@ module.exports = ($scope, $timeout, $translate, $state,
 		LB_CANNOT_IMPORT_UNEXPECTED_KEY_TYPE_FOUND: '',
 		LB_IMPORTED: '%'
 	};
-	$translate.bindAsObject(translations, 'MAIN.SETTINGS.SECURITY');
+	$translate.bindAsObject(translations, 'LAVAMAIL.SETTINGS.SECURITY');
 
 	$scope.$bind('user-settings', () => {
 		$scope.settings = user.settings;

@@ -2,14 +2,14 @@ section.email
 	section.body(ng-bind-html="body")
 	footer.signature(ng-bind-html="signature")
 	section.replied-to(ng-repeat="email in forwardEmails")
-		blockquote {{'INBOX.FORWARD_HEADER' | translate}}
-			div {{'INBOX.FORWARD_FROM' | translate}}: 
+		blockquote {{'LAVAMAIL.INBOX.FORWARD_HEADER' | translate}}
+			div {{'LAVAMAIL.INBOX.FORWARD_FROM' | translate}}:
 				span.medium {{email.fromAllPretty}}
-			div {{'INBOX.FORWARD_DATE' | translate}}: {{email.date | date}}
-			div {{'INBOX.FORWARD_SUBJECT' | translate}}: {{email.subject}}
-			div {{'INBOX.FORWARD_TO' | translate}}: {{email.toPretty}}
+			div {{'LAVAMAIL.INBOX.FORWARD_DATE' | translate}}: {{email.date | date}}
+			div {{'LAVAMAIL.INBOX.FORWARD_SUBJECT' | translate}}: {{email.subject}}
+			div {{'LAVAMAIL.INBOX.FORWARD_TO' | translate}}: {{email.toPretty}}
 			div(ng-if="email.cc && email.cc.length > 0")
-				span {{'INBOX.FORWARD_CC' | translate}}: {{email.ccPretty}}
+				span {{'LAVAMAIL.INBOX.FORWARD_CC' | translate}}: {{email.ccPretty}}
 			div(ng-if="email.bcc && email.bcc.length > 0")
-				span {{'INBOX.FORWARD_BCC' | translate}}: {{ email.bccPretty}}
+				span {{'LAVAMAIL.INBOX.FORWARD_BCC' | translate}}: {{ email.bccPretty}}
 			section(ng-bind-html="email.body.data")

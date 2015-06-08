@@ -100,11 +100,12 @@ a:hover{
 		// padding-bottom: .1rem;
 		&.big-text{
 			span {
-				font-size: 22px;
+				font-size: 1.8rem;
 			}
 			i.icon{
 				position: relative;
 				top: -.4rem;
+				color: @lava-list-icon-color;
 			}
 		}
 	}
@@ -162,7 +163,7 @@ a:hover{
 			}
 			a{
 				color: #FFF;
-				.sec-icon{
+				.sec-icon, .icon{
 					color: #FFF;
 				}
 			}
@@ -276,6 +277,7 @@ p.hyphenate{
 }
 
 .lava-modal-header{
+	min-height: 4.4rem;
 	.modal-heading{
 		line-height: 2.8em;
 		padding-left: 1.3em;
@@ -283,7 +285,7 @@ p.hyphenate{
 }
 
 .lava-modal-content{
-	padding-top: @filter-height + 25px;
+	padding: @filter-height + 2.2rem 2.2rem 2.2rem;
 }
 
 .modal-backdrop.fade.in{

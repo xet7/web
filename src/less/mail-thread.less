@@ -6,7 +6,7 @@
 	}
 	.global-mail-actions {
 		.pos-abs();
-		bottom: 1.6rem;
+		bottom: 2.2rem;
 		.text-center();
 		.z2();
 		width: 100%;
@@ -21,7 +21,7 @@
 	.navbar-right-buttons {
 		position: absolute;
 		right:1.6rem;
-		bottom: 0.6rem;
+		bottom: -@filter-height;
 		opacity:0;
 		transition:opacity 0.2s linear;
 	}
@@ -46,7 +46,10 @@
 	}
 
 	&:last-child{
-		padding-bottom: 6.6rem;
+		margin-bottom: 6.6rem;
+	}
+	> .table{
+		margin-bottom: 0;
 	}
 	
 
@@ -54,13 +57,16 @@
 		padding-bottom: 2.2rem;
 		margin-bottom: 2.2rem !important;
 		border-bottom: @border-site-wide;
+		a{
+			color: @mail-thread-fg;
+			&:hover{
+				color: darken(@mail-thread-fg, 20%);
+			}
+		}
 		.when span{
 			display: block;
 			.text-right();
-			// .small();
 			.text-muted();
-			padding-right: 1em;
-			
 		}
 		.secure{
 			
@@ -83,6 +89,36 @@
 		padding-bottom: 11px;
 		margin-bottom: 15px !important;
 		.email-formatting();
+
+		.collapse-blockquote {
+			background: @lava-border-color;
+			color: @lava-text;
+			height: 1.3rem;
+			width: 3.2rem;
+			display: inline-block;
+			margin-bottom: .9rem;
+			position: relative;
+			span, span:before, span:after{
+				content: ' ';
+				background: @lava-text;
+				height: .4rem;
+				width: .4rem;
+				border-radius: 50px;
+				display: block;
+				position: absolute;
+				
+			}
+			span{
+				left: 1.4rem;
+				top: .5rem;
+				&:before{
+					left: -.8rem;
+				}
+				&:after{
+					left: .8rem;
+				}
+			}
+		}
 	}
 
 	.email-left, .secure{

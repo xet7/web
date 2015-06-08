@@ -1,6 +1,6 @@
 span.dropdown(dropdown="", is-open="isOpen")
 	ul.dropdown-menu(role="menu")
 		li(ng-show="!isExistingContact")
-			a(ui-sref="main.contacts.profile({contactId: 'new', email: email})") {{'CONTEXT_MENU.EMAIL.LB_ADD_CONTACT' | translate}}
+			a(ui-sref="main.contacts.profile({contactId: 'new', email: email})") {{'LAVAMAIL.CONTEXT_MENU.EMAIL.LB_ADD_CONTACT' | translate}}
 		li(ng-show="!noReply")
-			a(ui-sref=".popup.compose({to: email})") {{'CONTEXT_MENU.EMAIL.LB_REPLY' | translate}}
+			a(ui-sref=".popup.compose({to: email})") {{'LAVAMAIL.CONTEXT_MENU.EMAIL.LB_REPLY' | translate}}
