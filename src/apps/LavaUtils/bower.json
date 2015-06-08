@@ -29,6 +29,10 @@
     "angular-co": "~0.2",
     "file-saver": "https://github.com/eligrey/FileSaver.js/archive/master.tar.gz",
     "openpgp": "https://github.com/lavab/openpgpjs/archive/v1.0.1.2.tar.gz",
-    "angular-autodisable": "~0.2.0"
+    "angular-autodisable": "~0.2.0",
+    "jquery": "2.1.4"
+  },
+  "resolutions": {
+    "jquery": "2.1.4"
   }
 }
