@@ -243,7 +243,7 @@ function Pipelines(manifest, plumber, isWatching) {
 		bundler
 			.transform(ownCodebaseTransform(babelify), {externalHelpers: true})
 			.transform(ownCodebaseTransform(lessify))
-			.transform(ownCodebaseTransform(jadeify))
+			.transform(ownCodebaseTransform(jadeify), {doctype: 'html'})
 			.transform(ownCodebaseTransform(envify(environment)))
 			.transform(ownCodebaseTransform(bulkify))
 			.transform(ownCodebaseTransform(brfs))
