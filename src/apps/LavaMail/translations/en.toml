@@ -199,7 +199,7 @@
   "LAVAMAIL.HOTKEY.SEND_EMAIL": "Send email",
   "LAVAMAIL.HOTKEY.TITLE_GLOBAL": "Global shortcuts cheatsheet",
   "LAVAMAIL.HOTKEY.TITLE_LOCAL": "This page shortcuts cheatsheet",
-  "LAVAMAIL.INBOX.BTN_DELETE_PERMANENTLY": "delete permanently",
+  "LAVAMAIL.INBOX.BTN_DELETE_PERMANENTLY": "Delete permanently",
   "LAVAMAIL.INBOX.REFRESH_INBOX": "Refresh",
   "LAVAMAIL.INBOX.CLEAR_SEARCH" : "Clear",
   "LAVAMAIL.INBOX.CORRUPTED_EMAIL": "Something went wrong while displaying this email. To continue, try to ",
