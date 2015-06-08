@@ -20,7 +20,6 @@ div.import-contacts
 				div(ng-show="state == 'select'")
 					p
 						button.btn.btn-block(type='button', open-file="importCSV(data)") {{'LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS_CSV' | translate}}
-					p
-						button.btn.btn-block(type='button', open-file="importVcard(data)") {{'LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS_VCARD' | translate}}
+					button.btn.btn-block(type='button', open-file="importVcard(data)") {{'LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS_VCARD' | translate}}
 				div(ng-show="state == 'finished'")
 					button.btn.btn-default(type='button', ng-click='ok()') {{'LAVAMAIL.CONTACTS.LB_IMPORT_OK' | translate}}
