@@ -14,7 +14,8 @@
 		"lavaboom.api",
 		"ui.router",
 		"pascalprecht.translate",
-		"angular-co"
+		"angular-co",
+		"ngAutodisable"
 	]
 
 	productionOnlyDependencies = [
