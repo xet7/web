@@ -1,15 +1,15 @@
 - var defs = {};
 div#compose-wrapper
-	form#compose(name="__form", ng-class="{ warning: isWarning, 'has-formatting' : isToolbarShown, 'has-attachment': attachments.length }")
+	form#compose(name="__form", ng-submit="send()", ng-class="{ warning: isWarning, 'has-formatting' : isToolbarShown, 'has-attachment': attachments.length }")
 		.filters.row.no-gutter.lava-icon-row.z1
 			nav.navbar.navbar-inverse(role="navigation")
 				div
 					ul.nav.navbar-nav(ng-show="selectedTid !== null")
 						li
-							button.btn.btn-default(open-raw-file="addAttachment(file)", tooltip="{{'LAVAMAIL.COMPOSE.TOOLTIP_ATTACH' | translate}}", tooltip-append-to-body="true")
+							button.btn.btn-default(type="button", open-raw-file="addAttachment(file)", tooltip="{{'LAVAMAIL.COMPOSE.TOOLTIP_ATTACH' | translate}}", tooltip-append-to-body="true")
 								span.icon-paper-clip
 						li
-							button.btn.btn-default.lava-font(ng-click="toggleToolbar()", tooltip="{{'LAVAMAIL.COMPOSE.TOOLTIP_FORMATTING_OPTIONS' | translate}}", tooltip-append-to-body="true")
+							button.btn.btn-default.lava-font(type="button", ng-click="toggleToolbar()", tooltip="{{'LAVAMAIL.COMPOSE.TOOLTIP_FORMATTING_OPTIONS' | translate}}", tooltip-append-to-body="true")
 								span A
 					ul.nav.navbar-nav.navbar-right(ng-show="selectedTid !== null")
 						li(ng-show="isError")
@@ -18,7 +18,7 @@ div#compose-wrapper
 						//- 	button.btn.btn-default(ng-click="isXCC = !isXCC", ng-disabled="isWarning", tooltip="{{'LAVAMAIL.COMPOSE.TOOLTIP_XCC' | translate}}", tooltip-append-to-body="true")
 						//- 		span.icon-tick
 						li.btn-group.dropdown(dropdown="", is-open="isWarning")
-							button.btn.btn-default(ng-disabled="isWarning || !isValid()", type="submit", ng-click="send()", tooltip="{{'LAVAMAIL.COMPOSE.TOOLTIP_SEND' | translate}}", tooltip-append-to-body="true")
+							button.btn.btn-default(ng-disabled="isWarning || !isValid() || isSending", type="submit", tooltip="{{'LAVAMAIL.COMPOSE.TOOLTIP_SEND' | translate}}", tooltip-append-to-body="true")
 								span.icon-sent
 							ul.dropdown-menu(role="menu")
 								li
@@ -36,15 +36,15 @@ div#compose-wrapper
 										input#check1(type='checkbox', name="isSkipWarning", ng-model="isSkipWarning")
 										label(for='isSkipWarning', ng-click="$event.stopPropagation(); toggleIsSkipWarning($event)") {{'LAVAMAIL.COMPOSE.LB_ASK_ME_AGAIN' | translate}}
 						li
-							button.btn.btn-default(ng-click="hidePopup()", tooltip="{{'LAVAMAIL.COMPOSE.TOOLTIP_DISCARD' | translate}}", tooltip-append-to-body="true")
+							button.btn.btn-default(type="button", ng-click="hidePopup()", tooltip="{{'LAVAMAIL.COMPOSE.TOOLTIP_DISCARD' | translate}}", tooltip-append-to-body="true")
 								span.icon-close
 		header#compose-header
 			.table-list
 				- defs = {model: "form.selected.to", label: "{{'LAVAMAIL.COMPOSE.LB_TO' | translate}}", click: "clearTo()", required: true};
 				include ./_composeEmail
 				div.cc-buttons
-					button.btn.btn-default(ng-click="isCC = !isCC", ng-disabled="isWarning" ng-class="{active : isCC}") {{'LAVAMAIL.COMPOSE.LB_CC' | translate}}
-					button.btn.btn-default(ng-click="isBCC = !isBCC", ng-disabled="isWarning" ng-class="{active : isBCC}") {{'LAVAMAIL.COMPOSE.LB_BCC' | translate}}
+					button.btn.btn-default(type="button", ng-click="isCC = !isCC", ng-disabled="isWarning" ng-class="{active : isCC}") {{'LAVAMAIL.COMPOSE.LB_CC' | translate}}
+					button.btn.btn-default(type="button", ng-click="isBCC = !isBCC", ng-disabled="isWarning" ng-class="{active : isBCC}") {{'LAVAMAIL.COMPOSE.LB_BCC' | translate}}
 			.table-list(ng-if="isCC")
 				- defs = {model: "form.selected.cc", label: "{{'LAVAMAIL.COMPOSE.LB_CC' | translate}}", click: "toggleCC()"};
 				include ./_composeEmail
