@@ -22,6 +22,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - properly switch translation right after logout
 - no blinking loading sign when switching between threads
 - no more messed up formatting during reply-to/forward actions
+- various issues with non-locked buttons when some action performs
+- double encryption issue on compose screen
 
 ## 0.4.2 - 2015-05-29
 ### Fixed
