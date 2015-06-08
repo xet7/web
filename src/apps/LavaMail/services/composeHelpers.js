@@ -3,8 +3,10 @@ module.exports = function ($rootScope, $templateCache, $compile, co, utils) {
 		for(let node of dom.childNodes) {
 			if (node.getAttribute) {
 				let classAttr = node.getAttribute('class');
-				let classes = classAttr.match(/\S+/g).filter(c => !c.startsWith('ng-'));
-				node.setAttribute('class', classes.join(' '));
+				if (classAttr && classAttr.length > 1) {
+					let classes = classAttr.match(/\S+/g).filter(c => !c.startsWith('ng-'));
+					node.setAttribute('class', classes.join(' '));
+				}
 			}
 
 			if (node.nodeName != '#text' && (!node.childNodes || node.childNodes.length < 1))
