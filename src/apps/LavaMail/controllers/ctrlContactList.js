@@ -100,6 +100,14 @@ module.exports = ($rootScope, $scope, $translate, $state, $stateParams, dialogs,
 			$state.go('main.contacts.profile', {contactId: nextContactId(oldContactPosition)});
 	});
 
+	$scope.importContacts = () => co(function *(){
+		const confirmed = yield co.def(dialogs.create(
+			'LavaMail/misc/importContacts',
+			'CtrlImportContacts'
+		).result, 'cancelled');
+		console.log('import contacts: ', confirmed);
+	});
+
 	$scope.newContact = () => co(function *(){
 		yield $state.go('main.contacts.profile', {contactId: 'new'});
 	});

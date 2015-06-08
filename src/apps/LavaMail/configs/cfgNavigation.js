@@ -141,7 +141,21 @@ module.exports = ($stateProvider, $urlRouterProvider, $locationProvider) => {
 					size: 'lg'
 				});
 			};
+		},
+		'importContacts': function () {
+			this.url =  '/import/contacts/';
+
+			// @ngInject
+			this.onEnter = (router) => {
+				router.createPopup({
+					templateUrl: 'LavaMail/contacts/import',
+					controller: 'CtrlImportContacts',
+					backdrop: 'static',
+					size: 'sm'
+				});
+			};
 		}
+
 	};
 
 	const declareState = (name, state) => {

@@ -14,7 +14,8 @@
 		"lavaboom.api",
 		"ui.router",
 		"pascalprecht.translate",
-		"angular-co"
+		"angular-co",
+		"ngAutodisable"
 	]
 
 	productionOnlyDependencies = [
@@ -24,6 +25,7 @@
 		"vendor@blob.js",
 		"vendor@html-sanitizer.min.js",
 
+		"bower@jquery/dist/jquery.js",
 		"bower@angular/angular.js",
 		"bower@angular-sanitize/angular-sanitize.js",
 

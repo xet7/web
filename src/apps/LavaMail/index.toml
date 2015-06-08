@@ -30,6 +30,9 @@
 	]
 
 	vendorDependencies = [
+		"bower@papaparse/papaparse.js",
+		"npm@vcardjs/src/vcard.js",
+		"npm@vcardjs/src/vcf.js",
 		"bower@angular-bootstrap/ui-bootstrap.js",
 		"bower@angular-bootstrap/ui-bootstrap-tpls.js",
 		"bower@angular-ui-select/dist/select.js",

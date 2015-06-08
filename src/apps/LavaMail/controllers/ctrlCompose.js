@@ -11,6 +11,7 @@ module.exports = ($rootScope, $scope, $stateParams, $translate,
 	];
 	$scope.taggingTokens = 'SPACE|,|/';
 
+	$scope.isSending = false;
 	$scope.isWarning = false;
 	$scope.isError = false;
 	$scope.isXCC = false;
@@ -275,73 +276,74 @@ module.exports = ($rootScope, $scope, $stateParams, $translate,
 		$scope.form && $scope.form.selected.to.length > 0;
 
 	$scope.send = () => co(function *() {
-		if (!$scope.isValid())
-			return;
-
-		if (!$scope.form.subject)
-			$scope.form.subject = translations.LB_NO_SUBJECT;
-
-		$scope.isError = false;
-		$scope.isWarning = false;
-
-		yield $scope.attachments.map(a => a.processingPromise);
-
-		let to = $scope.form.selected.to.map(e => e.email),
-			cc = $scope.form.selected.cc.map(e => e.email),
-			bcc = $scope.form.selected.bcc.map(e => e.email);
-
-		let keys = yield ([...$scope.form.selected.to, ...$scope.form.selected.cc, ...$scope.form.selected.bcc].reduce((a, e) => {
-			a[e.email] = co.transform(co.def(e.loadKey(), null), e => e ? e.armor() : null);
-			return a;
-		}, {}));
-
-		const isSecured = Email.isSecuredKeys(keys);
-
-		yield $scope.attachments.map(attachmentStatus => $scope.uploadAttachment(attachmentStatus, keys));
-
-		manifest = Manifest.create({
-			fromEmail: user.styledEmail,
-			to,
-			cc,
-			bcc,
-			subject: $scope.form.subject
-		});
-
-		console.log('sending a candy', $scope.form.body);
-
-		manifest.setBody($scope.form.body, 'text/html');
-		for(let attachmentStatus of $scope.attachments)
-			manifest.addAttachment(attachmentStatus.attachment.id,
-				attachmentStatus.attachment.getBodyAsBinaryString(), attachmentStatus.attachment.name, attachmentStatus.attachment.type);
-
+		$scope.isSending = true;
 		try {
-			let body = composeHelpers.cleanupOutboundEmail($scope.form.body);
+			if (!$scope.isValid())
+				return;
 
-			let sendStatus = yield inbox.send({
-				body: body,
-				attachmentIds: $scope.attachments.map(a => a.id),
-				threadId: replyThreadId
-			}, manifest, keys);
+			if (!$scope.form.subject)
+				$scope.form.subject = translations.LB_NO_SUBJECT;
 
-			console.log('compose send status', sendStatus);
+			$scope.isError = false;
+			$scope.isWarning = false;
 
-			if (isSecured) {
-				$scope.form.body = inbox.getMumbledFormattedBody();
+			yield $scope.attachments.map(a => a.processingPromise);
 
-				yield utils.sleep(consts.MUMBLE_SHOW_DELAY);
+			let to = $scope.form.selected.to.map(e => e.email),
+				cc = $scope.form.selected.cc.map(e => e.email),
+				bcc = $scope.form.selected.bcc.map(e => e.email);
 
-				yield $scope.confirm();
-			} else if ($scope.isSkipWarning)
-			{
-				yield $scope.confirm();
+			let keys = yield ([...$scope.form.selected.to, ...$scope.form.selected.cc, ...$scope.form.selected.bcc].reduce((a, e) => {
+				a[e.email] = co.transform(co.def(e.loadKey(), null), e => e ? e.armor() : null);
+				return a;
+			}, {}));
+
+			const isSecured = Email.isSecuredKeys(keys);
+
+			yield $scope.attachments.map(attachmentStatus => $scope.uploadAttachment(attachmentStatus, keys));
+
+			manifest = Manifest.create({
+				fromEmail: user.styledEmail,
+				to,
+				cc,
+				bcc,
+				subject: $scope.form.subject
+			});
+
+			console.log('sending a candy', $scope.form.body);
+
+			manifest.setBody($scope.form.body, 'text/html');
+			for (let attachmentStatus of $scope.attachments)
+				manifest.addAttachment(attachmentStatus.attachment.id,
+					attachmentStatus.attachment.getBodyAsBinaryString(), attachmentStatus.attachment.name, attachmentStatus.attachment.type);
+
+			try {
+				let body = composeHelpers.cleanupOutboundEmail($scope.form.body);
+
+				yield inbox.send({
+					body: body,
+					attachmentIds: $scope.attachments.map(a => a.id),
+					threadId: replyThreadId
+				}, manifest, keys);
+
+				if (isSecured) {
+					$scope.form.body = inbox.getMumbledFormattedBody();
+
+					yield utils.sleep(consts.MUMBLE_SHOW_DELAY);
+
+					yield $scope.confirm();
+				} else if ($scope.isSkipWarning) {
+					yield $scope.confirm();
+				}
+				else {
+					$scope.isWarning = true;
+				}
+			} catch (err) {
+				$scope.isError = true;
+				throw err;
 			}
-			else
-			{
-				$scope.isWarning = true;
-			}
-		} catch (err) {
-			$scope.isError = true;
-			throw err;
+		} finally {
+			$scope.isSending = false;
 		}
 	});
 
