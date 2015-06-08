@@ -35,27 +35,27 @@
 						ui-select-match {{$select.selected.name}}
 						ui-select-choices(repeat='item in [{name: "24-hours"}, {name:"12-hours"}]')
 							span(ng-click='item.selected=item', ng-bind='item.name')
-		h4 {{'MAIN.SETTINGS.GENERAL.TITLE_USER_INTERFACE' | translate}}
+		h4 {{'LAVAMAIL.SETTINGS.GENERAL.TITLE_USER_INTERFACE' | translate}}
 		ul.list-group
 			li.list-group-item
 				.dropdown-control
-					label {{'MAIN.SETTINGS.GENERAL.LB_LANGUAGE' | translate}}
+					label {{'LAVAMAIL.SETTINGS.GENERAL.LB_LANGUAGE' | translate}}
 					ui-select(ng-model='form.selectedLanguage', search-enabled='false')
-						ui-select-match(placeholder="{{'MAIN.SETTINGS.GENERAL.PLC_SELECT_LANGUAGE' | translate}}") {{$select.selected.name}}
+						ui-select-match(placeholder="{{'LAVAMAIL.SETTINGS.GENERAL.PLC_SELECT_LANGUAGE' | translate}}") {{$select.selected.name}}
 						ui-select-choices(repeat='item in languages')
 							span(ng-bind='item.name')
 			//- li.list-group-item
 				.dropdown-control
-					label {{'MAIN.SETTINGS.GENERAL.LB_FONT_SIZE' | translate}}
+					label {{'LAVAMAIL.SETTINGS.GENERAL.LB_FONT_SIZE' | translate}}
 					ui-select(ng-model='items.selected', search-enabled='false')
 						ui-select-match {{$select.selected.name}}
 						ui-select-choices(repeat='item.name as item in notImplemented')
 							span(ng-bind='item.name')
-		h4 {{'MAIN.SETTINGS.GENERAL.TITLE_MAIL_BEHAVIOUR' | translate}}
+		h4 {{'LAVAMAIL.SETTINGS.GENERAL.TITLE_MAIL_BEHAVIOUR' | translate}}
 		ul.list-group
 			//- li.list-group-item
 				.dropdown-control
-					label {{'MAIN.SETTINGS.GENERAL.LB_COMPOSED_MAILS' | translate}}
+					label {{'LAVAMAIL.SETTINGS.GENERAL.LB_COMPOSED_MAILS' | translate}}
 					ui-select(ng-model='settings.mailComposedAction', search-enabled='false')
 						ui-select-match {{$select.selected.description}}
 							span(ng-class='item.icon')
@@ -64,51 +64,51 @@
 							span.dropdown-icon(ng-class='item.icon')
 			//- li.list-group-item
 				.dropdown-control
-					label {{'MAIN.SETTINGS.GENERAL.LB_MARKED_AS_SPAM' | translate}}
+					label {{'LAVAMAIL.SETTINGS.GENERAL.LB_MARKED_AS_SPAM' | translate}}
 					ui-select(ng-model='settings.mailSpamAction', search-enabled='false')
 						ui-select-match {{$select.selected.description}}
 						ui-select-choices(repeat='item.name as item in notImplemented')
 							span(ng-bind='item.description')
 			//- li.list-group-item
 				.dropdown-control
-					label {{'MAIN.SETTINGS.GENERAL.LB_DELETED_EMAILS' | translate}}
+					label {{'LAVAMAIL.SETTINGS.GENERAL.LB_DELETED_EMAILS' | translate}}
 					ui-select(ng-model='settings.mailDeletedAction', search-enabled='false')
 						ui-select-match {{$select.selected.description}}
 						ui-select-choices(repeat='item.name as item in notImplemented')
 							span(ng-bind='item.description')
 			li.list-group-item
 				.dropdown-control
-					label {{'MAIN.SETTINGS.GENERAL.LB_SECURED_IMAGES' | translate}}
+					label {{'LAVAMAIL.SETTINGS.GENERAL.LB_SECURED_IMAGES' | translate}}
 					ui-select(ng-model='settings.images', search-enabled='false')
 						ui-select-match {{$select.selected.description}}
 						ui-select-choices(repeat='item.name as item in imageSettings')
 							span(ng-bind="item.description", title="{{item.title}}")
 			li.list-group-item
 				.dropdown-control
-					label {{'MAIN.SETTINGS.GENERAL.LB_SECURED_STYLES' | translate}}
+					label {{'LAVAMAIL.SETTINGS.GENERAL.LB_SECURED_STYLES' | translate}}
 					ui-select(ng-model='settings.styles', search-enabled='false')
 						ui-select-match {{$select.selected.description}}
 						ui-select-choices(repeat='item.name as item in styleSettings')
 							span(ng-bind="item.description", title="{{item.title}}")
 			li.list-group-item
-				label {{'MAIN.SETTINGS.GENERAL.LB_EMAIL_AUTO_COMPLETE' | translate}}
+				label {{'LAVAMAIL.SETTINGS.GENERAL.LB_EMAIL_AUTO_COMPLETE' | translate}}
 				.control
 					label.switch
 						input(type='checkbox', ng-model="settings.isUnknownContactsAutoComplete")
 						i
-		h4 {{'MAIN.SETTINGS.GENERAL.TITLE_KEYBOARD_SHORTCUTS' | translate}}
+		h4 {{'LAVAMAIL.SETTINGS.GENERAL.TITLE_KEYBOARD_SHORTCUTS' | translate}}
 		ul.list-group
 			li.list-group-item
-				label {{'MAIN.SETTINGS.GENERAL.LB_KEYBOARD_SHORTCUTS' | translate}}
+				label {{'LAVAMAIL.SETTINGS.GENERAL.LB_KEYBOARD_SHORTCUTS' | translate}}
 				.control
 					label.switch
 						input(type='checkbox', ng-model="settings.isHotkeyEnabled")
 						i
-		h4 {{'MAIN.SETTINGS.GENERAL.TITLE_CONTACTS' | translate}}
+		h4 {{'LAVAMAIL.SETTINGS.GENERAL.TITLE_CONTACTS' | translate}}
 		ul.list-group
 			li.list-group-item
 				.dropdown-control
-					label {{'MAIN.SETTINGS.GENERAL.LB_SORT_BY' | translate}}
+					label {{'LAVAMAIL.SETTINGS.GENERAL.LB_SORT_BY' | translate}}
 					ui-select(ng-model='form.contactsSortBy', search-enabled='false')
 						ui-select-match {{$select.selected.name}}
 							span(ng-class='item.icon')

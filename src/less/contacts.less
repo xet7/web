@@ -2,14 +2,21 @@
 	.list-group-item{
 		> a {
 			  line-height: 4.5rem;
-			  padding: 0 1.1rem 0 1.5rem;
+			  padding: 0 0 0 1.5rem;
 			  .sec-icon{
-			  	line-height: 4.5rem;
-			  	padding: 0;
+			  	.lava-icon-22();
 			  	&.icon-unlock{
 			  		color: @lava-insecure;
 			  	}
+			  	&.icon-star{
+			  		color: @lava-insecure;
+			  	}
 			  }
+		}
+		&.active{
+			.sec-icon{
+				color: #FFF !important;
+			}
 		}
 	}
 }
@@ -17,4 +24,14 @@
 .contact-name{
 	.no-top();
 	padding: 0 !important;
+}
+
+.import-contacts {
+	.btn {
+		background-color: #ccc;
+		margin-top: 0.5rem;
+	}
+	.lava-modal-content {
+		padding: 1rem;
+	}
 }

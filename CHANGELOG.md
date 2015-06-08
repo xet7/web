@@ -2,6 +2,29 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.4.3 - 2015-06-08
+### Added
+- auto detect user's language
+- translation for labels(Inbox/Sent/...)
+- quotes in emails are collapsed by default
+- contacts import(csv for gmail and outlook formats, vcard)
+- refresh threads button for checking new threads/emails
+- transifex support and french (provided by Cedric Morin) language
+
+### Modified
+- unified and merged translation files for core apps for a proper transifex support
+- encrypted contacts can be removed in edit mode
+- use settings firstName + lastName in key during the import
+- better support for blockquote elements in replied and forwarded emails
+- better German language support
+
+### Fixed
+- properly switch translation right after logout
+- no blinking loading sign when switching between threads
+- no more messed up formatting during reply-to/forward actions
+- various issues with non-locked buttons when some action performs
+- double encryption issue on compose screen
+
 ## 0.4.2 - 2015-05-29
 ### Fixed
 - private key should not be empty after key backup export when Lavaboom Sync is active

@@ -4,7 +4,7 @@ module.exports = ($scope, $timeout, $translate, co, consts, crypto, notification
 	const translations = {
 		LB_PRIVATE_KEY_DECRYPTED: '%'
 	};
-	$translate.bindAsObject(translations, 'MAIN.SETTINGS.SECURITY');
+	$translate.bindAsObject(translations, 'LAVAMAIL.SETTINGS.SECURITY');
 
 	$scope.$watch('key.decryptPassword', (o, n) => {
 		if (o == n)

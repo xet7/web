@@ -1,0 +1,23 @@
+div.import-contacts
+	form.lava-modal-header
+		.filters.row.no-gutter.lava-icon-row.z1
+			span.pull-left.modal-heading {{'LAVAMAIL.CONTACTS.TITLE_IMPORT_CONTACTS' | translate}}
+			nav.navbar.navbar-inverse(role="navigation")
+				div
+					ul.nav.navbar-nav.navbar-right
+						li
+							button.btn.btn-default(ng-click="hidePopup()")
+								span.icon-close
+		.row.lava-modal-content(style="padding-top: 5rem")
+			div.col-xs-24
+				div(ng-show="state == 'select'") {{'LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS_DETAILS' | translate}}
+				div(ng-show="state == 'importing' || state == 'finished'")
+					img(src="/img/loader.svg", ng-show="state != 'finished'")
+					div {{'LAVAMAIL.CONTACTS.LB_PROCESSED_FROM' | translate:translationData }}
+					div {{'LAVAMAIL.CONTACTS.LB_DUPLICATES' | translate:translationData }}
+					div {{'LAVAMAIL.CONTACTS.LB_ERRORS' | translate:translationData }}
+				div(ng-show="state == 'select'")
+					button.btn.btn-default(type='button', open-file="importCSV(data)") {{'LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS_CSV' | translate}}
+					button.btn.btn-default(type='button', open-file="importVcard(data)") {{'LAVAMAIL.CONTACTS.LB_IMPORT_CONTACTS_VCARD' | translate}}
+				div(ng-show="state == 'finished'")
+					button.btn.btn-default(type='button', ng-click='ok()') {{'LAVAMAIL.CONTACTS.LB_IMPORT_OK' | translate}}

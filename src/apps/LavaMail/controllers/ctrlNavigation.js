@@ -1,6 +1,17 @@
-module.exports = ($rootScope, $scope, $state, co, inbox, user, hotkey) => {
+module.exports = ($rootScope, $scope, $state, $translate, co, inbox, user, hotkey) => {
 	$scope.$state = $state;
 	$scope.name = user.styledName;
+
+	$scope.labelTranslations = {
+		INBOX: '',
+		SENT: '',
+		STARRED: '',
+		SPAM: '',
+		TRASH: '',
+		DRAFTS: ''
+	};
+
+	$translate.bindAsObject($scope.labelTranslations, 'LAVAMAIL.LABEL');
 
 	co(function *(){
 		$scope.labels = (yield inbox.getLabels()).list;

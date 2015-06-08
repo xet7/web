@@ -3,7 +3,7 @@ li.list-group-item(ng-class="{ 'collapse-active': !currentEmail.isCollapsed() }"
 		button.btn.btn-remove(type="button", ng-click="remove()", ng-show="isEditMode")
 			span.icon-delete
 		input.form-control(type="text", ng-disabled="!isEditMode", focus="{{currentEmail.isJustAdded()}}", name="email-{{$index}}", ng-model="currentEmail.name", required,
-			placeholder="{{'MAIN.CONTACTS.PLC_EMAIL' | translate}}", tooltip="{{currentEmail.getTooltip()}}", tooltip-trigger="focus", tooltip-placement="right")
+			placeholder="{{'LAVAMAIL.CONTACTS.PLC_EMAIL' | translate}}", tooltip="{{currentEmail.getTooltip()}}", tooltip-trigger="focus", tooltip-placement="right")
 		div.input-group-btn
 			button.btn.tggl(type="button", ng-click="starEmail()")
 				span.icon-star(ng-show="currentEmail.isStar")
@@ -13,48 +13,48 @@ li.list-group-item(ng-class="{ 'collapse-active': !currentEmail.isCollapsed() }"
 					span.icon-unlock(ng-show="!currentEmail.isSecured()")
 				ul.dropdown-menu.pull-right(role="menu")
 					li
-						p {{'MAIN.CONTACTS.PUBLIC_KEY_PROMPT1' | translate}}
-						p {{'MAIN.CONTACTS.PUBLIC_KEY_PROMPT2' | translate}}
+						p {{'LAVAMAIL.CONTACTS.PUBLIC_KEY_PROMPT1' | translate}}
+						p {{'LAVAMAIL.CONTACTS.PUBLIC_KEY_PROMPT2' | translate}}
 					li.yesno.table-list
 						a.btn.cell(type="button", ng-click="requestPublicKey()")
 							span.icon-public-key-send
-							span {{'MAIN.CONTACTS.PUBLIC_KEY_PROMPT_REQUEST' | translate}}
+							span {{'LAVAMAIL.CONTACTS.PUBLIC_KEY_PROMPT_REQUEST' | translate}}
 						a.btn.cell(type="button", open-file="uploadPublicKey(data)")
 							span.icon-public-key-upload
-							span {{'MAIN.CONTACTS.PUBLIC_KEY_PROMPT_UPLOAD' | translate}}
+							span {{'LAVAMAIL.CONTACTS.PUBLIC_KEY_PROMPT_UPLOAD' | translate}}
 			button.btn.btn-default(type="button", ng-show="currentEmail.isSecured()", ng-click="currentEmail.switchCollapse()")
 				span.icon-lock
 	li.list-group-item.pack(ng-show="currentEmail.isSecured()", collapse="currentEmail.isCollapsed()")
 		ul.child-item
 			li.list-group-item
 				.text-control
-					label {{'MAIN.CONTACTS.LB_KEY_FINGERPRINT' | translate}}
+					label {{'LAVAMAIL.CONTACTS.LB_KEY_FINGERPRINT' | translate}}
 					div.form-control.disable-styles(ng-bind="currentEmail.key.fingerprintPretty")
 			li.list-group-item
 				.text-control
-					label {{'MAIN.CONTACTS.LB_LENGTH' | translate}}
+					label {{'LAVAMAIL.CONTACTS.LB_LENGTH' | translate}}
 					input.field-icon.form-control(disabled, ng-model="currentEmail.key.length")
 			li.list-group-item
 				.text-control
-					label {{'MAIN.CONTACTS.LB_ALGORITHMS' | translate}}
+					label {{'LAVAMAIL.CONTACTS.LB_ALGORITHMS' | translate}}
 					input.field-icon.form-control(disabled, ng-model="currentEmail.key.algos")
 			li.list-group-item
 				.button-holder
 					button.cell.btn.btn-default(type="button", ng-click="downloadPublicKey()")
 						span.icon-arrow-down
-						| {{'MAIN.CONTACTS.LB_DOWNLOAD_PUBLIC_KEY' | translate}}
+						| {{'LAVAMAIL.CONTACTS.LB_DOWNLOAD_PUBLIC_KEY' | translate}}
 					button.cell.btn.btn-default(type="button", ng-click="remove()", ng-show="isEditMode")
 						span.icon-trash
-						| {{'MAIN.CONTACTS.LB_REMOVE' | translate}}
+						| {{'LAVAMAIL.CONTACTS.LB_REMOVE' | translate}}
 			//- div
 			//- 	div.input-group.with-label
-			//- 		label {{'MAIN.CONTACTS.LB_DOWNLOAD_PUBLIC_KEY' | translate}}
+			//- 		label {{'LAVAMAIL.CONTACTS.LB_DOWNLOAD_PUBLIC_KEY' | translate}}
 			//- 		div.input-group-btn
 			//- 			button.btn.btn-default(type="button", ng-click="downloadPublicKey()")
 			//- 				span.icon-arrow-down
 			//- div
 			//- 	div.input-group.with-label
-			//- 		label {{'MAIN.CONTACTS.LB_REMOVE' | translate}}
+			//- 		label {{'LAVAMAIL.CONTACTS.LB_REMOVE' | translate}}
 			//- 		div.input-group-btn
 			//- 			button.btn.btn-default(type="button", ng-click="remove()")
 			//- 				span.icon-trash

@@ -5,7 +5,7 @@ module.exports = ($rootScope, $translate, contacts) => {
 		LB_AND_OTHERS : ''
 	};
 
-	$translate.bindAsObject(translations, 'INBOX');
+	$translate.bindAsObject(translations, 'LAVAMAIL.INBOX');
 
 	return (membersList) => {
 		let membersString = membersList.slice(0, 2).join(', ');

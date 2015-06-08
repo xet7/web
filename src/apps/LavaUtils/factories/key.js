@@ -5,7 +5,7 @@ module.exports = ($injector, $translate, $timeout, co, crypto, utils, consts, da
 		LB_EXPIRED: '',
 		LB_EXPIRING_SOON: ''
 	};
-	$translate.bindAsObject(translations, 'MAIN.SETTINGS.SECURITY');
+	$translate.bindAsObject(translations, 'LAVAMAIL.SETTINGS.SECURITY');
 
 	const statuses = {};
 

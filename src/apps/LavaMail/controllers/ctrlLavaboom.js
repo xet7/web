@@ -109,7 +109,7 @@ module.exports = ($rootScope, $timeout, $scope, $state, $translate, $sanitize,
 		hotkey.registerCustomHotkeys($rootScope, [
 			{
 				combo: ['c', 'n'],
-				description: 'HOTKEY.COMPOSE_EMAIL',
+				description: 'LAVAMAIL.HOTKEY.COMPOSE_EMAIL',
 				callback: (event, key) => {
 					event.preventDefault();
 					router.showPopup('compose');
@@ -119,8 +119,8 @@ module.exports = ($rootScope, $timeout, $scope, $state, $translate, $sanitize,
 				combo: ['i'],
 				name: 'Inbox',
 				require: 'g',
-				requireDescription: 'HOTKEY.GOTO',
-				description: 'HOTKEY.GOTO_INBOX',
+				requireDescription: 'LAVAMAIL.HOTKEY.GOTO',
+				description: 'LAVAMAIL.HOTKEY.GOTO_INBOX',
 				callback: (event, key) => {
 					event.preventDefault();
 					$state.go('main.inbox.label', {labelName: 'inbox'});
@@ -130,8 +130,8 @@ module.exports = ($rootScope, $timeout, $scope, $state, $translate, $sanitize,
 				combo: ['s'],
 				name: 'Sent',
 				require: 'g',
-				requireDescription: 'HOTKEY.GOTO',
-				description: 'HOTKEY.GOTO_SENT',
+				requireDescription: 'LAVAMAIL.HOTKEY.GOTO',
+				description: 'LAVAMAIL.HOTKEY.GOTO_SENT',
 				callback: (event, key) => {
 					event.preventDefault();
 					$state.go('main.inbox.label', {labelName: 'sent'});
@@ -141,8 +141,8 @@ module.exports = ($rootScope, $timeout, $scope, $state, $translate, $sanitize,
 				combo: ['p'],
 				name: 'Spam',
 				require: 'g',
-				requireDescription: 'HOTKEY.GOTO',
-				description: 'HOTKEY.GOTO_SPAM',
+				requireDescription: 'LAVAMAIL.HOTKEY.GOTO',
+				description: 'LAVAMAIL.HOTKEY.GOTO_SPAM',
 				callback: (event, key) => {
 					event.preventDefault();
 					$state.go('main.inbox.label', {labelName: 'spam'});
@@ -152,8 +152,8 @@ module.exports = ($rootScope, $timeout, $scope, $state, $translate, $sanitize,
 				combo: ['a'],
 				name: 'Starred',
 				require: 'g',
-				requireDescription: 'HOTKEY.GOTO',
-				description: 'HOTKEY.GOTO_STARRED',
+				requireDescription: 'LAVAMAIL.HOTKEY.GOTO',
+				description: 'LAVAMAIL.HOTKEY.GOTO_STARRED',
 				callback: (event, key) => {
 					event.preventDefault();
 					$state.go('main.inbox.label', {labelName: 'starred'});
@@ -163,8 +163,8 @@ module.exports = ($rootScope, $timeout, $scope, $state, $translate, $sanitize,
 				combo: ['t'],
 				name: 'Trash',
 				require: 'g',
-				requireDescription: 'HOTKEY.GOTO',
-				description: 'HOTKEY.GOTO_TRASH',
+				requireDescription: 'LAVAMAIL.HOTKEY.GOTO',
+				description: 'LAVAMAIL.HOTKEY.GOTO_TRASH',
 				callback: (event, key) => {
 					event.preventDefault();
 					$state.go('main.inbox.label', {labelName: 'trash'});
@@ -174,8 +174,8 @@ module.exports = ($rootScope, $timeout, $scope, $state, $translate, $sanitize,
 				combo: ['c'],
 				name: 'Contacts',
 				require: 'g',
-				requireDescription: 'HOTKEY.GOTO',
-				description: 'HOTKEY.GOTO_CONTACTS',
+				requireDescription: 'LAVAMAIL.HOTKEY.GOTO',
+				description: 'LAVAMAIL.HOTKEY.GOTO_CONTACTS',
 				callback: (event, key) => {
 					event.preventDefault();
 					$state.go('main.contacts');
@@ -185,8 +185,8 @@ module.exports = ($rootScope, $timeout, $scope, $state, $translate, $sanitize,
 				combo: ['x'],
 				name: 'Settings',
 				require: 'g',
-				requireDescription: 'HOTKEY.GOTO',
-				description: 'HOTKEY.GOTO_SETTINGS',
+				requireDescription: 'LAVAMAIL.HOTKEY.GOTO',
+				description: 'LAVAMAIL.HOTKEY.GOTO_SETTINGS',
 				callback: (event, key) => {
 					event.preventDefault();
 					$state.go('main.settings.general');
@@ -194,7 +194,7 @@ module.exports = ($rootScope, $timeout, $scope, $state, $translate, $sanitize,
 			},
 			{
 				combo: '/',
-				description: 'HOTKEY.FOCUS_ON_SEARCH',
+				description: 'LAVAMAIL.HOTKEY.FOCUS_ON_SEARCH',
 				callback: (event, key) => {
 					event.preventDefault();
 
@@ -205,7 +205,7 @@ module.exports = ($rootScope, $timeout, $scope, $state, $translate, $sanitize,
 			},
 			{
 				combo: 'esc',
-				description: 'HOTKEY.LEAVE_FROM_SEARCH',
+				description: 'LAVAMAIL.HOTKEY.LEAVE_FROM_SEARCH',
 				callback: (event, key) => {
 					event.preventDefault();
 
@@ -217,7 +217,7 @@ module.exports = ($rootScope, $timeout, $scope, $state, $translate, $sanitize,
 			},
 			{
 				combo: '?',
-				description: 'HOTKEY.CHEATSHEET',
+				description: 'LAVAMAIL.HOTKEY.CHEATSHEET',
 				callback: (event, key) => {
 					if ($state.current.name.includes('.hotkeys')) {
 						event.preventDefault();

@@ -9,7 +9,7 @@ module.exports = ($rootScope, $scope, $translate, $state, $stateParams, dialogs,
 		TITLE_CONFIRM_DELETE:''
 	};
 
-	$translate.bindAsObject(translations, 'MAIN.CONTACTS');
+	$translate.bindAsObject(translations, 'LAVAMAIL.CONTACTS');
 
 	const findContact = (cid) => {
 		let letterIndex = 0;
@@ -100,6 +100,14 @@ module.exports = ($rootScope, $scope, $translate, $state, $stateParams, dialogs,
 			$state.go('main.contacts.profile', {contactId: nextContactId(oldContactPosition)});
 	});
 
+	$scope.importContacts = () => co(function *(){
+		const confirmed = yield co.def(dialogs.create(
+			'LavaMail/misc/importContacts',
+			'CtrlImportContacts'
+		).result, 'cancelled');
+		console.log('import contacts: ', confirmed);
+	});
+
 	$scope.newContact = () => co(function *(){
 		yield $state.go('main.contacts.profile', {contactId: 'new'});
 	});
@@ -150,12 +158,12 @@ module.exports = ($rootScope, $scope, $translate, $state, $stateParams, dialogs,
 		hotkey.registerCustomHotkeys($scope, [
 			{
 				combo: ['h', 'k', 'left', 'up'],
-				description: 'HOTKEY.MOVE_UP',
+				description: 'LAVAMAIL.HOTKEY.MOVE_UP',
 				callback: moveUp
 			},
 			{
 				combo: ['j', 'l', 'right', 'down'],
-				description: 'HOTKEY.MOVE_DOWN',
+				description: 'LAVAMAIL.HOTKEY.MOVE_DOWN',
 				callback: moveDown
 			}
 		], {scope: 'ctrlContactList'});

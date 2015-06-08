@@ -4,7 +4,7 @@ module.exports = ($injector, $translate, co, utils, crypto, user, Email, Manifes
 	const translations = {
 		LB_EMAIL_TO_YOURSELF: ''
 	};
-	$translate.bindAsObject(translations, 'INBOX');
+	$translate.bindAsObject(translations, 'LAVAMAIL.INBOX');
 
 	function Thread(opt, manifest, labels) {
 		const self = this;
