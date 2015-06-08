@@ -261,7 +261,14 @@ module.exports = function () {
 					.pipe(plumber())
 					.pipe(plg.buffer())
 					.pipe(plg.tap(file => {
-						translations[path.basename(file.relative, path.extname(file.relative))] = JSON.parse(file.contents);
+						let p = path.basename(file.relative, path.extname(file.relative));
+						let content = file.contents.toString('utf8');
+
+						try {
+							translations[p] = JSON.parse(content);
+						} catch (err) {
+							console.error(`cannot parse translation '${file.relative}'`, content);
+						}
 					}))
 					.pipe(gulp.dest(paths.translations.outputForPlugin(name)));
 			}, (cb) => {
