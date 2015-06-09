@@ -1,7 +1,7 @@
 {
   "LANG.CODE": "en",
   "LANG.FULL_CODE": "en_US",
-  
+
   "DATES.TODAY": "Today",
   "DATES.YESTERDAY": "Yesterday",
 
@@ -332,7 +332,7 @@
 
   "LAVAMAIL.NAV.LB_COMPOSE": "Compose",
   "LAVAMAIL.NAV.LB_CONTACTS": "Contacts",
-  "LAVAMAIL.NAV.LB_COPYRIGHT": "\u00a9 Lavaboom 2015",
+  "LAVAMAIL.NAV.LB_COPYRIGHT": "© Lavaboom 2015",
   "LAVAMAIL.NAV.LB_LOGOUT": "Logout",
   "LAVAMAIL.NAV.LB_SETTINGS": "Settings",
   "LAVAMAIL.SETTINGS.GENERAL.LB_COMPOSED_MAILS": "Composed Mails",
