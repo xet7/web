@@ -127,6 +127,7 @@ gulp.task('clean', cb => {
 
 	utils.def(() => fs.mkdirSync('./' + paths.output));
 	utils.def(() => fs.mkdirSync('./' + paths.translations.output));
+	utils.def(() => fs.mkdirSync('./' + paths.translations.outputFormatted));
 	utils.def(() => fs.mkdirSync('./' + paths.plugins));
 	utils.def(() => fs.mkdirSync('./' + paths.cache));
 	utils.def(() => fs.mkdirSync('./' + paths.scripts.output));

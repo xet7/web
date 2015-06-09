@@ -238,12 +238,18 @@ module.exports = function () {
 	}
 
 	function verifyTranslations(name, translations) {
-		let keys = Object.keys(translations.en);
+		let enKeys = Object.keys(translations.en);
 		for(let langName of Object.keys(translations)) {
-			for(let enKey of keys) {
-				if (!Object.keys(translations[langName]).includes(enKey))
-					console.error(`Plugin '${name}': language file '${langName}' should have key '${enKey}'`);
-			}
+			if (langName == 'index')
+				continue;
+
+			let translation = translations[langName];
+			let newTranslation = {};
+
+			for(let enKey of enKeys)
+				newTranslation[enKey] = enKey in translation ? translation[enKey] : translations.en[enKey];
+
+			translations[langName] = newTranslation;
 		}
 	}
 
@@ -254,50 +260,74 @@ module.exports = function () {
 			let taskName = 'plugins:translations:' + name;
 			let translationsPath = base + name + '/translations/*.json';
 
+			let i = 0;
 			let translations = {};
 
-			gulp.task(taskName, gulp.series((cb) => {
-				return gulp.src(translationsPath)
+			gulp.task(taskName, gulp.series(
+				() => gulp.src(translationsPath)
 					.pipe(plumber())
 					.pipe(plg.buffer())
 					.pipe(plg.tap(file => {
-						let p = path.basename(file.relative, path.extname(file.relative));
+						let name = path.basename(file.relative, path.extname(file.relative));
 						let content = file.contents.toString('utf8');
+						if (name == 'en') {
+							content = content.replace(/"\s*,\s*(\r\n\s*\r\n|\n\s*\n|\r\s*\r)\s*"/gm, () => `","NEW_LINE${i++}": "","`);
+						}
 
 						try {
-							translations[p] = JSON.parse(content);
+							translations[name] = JSON.parse(content);
 						} catch (err) {
 							console.error(`cannot parse translation '${file.relative}'`, content);
 						}
-					}))
-					.pipe(gulp.dest(paths.translations.outputForPlugin(name)));
-			}, (cb) => {
-				if (Object.keys(translations).length < 1)
-					return cb();
+					})),
+				cb => {
+					if (Object.keys(translations).length < 1)
+						return cb();
 
-				let index = translations.index;
-				if (!index)
-					throw new Error(`Plugin '${name}': translation index file not found!`);
-				let indexTranslations = index.TRANSLATIONS;
-				if (!indexTranslations)
-					throw new Error(`Plugin '${name}': translation header section not found!`);
+					let index = translations.index;
+					if (!index)
+						throw new Error(`Plugin '${name}': translation index file not found!`);
+					let indexTranslations = index.TRANSLATIONS;
+					if (!indexTranslations)
+						throw new Error(`Plugin '${name}': translation header section not found!`);
 
-				delete translations.index;
+					for(let langName of Object.keys(translations)) {
+						if (langName == 'index')
+							continue;
 
-				for(let langName of Object.keys(translations)) {
-					let lang = translations[langName];
+						let lang = translations[langName];
 
-					if (!lang['LANG.CODE'] || !lang['LANG.FULL_CODE'])
-						throw new Error(`Plugin '${name}': language file '${langName}' should have root LANG.CODE and LANG.FULL_CODE defined`);
+						if (!lang['LANG.CODE'] || !lang['LANG.FULL_CODE'])
+							throw new Error(`Plugin '${name}': language file '${langName}' should have root LANG.CODE and LANG.FULL_CODE defined`);
+					}
 
-					delete lang['LANG.CODE'];
-					delete lang['LANG.FULL_CODE'];
+					verifyTranslations(name, translations);
+
+					cb();
+				},
+				cb => {
+					if (Object.keys(translations).length < 1)
+						return cb();
+
+					return utils.createFiles(Object.keys(translations).map(k => ({
+						name: k + '.json',
+						content: JSON.stringify(translations[k])
+					})))
+						.pipe(plg.buffer())
+						.pipe(gulp.dest(paths.translations.outputForPlugin(name)));
+				},
+				cb => {
+					if (Object.keys(translations).length < 1)
+						return cb();
+
+					return utils.createFiles(Object.keys(translations).map(k => ({
+						name: k + '.json',
+						content: JSON.stringify(translations[k], null, 2).replace(/^\s*"NEW_LINE[0-9]*".*$/gm, '')
+					})))
+						.pipe(plg.buffer())
+						.pipe(gulp.dest(paths.translations.outputFormattedForPlugin(name)));
 				}
-
-				verifyTranslations(name, translations);
-
-				cb();
-			}));
+			));
 
 			if (isWatching)
 				gulp.watch(translationsPath, gulp.series(taskName));

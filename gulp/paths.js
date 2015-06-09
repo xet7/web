@@ -49,7 +49,9 @@ module.exports = {
 		inputEn: 'src/translations/en.toml',
 		input: 'src/translations/*.toml',
 		output: `${output}/translations/`,
-		outputForPlugin: (pluginName) => `${output}/translations/${pluginName}/`
+		outputForPlugin: (pluginName) => `${output}/translations/${pluginName}/`,
+		outputFormatted: `${output}/translations-formatted/`,
+		outputFormattedForPlugin: (pluginName) => `${output}/translations-formatted/${pluginName}/`
 	},
 	tests: {
 		unit: {
