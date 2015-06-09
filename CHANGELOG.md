@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-## UNRELEASED
+## 0.4.4 - 2015-06-09
 ### Added
 - build system: added translation file normalization(same keys as en.json, same keys order, same spacing)
 - more tooltips all around
