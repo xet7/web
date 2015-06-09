@@ -1,4 +1,4 @@
-module.exports = ($scope, $stateParams, $translate, co, consts, crypto, saver, notifications, router, user, Key) => {
+module.exports = ($scope, $stateParams, $translate, $timeout, co, consts, crypto, saver, notifications, router, user, Key) => {
 	$scope.selectedContactId = $stateParams.contactId;
 	$scope.isNotFound = false;
 	$scope.emails = [];
@@ -10,9 +10,11 @@ module.exports = ($scope, $stateParams, $translate, co, consts, crypto, saver, n
 	};
 	$translate.bindAsObject(translations, 'LAVAMAIL.CONTACTS');
 
+	let updateTimeout = null;
 	$scope.starEmail = () => {
-		if ($scope.isEditMode)
-			$scope.currentEmail.isStar = !$scope.currentEmail.isStar;
+		$scope.currentEmail.isStar = !$scope.currentEmail.isStar;
+
+		[updateTimeout] = $timeout.schedulePromise(updateTimeout, $scope.saveThisContact, consts.AUTO_SAVE_TIMEOUT);
 	};
 
 	$scope.requestPublicKey = () => {
