@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## UNRELEASED
+### Added
+- build system: added translation file normalization(same keys as en.json, same keys order, same spacing)
+
 ### Fixed
 - issue with refresh button and email contents
 - issue with missing email elements(images)
