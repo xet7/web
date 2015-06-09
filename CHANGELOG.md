@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## UNRELEASED
 ### Added
 - build system: added translation file normalization(same keys as en.json, same keys order, same spacing)
+- email display styled better. Line heights, paddings, attachments, action buttons
+- more tooltips all around
+- email list: changed all to fit new guidelines
+- UI/UX refinement in left panel/settings
+- Updated icon font. Some bigger icons were below baseline
 
 ### Modified
 - contacts: star works in non-edit mode and triggers auto-save after standard delay
