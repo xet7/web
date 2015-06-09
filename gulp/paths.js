@@ -1,5 +1,6 @@
 const config = require('./config');
 const output = 'dist/';
+const review = 'review/';
 
 module.exports = {
 	input: 'src/**/*',

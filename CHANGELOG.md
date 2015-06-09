@@ -2,6 +2,22 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## 0.4.4 - 2015-06-09
+### Added
+- build system: added translation file normalization(same keys as en.json, same keys order, same spacing)
+- more tooltips all around
+
+### Modified
+- contacts: star works in non-edit mode and triggers auto-save after standard delay
+- UI/UX refinement in left panel/settings
+- email list: changed all to fit new guidelines
+- email display styled better - line heights, paddings, attachments, action buttons
+
+### Fixed
+- issue with refresh button and email contents
+- issue with missing email elements(images)
+- updated icon font, some bigger icons were below baseline
+
 ## 0.4.3 - 2015-06-08
 ### Added
 - auto detect user's language
