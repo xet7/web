@@ -38,7 +38,7 @@ Before running `gulp`, please make sure `npm` finished without errors
 
 please check `web/gulp/config.js` for available configuration options
 
-- `isProduction` - is production build?(don't change directly, use `gulp develop`, `gulp productiuon`)
+- `isProduction` - is production build?(don't change directly, use `gulp develop`, `gulp production`)
 - `nodeVersion` - minimum required node version(don't change)
 - `isDebugable` - is debugable build?(if it's not gulp will not generate source maps)
 - `isLogs` - is loggable build?(if it's not gulp will not remove all logging statements)
