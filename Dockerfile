@@ -2,6 +2,8 @@ FROM ubuntu:trusty
 
 MAINTAINER Piotr Zduniak <piotr@zduniak.net>
 
+ENV DEBIAN_FRONTEND noninteractive
+
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
 RUN apt-get update && apt-get upgrade -y && apt-get install -y nginx curl
