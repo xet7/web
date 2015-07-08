@@ -1,4 +1,4 @@
-# Lavaboom WEB [![Build Status](https://travis-ci.org/lavab/web.svg)](https://travis-ci.org/lavab/web)
+# Lavaboom WEB 
 
 <img src="https://mail.lavaboom.com/img/Lavaboom-logo.svg" align="right" width="200px" />
 
@@ -99,5 +99,5 @@ This most likely will cause build failure. Currently you will have to terminate 
 
 ## License
 
-This project is licensed under the MIT license. Check __license__ for more
+This project is licensed under the GPL v3 license. Check __license__ for more
 information.
