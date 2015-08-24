@@ -76,7 +76,7 @@
   "LOADER.LB_INITIALIZATION_FAILED": "Initialization failed...",
   "LOADER.LB_INITIALIZING_I18N": "Loading internationalization support...",
   "LOADER.LB_INITIALIZING_OPENPGP": "Initializing openpgp.js...",
-  "LOADER.LB_LOADING": "Loading emails & contacts...",
+  "LOADER.LB_LOADING": "Lavaboom is going to shut down! See lavaboom.com for more details on how to backup your emails.",
   "LOADER.LB_SUCCESS": "Done!",
 
   "LAVALOGIN.AUTH.BTN_GO_TO_MY_INBOX": "Go to my Inbox",
@@ -152,7 +152,7 @@
   "LAVALOGIN.SECURE_USERNAME.TITLE": "Secure your Lavaboom username",
   "LAVALOGIN.SIGNUP.HEADER": "Welcome to Lavaboom",
   "LAVALOGIN.SIGNUP.LOGIN": "Log In",
-  "LAVALOGIN.SIGNUP.SIGNUP": "Sign Up",
+  "LAVALOGIN.SIGNUP.SIGNUP": "Lavaboom is no longer active, see lavaboom.com for more info!",
   "LAVALOGIN.VERIFY_INVITE.AND_THE": " and the ",
   "LAVALOGIN.VERIFY_INVITE.LB_NEWS": "Send me updates to my Lavaboom address.",
   "LAVALOGIN.VERIFY_INVITE.LB_TOS": "By signing up I agree that I've read and understood the ",
